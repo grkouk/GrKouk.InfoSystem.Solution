@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GrKouk.InfoSystem.Domain.Shared
 {
@@ -49,10 +50,12 @@ namespace GrKouk.InfoSystem.Domain.Shared
         /// <summary>
         /// Ποσό ΦΠΑ
         /// </summary>
+        [Column(TypeName = "decimal(18,2)")]
         public decimal AmountFpa { get; set; }
         /// <summary>
         /// Καθαρό Ποσό
         /// </summary>
+        [Column(TypeName = "decimal(18,2)")]
         public decimal AmountNet { get; set; }
         [Timestamp]
         public byte[] Timestamp { get; set; }

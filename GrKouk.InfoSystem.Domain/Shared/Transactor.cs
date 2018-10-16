@@ -5,6 +5,9 @@ using System.Text;
 
 namespace GrKouk.InfoSystem.Domain.Shared
 {
+    /// <summary>
+    /// Transactor is a customer, a supplier etc
+    /// </summary>
   public  class Transactor
     {
         public int Id { get; set; }
