@@ -23,6 +23,7 @@ namespace GrKouk.InfoSystem
             containerRegistry.RegisterForNavigation<NavigationPage>();
             containerRegistry.RegisterForNavigation<MainPage, MainPageViewModel>();
             containerRegistry.RegisterForNavigation<SettingsPage, SettingsPageViewModel>();
+            containerRegistry.RegisterForNavigation<FinTransCategoryPage, FinTransCategoryPageViewModel>();
         }
 
         protected override async void OnInitialized()

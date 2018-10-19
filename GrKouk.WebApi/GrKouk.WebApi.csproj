@@ -2,6 +2,10 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
+    <Authors>George Koukoudis</Authors>
+    <Company>GrKouk</Company>
+    <Description>GrKouk Information System Web API</Description>
+    <Copyright>George Koukoudis</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
@@ -21,6 +25,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.1" />
   </ItemGroup>
 
   <ItemGroup>
