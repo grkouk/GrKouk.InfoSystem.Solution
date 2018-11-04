@@ -1,0 +1,90 @@
+﻿@model GrKouk.InfoSystem.Domain.Shared.FinDiaryTransaction
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>FinDiaryTransaction</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.TransactionDate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.TransactionDate)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.ReferenceCode)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ReferenceCode)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Transactor)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Transactor.Id)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.FinTransCategory)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.FinTransCategory.Code)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Company)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Company.Code)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.CostCentre)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.CostCentre.Code)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.RevenueCentre)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.RevenueCentre.Code)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Kind)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Kind)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.AmountFpa)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.AmountFpa)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.AmountNet)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.AmountNet)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Timestamp)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Timestamp)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>
