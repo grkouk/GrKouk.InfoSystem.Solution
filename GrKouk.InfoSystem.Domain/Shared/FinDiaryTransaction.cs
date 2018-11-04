@@ -18,6 +18,8 @@ namespace GrKouk.InfoSystem.Domain.Shared
         /// <summary>
         /// Αριθμός Παραστατικού
         /// </summary>
+
+        [MaxLength(50)]
         public string ReferenceCode { get; set; }
         [Required]
         public int TransactorId { get; set; }

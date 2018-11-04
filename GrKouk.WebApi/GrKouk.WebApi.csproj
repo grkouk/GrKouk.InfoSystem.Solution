@@ -11,6 +11,8 @@
   <ItemGroup>
     <Compile Remove="Migrations\20181014053724_initial.cs" />
     <Compile Remove="Migrations\20181014053724_initial.Designer.cs" />
+    <Compile Remove="Migrations\20181104140516_Perigrafes.cs" />
+    <Compile Remove="Migrations\20181104140516_Perigrafes.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -20,12 +22,12 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="7.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.1.2" PrivateAssets="All" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.1.4">
+    <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0-preview3-35497" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.2.0-preview3-35497">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.1" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.0-preview3-35497" />
   </ItemGroup>
 
   <ItemGroup>
