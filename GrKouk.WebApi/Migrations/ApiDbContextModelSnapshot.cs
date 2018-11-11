@@ -499,7 +499,7 @@ namespace GrKouk.WebApi.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TransactorType");
+                    b.ToTable("TransactorTypes");
                 });
 
             modelBuilder.Entity("GrKouk.InfoSystem.Domain.FinConfig.TransSupplierDef", b =>

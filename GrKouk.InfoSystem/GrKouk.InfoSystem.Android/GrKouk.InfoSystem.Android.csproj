@@ -55,11 +55,14 @@
     <PackageReference Include="Prism.DryIoc.Forms">
       <Version>7.1.0.431</Version>
     </PackageReference>
+    <PackageReference Include="Syncfusion.Xamarin.SfAutoComplete">
+      <Version>16.3.0.21</Version>
+    </PackageReference>
     <PackageReference Include="Syncfusion.Xamarin.SfBusyIndicator">
-      <Version>16.3.0.29</Version>
+      <Version>16.3.0.21</Version>
     </PackageReference>
     <PackageReference Include="Syncfusion.Xamarin.SfDataGrid">
-      <Version>16.3.0.29</Version>
+      <Version>16.3.0.21</Version>
     </PackageReference>
     <PackageReference Include="Xam.Plugins.Settings">
       <Version>4.0.0.10-beta</Version>

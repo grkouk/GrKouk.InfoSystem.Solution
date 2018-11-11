@@ -3,6 +3,9 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <UserSecretsId>aspnet-GrKouk.Web-99FB1023-BA30-4075-8879-722509CB023B</UserSecretsId>
+    <Version>1.0.1</Version>
+    <Authors>George Koukoudis</Authors>
+    <Copyright>George koukoudis</Copyright>
   </PropertyGroup>
 
   <ItemGroup>

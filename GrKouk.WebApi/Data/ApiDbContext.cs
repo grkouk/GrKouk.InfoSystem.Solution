@@ -19,7 +19,8 @@ namespace GrKouk.WebApi.Data
         public DbSet<Transactor> Transactors { get; set; }
         public DbSet<FinDiaryTransaction> FinDiaryTransactions { get; set; }
         public DbSet<FinTransCategory> FinTransCategories { get; set; }
-        
+        public DbSet<TransactorType> TransactorTypes { get; set; }
+
         public DbSet<RevenueCentre> RevenueCentres { get; set; }
         public DbSet<CostCentre> CostCentres { get; set; }
         public DbSet<FinancialMovement> FinancialMovements { get; set; }

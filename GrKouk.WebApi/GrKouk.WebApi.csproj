@@ -6,6 +6,7 @@
     <Company>GrKouk</Company>
     <Description>GrKouk Information System Web API</Description>
     <Copyright>George Koukoudis</Copyright>
+    <Version>1.0.2</Version>
   </PropertyGroup>
 
   <ItemGroup>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using GrKouk.InfoSystem.Domain.Shared;
@@ -8,6 +9,7 @@ using GrKouk.InfoSystem.Models;
 using Newtonsoft.Json;
 using Plugin.Settings;
 using Plugin.Settings.Abstractions;
+using Prism.Logging;
 
 namespace GrKouk.InfoSystem.Services
 {
@@ -16,7 +18,7 @@ namespace GrKouk.InfoSystem.Services
         private static ISettings AppSettings => CrossSettings.Current;
         public static string WebApiBaseAddress
         {
-            get => AppSettings.GetValueOrDefault(nameof(WebApiBaseAddress), "http://api.villakoukoudis.com/api");
+            get => AppSettings.GetValueOrDefault(nameof(WebApiBaseAddress), "http://api2.villakoukoudis.com/api");
             set => AppSettings.AddOrUpdateValue(nameof(WebApiBaseAddress), value);
         }
 
@@ -64,9 +66,40 @@ namespace GrKouk.InfoSystem.Services
             throw new NotImplementedException();
         }
 
-        public Task<FinTransCategory> AddItemAsync2(FinTransCategory item)
+        public async Task<FinTransCategory> AddItemAsync2(FinTransCategory item)
         {
-            throw new NotImplementedException();
+            var httpClient = new HttpClient();
+            var jsonItem = JsonConvert.SerializeObject(item);
+            try
+            {
+
+                var uri = new Uri(BaseUrl);
+                HttpContent httpContent = new StringContent(jsonItem);
+                httpContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                httpClient.DefaultRequestHeaders.Accept
+                    .Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                var response = await httpClient.PostAsync(uri, httpContent);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var jsonContent = await response.Content.ReadAsStringAsync();
+                    var newItem = JsonConvert.DeserializeObject<FinTransCategory>(jsonContent);
+                    return newItem;
+                }
+                else
+                {
+                    var e = new Exception(response.ToString());
+                    throw e;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                //return await Task.FromResult(null);
+                throw e;
+
+            }
         }
 
         public Task<FinTransCategory> ModifyItemAsync(int id, FinTransCategory item)

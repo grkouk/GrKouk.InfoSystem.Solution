@@ -12,8 +12,9 @@
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.1-beta1" />
     <PackageReference Include="Prism.DryIoc.Forms" Version="7.1.0.431" />
-    <PackageReference Include="Syncfusion.Xamarin.SfBusyIndicator" Version="16.3.0.29" />
-    <PackageReference Include="Syncfusion.Xamarin.SfDataGrid" Version="16.3.0.29" />
+    <PackageReference Include="Syncfusion.Xamarin.SfAutoComplete" Version="16.3.0.21" />
+    <PackageReference Include="Syncfusion.Xamarin.SfBusyIndicator" Version="16.3.0.21" />
+    <PackageReference Include="Syncfusion.Xamarin.SfDataGrid" Version="16.3.0.21" />
     <PackageReference Include="Xam.Plugins.Settings" Version="4.0.0.10-beta" />
     <PackageReference Include="Xamarin.Forms" Version="3.4.0.925479-pre1" />
   </ItemGroup>
@@ -24,6 +25,30 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Update="Views\CategoryPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\CategorySearchListPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\CompaniesSearchListPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\CompanyPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\CostCentrePage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\CostCentresSearchListPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\FinDiaryTransExpencePage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\FinDiaryTransExpencesPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
     <EmbeddedResource Update="Views\FinTransCategoryPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
@@ -34,6 +59,15 @@
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Views\SettingsPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\TransactionsPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\TransactorPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\TransactorsSearchListPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
   </ItemGroup>
