@@ -32,4 +32,8 @@
     <ProjectReference Include="..\GrKouk.InfoSystem.Dtos\GrKouk.InfoSystem.Dtos.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Pages\Companies\" />
+  </ItemGroup>
+
 </Project>
