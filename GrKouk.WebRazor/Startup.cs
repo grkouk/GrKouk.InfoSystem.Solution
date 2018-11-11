@@ -1,10 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GrKouk.InfoSystem.Domain.Shared;
 using GrKouk.InfoSystem.Dtos;
-using GrKouk.Web.Data;
+using GrKouk.WebApi.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Hosting;
@@ -12,11 +12,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using GrKouk.WebApi.Data;
+using GrKouk.WebRazor.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace GrKouk.Web
+namespace GrKouk.WebRazor
 {
     public class Startup
     {
@@ -38,19 +38,20 @@ namespace GrKouk.Web
             });
 
             services.AddDbContext<ApiDbContext>(options =>
-                options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection")))
+                    options.UseSqlServer(
+                        Configuration.GetConnectionString("DefaultConnection")))
                 .AddDbContext<SecurityDbContext>(options =>
                     options.UseSqlServer(
                         Configuration.GetConnectionString("DefaultConnection")));
-
-            //services.AddDefaultIdentity<IdentityUser>()
-            //    .AddEntityFrameworkStores<SecurityDbContext>();
 
             services.AddIdentity<IdentityUser, IdentityRole>()
                 .AddDefaultUI()
                 .AddDefaultTokenProviders()
                 .AddEntityFrameworkStores<SecurityDbContext>();
+
+            //services.AddDefaultIdentity<IdentityUser>()
+            //    .AddEntityFrameworkStores<SecurityDbContext>();
+
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
@@ -65,7 +66,7 @@ namespace GrKouk.Web
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("/Error");
                 app.UseHsts();
             }
 
@@ -74,7 +75,6 @@ namespace GrKouk.Web
             app.UseCookiePolicy();
 
             app.UseAuthentication();
-            //Configure Automapper
             AutoMapper.Mapper.Initialize(cfg =>
             {
                 cfg.CreateMap<FinDiaryTransaction, FinDiaryTransactionDto>()
@@ -92,7 +92,7 @@ namespace GrKouk.Web
                         opt => opt.ResolveUsing(src => src.AmountFpa + src.AmountNet));
 
                 cfg.CreateMap<FinDiaryTransaction, FinDiaryExpenseTransactionDto>()
-                    .ForMember(dest => dest.TransactorName, opt => opt.MapFrom(src =>src.Transactor.Name))
+                    .ForMember(dest => dest.TransactorName, opt => opt.MapFrom(src => src.Transactor.Name))
                     .ForMember(dest => dest.FinTransCategoryName, opt => opt.MapFrom(src => src.FinTransCategory.Name))
                     .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.Company.Name))
                     .ForMember(dest => dest.CompanyCode, opt => opt.MapFrom(src => src.Company.Code))
@@ -104,12 +104,9 @@ namespace GrKouk.Web
                 cfg.CreateMap<FinDiaryTransaction, FinDiaryTransactionCreateDto>().ReverseMap();
                 cfg.CreateMap<FinDiaryTransaction, FinDiaryTransactionModifyDto>().ReverseMap();
             });
-            app.UseMvc(routes =>
-            {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
-            });
+
+
+            app.UseMvc();
         }
     }
 }

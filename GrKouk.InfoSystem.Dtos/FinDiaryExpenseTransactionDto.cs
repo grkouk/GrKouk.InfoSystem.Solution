@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace GrKouk.InfoSystem.Dtos
 {
-    public class FinDiaryTransactionDto
+    public class FinDiaryExpenseTransactionDto
     {
         public int Id { get; set; }
 
@@ -47,15 +47,7 @@ namespace GrKouk.InfoSystem.Dtos
         [Display(Name = "Κωδ.Κ.Εξόδου", Prompt = "Κωδ.Κ.Εξόδου")]
         public string CostCentreCode { get; set; }
 
-        public int RevenueCentreId { get; set; }
-
-        [MaxLength(200)]
-        [Display(Name = "Κ.Εσόδου", Prompt = "Κ.Εσόδου")]
-        public string RevenueCentreName { get; set; }
-
-        [MaxLength(15)]
-        [Display(Name = "Κωδ.Κ.Εσόδου", Prompt = "Κωδ.Κ.Εσόδου")]
-        public string RevenueCentreCode { get; set; }
+       
 
         [MaxLength(500)]
         [Display(Name = "Περιγραφή", Prompt = "Περιγραφή")]
