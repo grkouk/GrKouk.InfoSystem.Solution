@@ -1,0 +1,100 @@
+﻿@page
+@model GrKouk.WebRazor.Pages.Expenses.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>Λίστα Εξόδων</h2>
+
+<p>
+    <a asp-page="Create">Δημιουργία</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                <a asp-page="./Index" asp-route-sortOrder="@Model.DateSort">
+                    @Html.DisplayNameFor(model => model.FinDiaryTransaction[0].TransactionDate)
+                </a>
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FinDiaryTransaction[0].ReferenceCode)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FinDiaryTransaction[0].TransactorName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FinDiaryTransaction[0].FinTransCategoryName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FinDiaryTransaction[0].CompanyName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FinDiaryTransaction[0].CostCentreName)
+            </th>
+
+
+
+            <th>
+                @Html.DisplayNameFor(model => model.FinDiaryTransaction[0].AmountTotal)
+            </th>
+
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.FinDiaryTransaction)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TransactionDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ReferenceCode)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TransactorName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FinTransCategoryName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CompanyName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CostCentreName)
+                </td>
+
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.AmountTotal)
+                </td>
+                <td>
+                    <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+@{
+    var prevDisabled = !Model.FinDiaryTransaction.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.FinDiaryTransaction.HasNextPage ? "disabled" : "";
+}
+
+<a asp-page="./Index"
+   asp-route-sortOrder="@Model.CurrentSort"
+   asp-route-pageIndex="@(Model.FinDiaryTransaction.PageIndex - 1)"
+   asp-route-currentFilter="@Model.CurrentFilter"
+   class="btn btn-default @prevDisabled">
+    Previous
+</a>
+<a asp-page="./Index"
+   asp-route-sortOrder="@Model.CurrentSort"
+   asp-route-pageIndex="@(Model.FinDiaryTransaction.PageIndex + 1)"
+   asp-route-currentFilter="@Model.CurrentFilter"
+   class="btn btn-default @nextDisabled">
+    Next
+</a>

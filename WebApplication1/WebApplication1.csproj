@@ -1,28 +1,19 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
-    <UserSecretsId>aspnet-GrKouk.WebRazor-23D9D86F-9BE9-49F4-876A-5283C1CB43A5</UserSecretsId>
+    <UserSecretsId>aspnet-WebApplication1-849ED1CC-ECD0-44F5-83BF-063CC21DE0D4</UserSecretsId>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Compile Remove="Data\Migrations\**" />
-    <Content Remove="Data\Migrations\**" />
-    <EmbeddedResource Remove="Data\Migrations\**" />
-    <None Remove="Data\Migrations\**" />
-  </ItemGroup>
 
   <ItemGroup>
     <Compile Include="..\GrKouk.WebApi\Data\ApiDbContext.cs" Link="Data\ApiDbContext.cs" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="7.0.1" />
-    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="5.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.1.2" PrivateAssets="All" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.5" PrivateAssets="All" />
-    </ItemGroup>
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\GrKouk.InfoSystem.Domain\GrKouk.InfoSystem.Domain.csproj" />

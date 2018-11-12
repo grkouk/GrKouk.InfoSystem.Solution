@@ -2,9 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using GrKouk.InfoSystem.Domain.Shared;
 using GrKouk.InfoSystem.Dtos;
 using GrKouk.WebApi.Data;
+using GrKouk.WebRazor.Automapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Hosting;
@@ -52,8 +54,22 @@ namespace GrKouk.WebRazor
             //services.AddDefaultIdentity<IdentityUser>()
             //    .AddEntityFrameworkStores<SecurityDbContext>();
 
+            //var config = new MapperConfiguration(cfg =>
+            //{
+            //    cfg.AddProfile( new AutoMapperProfile());
 
+            //}); 
+            //var mapper = config.CreateMapper();
+
+            //services.AddSingleton(mapper);
+           // services.addautomapper();
+            
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddAutoMapper(cfg =>
+            {
+                cfg.AddProfile(new AutoMapperProfile());
+
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -75,35 +91,35 @@ namespace GrKouk.WebRazor
             app.UseCookiePolicy();
 
             app.UseAuthentication();
-            AutoMapper.Mapper.Initialize(cfg =>
-            {
-                cfg.CreateMap<FinDiaryTransaction, FinDiaryTransactionDto>()
-                    .ForMember(dest => dest.TransactorName, opt => opt.MapFrom(src =>
-                        src.Transactor.Name
-                    ))
-                    .ForMember(dest => dest.FinTransCategoryName, opt => opt.MapFrom(src => src.FinTransCategory.Name))
-                    .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.Company.Name))
-                    .ForMember(dest => dest.CompanyCode, opt => opt.MapFrom(src => src.Company.Code))
-                    .ForMember(dest => dest.CostCentreName, opt => opt.MapFrom(src => src.CostCentre.Name))
-                    .ForMember(dest => dest.CostCentreCode, opt => opt.MapFrom(src => src.CostCentre.Code))
-                    .ForMember(dest => dest.RevenueCentreName, opt => opt.MapFrom(src => src.RevenueCentre.Name))
-                    .ForMember(dest => dest.RevenueCentreCode, opt => opt.MapFrom(src => src.RevenueCentre.Code))
-                    .ForMember(dest => dest.AmountTotal,
-                        opt => opt.ResolveUsing(src => src.AmountFpa + src.AmountNet));
+            //AutoMapper.Mapper.Initialize(cfg =>
+            //{
+            //    cfg.CreateMap<FinDiaryTransaction, FinDiaryTransactionDto>()
+            //        .ForMember(dest => dest.TransactorName, opt => opt.MapFrom(src =>
+            //            src.Transactor.Name
+            //        ))
+            //        .ForMember(dest => dest.FinTransCategoryName, opt => opt.MapFrom(src => src.FinTransCategory.Name))
+            //        .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.Company.Name))
+            //        .ForMember(dest => dest.CompanyCode, opt => opt.MapFrom(src => src.Company.Code))
+            //        .ForMember(dest => dest.CostCentreName, opt => opt.MapFrom(src => src.CostCentre.Name))
+            //        .ForMember(dest => dest.CostCentreCode, opt => opt.MapFrom(src => src.CostCentre.Code))
+            //        .ForMember(dest => dest.RevenueCentreName, opt => opt.MapFrom(src => src.RevenueCentre.Name))
+            //        .ForMember(dest => dest.RevenueCentreCode, opt => opt.MapFrom(src => src.RevenueCentre.Code))
+            //        .ForMember(dest => dest.AmountTotal,
+            //            opt => opt.ResolveUsing(src => src.AmountFpa + src.AmountNet));
 
-                cfg.CreateMap<FinDiaryTransaction, FinDiaryExpenseTransactionDto>()
-                    .ForMember(dest => dest.TransactorName, opt => opt.MapFrom(src => src.Transactor.Name))
-                    .ForMember(dest => dest.FinTransCategoryName, opt => opt.MapFrom(src => src.FinTransCategory.Name))
-                    .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.Company.Name))
-                    .ForMember(dest => dest.CompanyCode, opt => opt.MapFrom(src => src.Company.Code))
-                    .ForMember(dest => dest.CostCentreName, opt => opt.MapFrom(src => src.CostCentre.Name))
-                    .ForMember(dest => dest.CostCentreCode, opt => opt.MapFrom(src => src.CostCentre.Code))
-                    .ForMember(dest => dest.AmountTotal,
-                        opt => opt.ResolveUsing(src => src.AmountFpa + src.AmountNet));
+            //    cfg.CreateMap<FinDiaryTransaction, FinDiaryExpenseTransactionDto>()
+            //        .ForMember(dest => dest.TransactorName, opt => opt.MapFrom(src => src.Transactor.Name))
+            //        .ForMember(dest => dest.FinTransCategoryName, opt => opt.MapFrom(src => src.FinTransCategory.Name))
+            //        .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.Company.Name))
+            //        .ForMember(dest => dest.CompanyCode, opt => opt.MapFrom(src => src.Company.Code))
+            //        .ForMember(dest => dest.CostCentreName, opt => opt.MapFrom(src => src.CostCentre.Name))
+            //        .ForMember(dest => dest.CostCentreCode, opt => opt.MapFrom(src => src.CostCentre.Code))
+            //        .ForMember(dest => dest.AmountTotal,
+            //            opt => opt.ResolveUsing(src => src.AmountFpa + src.AmountNet));
 
-                cfg.CreateMap<FinDiaryTransaction, FinDiaryTransactionCreateDto>().ReverseMap();
-                cfg.CreateMap<FinDiaryTransaction, FinDiaryTransactionModifyDto>().ReverseMap();
-            });
+            //    cfg.CreateMap<FinDiaryTransaction, FinDiaryTransactionCreateDto>().ReverseMap();
+            //    cfg.CreateMap<FinDiaryTransaction, FinDiaryTransactionModifyDto>().ReverseMap();
+            //});
 
 
             app.UseMvc();
