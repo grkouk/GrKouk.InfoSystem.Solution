@@ -189,7 +189,7 @@ namespace GrKouk.InfoSystem.ViewModels
             var iF = SettingDateFilter;
             if (iF != -1)
             {
-                SelectedDateFilterIndex = SettingDateFilter;
+                SelectedDateFilterIndex = iF;
                 this._selectedDateFilterItem = DateFilters[iF];
             }
             else
@@ -247,7 +247,11 @@ namespace GrKouk.InfoSystem.ViewModels
 
         private async void PickerSelectedIndexChangedCmd()
         {
-            SettingDateFilter = SelectedDateFilterIndex;
+            if (SelectedDateFilterIndex >= 0)
+            {
+                SettingDateFilter = SelectedDateFilterIndex;
+            }
+            
         }
         #region GridBinding Properties
 
