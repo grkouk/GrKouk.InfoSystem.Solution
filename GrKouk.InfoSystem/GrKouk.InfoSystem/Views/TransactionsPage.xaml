@@ -57,7 +57,7 @@
                         <syncfusion:GridDateTimeColumn ColumnSizer="Auto" HeaderText="Ημερομηνία" 
                                                    MappingName="TransactionDate"  Format="dd/MM/yyyy"/>
                         <syncfusion:GridTextColumn ColumnSizer="Auto" HeaderText="Συν/νος" MappingName="TransactorName" />
-                        <syncfusion:GridTextColumn ColumnSizer="Auto" HeaderText="Κατηγορία" MappingName="CategoryName" />
+                        <syncfusion:GridTextColumn ColumnSizer="Auto" HeaderText="Κατηγορία" MappingName="FinTransCategoryName" />
                         <syncfusion:GridTextColumn ColumnSizer="Auto" HeaderText="Κωδ.Αν." MappingName="ReferenceCode" />
                         <syncfusion:GridTextColumn ColumnSizer="Auto" HeaderText="ΚΚ" MappingName="CostCentreName" />
                         <syncfusion:GridNumericColumn  ColumnSizer="Auto" HeaderText="Καθαρά" MappingName="AmountNet" TextAlignment="End" />
