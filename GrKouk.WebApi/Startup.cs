@@ -28,6 +28,20 @@ namespace GrKouk.WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAllOrigins",
+                    builder =>
+                    {
+                        builder.AllowAnyMethod().AllowAnyHeader().AllowAnyOrigin();
+                    });
+                //options.AddPolicy("AllowSpecificOrigins",
+                //    builder =>
+                //    {
+                //        builder.WithOrigins( "http://potos.tours",
+                //            "http://thassos-rent-a-bike.com").AllowAnyMethod().AllowAnyHeader();
+                //    });
+            });
             services.AddDbContext<ApiDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
@@ -42,6 +56,7 @@ namespace GrKouk.WebApi
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseCors("AllowAllOrigins");
             //Configure Automapper
             AutoMapper.Mapper.Initialize(cfg =>
             {
