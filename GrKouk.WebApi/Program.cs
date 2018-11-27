@@ -14,6 +14,7 @@ namespace GrKouk.WebApi
     {
         public static void Main(string[] args)
         {
+            //HibernatingRhinos.Profiler.Appender.EntityFramework.EntityFrameworkProfiler.Initialize();
             CreateWebHostBuilder(args).Build().Run();
         }
 

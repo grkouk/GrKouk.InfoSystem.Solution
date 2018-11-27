@@ -90,12 +90,13 @@ namespace GrKouk.WebRazor
 
             IList<CultureInfo> supportedCultures = new List<CultureInfo>
             {
-                new CultureInfo("en-US"),
                 new CultureInfo("el-GR"),
+                new CultureInfo("en-US")
+               
             };
             app.UseRequestLocalization(new RequestLocalizationOptions
             {
-                DefaultRequestCulture = new RequestCulture("en-US"),
+                DefaultRequestCulture = new RequestCulture("el-GR"),
                 SupportedCultures = supportedCultures,
                 SupportedUICultures = supportedCultures
             });

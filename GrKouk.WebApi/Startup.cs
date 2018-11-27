@@ -2,9 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using GrKouk.InfoSystem.Domain.Shared;
 using GrKouk.InfoSystem.Dtos;
+using GrKouk.WebApi.AutoMapper;
 using GrKouk.WebApi.Data;
+using GrKouk.WebApi.Services;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -33,7 +37,11 @@ namespace GrKouk.WebApi
                 options.AddPolicy("AllowAllOrigins",
                     builder =>
                     {
-                        builder.AllowAnyMethod().AllowAnyHeader().AllowAnyOrigin();
+                        builder.AllowAnyOrigin()
+                            .AllowAnyMethod()
+                            .AllowAnyHeader()
+                            .AllowCredentials()
+                            .WithExposedHeaders("X-Pagination");
                     });
                 //options.AddPolicy("AllowSpecificOrigins",
                 //    builder =>
@@ -45,7 +53,15 @@ namespace GrKouk.WebApi
             services.AddDbContext<ApiDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
+            services.AddTransient<IPropertyMappingService, PropertyMappingService>();
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddAutoMapper(cfg =>
+            {
+                cfg.AddProfile(new AutoMapperProfile());
+
+            });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -57,23 +73,9 @@ namespace GrKouk.WebApi
             }
 
             app.UseCors("AllowAllOrigins");
-            //Configure Automapper
-            AutoMapper.Mapper.Initialize(cfg =>
-            {
-                cfg.CreateMap<FinDiaryTransaction, FinDiaryTransactionDto>()
-                    .ForMember(dest => dest.TransactorName, opt => opt.MapFrom(src =>
-                        src.Transactor.Name
-                    ))
-                    .ForMember(dest => dest.FinTransCategoryName, opt => opt.MapFrom(src => src.FinTransCategory.Name))
-                    .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.Company.Name))
-                    .ForMember(dest => dest.CostCentreName, opt => opt.MapFrom(src => src.CostCentre.Name))
-                    .ForMember(dest => dest.RevenueCentreName, opt => opt.MapFrom(src => src.RevenueCentre.Name))
-                    .ForMember(dest => dest.AmountTotal,
-                        opt => opt.ResolveUsing(src => src.AmountFpa + src.AmountNet));
-                cfg.CreateMap<FinDiaryTransaction, FinDiaryTransactionCreateDto>().ReverseMap();
-                cfg.CreateMap<FinDiaryTransaction, FinDiaryTransactionModifyDto>().ReverseMap();
-            });
+
             app.UseMvc();
+
         }
     }
 }

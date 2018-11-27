@@ -29,11 +29,18 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.0-preview3-35497" />
+    <PackageReference Include="System.Linq.Dynamic.Core" Version="1.0.9" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\GrKouk.InfoSystem.Domain\GrKouk.InfoSystem.Domain.csproj" />
     <ProjectReference Include="..\GrKouk.InfoSystem.Dtos\GrKouk.InfoSystem.Dtos.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="AutoMapper.Extensions.Microsoft.DependencyInjection">
+      <HintPath>C:\Users\grkou\.nuget\packages\automapper.extensions.microsoft.dependencyinjection\5.0.1\lib\netstandard2.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

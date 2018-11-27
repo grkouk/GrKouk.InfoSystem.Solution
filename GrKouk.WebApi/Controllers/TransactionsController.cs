@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using GrKouk.InfoSystem.Dtos;
 using GrKouk.InfoSystem.Domain;
 using GrKouk.InfoSystem.Domain.Shared;
 using GrKouk.WebApi.Data;
+using GrKouk.WebApi.Helpers;
+using GrKouk.WebApi.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,27 +20,89 @@ namespace GrKouk.WebApi.Controllers
     public class TransactionsController : Controller
     {
         private readonly ApiDbContext _context;
+        private readonly IPropertyMappingService _propertyMappingService;
+        private readonly IMapper _mapper;
 
-        public TransactionsController(ApiDbContext context)
+        public TransactionsController(ApiDbContext context,IPropertyMappingService propertyMappingService
+            ,IMapper mapper)
         {
             _context = context;
+            _propertyMappingService = propertyMappingService;
+            _mapper = mapper;
         }
 
-        // GET: api/Transactions
-        [HttpGet]
-        public IEnumerable<FinDiaryTransactionDto> GetTransactions()
+        // GET: api/Transactions/all
+        [HttpGet("All")]
+        public async Task<IActionResult > GetTransactionsAll()
         {
-            var transactions = Mapper.Map<IEnumerable<FinDiaryTransactionDto>>(
-                _context.FinDiaryTransactions
-                    .Include(s => s.Transactor)
-                    .Include(t => t.FinTransCategory)
-                    .Include(t => t.Company)
-                    .Include(t => t.CostCentre)
-                    .Include(t => t.RevenueCentre)
-                    .ToList());
-            return transactions;
+
+            var transactions = await _context.FinDiaryTransactions
+                .Include(s => s.Transactor)
+                .Include(t => t.FinTransCategory)
+                .Include(t => t.Company)
+                .Include(t => t.CostCentre)
+                .Include(t => t.RevenueCentre)
+                .ProjectTo<FinDiaryTransactionDto>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+           
+            return Ok(transactions);
         }
 
+        /// <summary>
+        /// Gets transactions paged 
+        /// </summary>
+        /// <param name="listViewResourceParameters" ></param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<IActionResult> GetTransactions(ListViewResourceParameters listViewResourceParameters)
+
+        {
+            if (
+                !_propertyMappingService.ValidMappingExistsFor<FinDiaryTransactionListDto,FinDiaryTransaction>(
+                    listViewResourceParameters.OrderBy)
+                )
+            {
+                return BadRequest();
+            }
+
+            var collectionBeforePaging = _context.FinDiaryTransactions
+                .Include(s => s.Transactor).AsQueryable()
+                .ApplySort(listViewResourceParameters.OrderBy,
+                    _propertyMappingService.GetPropertyMapping<FinDiaryTransactionListDto, FinDiaryTransaction>());
+
+
+
+            if (!string.IsNullOrEmpty(listViewResourceParameters.SearchQuery))
+            {
+                // trim & ignore casing
+                var searchQueryForWhereClause = listViewResourceParameters.SearchQuery
+                    .Trim().ToLowerInvariant();
+
+                collectionBeforePaging = collectionBeforePaging
+                    .Where(p => p.Transactor.Name.ToLowerInvariant().Contains(searchQueryForWhereClause));
+            }
+            var t = collectionBeforePaging.ProjectTo<FinDiaryTransactionListDto>(_mapper.ConfigurationProvider);
+               
+
+
+            var listToReturn = await PagedList<FinDiaryTransactionListDto>.CreateAsync(
+                t, listViewResourceParameters.PageNumber, 
+                listViewResourceParameters.PageSize);
+
+            var paginationMetadata = new
+            {
+                //previousPageLink = previousPageLink,
+                //nextPageLink = nextPageLink,
+                totalCount = listToReturn.TotalCount,
+                pageSize = listToReturn.PageSize,
+                currentPage = listToReturn.CurrentPage,
+                totalPages = listToReturn.TotalPages
+            };
+
+            Response.Headers.Add("X-Pagination",
+                Newtonsoft.Json.JsonConvert.SerializeObject(paginationMetadata));
+            return Ok(listToReturn);
+        }
         // GET: api/Transactions/5
         [HttpGet("{id}")]
         public async Task<IActionResult> GetTransaction([FromRoute] int id)
