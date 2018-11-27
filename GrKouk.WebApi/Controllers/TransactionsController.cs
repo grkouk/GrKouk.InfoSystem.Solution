@@ -273,14 +273,23 @@ namespace GrKouk.WebApi.Controllers
 
 
             // DateTime tDate=
-
-            var transactions = Mapper.Map<IEnumerable<FinDiaryTransactionDto>>(await _context.FinDiaryTransactions.Where(m => m.TransactionDate >= fromDate && m.TransactionDate <= toDate)
+            var transactions = await _context.FinDiaryTransactions
+                .Where(m => m.TransactionDate >= fromDate && m.TransactionDate <= toDate)
                 .Include(s => s.Transactor)
                 .Include(t => t.FinTransCategory)
                 .Include(t => t.Company)
                 .Include(t => t.CostCentre)
                 .Include(t => t.RevenueCentre)
-                .ToListAsync());
+                .ProjectTo<FinDiaryTransactionDto>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+            //var transactions = Mapper.Map<IEnumerable<FinDiaryTransactionDto>>(
+            //    await _context.FinDiaryTransactions.Where(m => m.TransactionDate >= fromDate && m.TransactionDate <= toDate)
+            //    .Include(s => s.Transactor)
+            //    .Include(t => t.FinTransCategory)
+            //    .Include(t => t.Company)
+            //    .Include(t => t.CostCentre)
+            //    .Include(t => t.RevenueCentre)
+            //    .ToListAsync());
 
             if (transactions == null)
             {
