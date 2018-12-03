@@ -130,7 +130,7 @@ namespace GrKouk.InfoSystem.ViewModels
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                _dialogService.DisplayAlertAsync("Error", e.ToString(), "Ok");
+              await  _dialogService.DisplayAlertAsync("Error", e.ToString(), "Ok");
             }
 
         }
@@ -245,7 +245,7 @@ namespace GrKouk.InfoSystem.ViewModels
         public DelegateCommand PickerSelectedIndexChangedCommand =>
             _pickerSelectedIndexChangedCommand ?? (_pickerSelectedIndexChangedCommand = new DelegateCommand(PickerSelectedIndexChangedCmd));
 
-        private async void PickerSelectedIndexChangedCmd()
+        private  void PickerSelectedIndexChangedCmd()
         {
             if (SelectedDateFilterIndex >= 0)
             {

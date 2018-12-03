@@ -89,7 +89,7 @@ namespace GrKouk.Web
                     .ForMember(dest => dest.RevenueCentreName, opt => opt.MapFrom(src => src.RevenueCentre.Name))
                     .ForMember(dest => dest.RevenueCentreCode, opt => opt.MapFrom(src => src.RevenueCentre.Code))
                     .ForMember(dest => dest.AmountTotal,
-                        opt => opt.ResolveUsing(src => src.AmountFpa + src.AmountNet));
+                        opt => opt.MapFrom(src => src.AmountFpa + src.AmountNet));
 
                 cfg.CreateMap<FinDiaryTransaction, FinDiaryExpenseTransactionDto>()
                     .ForMember(dest => dest.TransactorName, opt => opt.MapFrom(src =>src.Transactor.Name))
@@ -99,7 +99,7 @@ namespace GrKouk.Web
                     .ForMember(dest => dest.CostCentreName, opt => opt.MapFrom(src => src.CostCentre.Name))
                     .ForMember(dest => dest.CostCentreCode, opt => opt.MapFrom(src => src.CostCentre.Code))
                     .ForMember(dest => dest.AmountTotal,
-                        opt => opt.ResolveUsing(src => src.AmountFpa + src.AmountNet));
+                        opt => opt.MapFrom(src => src.AmountFpa + src.AmountNet));
 
                 cfg.CreateMap<FinDiaryTransaction, FinDiaryTransactionCreateDto>().ReverseMap();
                 cfg.CreateMap<FinDiaryTransaction, FinDiaryTransactionModifyDto>().ReverseMap();

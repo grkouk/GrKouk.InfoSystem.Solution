@@ -11,7 +11,7 @@ namespace GrKouk.WebApi.Data
 {
     public class ApiDbContext : DbContext
     {
-        public ApiDbContext( DbContextOptions<ApiDbContext> options) : base(options)
+        public ApiDbContext(DbContextOptions<ApiDbContext> options) : base(options)
         {
         }
 
@@ -33,6 +33,9 @@ namespace GrKouk.WebApi.Data
         public DbSet<TransSupplierDocSeriesDef> TransSupplierDocSeriesDefs { get; set; }
         public DbSet<TransSupplierDef> TransSupplierDefs { get; set; }
 
+        public DbSet<TransCustomerDocTypeDef> TransCustomerDocTypeDefs { get; set; }
+        public DbSet<TransCustomerDocSeriesDef> TransCustomerDocSeriesDefs { get; set; }
+        public DbSet<TransCustomerDef> TransCustomerDefs { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -164,42 +167,85 @@ namespace GrKouk.WebApi.Data
                 .HasIndex(c => c.Code)
                 .IsUnique();
 
-            modelBuilder.Entity<TransSupplierDef>()
-                .HasOne(bd => bd.DebitTrans)
-                .WithMany()
-                .OnDelete(DeleteBehavior.Restrict);
+            //----------------
+            modelBuilder.Entity<TransSupplierDocSeriesDef>(entity =>
+            {
+                entity.HasIndex(c => c.Code)
+                    .IsUnique();
 
-            modelBuilder.Entity<TransSupplierDef>()
-                .HasOne(bd => bd.CreditTrans)
-                .WithMany()
-                .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(bd => bd.TransSupplierDocTypeDef)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
 
-            modelBuilder.Entity<TransSupplierDef>()
-                .HasOne(bd => bd.TurnOverTrans)
-                .WithMany()
-                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<TransSupplierDocTypeDef>(entity =>
+            {
+                entity.HasIndex(c => c.Code).IsUnique();
 
-            modelBuilder.Entity<TransSupplierDocTypeDef>()
-                .HasOne(bd => bd.TransSupplierDef)
-                .WithMany()
-                .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(bd => bd.TransSupplierDef)
+                      .WithMany()
+                      .OnDelete(DeleteBehavior.Restrict);
+            });
 
-            modelBuilder.Entity<TransSupplierDocSeriesDef>()
-                .HasOne(bd => bd.TransSupplierDocTypeDef)
-                .WithMany()
-                .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<TransSupplierDef>()
-                .HasIndex(c => c.Code)
-                .IsUnique();
-            modelBuilder.Entity<TransSupplierDocTypeDef>()
-                .HasIndex(c => c.Code)
-                .IsUnique();
+            modelBuilder.Entity<TransSupplierDef>(entity =>
+            {
+                entity.HasOne(bd => bd.DebitTrans)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<TransSupplierDocSeriesDef>()
-                .HasIndex(c => c.Code)
-                .IsUnique();
+                entity.HasOne(bd => bd.CreditTrans)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
 
+                entity.HasOne(bd => bd.TurnOverTrans)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasIndex(c => c.Code)
+                    .IsUnique();
+            });
+
+            //-----------------------
+            //------------------------
+            modelBuilder.Entity<TransCustomerDocSeriesDef>(entity =>
+            {
+                entity.HasIndex(c => c.Code)
+                    .IsUnique();
+
+                entity.HasOne(bd => bd.TransCustomerDocTypeDef)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<TransCustomerDocTypeDef>(entity =>
+            {
+                entity.HasIndex(c => c.Code).IsUnique();
+
+                entity.HasOne(bd => bd.TransCustomerDef)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
+
+            modelBuilder.Entity<TransCustomerDef>(entity =>
+            {
+                entity.HasOne(bd => bd.DebitTrans)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(bd => bd.CreditTrans)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(bd => bd.TurnOverTrans)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasIndex(c => c.Code)
+                    .IsUnique();
+            });
+            //--------------------
         }
     }
 }
