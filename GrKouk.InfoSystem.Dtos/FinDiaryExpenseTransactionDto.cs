@@ -6,6 +6,7 @@ namespace GrKouk.InfoSystem.Dtos
     public class FinDiaryExpenseTransactionDto
     {
         public int Id { get; set; }
+        //TODO: Αλλαξα τον τρόπο προβολής της ημερομηνίας. Αλλα δεν ειναι σωστό με βάση την γλώσσα προβολής του χρήστη
 
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyy}") ]

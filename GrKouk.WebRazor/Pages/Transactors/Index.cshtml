@@ -5,92 +5,92 @@
     ViewData["Title"] = "Index";
 }
 
-<h2>Index</h2>
+<h2>Συναλλασόμενοι</h2>
 
 <p>
     <a asp-page="Create">Create New</a>
 </p>
+<form asp-page="./Index" method="get">
+    <div class="form-actions no-color">
+        <p>
+            Find by name:
+            <input type="text" name="SearchString" value="@Model.CurrentFilter" />
+            <input type="submit" value="Search" class="btn btn-default" /> |
+            <a asp-page="./Index">Back to full List</a>
+            Page Size:
+            <select asp-for="PageSize" onchange="this.form.submit()">
+                <option value="3">3</option>
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="100">100</option>
+            </select>
+        </p>
+    </div>
+</form>
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Transactor[0].Code)
+                @Html.DisplayNameFor(model => model.ListItems[0].Code)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Transactor[0].Name)
+                @Html.DisplayNameFor(model => model.ListItems[0].Name)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Transactor[0].Address)
+                @Html.DisplayNameFor(model => model.ListItems[0].EMail)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Transactor[0].City)
+                @Html.DisplayNameFor(model => model.ListItems[0].TransactorTypeName)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Transactor[0].Zip)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Transactor[0].PhoneWork)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Transactor[0].PhoneMobile)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Transactor[0].PhoneFax)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Transactor[0].EMail)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Transactor[0].TransactorType)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Transactor[0].Timestamp)
-            </th>
+
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.Transactor) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Code)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Address)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.City)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Zip)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PhoneWork)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PhoneMobile)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PhoneFax)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.EMail)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TransactorType.Code)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Timestamp)
-            </td>
-            <td>
-                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model.ListItems)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Code)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EMail)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TransactorTypeName)
+                </td>
+
+                <td>
+                    <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+@{
+    var prevDisabled = !Model.ListItems.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.ListItems.HasNextPage ? "disabled" : "";
+}
+
+<a asp-page="./Index"
+   asp-route-sortOrder="@Model.CurrentSort"
+   asp-route-pageIndex="@(Model.ListItems.PageIndex - 1)"
+   asp-route-currentFilter="@Model.CurrentFilter"
+   asp-route-PageSize="@Model.PageSize"
+   class="btn btn-default @prevDisabled">
+    Previous
+</a>
+<a asp-page="./Index"
+   asp-route-sortOrder="@Model.CurrentSort"
+   asp-route-pageIndex="@(Model.ListItems.PageIndex + 1)"
+   asp-route-currentFilter="@Model.CurrentFilter"
+   asp-route-PageSize="@Model.PageSize"
+   class="btn btn-default @nextDisabled">
+    Next
+</a>
