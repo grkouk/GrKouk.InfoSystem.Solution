@@ -1,0 +1,96 @@
+﻿@page
+@model GrKouk.WebRazor.Pages.Transactors.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Transactor[0].Code)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Transactor[0].Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Transactor[0].Address)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Transactor[0].City)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Transactor[0].Zip)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Transactor[0].PhoneWork)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Transactor[0].PhoneMobile)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Transactor[0].PhoneFax)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Transactor[0].EMail)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Transactor[0].TransactorType)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Transactor[0].Timestamp)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.Transactor) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Code)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Address)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.City)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Zip)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PhoneWork)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PhoneMobile)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PhoneFax)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EMail)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TransactorType.Code)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Timestamp)
+            </td>
+            <td>
+                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

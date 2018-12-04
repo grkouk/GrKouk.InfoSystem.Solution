@@ -8,6 +8,7 @@ namespace GrKouk.InfoSystem.Dtos
         public int Id { get; set; }
 
         [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyy}") ]
         [Display(Name = "Ημερομηνία", Prompt = "Ημερομηνία")]
         public DateTime TransactionDate { get; set; }
 
@@ -60,7 +61,7 @@ namespace GrKouk.InfoSystem.Dtos
 
         [Display(Name = "Καθαρά", Prompt = "Καθαρά")]
         public decimal AmountNet { get; set; }
-
+        [DisplayFormat(DataFormatString = "{0:#.00€}")]
         [Display(Name = "Μικτό", Prompt = "Μικτό")]
         public decimal AmountTotal { get; set; }
 

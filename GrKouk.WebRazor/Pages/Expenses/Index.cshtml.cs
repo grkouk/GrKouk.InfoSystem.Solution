@@ -61,12 +61,7 @@ namespace GrKouk.WebRazor.Pages.Expenses
             {
                 expensesIq = expensesIq.Where(s => s.Transactor.Name.Contains(searchString));
             }
-            //IQueryable<FinDiaryTransaction> apiDbContext =  _context.FinDiaryTransactions
-            //    .Include(f => f.Company)
-            //    .Include(f => f.CostCentre)
-            //    .Include(f => f.FinTransCategory)
-            //    .Include(f => f.Transactor);
-
+           
             switch (sortOrder)
             {
                 case "Date":

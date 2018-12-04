@@ -6,6 +6,8 @@
 }
 
 <h2>Λίστα Εξόδων</h2>
+@System.Globalization.CultureInfo.CurrentCulture
+@System.Globalization.CultureInfo.CurrentUICulture
 
 <p>
     <a asp-page="Create">Δημιουργία</a>
@@ -33,7 +35,8 @@
         <tr>
             <th>
                 <a asp-page="./Index" asp-route-sortOrder="@Model.DateSort"
-                   asp-route-currentFilter="@Model.CurrentFilter">
+                   asp-route-currentFilter="@Model.CurrentFilter"
+                   asp-route-PageSize="@Model.PageSize">
                     @Html.DisplayNameFor(model => model.FinDiaryTransaction[0].TransactionDate)
                 </a>
             </th>
@@ -66,7 +69,7 @@
         @foreach (var item in Model.FinDiaryTransaction)
         {
             <tr>
-                <td>
+                <td class="text-right">
                     @Html.DisplayFor(modelItem => item.TransactionDate)
                 </td>
                 <td>
@@ -81,12 +84,12 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.CompanyName)
                 </td>
-                <td>
+                <td >
                     @Html.DisplayFor(modelItem => item.CostCentreName)
                 </td>
 
 
-                <td>
+                <td class="text-right">
                     @Html.DisplayFor(modelItem => item.AmountTotal)
                 </td>
                 <td>
