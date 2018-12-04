@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using GrKouk.InfoSystem.Domain.FinConfig;
 using GrKouk.InfoSystem.Domain.Shared;
 using GrKouk.InfoSystem.Dtos;
+using GrKouk.InfoSystem.Dtos.WebDtos;
 
 namespace GrKouk.WebRazor.Automapper
 {
@@ -35,9 +37,13 @@ namespace GrKouk.WebRazor.Automapper
                 .ForMember(dest => dest.RevenueCentreCode, opt => opt.MapFrom(src => src.RevenueCentre.Code))
                 .ForMember(dest => dest.AmountTotal,
                     opt => opt.MapFrom(src => src.AmountFpa + src.AmountNet));
+
             CreateMap<FinDiaryTransaction, FinDiaryTransactionCreateDto>().ReverseMap();
             CreateMap<FinDiaryTransaction, FinDiaryTransactionModifyDto>().ReverseMap();
             CreateMap<FinDiaryTransaction, FinDiaryExpenceTransModifyDto>().ReverseMap();
+
+            CreateMap<TransWarehouseDef, TransWarehouseDefListDto>()
+                .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.Company.Name));
         }
     }
 }
