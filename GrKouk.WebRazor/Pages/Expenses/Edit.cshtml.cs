@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using GrKouk.InfoSystem.Domain.FinConfig;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -68,7 +69,7 @@ namespace GrKouk.WebRazor.Pages.Expenses
 
             var diaryTransactionToAttach = _mapper.Map<FinDiaryTransaction>(FinDiaryTransactionVM);
 
-            diaryTransactionToAttach.Kind = (int) DiaryTransactionsKinds.Expence;
+            diaryTransactionToAttach.Kind = (int) DiaryTransactionsKindEnum.Expence;
             diaryTransactionToAttach.RevenueCentreId = 1;
 
             _context.Attach(diaryTransactionToAttach).State = EntityState.Modified;

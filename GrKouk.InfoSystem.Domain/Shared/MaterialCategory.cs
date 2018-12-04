@@ -2,11 +2,11 @@
 
 namespace GrKouk.InfoSystem.Domain.Shared
 {
-    public class CostCentre
+    public class MaterialCategory
     {
         public int Id { get; set; }
 
-        [MaxLength(15)]
+        [MaxLength(20)]
         [Required]
         public string Code { get; set; }
 
@@ -14,5 +14,4 @@ namespace GrKouk.InfoSystem.Domain.Shared
         [Required]
         public string Name { get; set; }
     }
-   
 }

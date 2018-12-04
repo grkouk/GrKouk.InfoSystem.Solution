@@ -2,7 +2,7 @@
 
 namespace GrKouk.InfoSystem.Domain.Shared
 {
-    public class CostCentre
+    public class MeasureUnit
     {
         public int Id { get; set; }
 
@@ -10,9 +10,13 @@ namespace GrKouk.InfoSystem.Domain.Shared
         [Required]
         public string Code { get; set; }
 
-        [MaxLength(200)]
+        [MaxLength(50)]
         [Required]
         public string Name { get; set; }
+
+        [Display(Name = "Active")]
+        public bool Active { get; set; }
+        [Display(Name = "Decimals")]
+        public int? DecimalPlaces { get; set; }
     }
-   
 }

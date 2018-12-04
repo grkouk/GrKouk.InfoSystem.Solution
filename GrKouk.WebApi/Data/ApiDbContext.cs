@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using GrKouk.InfoSystem.Domain.FinConfig;
+﻿using GrKouk.InfoSystem.Domain.FinConfig;
 using GrKouk.InfoSystem.Domain.Shared;
-using JetBrains.Annotations;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace GrKouk.WebApi.Data
@@ -36,12 +32,18 @@ namespace GrKouk.WebApi.Data
         public DbSet<TransCustomerDocTypeDef> TransCustomerDocTypeDefs { get; set; }
         public DbSet<TransCustomerDocSeriesDef> TransCustomerDocSeriesDefs { get; set; }
         public DbSet<TransCustomerDef> TransCustomerDefs { get; set; }
+        public DbSet<MeasureUnit> MeasureUnits { get; set; }
+        public DbSet<MaterialCategory> MaterialCategories { get; set; }
+        public DbSet<Material> Materials { get; set; }
+        public DbSet<SupplierTransaction> SupplierTransactions { get; set; }
+        public DbSet<WarehouseTransaction> WarehouseTransactions { get; set; }
+        public DbSet<CustomerTransaction> CustomerTransactions { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
+            #region Part 1
             modelBuilder.Entity<FinDiaryTransaction>().HasIndex(c => c.TransactionDate);
 
             modelBuilder.Entity<FinDiaryTransaction>()
@@ -187,7 +189,7 @@ namespace GrKouk.WebApi.Data
                       .OnDelete(DeleteBehavior.Restrict);
             });
 
-
+#endregion
             modelBuilder.Entity<TransSupplierDef>(entity =>
             {
                 entity.HasOne(bd => bd.DebitTrans)
@@ -246,6 +248,114 @@ namespace GrKouk.WebApi.Data
                     .IsUnique();
             });
             //--------------------
+
+            modelBuilder.Entity<MeasureUnit>(entity =>
+            {
+                entity.HasIndex(p => p.Code).IsUnique();
+            });
+
+            modelBuilder.Entity<Material>(entity =>
+            {
+                entity.HasIndex(c => c.Code).IsUnique();
+                entity.HasOne(bd => bd.BuyMeasureUnit)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(bd => bd.SecondaryMeasureUnit)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(bd => bd.MainMeasureUnit)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(bd => bd.FpaDef)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(bd => bd.Company)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(bd => bd.MaterialCaterory)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+                
+            });
+
+            modelBuilder.Entity<SupplierTransaction>(entity =>
+            {
+                entity.HasIndex(p => p.CreatorId);
+                entity.HasIndex(p => p.TransDate);
+                entity.HasOne(p => p.Company)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(p => p.FiscalPeriod)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(p => p.Section)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(p => p.TransSupplierDocSeries)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(p => p.TransSupplierDocType)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(p => p.Supplier)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(p => p.FpaDef)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+            modelBuilder.Entity<WarehouseTransaction>(entity =>
+            {
+                entity.HasIndex(p => p.CreatorId);
+                entity.HasIndex(p => p.TransDate);
+                entity.HasOne(p => p.Company)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(p => p.FiscalPeriod)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(p => p.Section)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(p => p.TransWarehouseDocSeries)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(p => p.TransWarehouseDocType)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(p => p.Material)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(p => p.FpaDef)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+            modelBuilder.Entity<CustomerTransaction>(entity =>
+            {
+                entity.HasIndex(p => p.CreatorId);
+                entity.HasIndex(p => p.TransDate);
+                entity.HasOne(p => p.Company)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(p => p.FiscalPeriod)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(p => p.Section)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(p => p.TransCustomerDocSeries)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(p => p.TransCustomerDocType)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(p => p.Customer)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(p => p.FpaDef)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
         }
     }
 }

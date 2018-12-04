@@ -4,14 +4,16 @@ using GrKouk.WebApi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace GrKouk.WebApi.Migrations
 {
     [DbContext(typeof(ApiDbContext))]
-    partial class ApiDbContextModelSnapshot : ModelSnapshot
+    [Migration("20181203183914_TransactionsEntities")]
+    partial class TransactionsEntities
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -441,72 +443,6 @@ namespace GrKouk.WebApi.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("CostCentres");
-                });
-
-            modelBuilder.Entity("GrKouk.InfoSystem.Domain.Shared.CustomerTransaction", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<decimal>("AmountDiscount");
-
-                    b.Property<decimal>("AmountFpa");
-
-                    b.Property<decimal>("AmountNet");
-
-                    b.Property<int>("CompanyId");
-
-                    b.Property<int>("CreatorId");
-
-                    b.Property<int>("CustomerId");
-
-                    b.Property<string>("Etiology")
-                        .HasMaxLength(500);
-
-                    b.Property<int>("FiscalPeriodId");
-
-                    b.Property<int>("FpaDefId");
-
-                    b.Property<float>("FpaRate");
-
-                    b.Property<int>("SectionId");
-
-                    b.Property<byte[]>("Timestamp")
-                        .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate();
-
-                    b.Property<int>("TransCustomerDocSeriesId");
-
-                    b.Property<int>("TransCustomerDocTypeId");
-
-                    b.Property<DateTime>("TransDate");
-
-                    b.Property<string>("TransRefCode");
-
-                    b.Property<int>("TransactionType");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CompanyId");
-
-                    b.HasIndex("CreatorId");
-
-                    b.HasIndex("CustomerId");
-
-                    b.HasIndex("FiscalPeriodId");
-
-                    b.HasIndex("FpaDefId");
-
-                    b.HasIndex("SectionId");
-
-                    b.HasIndex("TransCustomerDocSeriesId");
-
-                    b.HasIndex("TransCustomerDocTypeId");
-
-                    b.HasIndex("TransDate");
-
-                    b.ToTable("CustomerTransactions");
                 });
 
             modelBuilder.Entity("GrKouk.InfoSystem.Domain.Shared.FinDiaryTransaction", b =>
@@ -1155,44 +1091,6 @@ namespace GrKouk.WebApi.Migrations
                     b.HasOne("GrKouk.InfoSystem.Domain.FinConfig.TransWarehouseDef", "TransWarehouseDef")
                         .WithMany()
                         .HasForeignKey("TransWarehouseDefId")
-                        .OnDelete(DeleteBehavior.Restrict);
-                });
-
-            modelBuilder.Entity("GrKouk.InfoSystem.Domain.Shared.CustomerTransaction", b =>
-                {
-                    b.HasOne("GrKouk.InfoSystem.Domain.Shared.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("GrKouk.InfoSystem.Domain.Shared.Transactor", "Customer")
-                        .WithMany()
-                        .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("GrKouk.InfoSystem.Domain.Shared.FiscalPeriod", "FiscalPeriod")
-                        .WithMany()
-                        .HasForeignKey("FiscalPeriodId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("GrKouk.InfoSystem.Domain.FinConfig.FpaDef", "FpaDef")
-                        .WithMany()
-                        .HasForeignKey("FpaDefId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("GrKouk.InfoSystem.Domain.Shared.Section", "Section")
-                        .WithMany()
-                        .HasForeignKey("SectionId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("GrKouk.InfoSystem.Domain.FinConfig.TransCustomerDocSeriesDef", "TransCustomerDocSeries")
-                        .WithMany()
-                        .HasForeignKey("TransCustomerDocSeriesId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("GrKouk.InfoSystem.Domain.FinConfig.TransCustomerDocTypeDef", "TransCustomerDocType")
-                        .WithMany()
-                        .HasForeignKey("TransCustomerDocTypeId")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 

@@ -11,6 +11,7 @@ using Prism.Logging;
 using Prism.Navigation;
 using Prism.Services;
 using System.Threading.Tasks;
+using GrKouk.InfoSystem.Domain.FinConfig;
 using GrKouk.InfoSystem.Models;
 using Xamarin.Forms;
 
@@ -137,7 +138,7 @@ namespace GrKouk.InfoSystem.ViewModels
                     CompanyId = companyId,
                     RevenueCentreId = 1,      //Πρέπει να του δόσω κάποιο υπαρκτό κλειδί αλλιώς έχει πρόβλημα με το Foreign Key
                     CostCentreId = costCentreId,
-                    Kind = (int)DiaryTransactionsKinds.Expence
+                    Kind = (int)DiaryTransactionsKindEnum.Expence
                 };
                 try
                 {
@@ -169,7 +170,7 @@ namespace GrKouk.InfoSystem.ViewModels
                     RevenueCentreId = 1,      //Πρέπει να του δόσω κάποιο υπαρκτό κλειδί αλλιώς έχει πρόβλημα με το Foreign Key
                     CostCentreId = costCentreId,
                     Timestamp = _timeStamp,
-                    Kind = (int)DiaryTransactionsKinds.Expence
+                    Kind = (int)DiaryTransactionsKindEnum.Expence
 
                 };
                 try
