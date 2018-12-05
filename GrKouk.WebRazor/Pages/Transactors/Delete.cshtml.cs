@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using GrKouk.InfoSystem.Domain.Shared;
-using GrKouk.WebApi.Data;
 using NToastNotify;
 
 namespace GrKouk.WebRazor.Pages.Transactors
@@ -71,6 +68,7 @@ namespace GrKouk.WebRazor.Pages.Transactors
                                 break;
                             case 547:   // Constraint check violation
                                 _toastNotification.AddErrorToastMessage("Ο συν/νος έχει κινήσεις και δεν μπορεί να διαγραφεί");
+
                                 break;
                             case 2601:  // Duplicated key row error
                                 break;
