@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -51,10 +52,72 @@ namespace GrKouk.WebRazor.Pages.Transactors
             if (Transactor != null)
             {
                 _context.Transactors.Remove(Transactor);
-                await _context.SaveChangesAsync();
+
+                try
+                {
+                    await _context.SaveChangesAsync();
+                }
+                catch (Exception ex)
+                {
+                    if (ex.GetBaseException().GetType() == typeof(SqlException))
+                    {
+                        Int32 ErrorCode = ((SqlException)ex.InnerException).Number;
+                        switch (ErrorCode)
+                        {
+                            case 2627:  // Unique constraint error
+                                break;
+                            case 547:   // Constraint check violation
+                                break;
+                            case 2601:  // Duplicated key row error
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        // handle normal exception
+                        throw;
+                    }
+                    
+                }
             }
 
             return RedirectToPage("./Index");
         }
+
+        //private void HandleException(Exception exception)
+        //{
+        //    if (exception is DbUpdateConcurrencyException concurrencyEx)
+        //    {
+        //        // A custom exception of yours for concurrency issues
+        //        throw new ConcurrencyException();
+        //    }
+        //    else if (exception is DbUpdateException dbUpdateEx)
+        //    {
+        //        if (dbUpdateEx.InnerException != null
+        //            && dbUpdateEx.InnerException.InnerException != null)
+        //        {
+        //            if (dbUpdateEx.InnerException.InnerException is SqlException sqlException)
+        //            {
+        //                switch (sqlException.Number)
+        //                {
+        //                    case 2627:  // Unique constraint error
+        //                    case 547:   // Constraint check violation
+        //                    case 2601:  // Duplicated key row error
+        //                        // Constraint violation exception
+        //                        // A custom exception of yours for concurrency issues
+        //                        throw new ConcurrencyException();
+        //                    default:
+        //                        // A custom exception of yours for other DB issues
+        //                        throw new DatabaseAccessException(
+        //                            dbUpdateEx.Message, dbUpdateEx.InnerException);
+        //                }
+        //            }
+
+        //            throw new DatabaseAccessException(dbUpdateEx.Message, dbUpdateEx.InnerException);
+        //        }
+        //    }
+        //}
     }
 }

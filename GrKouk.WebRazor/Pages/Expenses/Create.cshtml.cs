@@ -25,7 +25,7 @@ namespace GrKouk.WebRazor.Pages.Expenses
         ViewData["CostCentreId"] = new SelectList(_context.CostCentres, "Id", "Code");
         ViewData["FinTransCategoryId"] = new SelectList(_context.FinTransCategories, "Id", "Code");
         ViewData["RevenueCentreId"] = new SelectList(_context.RevenueCentres, "Id", "Code");
-        ViewData["TransactorId"] = new SelectList(_context.Transactors, "Id", "Id");
+        ViewData["TransactorId"] = new SelectList(_context.Transactors, "Id", "Name");
             return Page();
         }
 
