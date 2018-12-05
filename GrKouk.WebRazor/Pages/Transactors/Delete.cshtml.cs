@@ -8,16 +8,19 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using GrKouk.InfoSystem.Domain.Shared;
 using GrKouk.WebApi.Data;
+using NToastNotify;
 
 namespace GrKouk.WebRazor.Pages.Transactors
 {
     public class DeleteModel : PageModel
     {
         private readonly GrKouk.WebApi.Data.ApiDbContext _context;
+        private readonly IToastNotification _toastNotification;
 
-        public DeleteModel(GrKouk.WebApi.Data.ApiDbContext context)
+        public DeleteModel(GrKouk.WebApi.Data.ApiDbContext context, IToastNotification toastNotification)
         {
             _context = context;
+            _toastNotification = toastNotification;
         }
 
         [BindProperty]
@@ -67,6 +70,7 @@ namespace GrKouk.WebRazor.Pages.Transactors
                             case 2627:  // Unique constraint error
                                 break;
                             case 547:   // Constraint check violation
+                                _toastNotification.AddErrorToastMessage("Ο συν/νος έχει κινήσεις και δεν μπορεί να διαγραφεί");
                                 break;
                             case 2601:  // Duplicated key row error
                                 break;

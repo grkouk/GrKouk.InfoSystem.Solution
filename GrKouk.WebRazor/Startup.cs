@@ -19,6 +19,7 @@ using GrKouk.WebRazor.Data;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using NToastNotify;
 
 namespace GrKouk.WebRazor
 {
@@ -60,7 +61,14 @@ namespace GrKouk.WebRazor
                 o.ResourcesPath = "Resources";
             });
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc()
+                .AddNToastNotifyToastr(new ToastrOptions()
+                {
+                    ProgressBar = true,
+                    PositionClass = ToastPositions.BottomRight
+                    
+                })
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddAutoMapper(cfg =>
             {
                 cfg.AddProfile(new AutoMapperProfile());
@@ -100,7 +108,7 @@ namespace GrKouk.WebRazor
                 SupportedCultures = supportedCultures,
                 SupportedUICultures = supportedCultures
             });
-
+            app.UseNToastNotify();
             app.UseMvc();
         }
     }
