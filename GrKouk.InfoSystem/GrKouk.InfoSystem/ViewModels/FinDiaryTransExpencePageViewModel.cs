@@ -333,9 +333,7 @@ namespace GrKouk.InfoSystem.ViewModels
             {
                 if (parameters.ContainsKey("ItemToModify"))
                 {
-                    int i;
-
-                    var itemToModify = (FinDiaryTransactionDto) parameters["ItemToModify"];
+                    var itemToModify = (FinDiaryTransactionDto)parameters["ItemToModify"];
                     isModifyMode = true;
                     _transactionId = itemToModify.Id;
                     CategoryText = itemToModify.FinTransCategoryName;

@@ -41,6 +41,7 @@ namespace GrKouk.InfoSystem.Domain.Shared
         /// Αιτιολογία Κίνησης
         /// </summary>
         [MaxLength(500)]
+        [DataType(DataType.MultilineText)]
         public string Description { get; set; }
         /// <summary>
         /// Transaction Kind
