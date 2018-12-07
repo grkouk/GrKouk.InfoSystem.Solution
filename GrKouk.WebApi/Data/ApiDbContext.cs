@@ -16,6 +16,8 @@ namespace GrKouk.WebApi.Data
         public DbSet<FinDiaryTransaction> FinDiaryTransactions { get; set; }
         public DbSet<FinTransCategory> FinTransCategories { get; set; }
         public DbSet<TransactorType> TransactorTypes { get; set; }
+        public DbSet<Section> Sections { get; set; }
+        public DbSet<FiscalPeriod> FiscalPeriods { get; set; }
 
         public DbSet<RevenueCentre> RevenueCentres { get; set; }
         public DbSet<CostCentre> CostCentres { get; set; }
@@ -222,6 +224,16 @@ namespace GrKouk.WebApi.Data
                 entity.HasOne(bd => bd.TransCustomerDocTypeDef)
                     .WithMany()
                     .OnDelete(DeleteBehavior.Restrict);
+            });
+            modelBuilder.Entity<Section>(entity =>
+            {
+                entity.HasIndex(c => c.Code)
+                    .IsUnique();
+            });
+            modelBuilder.Entity<FiscalPeriod>(entity =>
+            {
+                entity.HasIndex(c => c.Code)
+                    .IsUnique();
             });
 
             modelBuilder.Entity<TransCustomerDocTypeDef>(entity =>

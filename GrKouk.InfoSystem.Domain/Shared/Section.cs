@@ -9,12 +9,15 @@ namespace GrKouk.InfoSystem.Domain.Shared
     {
         public int Id { get; set; }
 
-        [MaxLength(15)]
+        [MaxLength(25)]
+        [Required]
         public string Code { get; set; }
 
         [MaxLength(200)]
+        [Required]
         public string Name { get; set; }
         [MaxLength(50)]
+        [Required]
         public string SystemName { get; set; }
     }
 }
