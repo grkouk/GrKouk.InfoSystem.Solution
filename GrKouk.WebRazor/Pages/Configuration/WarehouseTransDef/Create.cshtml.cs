@@ -23,6 +23,7 @@ namespace GrKouk.WebRazor.Pages.Configuration.WarehouseTransDef
         public IActionResult OnGet()
         {
             var fMovements = _context.FinancialMovements.AsNoTracking().ToList();
+
             ViewData["AmtBuyTransId"] = new SelectList(fMovements, "Id", "Name", 3);
             ViewData["AmtExportsTransId"] = new SelectList(fMovements, "Id", "Name", 3);
             ViewData["AmtImportsTransId"] = new SelectList(fMovements, "Id", "Name", 3);

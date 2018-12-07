@@ -49,19 +49,19 @@ namespace GrKouk.WebRazor.Pages.Configuration.WarehouseTransDef
             {
                 return NotFound();
             }
-           ViewData["AmtBuyTransId"] = new SelectList(_context.FinancialMovements, "Id", "Id");
-           ViewData["AmtExportsTransId"] = new SelectList(_context.FinancialMovements, "Id", "Id");
-           ViewData["AmtImportsTransId"] = new SelectList(_context.FinancialMovements, "Id", "Id");
-           ViewData["AmtInvoicedExportsTransId"] = new SelectList(_context.FinancialMovements, "Id", "Id");
-           ViewData["AmtInvoicedImportsTransId"] = new SelectList(_context.FinancialMovements, "Id", "Id");
-           ViewData["AmtSellTransId"] = new SelectList(_context.FinancialMovements, "Id", "Id");
-           ViewData["CompanyId"] = new SelectList(_context.Companies, "Id", "Code");
-           ViewData["VolBuyTransId"] = new SelectList(_context.FinancialMovements, "Id", "Id");
-           ViewData["VolExportsTransId"] = new SelectList(_context.FinancialMovements, "Id", "Id");
-           ViewData["VolImportsTransId"] = new SelectList(_context.FinancialMovements, "Id", "Id");
-           ViewData["VolInvoicedExportsTransId"] = new SelectList(_context.FinancialMovements, "Id", "Id");
-           ViewData["VolInvoicedImportsTransId"] = new SelectList(_context.FinancialMovements, "Id", "Id");
-           ViewData["VolSellTransId"] = new SelectList(_context.FinancialMovements, "Id", "Id");
+           ViewData["AmtBuyTransId"] = new SelectList(_context.FinancialMovements.AsNoTracking(), "Id", "Name");
+           ViewData["AmtExportsTransId"] = new SelectList(_context.FinancialMovements.AsNoTracking(), "Id", "Name");
+           ViewData["AmtImportsTransId"] = new SelectList(_context.FinancialMovements.AsNoTracking(), "Id", "Name");
+           ViewData["AmtInvoicedExportsTransId"] = new SelectList(_context.FinancialMovements.AsNoTracking(), "Id", "Name");
+           ViewData["AmtInvoicedImportsTransId"] = new SelectList(_context.FinancialMovements.AsNoTracking(), "Id", "Name");
+           ViewData["AmtSellTransId"] = new SelectList(_context.FinancialMovements.AsNoTracking(), "Id", "Name");
+           ViewData["CompanyId"] = new SelectList(_context.Companies.AsNoTracking(), "Id", "Code");
+           ViewData["VolBuyTransId"] = new SelectList(_context.FinancialMovements.AsNoTracking(), "Id", "Name");
+           ViewData["VolExportsTransId"] = new SelectList(_context.FinancialMovements.AsNoTracking(), "Id", "Name");
+           ViewData["VolImportsTransId"] = new SelectList(_context.FinancialMovements.AsNoTracking(), "Id", "Name");
+           ViewData["VolInvoicedExportsTransId"] = new SelectList(_context.FinancialMovements.AsNoTracking(), "Id", "Name");
+           ViewData["VolInvoicedImportsTransId"] = new SelectList(_context.FinancialMovements.AsNoTracking(), "Id", "Name");
+           ViewData["VolSellTransId"] = new SelectList(_context.FinancialMovements.AsNoTracking(), "Id", "Name");
             return Page();
         }
 

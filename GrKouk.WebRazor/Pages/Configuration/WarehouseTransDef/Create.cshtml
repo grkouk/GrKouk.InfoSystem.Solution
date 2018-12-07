@@ -9,85 +9,105 @@
 
 <h4>TransWarehouseDef</h4>
 <hr />
-<div class="row">
-    <div class="col-md-4">
-        <form method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
+
+<div class="container">
+    <form method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-row">
+            <div class="form-group col-md-2">
                 <label asp-for="TransWarehouseDef.Code" class="control-label"></label>
                 <input asp-for="TransWarehouseDef.Code" class="form-control" />
                 <span asp-validation-for="TransWarehouseDef.Code" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-group col-md-9">
                 <label asp-for="TransWarehouseDef.Name" class="control-label"></label>
                 <input asp-for="TransWarehouseDef.Name" class="form-control" />
                 <span asp-validation-for="TransWarehouseDef.Name" class="text-danger"></span>
+
             </div>
-            <div class="form-group">
-                <div class="checkbox">
-                    <label>
-                        <input asp-for="TransWarehouseDef.Active" /> @Html.DisplayNameFor(model => model.TransWarehouseDef.Active))
-                    </label>
-                </div>
+            <div class="form-group col-md-1 " >
+                @*<div class="checkbox ">*@
+                @*<label>
+                    @Html.DisplayNameFor(model => model.TransWarehouseDef.Active))
+                </label>
+                <input asp-for="TransWarehouseDef.Active" />*@
+
+                <label asp-for="TransWarehouseDef.Active" class="control-label"></label>
+                <input asp-for="TransWarehouseDef.Active"  class="form-check "/>
+                @*</div>*@
             </div>
-            <div class="form-group">
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-3">
                 <label asp-for="TransWarehouseDef.VolImportsTransId" class="control-label"></label>
-                <select asp-for="TransWarehouseDef.VolImportsTransId" class ="form-control" asp-items="ViewBag.VolImportsTransId"></select>
+                <select asp-for="TransWarehouseDef.VolImportsTransId" class="form-control" asp-items="ViewBag.VolImportsTransId"></select>
             </div>
-            <div class="form-group">
+            <div class="form-group col-md-3">
                 <label asp-for="TransWarehouseDef.VolExportsTransId" class="control-label"></label>
-                <select asp-for="TransWarehouseDef.VolExportsTransId" class ="form-control" asp-items="ViewBag.VolExportsTransId"></select>
+                <select asp-for="TransWarehouseDef.VolExportsTransId" class="form-control" asp-items="ViewBag.VolExportsTransId"></select>
             </div>
-            <div class="form-group">
+
+            <div class="form-group col-md-3">
                 <label asp-for="TransWarehouseDef.VolInvoicedExportsTransId" class="control-label"></label>
-                <select asp-for="TransWarehouseDef.VolInvoicedExportsTransId" class ="form-control" asp-items="ViewBag.VolInvoicedExportsTransId"></select>
+                <select asp-for="TransWarehouseDef.VolInvoicedExportsTransId" class="form-control" asp-items="ViewBag.VolInvoicedExportsTransId"></select>
             </div>
-            <div class="form-group">
+            <div class="form-group col-md-3">
                 <label asp-for="TransWarehouseDef.VolInvoicedImportsTransId" class="control-label"></label>
-                <select asp-for="TransWarehouseDef.VolInvoicedImportsTransId" class ="form-control" asp-items="ViewBag.VolInvoicedImportsTransId"></select>
+                <select asp-for="TransWarehouseDef.VolInvoicedImportsTransId" class="form-control" asp-items="ViewBag.VolInvoicedImportsTransId"></select>
             </div>
-            <div class="form-group">
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-3">
                 <label asp-for="TransWarehouseDef.AmtImportsTransId" class="control-label"></label>
-                <select asp-for="TransWarehouseDef.AmtImportsTransId" class ="form-control" asp-items="ViewBag.AmtImportsTransId"></select>
+                <select asp-for="TransWarehouseDef.AmtImportsTransId" class="form-control" asp-items="ViewBag.AmtImportsTransId"></select>
             </div>
-            <div class="form-group">
+            <div class="form-group col-md-3">
                 <label asp-for="TransWarehouseDef.AmtExportsTransId" class="control-label"></label>
-                <select asp-for="TransWarehouseDef.AmtExportsTransId" class ="form-control" asp-items="ViewBag.AmtExportsTransId"></select>
+                <select asp-for="TransWarehouseDef.AmtExportsTransId" class="form-control" asp-items="ViewBag.AmtExportsTransId"></select>
             </div>
-            <div class="form-group">
+
+            <div class="form-group col-md-3">
                 <label asp-for="TransWarehouseDef.AmtInvoicedExportsTransId" class="control-label"></label>
-                <select asp-for="TransWarehouseDef.AmtInvoicedExportsTransId" class ="form-control" asp-items="ViewBag.AmtInvoicedExportsTransId"></select>
+                <select asp-for="TransWarehouseDef.AmtInvoicedExportsTransId" class="form-control" asp-items="ViewBag.AmtInvoicedExportsTransId"></select>
             </div>
-            <div class="form-group">
+            <div class="form-group col-md-3">
                 <label asp-for="TransWarehouseDef.AmtInvoicedImportsTransId" class="control-label"></label>
-                <select asp-for="TransWarehouseDef.AmtInvoicedImportsTransId" class ="form-control" asp-items="ViewBag.AmtInvoicedImportsTransId"></select>
+                <select asp-for="TransWarehouseDef.AmtInvoicedImportsTransId" class="form-control" asp-items="ViewBag.AmtInvoicedImportsTransId"></select>
             </div>
-            <div class="form-group">
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-3">
                 <label asp-for="TransWarehouseDef.VolBuyTransId" class="control-label"></label>
-                <select asp-for="TransWarehouseDef.VolBuyTransId" class ="form-control" asp-items="ViewBag.VolBuyTransId"></select>
+                <select asp-for="TransWarehouseDef.VolBuyTransId" class="form-control" asp-items="ViewBag.VolBuyTransId"></select>
             </div>
-            <div class="form-group">
+            <div class="form-group col-md-3">
                 <label asp-for="TransWarehouseDef.AmtBuyTransId" class="control-label"></label>
-                <select asp-for="TransWarehouseDef.AmtBuyTransId" class ="form-control" asp-items="ViewBag.AmtBuyTransId"></select>
+                <select asp-for="TransWarehouseDef.AmtBuyTransId" class="form-control" asp-items="ViewBag.AmtBuyTransId"></select>
             </div>
-            <div class="form-group">
+
+            <div class="form-group col-md-3">
                 <label asp-for="TransWarehouseDef.VolSellTransId" class="control-label"></label>
-                <select asp-for="TransWarehouseDef.VolSellTransId" class ="form-control" asp-items="ViewBag.VolSellTransId"></select>
+                <select asp-for="TransWarehouseDef.VolSellTransId" class="form-control" asp-items="ViewBag.VolSellTransId"></select>
             </div>
-            <div class="form-group">
+            <div class="form-group col-md-3">
                 <label asp-for="TransWarehouseDef.AmtSellTransId" class="control-label"></label>
-                <select asp-for="TransWarehouseDef.AmtSellTransId" class ="form-control" asp-items="ViewBag.AmtSellTransId"></select>
+                <select asp-for="TransWarehouseDef.AmtSellTransId" class="form-control" asp-items="ViewBag.AmtSellTransId"></select>
             </div>
-            <div class="form-group">
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-3">
                 <label asp-for="TransWarehouseDef.CompanyId" class="control-label"></label>
-                <select asp-for="TransWarehouseDef.CompanyId" class ="form-control" asp-items="ViewBag.CompanyId"></select>
+                <select asp-for="TransWarehouseDef.CompanyId" class="form-control" asp-items="ViewBag.CompanyId"></select>
             </div>
+        </div>
+        <div class="form-row">
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-default" />
             </div>
-        </form>
-    </div>
+        </div>
+    </form>
 </div>
+
 
 <div>
     <a asp-page="Index">Back to List</a>

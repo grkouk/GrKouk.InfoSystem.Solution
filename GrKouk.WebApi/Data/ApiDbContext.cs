@@ -38,6 +38,10 @@ namespace GrKouk.WebApi.Data
         public DbSet<SupplierTransaction> SupplierTransactions { get; set; }
         public DbSet<WarehouseTransaction> WarehouseTransactions { get; set; }
         public DbSet<CustomerTransaction> CustomerTransactions { get; set; }
+        public DbSet<BuyDocTypeDef> BuyDocTypeDefs { get; set; }
+        public DbSet<BuyDocSeriesDef> BuyDocSeriesDefs { get; set; }
+        public DbSet<BuyMaterialsDocLine> BuyMaterialsDocLines { get; set; }
+        public DbSet<BuyMaterialsDocument> BuyMaterialsDocuments { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -189,7 +193,7 @@ namespace GrKouk.WebApi.Data
                       .OnDelete(DeleteBehavior.Restrict);
             });
 
-#endregion
+            #endregion
             modelBuilder.Entity<TransSupplierDef>(entity =>
             {
                 entity.HasOne(bd => bd.DebitTrans)
@@ -275,7 +279,7 @@ namespace GrKouk.WebApi.Data
                 entity.HasOne(bd => bd.MaterialCaterory)
                     .WithMany()
                     .OnDelete(DeleteBehavior.Restrict);
-                
+
             });
 
             modelBuilder.Entity<SupplierTransaction>(entity =>
@@ -355,6 +359,61 @@ namespace GrKouk.WebApi.Data
                 entity.HasOne(p => p.FpaDef)
                     .WithMany()
                     .OnDelete(DeleteBehavior.Restrict);
+            });
+            modelBuilder.Entity<BuyDocTypeDef>(entity =>
+            {
+                entity.HasIndex(p => p.Code).IsUnique();
+               
+                entity.HasOne(p => p.TransSupplierDef)
+                .WithMany()
+                .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(p => p.TransWarehouseDef)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(p => p.Company)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+            modelBuilder.Entity<BuyDocSeriesDef>(entity =>
+            {
+                entity.HasIndex(p => p.Code).IsUnique();
+               
+                entity.HasOne(p => p.BuyDocTypeDef)
+                .WithMany()
+                .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(p => p.Company)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+            modelBuilder.Entity<BuyMaterialsDocLine>(entity =>
+            {
+                entity.HasOne(p => p.Material)
+                .WithMany()
+                .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(p => p.BuyDocument)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<BuyMaterialsDocument>(entity =>
+            {
+                entity.HasIndex(p => p.TransDate);
+               
+
+                entity.HasOne(p => p.Supplier)
+                .WithMany()
+                .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(p => p.Section)
+               .WithMany()
+               .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(p => p.FiscalPeriod)
+               .WithMany()
+               .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(p => p.Company)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+
             });
         }
     }

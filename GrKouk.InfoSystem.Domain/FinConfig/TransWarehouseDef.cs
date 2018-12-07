@@ -13,43 +13,43 @@ namespace GrKouk.InfoSystem.Domain.FinConfig
         public string Name { get; set; }
         [Display(Name = "Ενεργό")] public bool Active { get; set; }
 
-        [Display(Name = "Ποσότητα Εισαγωγών")]
+        [Display(Name = "ΠοσΕισαγωγών")]
         public int VolImportsTransId { get; set; }
         public virtual FinancialMovement VolImportsTrans { get; set; }
 
-        [Display(Name = "Ποσότητα Εξαγωγών")]
+        [Display(Name = "ΠοσΕξαγωγών")]
         public int VolExportsTransId { get; set; }
         public virtual FinancialMovement VolExportsTrans { get; set; }
 
-        [Display(Name = "Ποσότητα Τιμολογημένων Εξαγωγών")]
+        [Display(Name = "Ποσ Τιμ/νων Εξ")]
         public int VolInvoicedExportsTransId { get; set; }
 
         public virtual FinancialMovement VolInvoicedExportsTrans { get; set; }
 
-        [Display(Name = "Ποσότητα Τιμολογημένων Εισαγωγών")]
+        [Display(Name = "Ποσ Τιμ/νων Εισ")]
         public int VolInvoicedImportsTransId { get; set; }
 
         public virtual FinancialMovement VolInvoicedImportsTrans { get; set; }
 
-        [Display(Name = "Αξία Εισαγωγών")]
+        [Display(Name = "Αξία Εισ")]
         public int AmtImportsTransId { get; set; }
         public virtual FinancialMovement AmtImportsTrans { get; set; }
 
-        [Display(Name = "Αξία Εξαγωγών")]
+        [Display(Name = "Αξία Εξα")]
         public int AmtExportsTransId { get; set; }
         public virtual FinancialMovement AmtExportsTrans { get; set; }
 
-        [Display(Name = "Αξία Τιμολογημένων Εξαγωγών")]
+        [Display(Name = "Αξία Τιμ/νων Εξ")]
         public int AmtInvoicedExportsTransId { get; set; }
 
         public virtual FinancialMovement AmtInvoicedExportsTrans { get; set; }
 
-        [Display(Name = "Αξία Τιμολογημένων Εισαγωγών")]
+        [Display(Name = "Αξία Τιμ/νων Εισ")]
         public int AmtInvoicedImportsTransId { get; set; }
 
         public virtual FinancialMovement AmtInvoicedImportsTrans { get; set; }
 
-        [Display(Name = "Ποσότητα Αγορών")]
+        [Display(Name = "Ποσ Αγορών")]
         public int VolBuyTransId { get; set; }
         public virtual FinancialMovement VolBuyTrans { get; set; }
 
@@ -57,7 +57,7 @@ namespace GrKouk.InfoSystem.Domain.FinConfig
         public int AmtBuyTransId { get; set; }
         public virtual FinancialMovement AmtBuyTrans { get; set; }
 
-        [Display(Name = "Ποσότητα Πωλήσεων")]
+        [Display(Name = "Ποσ Πωλήσεων")]
         public int VolSellTransId { get; set; }
         public virtual FinancialMovement VolSellTrans { get; set; }
 
