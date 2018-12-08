@@ -9,7 +9,7 @@ namespace GrKouk.InfoSystem.Domain.FinConfig
     /// <summary>
     /// Τύπος παραστατικού αγορών
     /// </summary>
-    public class BuyDocTypeDef
+    public class BuyMaterialDocTypeDef
     {
         public int Id { get; set; }
 

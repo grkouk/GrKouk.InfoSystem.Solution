@@ -40,8 +40,8 @@ namespace GrKouk.WebApi.Data
         public DbSet<SupplierTransaction> SupplierTransactions { get; set; }
         public DbSet<WarehouseTransaction> WarehouseTransactions { get; set; }
         public DbSet<CustomerTransaction> CustomerTransactions { get; set; }
-        public DbSet<BuyDocTypeDef> BuyDocTypeDefs { get; set; }
-        public DbSet<BuyDocSeriesDef> BuyDocSeriesDefs { get; set; }
+        public DbSet<BuyMaterialDocTypeDef> BuyMaterialDocTypeDefs { get; set; }
+        public DbSet<BuyMaterialDocSeriesDef> BuyMaterialDocSeriesDefs { get; set; }
         public DbSet<BuyMaterialsDocLine> BuyMaterialsDocLines { get; set; }
         public DbSet<BuyMaterialsDocument> BuyMaterialsDocuments { get; set; }
 
@@ -372,7 +372,7 @@ namespace GrKouk.WebApi.Data
                     .WithMany()
                     .OnDelete(DeleteBehavior.Restrict);
             });
-            modelBuilder.Entity<BuyDocTypeDef>(entity =>
+            modelBuilder.Entity<BuyMaterialDocTypeDef>(entity =>
             {
                 entity.HasIndex(p => p.Code).IsUnique();
                
@@ -386,11 +386,11 @@ namespace GrKouk.WebApi.Data
                     .WithMany()
                     .OnDelete(DeleteBehavior.Restrict);
             });
-            modelBuilder.Entity<BuyDocSeriesDef>(entity =>
+            modelBuilder.Entity<BuyMaterialDocSeriesDef>(entity =>
             {
                 entity.HasIndex(p => p.Code).IsUnique();
                
-                entity.HasOne(p => p.BuyDocTypeDef)
+                entity.HasOne(p => p.BuyMaterialDocTypeDef)
                 .WithMany()
                 .OnDelete(DeleteBehavior.Restrict);
                 entity.HasOne(p => p.Company)

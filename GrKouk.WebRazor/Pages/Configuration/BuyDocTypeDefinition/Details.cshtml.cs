@@ -19,7 +19,7 @@ namespace GrKouk.WebRazor.Pages.Configuration
             _context = context;
         }
 
-        public InfoSystem.Domain.FinConfig.BuyDocTypeDef BuyDocTypeDef { get; set; }
+        public InfoSystem.Domain.FinConfig.BuyMaterialDocTypeDef BuyMaterialDocTypeDef { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -28,12 +28,12 @@ namespace GrKouk.WebRazor.Pages.Configuration
                 return NotFound();
             }
 
-            BuyDocTypeDef = await _context.BuyDocTypeDefs
+            BuyMaterialDocTypeDef = await _context.BuyMaterialDocTypeDefs
                 .Include(b => b.Company)
                 .Include(b => b.TransSupplierDef)
                 .Include(b => b.TransWarehouseDef).FirstOrDefaultAsync(m => m.Id == id);
 
-            if (BuyDocTypeDef == null)
+            if (BuyMaterialDocTypeDef == null)
             {
                 return NotFound();
             }

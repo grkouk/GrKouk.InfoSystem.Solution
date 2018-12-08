@@ -24,7 +24,7 @@ namespace GrKouk.WebRazor.Pages.Configuration
         }
 
         [BindProperty]
-        public InfoSystem.Domain.FinConfig.BuyDocTypeDef BuyDocTypeDef { get; set; }
+        public InfoSystem.Domain.FinConfig.BuyMaterialDocTypeDef BuyMaterialDocTypeDef { get; set; }
 
         public async Task<IActionResult> OnPostAsync()
         {
@@ -33,7 +33,7 @@ namespace GrKouk.WebRazor.Pages.Configuration
                 return Page();
             }
 
-            _context.BuyDocTypeDefs.Add(BuyDocTypeDef);
+            _context.BuyMaterialDocTypeDefs.Add(BuyMaterialDocTypeDef);
             await _context.SaveChangesAsync();
 
             return RedirectToPage("./Index");

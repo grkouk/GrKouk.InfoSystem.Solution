@@ -14,38 +14,38 @@
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="BuyDocTypeDef.Code" class="control-label"></label>
-                <input asp-for="BuyDocTypeDef.Code" class="form-control" />
-                <span asp-validation-for="BuyDocTypeDef.Code" class="text-danger"></span>
+                <label asp-for="BuyMaterialDocTypeDef.Code" class="control-label"></label>
+                <input asp-for="BuyMaterialDocTypeDef.Code" class="form-control" />
+                <span asp-validation-for="BuyMaterialDocTypeDef.Code" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="BuyDocTypeDef.Abbr" class="control-label"></label>
-                <input asp-for="BuyDocTypeDef.Abbr" class="form-control" />
-                <span asp-validation-for="BuyDocTypeDef.Abbr" class="text-danger"></span>
+                <label asp-for="BuyMaterialDocTypeDef.Abbr" class="control-label"></label>
+                <input asp-for="BuyMaterialDocTypeDef.Abbr" class="form-control" />
+                <span asp-validation-for="BuyMaterialDocTypeDef.Abbr" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="BuyDocTypeDef.Name" class="control-label"></label>
-                <input asp-for="BuyDocTypeDef.Name" class="form-control" />
-                <span asp-validation-for="BuyDocTypeDef.Name" class="text-danger"></span>
+                <label asp-for="BuyMaterialDocTypeDef.Name" class="control-label"></label>
+                <input asp-for="BuyMaterialDocTypeDef.Name" class="form-control" />
+                <span asp-validation-for="BuyMaterialDocTypeDef.Name" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <div class="checkbox">
                     <label>
-                        <input asp-for="BuyDocTypeDef.Active" /> @Html.DisplayNameFor(model => model.BuyDocTypeDef.Active))
+                        <input asp-for="BuyMaterialDocTypeDef.Active" /> @Html.DisplayNameFor(model => model.BuyMaterialDocTypeDef.Active))
                     </label>
                 </div>
             </div>
             <div class="form-group">
-                <label asp-for="BuyDocTypeDef.TransSupplierDefId" class="control-label"></label>
-                <select asp-for="BuyDocTypeDef.TransSupplierDefId" class ="form-control" asp-items="ViewBag.TransSupplierDefId"></select>
+                <label asp-for="BuyMaterialDocTypeDef.TransSupplierDefId" class="control-label"></label>
+                <select asp-for="BuyMaterialDocTypeDef.TransSupplierDefId" class ="form-control" asp-items="ViewBag.TransSupplierDefId"></select>
             </div>
             <div class="form-group">
-                <label asp-for="BuyDocTypeDef.TransWarehouseDefId" class="control-label"></label>
-                <select asp-for="BuyDocTypeDef.TransWarehouseDefId" class ="form-control" asp-items="ViewBag.TransWarehouseDefId"></select>
+                <label asp-for="BuyMaterialDocTypeDef.TransWarehouseDefId" class="control-label"></label>
+                <select asp-for="BuyMaterialDocTypeDef.TransWarehouseDefId" class ="form-control" asp-items="ViewBag.TransWarehouseDefId"></select>
             </div>
             <div class="form-group">
-                <label asp-for="BuyDocTypeDef.CompanyId" class="control-label"></label>
-                <select asp-for="BuyDocTypeDef.CompanyId" class ="form-control" asp-items="ViewBag.CompanyId"></select>
+                <label asp-for="BuyMaterialDocTypeDef.CompanyId" class="control-label"></label>
+                <select asp-for="BuyMaterialDocTypeDef.CompanyId" class ="form-control" asp-items="ViewBag.CompanyId"></select>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-default" />

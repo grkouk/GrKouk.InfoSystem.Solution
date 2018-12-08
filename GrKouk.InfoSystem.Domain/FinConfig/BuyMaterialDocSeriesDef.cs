@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace GrKouk.InfoSystem.Domain.FinConfig
 {
-    public class BuyDocSeriesDef
+    public class BuyMaterialDocSeriesDef
     {
         public int Id { get; set; }
 
@@ -24,8 +24,8 @@ namespace GrKouk.InfoSystem.Domain.FinConfig
         public bool Active { get; set; }
 
         [Display(Name = "Τύπος Παραστατικού")]
-        public int BuyDocTypeDefId { get; set; }
-        public virtual BuyDocTypeDef BuyDocTypeDef { get; set; }
+        public int BuyMaterialDocTypeDefId { get; set; }
+        public virtual BuyMaterialDocTypeDef BuyMaterialDocTypeDef { get; set; }
 
         public int CompanyId { get; set; }
         public virtual Company Company { get; set; }

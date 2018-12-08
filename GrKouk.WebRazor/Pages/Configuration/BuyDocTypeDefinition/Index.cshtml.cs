@@ -19,11 +19,11 @@ namespace GrKouk.WebRazor.Pages.Configuration
             _context = context;
         }
 
-        public IList<InfoSystem.Domain.FinConfig.BuyDocTypeDef> BuyDocTypeDefs { get;set; }
+        public IList<InfoSystem.Domain.FinConfig.BuyMaterialDocTypeDef> BuyDocTypeDefs { get;set; }
 
         public async Task OnGetAsync()
         {
-            BuyDocTypeDefs = await _context.BuyDocTypeDefs
+            BuyDocTypeDefs = await _context.BuyMaterialDocTypeDefs
                 .Include(b => b.Company)
                 .Include(b => b.TransSupplierDef)
                 .Include(b => b.TransWarehouseDef)

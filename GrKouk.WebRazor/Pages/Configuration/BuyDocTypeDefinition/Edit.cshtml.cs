@@ -21,7 +21,7 @@ namespace GrKouk.WebRazor.Pages.Configuration
         }
 
         [BindProperty]
-        public InfoSystem.Domain.FinConfig.BuyDocTypeDef BuyDocTypeDef { get; set; }
+        public InfoSystem.Domain.FinConfig.BuyMaterialDocTypeDef BuyMaterialDocTypeDef { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -30,12 +30,12 @@ namespace GrKouk.WebRazor.Pages.Configuration
                 return NotFound();
             }
 
-            BuyDocTypeDef = await _context.BuyDocTypeDefs
+            BuyMaterialDocTypeDef = await _context.BuyMaterialDocTypeDefs
                 .Include(b => b.Company)
                 .Include(b => b.TransSupplierDef)
                 .Include(b => b.TransWarehouseDef).FirstOrDefaultAsync(m => m.Id == id);
 
-            if (BuyDocTypeDef == null)
+            if (BuyMaterialDocTypeDef == null)
             {
                 return NotFound();
             }
@@ -52,7 +52,7 @@ namespace GrKouk.WebRazor.Pages.Configuration
                 return Page();
             }
 
-            _context.Attach(BuyDocTypeDef).State = EntityState.Modified;
+            _context.Attach(BuyMaterialDocTypeDef).State = EntityState.Modified;
 
             try
             {
@@ -60,7 +60,7 @@ namespace GrKouk.WebRazor.Pages.Configuration
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!BuyDocTypeDefExists(BuyDocTypeDef.Id))
+                if (!BuyDocTypeDefExists(BuyMaterialDocTypeDef.Id))
                 {
                     return NotFound();
                 }
@@ -75,7 +75,7 @@ namespace GrKouk.WebRazor.Pages.Configuration
 
         private bool BuyDocTypeDefExists(int id)
         {
-            return _context.BuyDocTypeDefs.Any(e => e.Id == id);
+            return _context.BuyMaterialDocTypeDefs.Any(e => e.Id == id);
         }
     }
 }

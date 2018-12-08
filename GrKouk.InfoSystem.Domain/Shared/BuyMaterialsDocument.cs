@@ -28,11 +28,11 @@ namespace GrKouk.InfoSystem.Domain.Shared
         public int FiscalPeriodId { get; set; }
         public virtual FiscalPeriod FiscalPeriod { get; set; }
 
-        public int DocSeriesId { get; set; }
-        public virtual BuyDocSeriesDef DocSeries { get; set; }
+        public int MaterialDocSeriesId { get; set; }
+        public virtual BuyMaterialDocSeriesDef MaterialDocSeries { get; set; }
 
-        public int DocTypeId { get; set; }
-        public virtual BuyDocTypeDef DocType { get; set; }
+        public int MaterialDocTypeId { get; set; }
+        public virtual BuyMaterialDocTypeDef MaterialDocType { get; set; }
 
         public decimal AmountFpa { get; set; }
         public decimal AmountNet { get; set; }

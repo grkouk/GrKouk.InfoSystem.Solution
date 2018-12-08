@@ -1,0 +1,110 @@
+﻿@page
+@model GrKouk.WebRazor.Pages.Transactions.SupplierTransMng.EditModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h2>Edit</h2>
+
+<h4>SupplierTransaction</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="SupplierTransaction.Id" />
+            <div class="form-group">
+                <label asp-for="SupplierTransaction.TransDate" class="control-label"></label>
+                <input asp-for="SupplierTransaction.TransDate" class="form-control" />
+                <span asp-validation-for="SupplierTransaction.TransDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SupplierTransaction.TransSupplierDocSeriesId" class="control-label"></label>
+                <select asp-for="SupplierTransaction.TransSupplierDocSeriesId" class="form-control" asp-items="ViewBag.TransSupplierDocSeriesId"></select>
+                <span asp-validation-for="SupplierTransaction.TransSupplierDocSeriesId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SupplierTransaction.TransSupplierDocTypeId" class="control-label"></label>
+                <select asp-for="SupplierTransaction.TransSupplierDocTypeId" class="form-control" asp-items="ViewBag.TransSupplierDocTypeId"></select>
+                <span asp-validation-for="SupplierTransaction.TransSupplierDocTypeId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SupplierTransaction.TransRefCode" class="control-label"></label>
+                <input asp-for="SupplierTransaction.TransRefCode" class="form-control" />
+                <span asp-validation-for="SupplierTransaction.TransRefCode" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SupplierTransaction.SectionId" class="control-label"></label>
+                <select asp-for="SupplierTransaction.SectionId" class="form-control" asp-items="ViewBag.SectionId"></select>
+                <span asp-validation-for="SupplierTransaction.SectionId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SupplierTransaction.SupplierId" class="control-label"></label>
+                <select asp-for="SupplierTransaction.SupplierId" class="form-control" asp-items="ViewBag.SupplierId"></select>
+                <span asp-validation-for="SupplierTransaction.SupplierId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SupplierTransaction.FiscalPeriodId" class="control-label"></label>
+                <select asp-for="SupplierTransaction.FiscalPeriodId" class="form-control" asp-items="ViewBag.FiscalPeriodId"></select>
+                <span asp-validation-for="SupplierTransaction.FiscalPeriodId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SupplierTransaction.TransactionType" class="control-label"></label>
+                <select asp-for="SupplierTransaction.TransactionType" class="form-control"></select>
+                <span asp-validation-for="SupplierTransaction.TransactionType" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SupplierTransaction.CreatorId" class="control-label"></label>
+                <input asp-for="SupplierTransaction.CreatorId" class="form-control" />
+                <span asp-validation-for="SupplierTransaction.CreatorId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SupplierTransaction.FpaDefId" class="control-label"></label>
+                <select asp-for="SupplierTransaction.FpaDefId" class="form-control" asp-items="ViewBag.FpaDefId"></select>
+                <span asp-validation-for="SupplierTransaction.FpaDefId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SupplierTransaction.FpaRate" class="control-label"></label>
+                <input asp-for="SupplierTransaction.FpaRate" class="form-control" />
+                <span asp-validation-for="SupplierTransaction.FpaRate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SupplierTransaction.AmountFpa" class="control-label"></label>
+                <input asp-for="SupplierTransaction.AmountFpa" class="form-control" />
+                <span asp-validation-for="SupplierTransaction.AmountFpa" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SupplierTransaction.AmountNet" class="control-label"></label>
+                <input asp-for="SupplierTransaction.AmountNet" class="form-control" />
+                <span asp-validation-for="SupplierTransaction.AmountNet" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SupplierTransaction.AmountDiscount" class="control-label"></label>
+                <input asp-for="SupplierTransaction.AmountDiscount" class="form-control" />
+                <span asp-validation-for="SupplierTransaction.AmountDiscount" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SupplierTransaction.Etiology" class="control-label"></label>
+                <input asp-for="SupplierTransaction.Etiology" class="form-control" />
+                <span asp-validation-for="SupplierTransaction.Etiology" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SupplierTransaction.CompanyId" class="control-label"></label>
+                <select asp-for="SupplierTransaction.CompanyId" class="form-control" asp-items="ViewBag.CompanyId"></select>
+                <span asp-validation-for="SupplierTransaction.CompanyId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="./Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

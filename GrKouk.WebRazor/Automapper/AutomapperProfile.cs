@@ -7,6 +7,7 @@ using GrKouk.InfoSystem.Domain.FinConfig;
 using GrKouk.InfoSystem.Domain.Shared;
 using GrKouk.InfoSystem.Dtos;
 using GrKouk.InfoSystem.Dtos.WebDtos;
+using GrKouk.InfoSystem.Dtos.WebDtos.SupplierTransactions;
 
 namespace GrKouk.WebRazor.Automapper
 {
@@ -44,6 +45,12 @@ namespace GrKouk.WebRazor.Automapper
 
             CreateMap<TransWarehouseDef, TransWarehouseDefListDto>()
                 .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.Company.Name));
+
+            CreateMap<SupplierTransaction, SupplierTransactionCreateDto>()
+                .ReverseMap();
+
+            CreateMap<SupplierTransaction, SupplierTransactionListDto>().ReverseMap();
+                
         }
     }
 }

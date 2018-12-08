@@ -1,0 +1,132 @@
+﻿@page
+@model GrKouk.WebRazor.Pages.Transactions.SupplierTransMng.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.SupplierTransaction[0].TransDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SupplierTransaction[0].TransSupplierDocSeries)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SupplierTransaction[0].TransSupplierDocType)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SupplierTransaction[0].TransRefCode)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SupplierTransaction[0].Section)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SupplierTransaction[0].Supplier)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SupplierTransaction[0].FiscalPeriod)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SupplierTransaction[0].TransactionType)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SupplierTransaction[0].CreatorId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SupplierTransaction[0].FpaDef)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SupplierTransaction[0].FpaRate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SupplierTransaction[0].AmountFpa)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SupplierTransaction[0].AmountNet)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SupplierTransaction[0].AmountDiscount)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SupplierTransaction[0].Etiology)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SupplierTransaction[0].Company)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SupplierTransaction[0].Timestamp)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.SupplierTransaction) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.TransDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TransSupplierDocSeries.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TransSupplierDocType.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TransRefCode)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Section.Code)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Supplier.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FiscalPeriod.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TransactionType)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreatorId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FpaDef.Code)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FpaRate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AmountFpa)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AmountNet)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AmountDiscount)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Etiology)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Company.Code)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Timestamp)
+            </td>
+            <td>
+                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
