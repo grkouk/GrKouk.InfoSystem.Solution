@@ -10,123 +10,136 @@
 <p>
     <a asp-page="Create">Create New</a>
 </p>
+<form asp-page="./Index" method="get">
+    <div class="form-actions no-color">
+        <p>
+            Find by name:
+            <input type="text" name="SearchString" value="@Model.CurrentFilter" />
+            <input type="submit" value="Search" class="btn btn-light" /> |
+            <a asp-page="./Index">Back to full List</a>
+            Page Size:
+            <select asp-for="PageSize" onchange="this.form.submit()">
+                <option value="3">3</option>
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="100">100</option>
+            </select>
+        </p>
+    </div>
+</form>
+
 <table class="table">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.SupplierTransaction[0].TransDate)
+            <th class="text-right">
+                <a asp-page="./Index" asp-route-sortOrder="@Model.DateSort"
+                   asp-route-currentFilter="@Model.CurrentFilter"
+                   asp-route-PageSize="@Model.PageSize">
+                    @Html.DisplayNameFor(model => model.ListItems[0].TransDate)
+                </a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.SupplierTransaction[0].TransSupplierDocSeries)
+                @Html.DisplayNameFor(model => model.ListItems[0].TransSupplierSeriesCode)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.SupplierTransaction[0].TransSupplierDocType)
+                @Html.DisplayNameFor(model => model.ListItems[0].SectionCode)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.SupplierTransaction[0].TransRefCode)
+                @Html.DisplayNameFor(model => model.ListItems[0].TransRefCode)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.SupplierTransaction[0].Section)
+
+                <a asp-page="./Index" asp-route-sortOrder="@Model.DateSort"  
+                   asp-route-currentFilter="@Model.CurrentFilter"
+                   asp-route-PageSize="@Model.PageSize">
+                     @Html.DisplayNameFor(model => model.ListItems[0].SupplierName)
+                </a>
             </th>
+            <th >
+                @Html.DisplayNameFor(model => model.ListItems[0].DebitAmount)
+            </th>
+            <th >
+                @Html.DisplayNameFor(model => model.ListItems[0].CreditAmount)
+            </th>
+
             <th>
-                @Html.DisplayNameFor(model => model.SupplierTransaction[0].Supplier)
+                @Html.DisplayNameFor(model => model.ListItems[0].CompanyCode)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.SupplierTransaction[0].FiscalPeriod)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.SupplierTransaction[0].TransactionType)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.SupplierTransaction[0].CreatorId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.SupplierTransaction[0].FpaDef)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.SupplierTransaction[0].FpaRate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.SupplierTransaction[0].AmountFpa)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.SupplierTransaction[0].AmountNet)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.SupplierTransaction[0].AmountDiscount)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.SupplierTransaction[0].Etiology)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.SupplierTransaction[0].Company)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.SupplierTransaction[0].Timestamp)
-            </th>
+
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.SupplierTransaction) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.TransDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TransSupplierDocSeries.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TransSupplierDocType.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TransRefCode)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Section.Code)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Supplier.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FiscalPeriod.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TransactionType)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreatorId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FpaDef.Code)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FpaRate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AmountFpa)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AmountNet)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AmountDiscount)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Etiology)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Company.Code)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Timestamp)
-            </td>
-            <td>
-                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model.ListItems)
+        {
+            <tr>
+                <td class="text-right">
+                    @Html.DisplayFor(modelItem => item.TransDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TransSupplierSeriesCode)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SectionCode)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TransRefCode)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SupplierName)
+                </td>
+                <td class="text-right">
+                    @Html.DisplayFor(modelItem => item.DebitAmount)
+                </td>
+                <td class="text-right">
+                    @Html.DisplayFor(modelItem => item.CreditAmount)
+                </td>
+
+
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.CompanyCode)
+                </td>
+
+                <td>
+                    <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+@{
+    var prevDisabled = !Model.ListItems.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.ListItems.HasNextPage ? "disabled" : "";
+}
+
+    <form class="form-inline" method="get">
+        Page Size:
+        <select asp-for="PageSize" onchange="this.form.submit()">
+            <option value="3">3</option>
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="20">20</option>
+            <option value="100">100</option>
+        </select>
+        <a asp-page="./Index"
+           asp-route-sortOrder="@Model.CurrentSort"
+           asp-route-pageIndex="@(Model.ListItems.PageIndex - 1)"
+           asp-route-currentFilter="@Model.CurrentFilter"
+           asp-route-PageSize="@Model.PageSize"
+           class="btn btn-light @prevDisabled">
+            <
+        </a>
+        <a asp-page="./Index"
+           asp-route-sortOrder="@Model.CurrentSort"
+           asp-route-pageIndex="@(Model.ListItems.PageIndex + 1)"
+           asp-route-currentFilter="@Model.CurrentFilter"
+           asp-route-PageSize="@Model.PageSize"
+           class="btn btn-light @nextDisabled">
+           >
+        </a>
+       
+    </form>

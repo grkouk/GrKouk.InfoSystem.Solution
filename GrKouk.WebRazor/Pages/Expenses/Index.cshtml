@@ -13,43 +13,17 @@
     <a asp-page="Create">Δημιουργία</a>
 </p>
 
-@*<form asp-page="./Index" method="get">
-    <div class="">
-        <p>
-            Find by name:
-            <input type="text" name="SearchString" value="@Model.CurrentFilter" />
-            <input type="submit" value="Search" class="btn btn-default" /> |
-            <a asp-page="./Index">Back to full List</a>
-            Page Size:
-            <select asp-for="PageSize" onchange="this.form.submit()">
-                <option value="3">3</option>
-                <option value="5">5</option>
-                <option value="10">10</option>
-                <option value="20">20</option>
-                <option value="100">100</option>
-            </select>
-        </p>
-    </div>
-</form>*@
-
 
 <form class="form-inline" asp-page="./Index" method="get">
-   
-        <p>
-            Find by name:
-            <input type="text" name="SearchString" value="@Model.CurrentFilter" />
-            <input type="submit" value="Search" class="btn btn-primary" /> |
-            <a asp-page="./Index">Back to full List</a>
-            Page Size:
-            <select asp-for="PageSize" onchange="this.form.submit()">
-                <option value="3">3</option>
-                <option value="5">5</option>
-                <option value="10">10</option>
-                <option value="20">20</option>
-                <option value="100">100</option>
-            </select>
-        </p>
-   
+
+    <p>
+        Find by name:
+        <input type="text" name="SearchString" value="@Model.CurrentFilter" />
+        <input type="submit" value="Search" class="btn btn-primary" /> |
+        <a asp-page="./Index">Back to full List</a>
+
+    </p>
+
 </form>
 
 <table class="table">
@@ -60,13 +34,21 @@
                    asp-route-currentFilter="@Model.CurrentFilter"
                    asp-route-PageSize="@Model.PageSize">
                     @Html.DisplayNameFor(model => model.FinDiaryTransaction[0].TransactionDate)
+
                 </a>
+                <i class="@Model.DateSortIcon"></i>
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.FinDiaryTransaction[0].ReferenceCode)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.FinDiaryTransaction[0].TransactorName)
+                <a asp-page="./Index" asp-route-sortOrder="@Model.NameSort"
+                   asp-route-currentFilter="@Model.CurrentFilter"
+                   asp-route-PageSize="@Model.PageSize">
+                    @Html.DisplayNameFor(model => model.FinDiaryTransaction[0].TransactorName)
+                </a>
+
+                <i class="@Model.NameSortIcon"></i>
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.FinDiaryTransaction[0].FinTransCategoryName)
@@ -124,23 +106,36 @@
     </tbody>
 </table>
 @{
-    var prevDisabled = !Model.FinDiaryTransaction.HasPreviousPage ? "disabled" : "";
-    var nextDisabled = !Model.FinDiaryTransaction.HasNextPage ? "disabled" : "";
+
+    var prevDisabled = !Model.FinDiaryTransaction.HasPrevious ? "disabled" : "";
+    var nextDisabled = !Model.FinDiaryTransaction.HasNext ? "disabled" : "";
 }
 
-<a asp-page="./Index"
-   asp-route-sortOrder="@Model.CurrentSort"
-   asp-route-pageIndex="@(Model.FinDiaryTransaction.PageIndex - 1)"
-   asp-route-currentFilter="@Model.CurrentFilter"
-   asp-route-PageSize="@Model.PageSize"
-   class="btn btn-default @prevDisabled">
-    Previous
-</a>
-<a asp-page="./Index"
-   asp-route-sortOrder="@Model.CurrentSort"
-   asp-route-pageIndex="@(Model.FinDiaryTransaction.PageIndex + 1)"
-   asp-route-currentFilter="@Model.CurrentFilter"
-   asp-route-PageSize="@Model.PageSize"
-   class="btn btn-default @nextDisabled">
-    Next
-</a>
+<form class="form-inline" method="get">
+    Page Size:
+    <select asp-for="PageSize" onchange="this.form.submit()">
+        <option value="3">3</option>
+        <option value="5">5</option>
+        <option value="10">10</option>
+        <option value="20">20</option>
+        <option value="100">100</option>
+    </select>
+    <a asp-page="./Index"
+       asp-route-sortOrder="@Model.CurrentSort"
+       asp-route-pageIndex="@(Model.FinDiaryTransaction.CurrentPage - 1)"
+       asp-route-currentFilter="@Model.CurrentFilter"
+       asp-route-PageSize="@Model.PageSize"
+       class="btn btn-light @prevDisabled">
+        <
+    </a>
+    Page:@Model.FinDiaryTransaction.CurrentPage of @Model.TotalPages Total Items @Model.TotalCount
+    <a asp-page="./Index"
+       asp-route-sortOrder="@Model.CurrentSort"
+       asp-route-pageIndex="@(Model.FinDiaryTransaction.CurrentPage + 1)"
+       asp-route-currentFilter="@Model.CurrentFilter"
+       asp-route-PageSize="@Model.PageSize"
+       class="btn btn-light @nextDisabled">
+        >
+    </a>
+
+</form>

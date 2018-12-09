@@ -58,17 +58,17 @@
         <div class="form-row">
             <div class="form-group col-md-4">
                 <label asp-for="SupplierTransactionDto.AmountFpa" class="control-label"></label>
-                <input asp-for="SupplierTransactionDto.AmountFpa" class="form-control" onchange="FpaOnChange()"/>
+                <input asp-for="SupplierTransactionDto.AmountFpa" class="form-control" value="0" />
                 <span asp-validation-for="SupplierTransactionDto.AmountFpa" class="text-danger"></span>
             </div>
             <div class="form-group col-md-4">
                 <label asp-for="SupplierTransactionDto.AmountNet" class="control-label"></label>
-                <input asp-for="SupplierTransactionDto.AmountNet" class="form-control" />
+                <input asp-for="SupplierTransactionDto.AmountNet" value="0" class="form-control" />
                 <span asp-validation-for="SupplierTransactionDto.AmountNet" class="text-danger"></span>
             </div>
             <div class="form-group col-md-4">
                 <label asp-for="SupplierTransactionDto.AmountDiscount" class="control-label"></label>
-                <input asp-for="SupplierTransactionDto.AmountDiscount" class="form-control" />
+                <input asp-for="SupplierTransactionDto.AmountDiscount" value="0" class="form-control" />
                 <span asp-validation-for="SupplierTransactionDto.AmountDiscount" class="text-danger"></span>
             </div>
         </div>
@@ -87,12 +87,6 @@
     </form>
 </div>
 
-@*<div class="form-group">
-        <label asp-for="SupplierTransactionDto.TransactionType" class="control-label"></label>
-        <select asp-for="SupplierTransactionDto.TransactionType" class="form-control"></select>
-        <span asp-validation-for="SupplierTransactionDto.TransactionType" class="text-danger"></span>
-    </div>*@
-
 <div>
     <a asp-page="Index">Back to List</a>
 </div>
@@ -101,7 +95,15 @@
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script>
         $(document).ready(function () {
-          
+            console.log("Inside Document ready");
+            $('#SupplierTransactionDto_AmountFpa').change((event) => {
+                //console.log(event.toString());
+                console.log("Inside Fpa Change");
+            });
+           // $('#SupplierTransactionDto_AmountFpa').val("10");
+
+            $('#SupplierTransactionDto_TransDate').val(new Date().toISOString().slice(0, 10));
+
             //Globalize.locale("en");
             //define([
             //    "cldr",
@@ -111,12 +113,14 @@
             //    Cldr.load( likelySubtags );
 
             //});
-          //  $.get( "lib/cldr/supplemental/likelySubtags.json", Cldr.load );
+            //  $.get( "lib/cldr/supplemental/likelySubtags.json", Cldr.load );
+            function fpaOnChange()
+            {
+                console.log("Inside Fpa Change");
+                // alert("Fpa changed");
+            }
         });
 
-        function FpaOnChange()
-        {
-           // alert("Fpa changed");
-        }
+      
     </script>
 }
