@@ -25,86 +25,87 @@
     </p>
 
 </form>
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                <a asp-page="./Index" asp-route-sortOrder="@Model.DateSort"
-                   asp-route-currentFilter="@Model.CurrentFilter"
-                   asp-route-PageSize="@Model.PageSize">
-                    @Html.DisplayNameFor(model => model.FinDiaryTransaction[0].TransactionDate)
-
-                </a>
-                <i class="@Model.DateSortIcon"></i>
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FinDiaryTransaction[0].ReferenceCode)
-            </th>
-            <th>
-                <a asp-page="./Index" asp-route-sortOrder="@Model.NameSort"
-                   asp-route-currentFilter="@Model.CurrentFilter"
-                   asp-route-PageSize="@Model.PageSize">
-                    @Html.DisplayNameFor(model => model.FinDiaryTransaction[0].TransactorName)
-                </a>
-
-                <i class="@Model.NameSortIcon"></i>
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FinDiaryTransaction[0].FinTransCategoryName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FinDiaryTransaction[0].CompanyName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FinDiaryTransaction[0].CostCentreName)
-            </th>
-
-
-
-            <th>
-                @Html.DisplayNameFor(model => model.FinDiaryTransaction[0].AmountTotal)
-            </th>
-
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.FinDiaryTransaction)
-        {
+<div class="table-responsive-sm">
+    <table class="table table-bordered table-sm table-hover">
+        <thead class="thead-light">
             <tr>
-                <td class="text-right">
-                    @Html.DisplayFor(modelItem => item.TransactionDate)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ReferenceCode)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.TransactorName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.FinTransCategoryName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.CompanyName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.CostCentreName)
-                </td>
+                <th >
+                    <a asp-page="./Index" asp-route-sortOrder="@Model.DateSort"
+                       asp-route-currentFilter="@Model.CurrentFilter"
+                       asp-route-PageSize="@Model.PageSize">
+                        @Html.DisplayNameFor(model => model.FinDiaryTransaction[0].TransactionDate)
+
+                    </a>
+                    <i class="@Model.DateSortIcon"></i>
+                </th>
+                <th >
+                    @Html.DisplayNameFor(model => model.FinDiaryTransaction[0].ReferenceCode)
+                </th>
+                <th>
+                    <a asp-page="./Index" asp-route-sortOrder="@Model.NameSort"
+                       asp-route-currentFilter="@Model.CurrentFilter"
+                       asp-route-PageSize="@Model.PageSize">
+                        @Html.DisplayNameFor(model => model.FinDiaryTransaction[0].TransactorName)
+                    </a>
+
+                    <i class="@Model.NameSortIcon"></i>
+                </th>
+                <th >
+                    @Html.DisplayNameFor(model => model.FinDiaryTransaction[0].FinTransCategoryName)
+                </th>
+                <th >
+                    @Html.DisplayNameFor(model => model.FinDiaryTransaction[0].CompanyName)
+                </th>
+                <th >
+                    @Html.DisplayNameFor(model => model.FinDiaryTransaction[0].CostCentreName)
+                </th>
 
 
-                <td class="text-right">
-                    @Html.DisplayFor(modelItem => item.AmountTotal)
-                </td>
-                <td>
-                    <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
-                </td>
+
+                <th >
+                    @Html.DisplayNameFor(model => model.FinDiaryTransaction[0].AmountTotal)
+                </th>
+
+                <th >Available Actions</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.FinDiaryTransaction)
+            {
+                <tr>
+                    <td class="text-right">
+                        @Html.DisplayFor(modelItem => item.TransactionDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ReferenceCode)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.TransactorName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FinTransCategoryName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CompanyName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CostCentreName)
+                    </td>
+
+
+                    <td class="text-right">
+                        @Html.DisplayFor(modelItem => item.AmountTotal)
+                    </td>
+                    <td>
+                        <a asp-page="./Edit" asp-route-id="@item.Id"><i class="fas fa-edit"></i></a> |
+                        <a asp-page="./Details" asp-route-id="@item.Id"><i class="fas fa-info-circle"></i></a> |
+                        <a asp-page="./Delete" asp-route-id="@item.Id"><i class="fas fa-trash"></i></a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
 @{
 
     var prevDisabled = !Model.FinDiaryTransaction.HasPrevious ? "disabled" : "";

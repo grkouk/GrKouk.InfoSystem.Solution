@@ -3,6 +3,10 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <UserSecretsId>aspnet-GrKouk.WebRazor-23D9D86F-9BE9-49F4-876A-5283C1CB43A5</UserSecretsId>
+    <Authors>George Koukoudis</Authors>
+    <Company>GrKouk</Company>
+    <Description>GrKouk Information System</Description>
+    <Copyright>George Koukoudis</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
