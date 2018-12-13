@@ -90,8 +90,6 @@ namespace GrKouk.WebRazor
 
             app.UseAuthentication();
 
-            //app.UseRequestLocalization("el-GR", "en-US");
-
             IList<CultureInfo> supportedCultures = new List<CultureInfo>
             {
                 new CultureInfo("el-GR"),

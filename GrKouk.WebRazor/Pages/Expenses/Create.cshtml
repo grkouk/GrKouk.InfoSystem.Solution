@@ -16,58 +16,58 @@
 
             <div class="form-group col-md-4">
                 <label asp-for="FinDiaryTransaction.TransactionDate" ></label>
-                <input asp-for="FinDiaryTransaction.TransactionDate" class="form-control" />
+                <input asp-for="FinDiaryTransaction.TransactionDate" class="form-control form-control-sm" />
                 <span asp-validation-for="FinDiaryTransaction.TransactionDate" class="text-danger"></span>
             </div>
             <div class="form-group col-md-8">
                 <label asp-for="FinDiaryTransaction.TransactorId" ></label>
-                <select asp-for="FinDiaryTransaction.TransactorId" class="form-control" asp-items="ViewBag.TransactorId"></select>
+                <select asp-for="FinDiaryTransaction.TransactorId" class="form-control form-control-sm" asp-items="ViewBag.TransactorId"></select>
             </div>
         </div>
         <div class="form-row">
             <div class="form-group col-md-4">
                 <label asp-for="FinDiaryTransaction.ReferenceCode" ></label>
-                <input asp-for="FinDiaryTransaction.ReferenceCode" class="form-control" />
+                <input asp-for="FinDiaryTransaction.ReferenceCode" class="form-control form-control-sm" />
                 <span asp-validation-for="FinDiaryTransaction.ReferenceCode" class="text-danger"></span>
             </div>
             <div class="form-group col-md-8">
                 <label asp-for="FinDiaryTransaction.FinTransCategoryId" ></label>
-                <select asp-for="FinDiaryTransaction.FinTransCategoryId" class="form-control" asp-items="ViewBag.FinTransCategoryId"></select>
+                <select asp-for="FinDiaryTransaction.FinTransCategoryId" class="form-control form-control-sm" asp-items="ViewBag.FinTransCategoryId"></select>
             </div>
         </div>
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label asp-for="FinDiaryTransaction.CompanyId" ></label>
-                <select asp-for="FinDiaryTransaction.CompanyId" class ="form-control" asp-items="ViewBag.CompanyId"></select>
+                <select asp-for="FinDiaryTransaction.CompanyId" class ="form-control form-control-sm" asp-items="ViewBag.CompanyId"></select>
             </div>
             <div class="form-group col-md-6">
                 <label asp-for="FinDiaryTransaction.CostCentreId" ></label>
-                <select asp-for="FinDiaryTransaction.CostCentreId" class ="form-control" asp-items="ViewBag.CostCentreId"></select>
+                <select asp-for="FinDiaryTransaction.CostCentreId" class ="form-control form-control-sm" asp-items="ViewBag.CostCentreId"></select>
             </div>
         </div>
         <div class="form-row">
             <div class="form-group col-md-12">
                 <label asp-for="FinDiaryTransaction.Description" ></label>
                 @*<input asp-for="FinDiaryTransaction.Description" class="form-control" />*@
-                <textarea asp-for="FinDiaryTransaction.Description" class="form-control" placeholder="Description of Transaction"></textarea>
+                <textarea asp-for="FinDiaryTransaction.Description" class="form-control form-control-sm" placeholder="Description of Transaction"></textarea>
                 <span asp-validation-for="FinDiaryTransaction.Description" class="text-danger"></span>
             </div>
         </div>
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label asp-for="FinDiaryTransaction.AmountFpa" ></label>
-                <input asp-for="FinDiaryTransaction.AmountFpa" class="form-control" />
+                <input asp-for="FinDiaryTransaction.AmountFpa" class="form-control form-control-sm" />
                 <span asp-validation-for="FinDiaryTransaction.AmountFpa" class="text-danger"></span>
             </div>
             <div class="form-group col-md-6">
                 <label asp-for="FinDiaryTransaction.AmountNet" ></label>
-                <input asp-for="FinDiaryTransaction.AmountNet" class="form-control" />
+                <input asp-for="FinDiaryTransaction.AmountNet" class="form-control form-control-sm" />
                 <span asp-validation-for="FinDiaryTransaction.AmountNet" class="text-danger"></span>
             </div>
         </div>
         <div class="form-row">
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Create" class="btn btn-primary btn-sm" />
             </div>
         </div>
         </form>
@@ -83,11 +83,6 @@
     <script>
         $(document).ready(function () {
             console.log("Inside Document ready");
-            
-          
-
         });
-
-
     </script>
 }
