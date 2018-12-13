@@ -140,4 +140,21 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        $(document).ready(function () {
+            console.log("Inside Document ready");
+            
+            //$.validator.methods.date = function (value, element) {
+            //    if (element.type === "date") {
+            //        value = new Date(value).toLocaleDateString();
+            //    }
+            //    val = Globalize.parseDate(value,
+            //        $.validator.methods.dateGlobalizeOptions.dateParseFormat);
+            //    return this.optional(element) || !/Invalid|NaN/.test(new Date(val).toString());
+            //};
+
+        });
+
+
+    </script>
 }

@@ -10,6 +10,7 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.SupplierTransactions
         public int Id { get; set; }
 
         [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:ddd dd MMM yyyy}")]
         [Display(Name = "Date")]
         public DateTime TransDate { get; set; }
 

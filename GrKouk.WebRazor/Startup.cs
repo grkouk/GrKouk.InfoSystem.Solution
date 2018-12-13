@@ -1,18 +1,12 @@
-using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Threading.Tasks;
 using AutoMapper;
-using GrKouk.InfoSystem.Domain.Shared;
-using GrKouk.InfoSystem.Dtos;
 using GrKouk.WebApi.Data;
 using GrKouk.WebRazor.Automapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using GrKouk.WebRazor.Data;
@@ -96,11 +90,13 @@ namespace GrKouk.WebRazor
 
             app.UseAuthentication();
 
+            //app.UseRequestLocalization("el-GR", "en-US");
+
             IList<CultureInfo> supportedCultures = new List<CultureInfo>
             {
                 new CultureInfo("el-GR"),
                 new CultureInfo("en-US")
-               
+
             };
             app.UseRequestLocalization(new RequestLocalizationOptions
             {

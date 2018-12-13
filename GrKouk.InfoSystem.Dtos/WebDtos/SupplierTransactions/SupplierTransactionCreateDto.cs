@@ -1,6 +1,8 @@
 ﻿using GrKouk.InfoSystem.Domain.FinConfig;
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Data.SqlTypes;
+using System.Runtime.Serialization;
 
 namespace GrKouk.InfoSystem.Dtos.WebDtos.SupplierTransactions
 {
@@ -8,6 +10,7 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.SupplierTransactions
     {
 
         [DataType(DataType.Date)]
+        
         public DateTime TransDate { get; set; }
 
         public int TransSupplierDocSeriesId { get; set; }

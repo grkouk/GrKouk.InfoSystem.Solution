@@ -48,6 +48,8 @@ namespace GrKouk.WebRazor.Automapper
 
             CreateMap<SupplierTransaction, SupplierTransactionCreateDto>()
                 .ReverseMap();
+            CreateMap<SupplierTransaction, SupplierTransactionModifyDto>()
+                .ReverseMap();
 
             CreateMap<SupplierTransaction, SupplierTransactionListDto>()
                 .ForMember(dest=>dest.TransSupplierSeriesCode,opt=>opt.MapFrom(src=>src.TransSupplierDocSeries.Code))

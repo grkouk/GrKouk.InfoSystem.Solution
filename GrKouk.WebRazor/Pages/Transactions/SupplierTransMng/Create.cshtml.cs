@@ -32,10 +32,6 @@ namespace GrKouk.WebRazor.Pages.Transactions.SupplierTransMng
         public IActionResult OnGet()
         {
             
-            //SupplierTransactionDto.AmountDiscount = 0;
-            //SupplierTransactionDto.AmountFpa = 0;
-            //SupplierTransactionDto.AmountNet = 0;
-            //SupplierTransactionDto.TransDate = DateTime.Now;
             LoadCompbos();
             return Page();
         }

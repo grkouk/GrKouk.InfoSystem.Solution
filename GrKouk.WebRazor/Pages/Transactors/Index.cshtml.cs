@@ -29,7 +29,7 @@ namespace GrKouk.WebRazor.Pages.Transactors
         public int CurrentPageSize { get; set; }
 
        
-        public PaginatedList<TransactorListDto> ListItems { get; set; }
+        public PagedList<TransactorListDto> ListItems { get; set; }
         public async Task OnGetAsync(string sortOrder, string searchString, int? pageIndex, int? pageSize)
         {
             PageSize = (int)((pageSize == null || pageSize == 0) ? 20 : pageSize);
@@ -80,7 +80,7 @@ namespace GrKouk.WebRazor.Pages.Transactors
             var t = fullListIq.ProjectTo<TransactorListDto>(_mapper.ConfigurationProvider);
 
 
-            ListItems = await PaginatedList<TransactorListDto>.CreateAsync(
+            ListItems = await PagedList<TransactorListDto>.CreateAsync(
                 t, pageIndex ?? 1, PageSize);
 
         }
