@@ -40,7 +40,7 @@ namespace GrKouk.InfoSystem
             containerRegistry.RegisterForNavigation<NavigationPage>();
             containerRegistry.RegisterForNavigation<MainPage, MainPageViewModel>();
             containerRegistry.RegisterForNavigation<SettingsPage, SettingsPageViewModel>();
-            //containerRegistry.RegisterForNavigation<FinTransCategoryPage, FinTransCategoryPageViewModel>();
+            containerRegistry.RegisterForNavigation<FinTransCategoryPage, FinTransCategoryPageViewModel>();
             containerRegistry.RegisterForNavigation<FinDiaryTransExpencePage, FinDiaryTransExpencePageViewModel>();
            
             containerRegistry.RegisterForNavigation<CategorySearchListPage, CategorySearchListPageViewModel>();
