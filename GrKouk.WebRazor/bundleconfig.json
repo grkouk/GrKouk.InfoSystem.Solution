@@ -1,0 +1,38 @@
+[
+  {
+    "outputFileName": "wwwroot/lib/cldrjs/dist/cldr/event.min.js",
+    "inputFiles": [
+      "wwwroot/lib/cldrjs/dist/cldr/event.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/lib/cldrjs/dist/cldr/supplemental.min.js",
+    "inputFiles": [
+      "wwwroot/lib/cldrjs/dist/cldr/supplemental.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/lib/cldrjs/dist/cldr/unresolved.min.js",
+    "inputFiles": [
+      "wwwroot/lib/cldrjs/dist/cldr/unresolved.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/lib/cldrjs/dist/cldr.min.js",
+    "inputFiles": [
+      "wwwroot/lib/cldrjs/dist/cldr.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/lib/globalize/dist/globalize/bundle.js",
+    "inputFiles": [
+      "wwwroot/lib/globalize/dist/globalize/currency.js",
+      "wwwroot/lib/globalize/dist/globalize/date.js",
+      "wwwroot/lib/globalize/dist/globalize/message.js",
+      "wwwroot/lib/globalize/dist/globalize/number.js",
+      "wwwroot/lib/globalize/dist/globalize/plural.js",
+      "wwwroot/lib/globalize/dist/globalize/relative-time.js",
+      "wwwroot/lib/globalize/dist/globalize/unit.js"
+    ]
+  }
+]

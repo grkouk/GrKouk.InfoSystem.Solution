@@ -1,0 +1,146 @@
+﻿@page
+@model GrKouk.WebRazor.Pages.Transactions.SupplierTransMng.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+
+<form class="form-inline" asp-page="./Index" method="get">
+
+    <p>
+        Find by name:
+        <input type="text" name="SearchString" value="@Model.CurrentFilter" />
+        <input type="submit" value="Search" class="btn btn-light" /> |
+        <a asp-page="./Index">Back to full List</a>
+
+    </p>
+
+</form>
+
+<table class="table table-bordered table-sm">
+    <thead class="thead-light">
+    <tr>
+        <th >
+            <a asp-page="./Index" asp-route-sortOrder="@Model.DateSort"
+               asp-route-currentFilter="@Model.CurrentFilter"
+               asp-route-PageSize="@Model.PageSize">
+                @Html.DisplayNameFor(model => model.ListItems[0].TransDate)
+
+            </a>
+            <i class="@Model.DateSortIcon"></i>
+        </th>
+       
+        <th>
+            @Html.DisplayNameFor(model => model.ListItems[0].TransSupplierSeriesCode)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ListItems[0].SectionCode)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ListItems[0].TransRefCode)
+        </th>
+
+        <th>
+            <a asp-page="./Index" asp-route-sortOrder="@Model.NameSort"
+               asp-route-currentFilter="@Model.CurrentFilter"
+               asp-route-PageSize="@Model.PageSize">
+                @Html.DisplayNameFor(model => model.ListItems[0].SupplierName)
+            </a>
+
+            <i class="@Model.NameSortIcon"></i>
+        </th>
+       
+        <th>
+            @Html.DisplayNameFor(model => model.ListItems[0].DebitAmount)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ListItems[0].CreditAmount)
+        </th>
+
+        <th>
+            @Html.DisplayNameFor(model => model.ListItems[0].CompanyCode)
+        </th>
+
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.ListItems)
+        {
+            <tr>
+                <td class="text-right">
+                    @Html.DisplayFor(modelItem => item.TransDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TransSupplierSeriesCode)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SectionCode)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TransRefCode)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SupplierName)
+                </td>
+                <td class="text-right">
+                    @Html.DisplayFor(modelItem => item.DebitAmount)
+                </td>
+                <td class="text-right">
+                    @Html.DisplayFor(modelItem => item.CreditAmount)
+                </td>
+
+
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.CompanyCode)
+                </td>
+
+                <td>
+                    <a asp-page="./Edit" asp-route-id="@item.Id"><i class="fas fa-edit"></i></a> |
+                    <a asp-page="./Details" asp-route-id="@item.Id"><i class="fas fa-info-circle"></i></a> |
+                    <a asp-page="./Delete" asp-route-id="@item.Id"><i class="fas fa-trash"></i></a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+@{
+    var prevDisabled = !Model.ListItems.HasPrevious ? "disabled" : "";
+    var nextDisabled = !Model.ListItems.HasNext ? "disabled" : "";
+}
+
+<form class="form-inline" method="get">
+    Page Size:
+    <select asp-for="PageSize" onchange="this.form.submit()">
+        <option value="3">3</option>
+        <option value="5">5</option>
+        <option value="10">10</option>
+        <option value="20">20</option>
+        <option value="100">100</option>
+    </select>
+    <a asp-page="./Index"
+       asp-route-sortOrder="@Model.CurrentSort"
+       asp-route-pageIndex="@(Model.ListItems.CurrentPage - 1)"
+       asp-route-currentFilter="@Model.CurrentFilter"
+       asp-route-PageSize="@Model.PageSize"
+       class="btn btn-light @prevDisabled">
+        <
+    </a>
+    Page:@Model.ListItems.CurrentPage of @Model.TotalPages Total Items @Model.TotalCount
+    <a asp-page="./Index"
+       asp-route-sortOrder="@Model.CurrentSort"
+       asp-route-pageIndex="@(Model.ListItems.CurrentPage + 1)"
+       asp-route-currentFilter="@Model.CurrentFilter"
+       asp-route-PageSize="@Model.PageSize"
+       class="btn btn-light @nextDisabled">
+        >
+    </a>
+
+</form>

@@ -1,0 +1,142 @@
+﻿@page
+@model GrKouk.WebRazor.Pages.Expenses.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>Λίστα Εξόδων</h2>
+@System.Globalization.CultureInfo.CurrentCulture
+@System.Globalization.CultureInfo.CurrentUICulture
+
+<p>
+    <a asp-page="Create">Δημιουργία</a>
+</p>
+
+
+<form class="form-inline" asp-page="./Index" method="get">
+
+    <p>
+        Find by name:
+        <input type="text" name="SearchString" value="@Model.CurrentFilter" />
+        <input type="submit" value="Search" class="btn btn-light" /> |
+        <a asp-page="./Index">Back to full List</a>
+
+    </p>
+
+</form>
+<div class="table-responsive-sm">
+    <table class="table table-bordered table-sm">
+        <thead class="thead-light">
+            <tr>
+                <th >
+                    <a asp-page="./Index" asp-route-sortOrder="@Model.DateSort"
+                       asp-route-currentFilter="@Model.CurrentFilter"
+                       asp-route-PageSize="@Model.PageSize">
+                        @Html.DisplayNameFor(model => model.FinDiaryTransaction[0].TransactionDate)
+
+                    </a>
+                    <i class="@Model.DateSortIcon"></i>
+                </th>
+                <th >
+                    @Html.DisplayNameFor(model => model.FinDiaryTransaction[0].ReferenceCode)
+                </th>
+                <th>
+                    <a asp-page="./Index" asp-route-sortOrder="@Model.NameSort"
+                       asp-route-currentFilter="@Model.CurrentFilter"
+                       asp-route-PageSize="@Model.PageSize">
+                        @Html.DisplayNameFor(model => model.FinDiaryTransaction[0].TransactorName)
+                    </a>
+
+                    <i class="@Model.NameSortIcon"></i>
+                </th>
+                <th >
+                    @Html.DisplayNameFor(model => model.FinDiaryTransaction[0].FinTransCategoryName)
+                </th>
+                <th >
+                    @Html.DisplayNameFor(model => model.FinDiaryTransaction[0].CompanyName)
+                </th>
+                <th >
+                    @Html.DisplayNameFor(model => model.FinDiaryTransaction[0].CostCentreName)
+                </th>
+
+
+
+                <th >
+                    @Html.DisplayNameFor(model => model.FinDiaryTransaction[0].AmountTotal)
+                </th>
+
+                <th >Available Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.FinDiaryTransaction)
+            {
+                <tr>
+                    <td class="text-right">
+                        @Html.DisplayFor(modelItem => item.TransactionDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ReferenceCode)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.TransactorName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FinTransCategoryName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CompanyName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CostCentreName)
+                    </td>
+
+
+                    <td class="text-right">
+                        @Html.DisplayFor(modelItem => item.AmountTotal)
+                    </td>
+                    <td>
+                        <a asp-page="./Edit" asp-route-id="@item.Id"><i class="fas fa-edit"></i></a> |
+                        <a asp-page="./Details" asp-route-id="@item.Id"><i class="fas fa-info-circle"></i></a> |
+                        <a asp-page="./Delete" asp-route-id="@item.Id"><i class="fas fa-trash"></i></a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+@{
+
+    var prevDisabled = !Model.FinDiaryTransaction.HasPrevious ? "disabled" : "";
+    var nextDisabled = !Model.FinDiaryTransaction.HasNext ? "disabled" : "";
+}
+
+<form class="form-inline" method="get">
+    Page Size:
+    <select asp-for="PageSize" onchange="this.form.submit()">
+        <option value="3">3</option>
+        <option value="5">5</option>
+        <option value="10">10</option>
+        <option value="20">20</option>
+        <option value="100">100</option>
+    </select>
+    <a asp-page="./Index"
+       asp-route-sortOrder="@Model.CurrentSort"
+       asp-route-pageIndex="@(Model.FinDiaryTransaction.CurrentPage - 1)"
+       asp-route-currentFilter="@Model.CurrentFilter"
+       asp-route-PageSize="@Model.PageSize"
+       class="btn btn-light @prevDisabled">
+        <
+    </a>
+    Page:@Model.FinDiaryTransaction.CurrentPage of @Model.TotalPages Total Items @Model.TotalCount
+    <a asp-page="./Index"
+       asp-route-sortOrder="@Model.CurrentSort"
+       asp-route-pageIndex="@(Model.FinDiaryTransaction.CurrentPage + 1)"
+       asp-route-currentFilter="@Model.CurrentFilter"
+       asp-route-PageSize="@Model.PageSize"
+       class="btn btn-light @nextDisabled">
+        >
+    </a>
+
+</form>

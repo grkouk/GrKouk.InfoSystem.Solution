@@ -1,0 +1,121 @@
+﻿@page
+@model GrKouk.WebRazor.Pages.Transactions.SupplierTransMng.DetailsModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>SupplierTransaction</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.SupplierTransaction.TransDate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.SupplierTransaction.TransDate)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.SupplierTransaction.TransSupplierDocSeries)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.SupplierTransaction.TransSupplierDocSeries.Id)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.SupplierTransaction.TransSupplierDocType)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.SupplierTransaction.TransSupplierDocType.Id)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.SupplierTransaction.TransRefCode)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.SupplierTransaction.TransRefCode)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.SupplierTransaction.Section)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.SupplierTransaction.Section.Code)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.SupplierTransaction.Supplier)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.SupplierTransaction.Supplier.Id)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.SupplierTransaction.FiscalPeriod)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.SupplierTransaction.FiscalPeriod.Id)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.SupplierTransaction.TransactionType)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.SupplierTransaction.TransactionType)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.SupplierTransaction.CreatorId)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.SupplierTransaction.CreatorId)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.SupplierTransaction.FpaDef)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.SupplierTransaction.FpaDef.Code)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.SupplierTransaction.FpaRate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.SupplierTransaction.FpaRate)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.SupplierTransaction.AmountFpa)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.SupplierTransaction.AmountFpa)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.SupplierTransaction.AmountNet)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.SupplierTransaction.AmountNet)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.SupplierTransaction.AmountDiscount)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.SupplierTransaction.AmountDiscount)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.SupplierTransaction.Etiology)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.SupplierTransaction.Etiology)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.SupplierTransaction.Company)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.SupplierTransaction.Company.Code)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.SupplierTransaction.Timestamp)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.SupplierTransaction.Timestamp)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-page="./Edit" asp-route-id="@Model.SupplierTransaction.Id">Edit</a> |
+    <a asp-page="./Index">Back to List</a>
+</div>

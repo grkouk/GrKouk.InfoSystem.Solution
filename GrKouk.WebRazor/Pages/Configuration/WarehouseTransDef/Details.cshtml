@@ -1,0 +1,115 @@
+﻿@page
+@model GrKouk.WebRazor.Pages.Configuration.WarehouseTransDef.DetailsModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>TransWarehouseDef</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.TransWarehouseDef.Code)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.TransWarehouseDef.Code)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.TransWarehouseDef.Name)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.TransWarehouseDef.Name)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.TransWarehouseDef.Active)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.TransWarehouseDef.Active)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.TransWarehouseDef.VolImportsTrans)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.TransWarehouseDef.VolImportsTrans.Id)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.TransWarehouseDef.VolExportsTrans)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.TransWarehouseDef.VolExportsTrans.Id)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.TransWarehouseDef.VolInvoicedExportsTrans)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.TransWarehouseDef.VolInvoicedExportsTrans.Id)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.TransWarehouseDef.VolInvoicedImportsTrans)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.TransWarehouseDef.VolInvoicedImportsTrans.Id)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.TransWarehouseDef.AmtImportsTrans)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.TransWarehouseDef.AmtImportsTrans.Id)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.TransWarehouseDef.AmtExportsTrans)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.TransWarehouseDef.AmtExportsTrans.Id)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.TransWarehouseDef.AmtInvoicedExportsTrans)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.TransWarehouseDef.AmtInvoicedExportsTrans.Id)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.TransWarehouseDef.AmtInvoicedImportsTrans)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.TransWarehouseDef.AmtInvoicedImportsTrans.Id)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.TransWarehouseDef.VolBuyTrans)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.TransWarehouseDef.VolBuyTrans.Id)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.TransWarehouseDef.AmtBuyTrans)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.TransWarehouseDef.AmtBuyTrans.Id)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.TransWarehouseDef.VolSellTrans)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.TransWarehouseDef.VolSellTrans.Id)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.TransWarehouseDef.AmtSellTrans)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.TransWarehouseDef.AmtSellTrans.Id)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.TransWarehouseDef.Company)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.TransWarehouseDef.Company.Code)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-page="./Edit" asp-route-id="@Model.TransWarehouseDef.Id">Edit</a> |
+    <a asp-page="./Index">Back to List</a>
+</div>

@@ -1,0 +1,67 @@
+﻿@page
+@model GrKouk.WebRazor.Pages.Configuration.SupplierTransDefs.EditModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h2>Edit</h2>
+
+<h4>TransSupplierDef</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="TransSupplierDef.Id" />
+            <div class="form-group">
+                <label asp-for="TransSupplierDef.Code" class="control-label"></label>
+                <input asp-for="TransSupplierDef.Code" class="form-control" />
+                <span asp-validation-for="TransSupplierDef.Code" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TransSupplierDef.Name" class="control-label"></label>
+                <input asp-for="TransSupplierDef.Name" class="form-control" />
+                <span asp-validation-for="TransSupplierDef.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <div class="checkbox">
+                    <label>
+                        <input asp-for="TransSupplierDef.Active" /> @Html.DisplayNameFor(model => model.TransSupplierDef.Active)
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="TransSupplierDef.CreditTransId" class="control-label"></label>
+                <select asp-for="TransSupplierDef.CreditTransId" class="form-control" asp-items="ViewBag.CreditTransId"></select>
+                <span asp-validation-for="TransSupplierDef.CreditTransId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TransSupplierDef.DebitTransId" class="control-label"></label>
+                <select asp-for="TransSupplierDef.DebitTransId" class="form-control" asp-items="ViewBag.DebitTransId"></select>
+                <span asp-validation-for="TransSupplierDef.DebitTransId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TransSupplierDef.TurnOverTransId" class="control-label"></label>
+                <select asp-for="TransSupplierDef.TurnOverTransId" class="form-control" asp-items="ViewBag.TurnOverTransId"></select>
+                <span asp-validation-for="TransSupplierDef.TurnOverTransId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TransSupplierDef.CompanyId" class="control-label"></label>
+                <select asp-for="TransSupplierDef.CompanyId" class="form-control" asp-items="ViewBag.CompanyId"></select>
+                <span asp-validation-for="TransSupplierDef.CompanyId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="./Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

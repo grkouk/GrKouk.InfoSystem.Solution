@@ -1,0 +1,112 @@
+﻿@page
+@model GrKouk.WebRazor.Pages.Configuration.WarehouseTransDef.EditModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h2>Edit</h2>
+
+<h4>TransWarehouseDef</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="TransWarehouseDef.Id" />
+            <div class="form-group">
+                <label asp-for="TransWarehouseDef.Code" class="control-label"></label>
+                <input asp-for="TransWarehouseDef.Code" class="form-control" />
+                <span asp-validation-for="TransWarehouseDef.Code" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TransWarehouseDef.Name" class="control-label"></label>
+                <input asp-for="TransWarehouseDef.Name" class="form-control" />
+                <span asp-validation-for="TransWarehouseDef.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <div class="checkbox">
+                    <label>
+                        <input asp-for="TransWarehouseDef.Active" /> @Html.DisplayNameFor(model => model.TransWarehouseDef.Active)
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="TransWarehouseDef.VolImportsTransId" class="control-label"></label>
+                <select asp-for="TransWarehouseDef.VolImportsTransId" class="form-control" asp-items="ViewBag.VolImportsTransId"></select>
+                <span asp-validation-for="TransWarehouseDef.VolImportsTransId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TransWarehouseDef.VolExportsTransId" class="control-label"></label>
+                <select asp-for="TransWarehouseDef.VolExportsTransId" class="form-control" asp-items="ViewBag.VolExportsTransId"></select>
+                <span asp-validation-for="TransWarehouseDef.VolExportsTransId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TransWarehouseDef.VolInvoicedExportsTransId" class="control-label"></label>
+                <select asp-for="TransWarehouseDef.VolInvoicedExportsTransId" class="form-control" asp-items="ViewBag.VolInvoicedExportsTransId"></select>
+                <span asp-validation-for="TransWarehouseDef.VolInvoicedExportsTransId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TransWarehouseDef.VolInvoicedImportsTransId" class="control-label"></label>
+                <select asp-for="TransWarehouseDef.VolInvoicedImportsTransId" class="form-control" asp-items="ViewBag.VolInvoicedImportsTransId"></select>
+                <span asp-validation-for="TransWarehouseDef.VolInvoicedImportsTransId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TransWarehouseDef.AmtImportsTransId" class="control-label"></label>
+                <select asp-for="TransWarehouseDef.AmtImportsTransId" class="form-control" asp-items="ViewBag.AmtImportsTransId"></select>
+                <span asp-validation-for="TransWarehouseDef.AmtImportsTransId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TransWarehouseDef.AmtExportsTransId" class="control-label"></label>
+                <select asp-for="TransWarehouseDef.AmtExportsTransId" class="form-control" asp-items="ViewBag.AmtExportsTransId"></select>
+                <span asp-validation-for="TransWarehouseDef.AmtExportsTransId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TransWarehouseDef.AmtInvoicedExportsTransId" class="control-label"></label>
+                <select asp-for="TransWarehouseDef.AmtInvoicedExportsTransId" class="form-control" asp-items="ViewBag.AmtInvoicedExportsTransId"></select>
+                <span asp-validation-for="TransWarehouseDef.AmtInvoicedExportsTransId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TransWarehouseDef.AmtInvoicedImportsTransId" class="control-label"></label>
+                <select asp-for="TransWarehouseDef.AmtInvoicedImportsTransId" class="form-control" asp-items="ViewBag.AmtInvoicedImportsTransId"></select>
+                <span asp-validation-for="TransWarehouseDef.AmtInvoicedImportsTransId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TransWarehouseDef.VolBuyTransId" class="control-label"></label>
+                <select asp-for="TransWarehouseDef.VolBuyTransId" class="form-control" asp-items="ViewBag.VolBuyTransId"></select>
+                <span asp-validation-for="TransWarehouseDef.VolBuyTransId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TransWarehouseDef.AmtBuyTransId" class="control-label"></label>
+                <select asp-for="TransWarehouseDef.AmtBuyTransId" class="form-control" asp-items="ViewBag.AmtBuyTransId"></select>
+                <span asp-validation-for="TransWarehouseDef.AmtBuyTransId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TransWarehouseDef.VolSellTransId" class="control-label"></label>
+                <select asp-for="TransWarehouseDef.VolSellTransId" class="form-control" asp-items="ViewBag.VolSellTransId"></select>
+                <span asp-validation-for="TransWarehouseDef.VolSellTransId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TransWarehouseDef.AmtSellTransId" class="control-label"></label>
+                <select asp-for="TransWarehouseDef.AmtSellTransId" class="form-control" asp-items="ViewBag.AmtSellTransId"></select>
+                <span asp-validation-for="TransWarehouseDef.AmtSellTransId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TransWarehouseDef.CompanyId" class="control-label"></label>
+                <select asp-for="TransWarehouseDef.CompanyId" class="form-control" asp-items="ViewBag.CompanyId"></select>
+                <span asp-validation-for="TransWarehouseDef.CompanyId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="./Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
