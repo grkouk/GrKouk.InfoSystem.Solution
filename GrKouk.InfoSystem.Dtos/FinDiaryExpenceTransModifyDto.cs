@@ -23,7 +23,7 @@ namespace GrKouk.InfoSystem.Dtos
         public int CompanyId { get; set; }
         [Display(Name = "Κατ.Εξόδου", Prompt = "Κατ.Εσόδου")]
         public int CostCentreId { get; set; }
-       
+        public int RevenueCentreId { get; set; }
         [Display(Name = "Περιγραφή", Prompt = "Περιγραφή")]
         [MaxLength(500)]
         public string Description { get; set; }

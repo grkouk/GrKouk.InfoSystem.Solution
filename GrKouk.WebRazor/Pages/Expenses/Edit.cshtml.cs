@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using GrKouk.InfoSystem.Domain.Shared;
 using GrKouk.InfoSystem.Dtos;
 using GrKouk.WebApi.Data;
+using NToastNotify;
 
 namespace GrKouk.WebRazor.Pages.Expenses
 {
@@ -18,12 +19,14 @@ namespace GrKouk.WebRazor.Pages.Expenses
     {
         private readonly GrKouk.WebApi.Data.ApiDbContext _context;
         private readonly IMapper _mapper;
+        private readonly IToastNotification _toastNotification;
 
 
-        public EditModel(GrKouk.WebApi.Data.ApiDbContext context, IMapper mapper)
+        public EditModel(GrKouk.WebApi.Data.ApiDbContext context, IMapper mapper, IToastNotification toastNotification)
         {
             _context = context;
             _mapper = mapper;
+            _toastNotification = toastNotification;
         }
 
         [BindProperty]
@@ -51,11 +54,7 @@ namespace GrKouk.WebRazor.Pages.Expenses
 
             FinDiaryTransactionVM = _mapper.Map<FinDiaryExpenceTransModifyDto>(diaryTransactionToModify);
 
-            ViewData["CompanyId"] = new SelectList(_context.Companies.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
-            ViewData["CostCentreId"] = new SelectList(_context.CostCentres.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
-            ViewData["FinTransCategoryId"] = new SelectList(_context.FinTransCategories.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
-           // ViewData["RevenueCentreId"] = new SelectList(_context.RevenueCentres.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
-            ViewData["TransactorId"] = new SelectList(_context.Transactors.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
+            LoadCompbos();
 
             return Page();
         }
@@ -64,13 +63,14 @@ namespace GrKouk.WebRazor.Pages.Expenses
         {
             if (!ModelState.IsValid)
             {
+                LoadCompbos();
                 return Page();
             }
 
             var diaryTransactionToAttach = _mapper.Map<FinDiaryTransaction>(FinDiaryTransactionVM);
 
-            diaryTransactionToAttach.Kind = (int) DiaryTransactionsKindEnum.Expence;
-            diaryTransactionToAttach.RevenueCentreId = 1;
+            //diaryTransactionToAttach.Kind = (int)DiaryTransactionsKindEnum.Expence;
+            //diaryTransactionToAttach.RevenueCentreId = 1;
 
             _context.Attach(diaryTransactionToAttach).State = EntityState.Modified;
 
@@ -99,6 +99,17 @@ namespace GrKouk.WebRazor.Pages.Expenses
         private bool FinDiaryTransactionExists(int id)
         {
             return _context.FinDiaryTransactions.Any(e => e.Id == id);
+        }
+
+        private void LoadCompbos()
+        {
+            ViewData["CompanyId"] = new SelectList(_context.Companies.OrderBy(c => c.Code).AsNoTracking(), "Id", "Code");
+            ViewData["CostCentreId"] = new SelectList(_context.CostCentres.OrderBy(c => c.Name).AsNoTracking(), "Id", "Name");
+            ViewData["FinTransCategoryId"] = new SelectList(_context.FinTransCategories.OrderBy(c => c.Name).AsNoTracking(), "Id", "Name");
+            // ViewData["RevenueCentreId"] = new SelectList(_context.RevenueCentres.OrderBy(c => c.Name).AsNoTracking(), "Id", "Name");
+            var transactorList = _context.Transactors.Where(s => s.TransactorType.Code == "SYS.DTRANSACTOR").OrderBy(s => s.Name).AsNoTracking();
+            ViewData["TransactorId"] = new SelectList(transactorList, "Id", "Name");
+
         }
     }
 }

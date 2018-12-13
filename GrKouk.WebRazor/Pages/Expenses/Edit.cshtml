@@ -13,72 +13,71 @@
 
 <h4>Expense Transaction</h4>
 <hr />
-<div class="row">
-    <div class="col-md-4">
-        <form method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="FinDiaryTransactionVM.Id" />
-            <div class="form-group">
-                <label asp-for="FinDiaryTransactionVM.TransactionDate" class="control-label"></label>
+<div class="container">
+    <form method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="FinDiaryTransactionVM.Id" />
+        <input type="hidden" asp-for="FinDiaryTransactionVM.Timestamp" />
+        <input type="hidden" asp-for="FinDiaryTransactionVM.RevenueCentreId" />
+        <div class="form-row">
+
+            <div class="form-group col-md-4">
+                <label asp-for="FinDiaryTransactionVM.TransactionDate"></label>
                 <input asp-for="FinDiaryTransactionVM.TransactionDate" class="form-control" />
                 <span asp-validation-for="FinDiaryTransactionVM.TransactionDate" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="FinDiaryTransactionVM.ReferenceCode" class="control-label"></label>
+            <div class="form-group col-md-8">
+                <label asp-for="FinDiaryTransactionVM.TransactorId"></label>
+                <select asp-for="FinDiaryTransactionVM.TransactorId" class="form-control" asp-items="ViewBag.TransactorId"></select>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-4">
+                <label asp-for="FinDiaryTransactionVM.ReferenceCode"></label>
                 <input asp-for="FinDiaryTransactionVM.ReferenceCode" class="form-control" />
                 <span asp-validation-for="FinDiaryTransactionVM.ReferenceCode" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="FinDiaryTransactionVM.TransactorId" class="control-label"></label>
-                <select asp-for="FinDiaryTransactionVM.TransactorId" class="form-control" asp-items="ViewBag.TransactorId"></select>
-                <span asp-validation-for="FinDiaryTransactionVM.TransactorId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="FinDiaryTransactionVM.FinTransCategoryId" class="control-label"></label>
+            <div class="form-group col-md-8">
+                <label asp-for="FinDiaryTransactionVM.FinTransCategoryId"></label>
                 <select asp-for="FinDiaryTransactionVM.FinTransCategoryId" class="form-control" asp-items="ViewBag.FinTransCategoryId"></select>
-                <span asp-validation-for="FinDiaryTransactionVM.FinTransCategoryId" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="FinDiaryTransactionVM.CompanyId" class="control-label"></label>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label asp-for="FinDiaryTransactionVM.CompanyId"></label>
                 <select asp-for="FinDiaryTransactionVM.CompanyId" class="form-control" asp-items="ViewBag.CompanyId"></select>
-                <span asp-validation-for="FinDiaryTransactionVM.CompanyId" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="FinDiaryTransactionVM.CostCentreId" class="control-label"></label>
+            <div class="form-group col-md-6">
+                <label asp-for="FinDiaryTransactionVM.CostCentreId"></label>
                 <select asp-for="FinDiaryTransactionVM.CostCentreId" class="form-control" asp-items="ViewBag.CostCentreId"></select>
-                <span asp-validation-for="FinDiaryTransactionVM.CostCentreId" class="text-danger"></span>
             </div>
-
-            <div class="form-group">
-                <label asp-for="FinDiaryTransactionVM.Description" class="control-label"></label>
-                <input asp-for="FinDiaryTransactionVM.Description" class="form-control" />
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-12">
+                <label asp-for="FinDiaryTransactionVM.Description"></label>
+                @*<input asp-for="FinDiaryTransaction.Description" class="form-control" />*@
+                <textarea asp-for="FinDiaryTransactionVM.Description" class="form-control" placeholder="Description of Transaction"></textarea>
                 <span asp-validation-for="FinDiaryTransactionVM.Description" class="text-danger"></span>
             </div>
-            @*<div class="form-group">
-                    <label asp-for="FinDiaryTransaction.Kind" class="control-label"></label>
-                    <input asp-for="FinDiaryTransaction.Kind" class="form-control" />
-                    <span asp-validation-for="FinDiaryTransaction.Kind" class="text-danger"></span>
-                </div>*@
-            <div class="form-group">
-                <label asp-for="FinDiaryTransactionVM.AmountFpa" class="control-label"></label>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label asp-for="FinDiaryTransactionVM.AmountFpa"></label>
                 <input asp-for="FinDiaryTransactionVM.AmountFpa" class="form-control" />
-               
-                @*<input name="FinDiaryTransactionVM.AmountFpa" id="FinDiaryTransactionVM.AmountFpa" type="number" 
-                       class="form-control"/>*@
-                
                 <span asp-validation-for="FinDiaryTransactionVM.AmountFpa" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="FinDiaryTransactionVM.AmountNet" class="control-label"></label>
+            <div class="form-group col-md-6">
+                <label asp-for="FinDiaryTransactionVM.AmountNet"></label>
                 <input asp-for="FinDiaryTransactionVM.AmountNet" class="form-control" />
                 <span asp-validation-for="FinDiaryTransactionVM.AmountNet" class="text-danger"></span>
             </div>
-            <input type="hidden" asp-for="FinDiaryTransactionVM.Timestamp" />
+        </div>
+        <div class="form-row">
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-default" />
+                <input type="submit" value="Update" class="btn btn-primary" />
             </div>
-        </form>
-    </div>
+        </div>
+    </form>
 </div>
 
 <div>
@@ -87,5 +86,5 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-   
+
 }

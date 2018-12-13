@@ -22,6 +22,8 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos
 
         public string TransactorTypeName { get; set; }
 
+        public string TransactorTypeCode { get; set; }
+
         //[MaxLength(200)]
         //public string Address { get; set; }
         //[MaxLength(50)]
