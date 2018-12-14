@@ -39,10 +39,15 @@ namespace GrKouk.WebRazor.Pages.Configuration
             {
                 return NotFound();
             }
-           ViewData["CompanyId"] = new SelectList(_context.Companies, "Id", "Code");
-           ViewData["TransSupplierDefId"] = new SelectList(_context.TransSupplierDefs, "Id", "Name");
-           ViewData["TransWarehouseDefId"] = new SelectList(_context.TransWarehouseDefs, "Id", "Name");
+            LoadCombos();
             return Page();
+        }
+
+        private void LoadCombos()
+        {
+            ViewData["CompanyId"] = new SelectList(_context.Companies.OrderBy(p => p.Code).AsNoTracking(), "Id", "Code");
+            ViewData["TransSupplierDefId"] = new SelectList(_context.TransSupplierDefs.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
+            ViewData["TransWarehouseDefId"] = new SelectList(_context.TransWarehouseDefs.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
         }
 
         public async Task<IActionResult> OnPostAsync()

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using GrKouk.InfoSystem.Domain.FinConfig;
 using GrKouk.WebApi.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace GrKouk.WebRazor.Pages.Configuration.BuyMaterialsDocSeriesDefinitions
 {
@@ -21,9 +22,14 @@ namespace GrKouk.WebRazor.Pages.Configuration.BuyMaterialsDocSeriesDefinitions
 
         public IActionResult OnGet()
         {
-        ViewData["BuyMaterialDocTypeDefId"] = new SelectList(_context.BuyMaterialDocTypeDefs, "Id", "Code");
-        ViewData["CompanyId"] = new SelectList(_context.Companies, "Id", "Code");
+            LoadCombos();
             return Page();
+        }
+
+        private void LoadCombos()
+        {
+            ViewData["BuyMaterialDocTypeDefId"] = new SelectList(_context.BuyMaterialDocTypeDefs.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
+            ViewData["CompanyId"] = new SelectList(_context.Companies.OrderBy(p => p.Code).AsNoTracking(), "Id", "Code");
         }
 
         [BindProperty]

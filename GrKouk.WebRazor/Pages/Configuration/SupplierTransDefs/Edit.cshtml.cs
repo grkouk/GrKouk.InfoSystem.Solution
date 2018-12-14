@@ -40,11 +40,16 @@ namespace GrKouk.WebRazor.Pages.Configuration.SupplierTransDefs
             {
                 return NotFound();
             }
-           ViewData["CompanyId"] = new SelectList(_context.Companies, "Id", "Code");
-           ViewData["CreditTransId"] = new SelectList(_context.FinancialMovements, "Id", "Code");
-           ViewData["DebitTransId"] = new SelectList(_context.FinancialMovements, "Id", "Code");
-           ViewData["TurnOverTransId"] = new SelectList(_context.FinancialMovements, "Id", "Code");
+            NewMethod();
             return Page();
+        }
+
+        private void NewMethod()
+        {
+            ViewData["CompanyId"] = new SelectList(_context.Companies.OrderBy(p => p.Code).AsNoTracking(), "Id", "Code");
+            ViewData["CreditTransId"] = new SelectList(_context.FinancialMovements.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
+            ViewData["DebitTransId"] = new SelectList(_context.FinancialMovements.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
+            ViewData["TurnOverTransId"] = new SelectList(_context.FinancialMovements.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
         }
 
         public async Task<IActionResult> OnPostAsync()

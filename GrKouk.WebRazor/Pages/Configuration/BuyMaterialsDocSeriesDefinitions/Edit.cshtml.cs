@@ -38,9 +38,14 @@ namespace GrKouk.WebRazor.Pages.Configuration.BuyMaterialsDocSeriesDefinitions
             {
                 return NotFound();
             }
-           ViewData["BuyMaterialDocTypeDefId"] = new SelectList(_context.BuyMaterialDocTypeDefs, "Id", "Code");
-           ViewData["CompanyId"] = new SelectList(_context.Companies, "Id", "Code");
+            LoadCompbos();
             return Page();
+        }
+
+        private void LoadCompbos()
+        {
+            ViewData["BuyMaterialDocTypeDefId"] = new SelectList(_context.BuyMaterialDocTypeDefs.OrderBy(p=>p.Name).AsNoTracking(), "Id", "Name");
+            ViewData["CompanyId"] = new SelectList(_context.Companies.OrderBy(p => p.Code).AsNoTracking(), "Id", "Code");
         }
 
         public async Task<IActionResult> OnPostAsync()

@@ -9,53 +9,59 @@
 
 <h4>TransSupplierDef</h4>
 <hr />
-<div class="row">
-    <div class="col-md-4">
-        <form method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="TransSupplierDef.Id" />
-            <div class="form-group">
+
+<div class="container">
+    <form method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="TransSupplierDef.Id" />
+        <div class="form-row">
+            <div class="form-group col-md-2">
                 <label asp-for="TransSupplierDef.Code" class="control-label"></label>
-                <input asp-for="TransSupplierDef.Code" class="form-control" />
+                <input asp-for="TransSupplierDef.Code" class="form-control form-control-sm" />
                 <span asp-validation-for="TransSupplierDef.Code" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-group col-md-7">
                 <label asp-for="TransSupplierDef.Name" class="control-label"></label>
-                <input asp-for="TransSupplierDef.Name" class="form-control" />
+                <input asp-for="TransSupplierDef.Name" class="form-control form-control-sm" />
                 <span asp-validation-for="TransSupplierDef.Name" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <div class="checkbox">
-                    <label>
-                        <input asp-for="TransSupplierDef.Active" /> @Html.DisplayNameFor(model => model.TransSupplierDef.Active)
-                    </label>
-                </div>
-            </div>
-            <div class="form-group">
-                <label asp-for="TransSupplierDef.CreditTransId" class="control-label"></label>
-                <select asp-for="TransSupplierDef.CreditTransId" class="form-control" asp-items="ViewBag.CreditTransId"></select>
-                <span asp-validation-for="TransSupplierDef.CreditTransId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="TransSupplierDef.DebitTransId" class="control-label"></label>
-                <select asp-for="TransSupplierDef.DebitTransId" class="form-control" asp-items="ViewBag.DebitTransId"></select>
-                <span asp-validation-for="TransSupplierDef.DebitTransId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="TransSupplierDef.TurnOverTransId" class="control-label"></label>
-                <select asp-for="TransSupplierDef.TurnOverTransId" class="form-control" asp-items="ViewBag.TurnOverTransId"></select>
-                <span asp-validation-for="TransSupplierDef.TurnOverTransId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
+            <div class="form-group col-md-2">
                 <label asp-for="TransSupplierDef.CompanyId" class="control-label"></label>
-                <select asp-for="TransSupplierDef.CompanyId" class="form-control" asp-items="ViewBag.CompanyId"></select>
+                <select asp-for="TransSupplierDef.CompanyId" class="form-control form-control-sm" asp-items="ViewBag.CompanyId"></select>
                 <span asp-validation-for="TransSupplierDef.CompanyId" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-default" />
+            <div class="form-group col-md-1 ">
+
+                <label asp-for="TransSupplierDef.Active"></label>
+                <input asp-for="TransSupplierDef.Active" class="form-check form-control-sm" />
+
             </div>
-        </form>
-    </div>
+        </div>
+        <div class="form-row">
+            
+            <div class="form-group col-md-4">
+                <label asp-for="TransSupplierDef.CreditTransId" class="control-label"></label>
+                <select asp-for="TransSupplierDef.CreditTransId" class="form-control form-control-sm" asp-items="ViewBag.CreditTransId"></select>
+                <span asp-validation-for="TransSupplierDef.CreditTransId" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-4">
+                <label asp-for="TransSupplierDef.DebitTransId" class="control-label"></label>
+                <select asp-for="TransSupplierDef.DebitTransId" class="form-control form-control-sm" asp-items="ViewBag.DebitTransId"></select>
+                <span asp-validation-for="TransSupplierDef.DebitTransId" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-4">
+                <label asp-for="TransSupplierDef.TurnOverTransId" class="control-label"></label>
+                <select asp-for="TransSupplierDef.TurnOverTransId" class="form-control form-control-sm" asp-items="ViewBag.TurnOverTransId"></select>
+                <span asp-validation-for="TransSupplierDef.TurnOverTransId" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <input type="submit" value="Update" class="btn btn-primary btn-sm" />
+            </div>
+        </div>
+    </form>
 </div>
 
 <div>

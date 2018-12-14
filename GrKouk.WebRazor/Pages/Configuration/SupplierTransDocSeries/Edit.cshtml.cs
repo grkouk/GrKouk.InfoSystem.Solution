@@ -38,8 +38,8 @@ namespace GrKouk.WebRazor.Pages.Configuration.SupplierTransDocSeries
             {
                 return NotFound();
             }
-           ViewData["CompanyId"] = new SelectList(_context.Companies, "Id", "Code");
-           ViewData["TransSupplierDocTypeDefId"] = new SelectList(_context.TransSupplierDocTypeDefs, "Id", "Name");
+           ViewData["CompanyId"] = new SelectList(_context.Companies.OrderBy(p=>p.Code).AsNoTracking(), "Id", "Code");
+           ViewData["TransSupplierDocTypeDefId"] = new SelectList(_context.TransSupplierDocTypeDefs.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
             return Page();
         }
 
