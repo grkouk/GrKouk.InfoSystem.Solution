@@ -22,9 +22,14 @@ namespace GrKouk.WebRazor.Pages.Configuration.SupplierTransDocSeries
 
         public IActionResult OnGet()
         {
-        ViewData["CompanyId"] = new SelectList(_context.Companies.OrderBy(p => p.Code).AsNoTracking(), "Id", "Code");
-        ViewData["TransSupplierDocTypeDefId"] = new SelectList(_context.TransSupplierDocTypeDefs.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
+            LoadCombos();
             return Page();
+        }
+
+        private void LoadCombos()
+        {
+            ViewData["CompanyId"] = new SelectList(_context.Companies.OrderBy(p => p.Code).AsNoTracking(), "Id", "Code");
+            ViewData["TransSupplierDocTypeDefId"] = new SelectList(_context.TransSupplierDocTypeDefs.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
         }
 
         [BindProperty]

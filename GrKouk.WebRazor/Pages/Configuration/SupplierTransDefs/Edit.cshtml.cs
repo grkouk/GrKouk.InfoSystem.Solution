@@ -8,16 +8,19 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using GrKouk.InfoSystem.Domain.FinConfig;
 using GrKouk.WebApi.Data;
+using NToastNotify;
 
 namespace GrKouk.WebRazor.Pages.Configuration.SupplierTransDefs
 {
     public class EditModel : PageModel
     {
         private readonly GrKouk.WebApi.Data.ApiDbContext _context;
+        private readonly IToastNotification toastNotification;
 
-        public EditModel(GrKouk.WebApi.Data.ApiDbContext context)
+        public EditModel(GrKouk.WebApi.Data.ApiDbContext context, IToastNotification toastNotification)
         {
             _context = context;
+            this.toastNotification = toastNotification;
         }
 
         [BindProperty]
@@ -40,11 +43,11 @@ namespace GrKouk.WebRazor.Pages.Configuration.SupplierTransDefs
             {
                 return NotFound();
             }
-            NewMethod();
+            LoadCombos();
             return Page();
         }
 
-        private void NewMethod()
+        private void LoadCombos()
         {
             ViewData["CompanyId"] = new SelectList(_context.Companies.OrderBy(p => p.Code).AsNoTracking(), "Id", "Code");
             ViewData["CreditTransId"] = new SelectList(_context.FinancialMovements.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
@@ -64,6 +67,7 @@ namespace GrKouk.WebRazor.Pages.Configuration.SupplierTransDefs
             try
             {
                 await _context.SaveChangesAsync();
+                toastNotification.AddSuccessToastMessage("Saved");
             }
             catch (DbUpdateConcurrencyException)
             {

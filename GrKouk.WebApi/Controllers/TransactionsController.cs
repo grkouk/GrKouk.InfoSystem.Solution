@@ -12,6 +12,7 @@ using GrKouk.WebApi.Helpers;
 using GrKouk.WebApi.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using GrKouk.InfoSystem.Dtos.WebDtos.DiaryTransactions;
 
 namespace GrKouk.WebApi.Controllers
 {
@@ -23,8 +24,8 @@ namespace GrKouk.WebApi.Controllers
         private readonly IPropertyMappingService _propertyMappingService;
         private readonly IMapper _mapper;
 
-        public TransactionsController(ApiDbContext context,IPropertyMappingService propertyMappingService
-            ,IMapper mapper)
+        public TransactionsController(ApiDbContext context, IPropertyMappingService propertyMappingService
+            , IMapper mapper)
         {
             _context = context;
             _propertyMappingService = propertyMappingService;
@@ -33,7 +34,7 @@ namespace GrKouk.WebApi.Controllers
 
         // GET: api/Transactions/all
         [HttpGet("All")]
-        public async Task<IActionResult > GetTransactionsAll()
+        public async Task<IActionResult> GetTransactionsAll()
         {
 
             var transactions = await _context.FinDiaryTransactions
@@ -44,7 +45,7 @@ namespace GrKouk.WebApi.Controllers
                 .Include(t => t.RevenueCentre)
                 .ProjectTo<FinDiaryTransactionDto>(_mapper.ConfigurationProvider)
                 .ToListAsync();
-           
+
             return Ok(transactions);
         }
 
@@ -58,7 +59,7 @@ namespace GrKouk.WebApi.Controllers
 
         {
             if (
-                !_propertyMappingService.ValidMappingExistsFor<FinDiaryTransactionListDto,FinDiaryTransaction>(
+                !_propertyMappingService.ValidMappingExistsFor<FinDiaryTransactionListDto, FinDiaryTransaction>(
                     listViewResourceParameters.OrderBy)
                 )
             {
@@ -82,11 +83,11 @@ namespace GrKouk.WebApi.Controllers
                     .Where(p => p.Transactor.Name.ToLowerInvariant().Contains(searchQueryForWhereClause));
             }
             var t = collectionBeforePaging.ProjectTo<FinDiaryTransactionListDto>(_mapper.ConfigurationProvider);
-               
+
 
 
             var listToReturn = await PagedList<FinDiaryTransactionListDto>.CreateAsync(
-                t, listViewResourceParameters.PageNumber, 
+                t, listViewResourceParameters.PageNumber,
                 listViewResourceParameters.PageSize);
 
             var paginationMetadata = new
@@ -297,6 +298,27 @@ namespace GrKouk.WebApi.Controllers
             }
 
             return Ok(transactions);
+        }
+        [HttpGet("LastDiaryTransactionData")]
+        public async Task<IActionResult> GetLastDiaryTransactionDataAsync(int transactorId)
+        {
+            var trDto = await _context.FinDiaryTransactions
+                .OrderByDescending(p => p.TransactionDate)
+                .FirstOrDefaultAsync(p => p.TransactorId == transactorId);
+
+            if (trDto != null)
+            {
+                var cat = new LastDiaryTransactionsData
+                {
+                    CategoryId = trDto.FinTransCategoryId,
+                    CostCentreId = trDto.CostCentreId,
+                    RevenueCentreId = trDto.RevenueCentreId,
+                    CompanyId = trDto.CompanyId
+                };
+                return Ok(cat);
+            }
+
+            return NotFound();
         }
     }
 }

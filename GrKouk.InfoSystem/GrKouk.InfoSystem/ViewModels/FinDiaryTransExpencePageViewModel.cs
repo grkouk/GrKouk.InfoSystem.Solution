@@ -17,15 +17,15 @@ using Xamarin.Forms;
 
 namespace GrKouk.InfoSystem.ViewModels
 {
-	public class FinDiaryTransExpencePageViewModel : ViewModelBase
+    public class FinDiaryTransExpencePageViewModel : ViewModelBase
     {
-       
-        
-        #region Constructor and private fields
-            #region Private fields
 
-             private readonly IAutoCompleteDataSource<CostCentre> _costCentresAutoCompleteDs;
-            private readonly IAutoCompleteDataSource<RevenueCentre> _revenueCentresAutoCompleteDs;
+
+        #region Constructor and private fields
+        #region Private fields
+
+        private readonly IAutoCompleteDataSource<CostCentre> _costCentresAutoCompleteDs;
+        private readonly IAutoCompleteDataSource<RevenueCentre> _revenueCentresAutoCompleteDs;
         private readonly ITransactionDataStore<FinDiaryTransactionDto, FinDiaryTransactionCreateDto, FinDiaryTransactionModifyDto> _itemsDs;
         private readonly IAutoCompleteDataSource<Transactor> _transactorsAutoCompleteDs;
         private readonly IAutoCompleteDataSource<FinTransCategory> _categoriesAutoCompleteDs;
@@ -355,7 +355,7 @@ namespace GrKouk.InfoSystem.ViewModels
 
                 if (parameters.ContainsKey("TransactorSelected"))
                 {
-                    var transactorTapped = (SearchListItem) parameters["TransactorSelected"];
+                    var transactorTapped = (SearchListItem)parameters["TransactorSelected"];
                     TransactorText = transactorTapped.Name;
                     SelectedTransactorItem = transactorTapped;
                     return;
@@ -363,7 +363,7 @@ namespace GrKouk.InfoSystem.ViewModels
 
                 if (parameters.ContainsKey("CompanySelected"))
                 {
-                    var itemTapped = (SearchListItem) parameters["CompanySelected"];
+                    var itemTapped = (SearchListItem)parameters["CompanySelected"];
                     CompanyText = itemTapped.Name;
                     SelectedCompanyItem = itemTapped;
                     return;
@@ -371,7 +371,7 @@ namespace GrKouk.InfoSystem.ViewModels
 
                 if (parameters.ContainsKey("CοstCentreSelected"))
                 {
-                    var itemTapped = (SearchListItem) parameters["CοstCentreSelected"];
+                    var itemTapped = (SearchListItem)parameters["CοstCentreSelected"];
                     CostCentreText = itemTapped.Name;
                     SelectedCostCentreItem = itemTapped;
                     return;
@@ -379,7 +379,7 @@ namespace GrKouk.InfoSystem.ViewModels
 
                 if (parameters.ContainsKey("CategorySelected"))
                 {
-                    var categoryTapped = (SearchListItem) parameters["CategorySelected"];
+                    var categoryTapped = (SearchListItem)parameters["CategorySelected"];
                     CategoryText = categoryTapped.Name;
                     SelectedCategoryItem = categoryTapped;
                     return;
@@ -387,7 +387,7 @@ namespace GrKouk.InfoSystem.ViewModels
 
                 if (parameters.ContainsKey("NewTransactor"))
                 {
-                    var newTransactor = (Transactor) parameters["NewTransactor"];
+                    var newTransactor = (Transactor)parameters["NewTransactor"];
                     var searchListItem = new SearchListItem
                     {
                         Key = newTransactor.Id,
@@ -413,7 +413,7 @@ namespace GrKouk.InfoSystem.ViewModels
 
                 if (parameters.ContainsKey("NewCategory"))
                 {
-                    var newCategory = (FinTransCategory) parameters["NewCategory"];
+                    var newCategory = (FinTransCategory)parameters["NewCategory"];
                     var searchListItem = new SearchListItem
                     {
                         Key = newCategory.Id,
@@ -439,7 +439,7 @@ namespace GrKouk.InfoSystem.ViewModels
 
                 if (parameters.ContainsKey("NewCompany"))
                 {
-                    var newItem = (Company) parameters["NewCompany"];
+                    var newItem = (Company)parameters["NewCompany"];
                     var searchListItem = new SearchListItem
                     {
                         Key = newItem.Id,
@@ -465,7 +465,7 @@ namespace GrKouk.InfoSystem.ViewModels
 
                 if (parameters.ContainsKey("NewCostCentre"))
                 {
-                    var newItem = (CostCentre) parameters["NewCostCentre"];
+                    var newItem = (CostCentre)parameters["NewCostCentre"];
                     var searchListItem = new SearchListItem
                     {
                         Key = newItem.Id,
@@ -492,17 +492,17 @@ namespace GrKouk.InfoSystem.ViewModels
         }
 
         private async Task UpdateSelectedItemsAsync(FinDiaryTransactionDto itemToModify)
-            {
-                var transItem = TransactorsCollection.Single(p => p.Key == itemToModify.TransactorId);
-                SelectedTransactorItem = transItem;
-                var catItem = CategoriesCollection.Single(p => p.Key == itemToModify.FinTransCategoryId);
-                SelectedCategoryItem = catItem;
-                var costItem = CostCentreCollection.Single(p => p.Key == itemToModify.CostCentreId);
-                SelectedCostCentreItem = costItem;
-                var compItem = CompaniesCollection.Single(p => p.Key == itemToModify.CompanyId);
-                SelectedCompanyItem = compItem;
-                return;
-            }
+        {
+            var transItem = TransactorsCollection.Single(p => p.Key == itemToModify.TransactorId);
+            SelectedTransactorItem = transItem;
+            var catItem = CategoriesCollection.Single(p => p.Key == itemToModify.FinTransCategoryId);
+            SelectedCategoryItem = catItem;
+            var costItem = CostCentreCollection.Single(p => p.Key == itemToModify.CostCentreId);
+            SelectedCostCentreItem = costItem;
+            var compItem = CompaniesCollection.Single(p => p.Key == itemToModify.CompanyId);
+            SelectedCompanyItem = compItem;
+            return;
+        }
 
         private SearchListItem _selectedTransactorItem;
 
