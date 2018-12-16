@@ -7,6 +7,7 @@ using GrKouk.InfoSystem.Domain.FinConfig;
 using GrKouk.InfoSystem.Domain.Shared;
 using GrKouk.InfoSystem.Dtos;
 using GrKouk.InfoSystem.Dtos.WebDtos;
+using GrKouk.InfoSystem.Dtos.WebDtos.BuyMaterialsDocs;
 using GrKouk.InfoSystem.Dtos.WebDtos.Materials;
 using GrKouk.InfoSystem.Dtos.WebDtos.SupplierTransactions;
 
@@ -60,6 +61,7 @@ namespace GrKouk.WebRazor.Automapper
                 //.ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.Company.Name));
             CreateMap<Material, MaterialCreateDto>().ReverseMap();
             CreateMap<Material, MaterialModifyDto>().ReverseMap();
+            CreateMap<BuyMaterialsDocument, BuyMaterialsDocListDto>();
         }
     }
 }

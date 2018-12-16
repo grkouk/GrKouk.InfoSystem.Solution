@@ -9,69 +9,70 @@
 
 <h4>BuyMaterialsDocument</h4>
 <hr />
-<div class="row">
-    <div class="col-md-4">
-        <form method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<div class="container">
+    <form method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="form-row">
+            <div class="form-group col-md-2">
+                <label asp-for="ItemVm.TransDate" class="control-label"></label>
+                <input asp-for="ItemVm.TransDate" class="form-control form-control-sm" />
+                <span asp-validation-for="ItemVm.TransDate" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-7">
+                <label asp-for="ItemVm.MaterialDocSeriesId" class="control-label"></label>
+                <select asp-for="ItemVm.MaterialDocSeriesId" class="form-control form-control-sm" asp-items="ViewBag.MaterialDocSeriesId"></select>
+            </div>
+            <div class="form-group col-md-3">
+                <label asp-for="ItemVm.TransRefCode" class="control-label"></label>
+                <input asp-for="ItemVm.TransRefCode" class="form-control form-control-sm" />
+                <span asp-validation-for="ItemVm.TransRefCode" class="text-danger"></span>
+
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-8">
+                <label asp-for="ItemVm.SupplierId" class="control-label"></label>
+                <select asp-for="ItemVm.SupplierId" class="form-control form-control-sm" asp-items="ViewBag.SupplierId"></select>
+            </div>
+            <div class="form-group col-md-4">
+                <label asp-for="ItemVm.CompanyId" class="control-label"></label>
+                <select asp-for="ItemVm.CompanyId" class="form-control form-control-sm" asp-items="ViewBag.CompanyId"></select>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-12">
+                <label asp-for="ItemVm.Etiology" class="control-label"></label>
+                <textarea asp-for="ItemVm.Etiology" class="form-control form-control-sm"></textarea>
+                <span asp-validation-for="ItemVm.Etiology" class="text-danger"></span>
+            </div>
+        </div>
+        
+
+        <div class="form-row">
+
             <div class="form-group">
-                <label asp-for="BuyMaterialsDocument.TransDate" class="control-label"></label>
-                <input asp-for="BuyMaterialsDocument.TransDate" class="form-control" />
-                <span asp-validation-for="BuyMaterialsDocument.TransDate" class="text-danger"></span>
+                <label asp-for="ItemVm.AmountFpa" class="control-label"></label>
+                <input asp-for="ItemVm.AmountFpa" class="form-control form-control-sm" />
+                <span asp-validation-for="ItemVm.AmountFpa" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="BuyMaterialsDocument.TransRefCode" class="control-label"></label>
-                <input asp-for="BuyMaterialsDocument.TransRefCode" class="form-control" />
-                <span asp-validation-for="BuyMaterialsDocument.TransRefCode" class="text-danger"></span>
+                <label asp-for="ItemVm.AmountNet" class="control-label"></label>
+                <input asp-for="ItemVm.AmountNet" class="form-control form-control-sm" />
+                <span asp-validation-for="ItemVm.AmountNet" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="BuyMaterialsDocument.SectionId" class="control-label"></label>
-                <select asp-for="BuyMaterialsDocument.SectionId" class ="form-control" asp-items="ViewBag.SectionId"></select>
+                <label asp-for="ItemVm.AmountDiscount" class="control-label"></label>
+                <input asp-for="ItemVm.AmountDiscount" class="form-control form-control-sm" />
+                <span asp-validation-for="ItemVm.AmountDiscount" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="BuyMaterialsDocument.SupplierId" class="control-label"></label>
-                <select asp-for="BuyMaterialsDocument.SupplierId" class ="form-control" asp-items="ViewBag.SupplierId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="BuyMaterialsDocument.FiscalPeriodId" class="control-label"></label>
-                <select asp-for="BuyMaterialsDocument.FiscalPeriodId" class ="form-control" asp-items="ViewBag.FiscalPeriodId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="BuyMaterialsDocument.MaterialDocSeriesId" class="control-label"></label>
-                <select asp-for="BuyMaterialsDocument.MaterialDocSeriesId" class ="form-control" asp-items="ViewBag.MaterialDocSeriesId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="BuyMaterialsDocument.MaterialDocTypeId" class="control-label"></label>
-                <select asp-for="BuyMaterialsDocument.MaterialDocTypeId" class ="form-control" asp-items="ViewBag.MaterialDocTypeId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="BuyMaterialsDocument.AmountFpa" class="control-label"></label>
-                <input asp-for="BuyMaterialsDocument.AmountFpa" class="form-control" />
-                <span asp-validation-for="BuyMaterialsDocument.AmountFpa" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="BuyMaterialsDocument.AmountNet" class="control-label"></label>
-                <input asp-for="BuyMaterialsDocument.AmountNet" class="form-control" />
-                <span asp-validation-for="BuyMaterialsDocument.AmountNet" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="BuyMaterialsDocument.AmountDiscount" class="control-label"></label>
-                <input asp-for="BuyMaterialsDocument.AmountDiscount" class="form-control" />
-                <span asp-validation-for="BuyMaterialsDocument.AmountDiscount" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="BuyMaterialsDocument.Etiology" class="control-label"></label>
-                <input asp-for="BuyMaterialsDocument.Etiology" class="form-control" />
-                <span asp-validation-for="BuyMaterialsDocument.Etiology" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="BuyMaterialsDocument.CompanyId" class="control-label"></label>
-                <select asp-for="BuyMaterialsDocument.CompanyId" class ="form-control" asp-items="ViewBag.CompanyId"></select>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-default" />
-            </div>
-        </form>
-    </div>
+        </div>
+        
+        <div class="form-group">
+            <input type="submit" value="Create" class="btn btn-primary btn-sm" />
+        </div>
+    </form>
+
 </div>
 
 <div>
@@ -80,4 +81,22 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        $(document).ready(function () {
+            console.log("Inside Document ready");
+           
+            //$('#SupplierTransactionDto_AmountFpa').change((event) => {
+            //    //console.log(event.toString());
+            //    console.log("Inside Fpa Change");
+            //});
+            // $('#SupplierTransactionDto_AmountFpa').val("10");
+
+            $('#ItemVm_TransDate').val(new Date().toISOString().slice(0, 10));
+
+           
+
+        });
+
+
+    </script>
 }

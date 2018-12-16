@@ -1,37 +1,44 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using GrKouk.InfoSystem.Domain.Shared;
-using GrKouk.WebApi.Data;
+using GrKouk.InfoSystem.Dtos.WebDtos.BuyMaterialsDocs;
+using Microsoft.EntityFrameworkCore;
+using NToastNotify;
 
 namespace GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc
 {
     public class CreateModel : PageModel
     {
         private readonly GrKouk.WebApi.Data.ApiDbContext _context;
+        private readonly IMapper _mapper;
+        private readonly IToastNotification _toastNotification;
 
-        public CreateModel(GrKouk.WebApi.Data.ApiDbContext context)
+        public CreateModel(GrKouk.WebApi.Data.ApiDbContext context, IMapper mapper, IToastNotification toastNotification)
         {
             _context = context;
+            _mapper = mapper;
+            _toastNotification = toastNotification;
         }
 
         public IActionResult OnGet()
         {
-        ViewData["CompanyId"] = new SelectList(_context.Companies, "Id", "Code");
-        ViewData["FiscalPeriodId"] = new SelectList(_context.FiscalPeriods, "Id", "Id");
-        ViewData["MaterialDocSeriesId"] = new SelectList(_context.BuyMaterialDocSeriesDefs, "Id", "Code");
-        ViewData["MaterialDocTypeId"] = new SelectList(_context.BuyMaterialDocTypeDefs, "Id", "Code");
-        ViewData["SectionId"] = new SelectList(_context.Sections, "Id", "Code");
-        ViewData["SupplierId"] = new SelectList(_context.Transactors, "Id", "Id");
+            LoadCombos();
             return Page();
         }
 
+        private void LoadCombos()
+        {
+            ViewData["CompanyId"] = new SelectList(_context.Companies.OrderBy(p=>p.Code).AsNoTracking(), "Id", "Code");
+            ViewData["MaterialDocSeriesId"] = new SelectList(_context.BuyMaterialDocSeriesDefs.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
+            ViewData["SupplierId"] = new SelectList(_context.Transactors.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
+        }
+
         [BindProperty]
-        public BuyMaterialsDocument BuyMaterialsDocument { get; set; }
+        public BuyMaterialsDocCreateDto ItemVm { get; set; }
 
         public async Task<IActionResult> OnPostAsync()
         {
@@ -40,7 +47,8 @@ namespace GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc
                 return Page();
             }
 
-            _context.BuyMaterialsDocuments.Add(BuyMaterialsDocument);
+            var itemToAttach = _mapper.Map<BuyMaterialsDocument>(ItemVm);
+            _context.BuyMaterialsDocuments.Add(itemToAttach);
             await _context.SaveChangesAsync();
 
             return RedirectToPage("./Index");
