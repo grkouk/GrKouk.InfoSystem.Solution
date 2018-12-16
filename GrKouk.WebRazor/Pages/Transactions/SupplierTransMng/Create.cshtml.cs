@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using GrKouk.InfoSystem.Domain.Shared;
-using GrKouk.WebApi.Data;
 using GrKouk.InfoSystem.Dtos.WebDtos.SupplierTransactions;
 using AutoMapper;
 using NToastNotify;
@@ -45,18 +42,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.SupplierTransMng
             ViewData["SupplierId"] = new SelectList(supplierList, "Id", "Name");
             ViewData["TransSupplierDocSeriesId"] = new SelectList(_context.TransSupplierDocSeriesDefs.OrderBy(s => s.Name).AsNoTracking(), "Id", "Name");
         }
-        private void LoadCompbosWothValues()
-        {
-            var supplierList = _context.Transactors.Where(s => s.TransactorType.Code == "SYS.SUPPLIER").OrderBy(s => s.Name).AsNoTracking();
-
-            ViewData["CompanyId"] = new SelectList(_context.Companies.OrderBy(c => c.Code).AsNoTracking(), "Id", "Code");
-            ViewData["FiscalPeriodId"] = new SelectList(_context.FiscalPeriods.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
-            ViewData["FpaDefId"] = new SelectList(_context.FpaKategories.OrderBy(c => c.Code).AsNoTracking(), "Id", "Code");
-            //ViewData["SectionId"] = new SelectList(_context.Sections, "Id", "Code");
-            ViewData["SupplierId"] = new SelectList(supplierList, "Id", "Name");
-            ViewData["TransSupplierDocSeriesId"] = new SelectList(_context.TransSupplierDocSeriesDefs.OrderBy(s => s.Name).AsNoTracking(), "Id", "Name");
-            // ViewData["TransSupplierDocTypeId"] = new SelectList(_context.TransSupplierDocTypeDefs, "Id", "Name");
-        }
+       
         [BindProperty]
         public SupplierTransactionCreateDto SupplierTransactionDto { get; set; }
 
@@ -141,7 +127,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.SupplierTransMng
             }
             _context.SupplierTransactions.Add(spTransaction);
             await _context.SaveChangesAsync();
-
+            toastNotification.AddSuccessToastMessage("Saved");
             return RedirectToPage("./Index");
         }
     }

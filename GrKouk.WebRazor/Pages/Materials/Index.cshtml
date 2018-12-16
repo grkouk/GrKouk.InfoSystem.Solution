@@ -1,0 +1,110 @@
+﻿@page
+@model GrKouk.WebRazor.Pages.Materials.IndexModel
+
+@{
+    ViewData["Title"] = "Materials List";
+}
+
+<h2>Materials List</h2>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+
+<form class="form-inline" asp-page="./Index" method="get">
+
+    <p>
+        Find by name:
+        <input type="text" name="SearchString" value="@Model.CurrentFilter" />
+        <input type="submit" value="Search" class="btn btn-light" /> |
+        <a asp-page="./Index">Back to full List</a>
+
+    </p>
+
+</form>
+<table class="table table-bordered table-sm">
+    <thead>
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.ListItems[0].Id)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ListItems[0].Code)
+        </th>
+        <th>
+            <a asp-page="./Index" asp-route-sortOrder="@Model.NameSort"
+               asp-route-currentFilter="@Model.CurrentFilter"
+               asp-route-PageSize="@Model.PageSize">
+                @Html.DisplayNameFor(model => model.ListItems[0].Name)
+            </a>
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ListItems[0].MaterialCateroryName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ListItems[0].MainMeasureUnitCode)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ListItems[0].BuyMeasureUnitCode)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ListItems[0].MaterialType)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ListItems[0].FpaDefName)
+        </th>
+
+        <th>
+            @Html.DisplayNameFor(model => model.ListItems[0].CompanyCode)
+        </th>
+
+        <th>
+            @Html.DisplayNameFor(model => model.ListItems[0].Active)
+        </th>
+
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.ListItems)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Code)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MaterialCateroryName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MainMeasureUnitCode)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BuyMeasureUnitCode)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MaterialType)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FpaDefName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CompanyCode)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Active)
+                </td>
+                <td>
+                    <a asp-page="./Edit" asp-route-id="@item.Id"><i class="fas fa-edit"></i></a> |
+                    <a asp-page="./Details" asp-route-id="@item.Id"><i class="fas fa-info-circle"></i></a> |
+                    <a asp-page="./Delete" asp-route-id="@item.Id"><i class="fas fa-trash"></i></a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

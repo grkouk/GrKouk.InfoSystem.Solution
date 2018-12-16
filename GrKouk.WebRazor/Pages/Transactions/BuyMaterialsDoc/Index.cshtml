@@ -1,0 +1,108 @@
+﻿@page
+@model GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.BuyMaterialsDocument[0].TransDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BuyMaterialsDocument[0].TransRefCode)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BuyMaterialsDocument[0].Section)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BuyMaterialsDocument[0].Supplier)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BuyMaterialsDocument[0].FiscalPeriod)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BuyMaterialsDocument[0].MaterialDocSeries)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BuyMaterialsDocument[0].MaterialDocType)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BuyMaterialsDocument[0].AmountFpa)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BuyMaterialsDocument[0].AmountNet)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BuyMaterialsDocument[0].AmountDiscount)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BuyMaterialsDocument[0].Etiology)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BuyMaterialsDocument[0].Company)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BuyMaterialsDocument[0].Timestamp)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.BuyMaterialsDocument) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.TransDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TransRefCode)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Section.Code)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Supplier.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FiscalPeriod.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MaterialDocSeries.Code)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MaterialDocType.Code)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AmountFpa)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AmountNet)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AmountDiscount)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Etiology)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Company.Code)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Timestamp)
+            </td>
+            <td>
+                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

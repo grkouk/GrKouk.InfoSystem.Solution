@@ -1,0 +1,83 @@
+﻿@page
+@model GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc.CreateModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h2>Create</h2>
+
+<h4>BuyMaterialsDocument</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="BuyMaterialsDocument.TransDate" class="control-label"></label>
+                <input asp-for="BuyMaterialsDocument.TransDate" class="form-control" />
+                <span asp-validation-for="BuyMaterialsDocument.TransDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="BuyMaterialsDocument.TransRefCode" class="control-label"></label>
+                <input asp-for="BuyMaterialsDocument.TransRefCode" class="form-control" />
+                <span asp-validation-for="BuyMaterialsDocument.TransRefCode" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="BuyMaterialsDocument.SectionId" class="control-label"></label>
+                <select asp-for="BuyMaterialsDocument.SectionId" class ="form-control" asp-items="ViewBag.SectionId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="BuyMaterialsDocument.SupplierId" class="control-label"></label>
+                <select asp-for="BuyMaterialsDocument.SupplierId" class ="form-control" asp-items="ViewBag.SupplierId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="BuyMaterialsDocument.FiscalPeriodId" class="control-label"></label>
+                <select asp-for="BuyMaterialsDocument.FiscalPeriodId" class ="form-control" asp-items="ViewBag.FiscalPeriodId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="BuyMaterialsDocument.MaterialDocSeriesId" class="control-label"></label>
+                <select asp-for="BuyMaterialsDocument.MaterialDocSeriesId" class ="form-control" asp-items="ViewBag.MaterialDocSeriesId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="BuyMaterialsDocument.MaterialDocTypeId" class="control-label"></label>
+                <select asp-for="BuyMaterialsDocument.MaterialDocTypeId" class ="form-control" asp-items="ViewBag.MaterialDocTypeId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="BuyMaterialsDocument.AmountFpa" class="control-label"></label>
+                <input asp-for="BuyMaterialsDocument.AmountFpa" class="form-control" />
+                <span asp-validation-for="BuyMaterialsDocument.AmountFpa" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="BuyMaterialsDocument.AmountNet" class="control-label"></label>
+                <input asp-for="BuyMaterialsDocument.AmountNet" class="form-control" />
+                <span asp-validation-for="BuyMaterialsDocument.AmountNet" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="BuyMaterialsDocument.AmountDiscount" class="control-label"></label>
+                <input asp-for="BuyMaterialsDocument.AmountDiscount" class="form-control" />
+                <span asp-validation-for="BuyMaterialsDocument.AmountDiscount" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="BuyMaterialsDocument.Etiology" class="control-label"></label>
+                <input asp-for="BuyMaterialsDocument.Etiology" class="form-control" />
+                <span asp-validation-for="BuyMaterialsDocument.Etiology" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="BuyMaterialsDocument.CompanyId" class="control-label"></label>
+                <select asp-for="BuyMaterialsDocument.CompanyId" class ="form-control" asp-items="ViewBag.CompanyId"></select>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
