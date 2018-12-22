@@ -86,8 +86,6 @@
     <script>
         $(document).ready(function () {
             console.log("Inside Document ready");
-
-
             $('#FinDiaryTransaction_TransactorId').change(() => {
                 console.log("Value of select");
                 console.log($('#FinDiaryTransaction_TransactorId').val());
@@ -123,7 +121,9 @@
                     .catch(error => console.log(error));
             });
 
-            //$('#SupplierTransactionDto_TransDate').val(new Date().toISOString().slice(0, 10));
+            $('#FinDiaryTransaction_TransactionDate').val(new Date().toISOString().slice(0, 10));
+            $('#FinDiaryTransaction_AmountNet').val(0);
+            $('#FinDiaryTransaction_AmountFpa').val(0);
         });
     </script>
 

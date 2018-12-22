@@ -8,7 +8,10 @@
 <h2>Λίστα Αγορές Υλικών</h2>
 
 <p>
-    <a asp-page="Create">Create New</a>
+    <a asp-page="Create" asp-route-sortOrder="@Model.CurrentSort"
+       asp-route-pageIndex="@(Model.ListItems.CurrentPage )"
+       asp-route-currentFilter="@Model.CurrentFilter"
+       asp-route-PageSize="@Model.PageSize">Create New</a>
 </p>
 <form class="form-inline" asp-page="./Index" method="get">
 
@@ -16,7 +19,11 @@
         Find by name:
         <input type="text" name="SearchString" value="@Model.CurrentFilter" />
         <input type="submit" value="Search" class="btn btn-light" /> |
-        <a asp-page="./Index">Back to full List</a>
+        <a asp-page="./Index"
+           asp-route-sortOrder="@Model.CurrentSort"
+           asp-route-pageIndex="@(Model.ListItems.CurrentPage )"
+           asp-route-currentFilter="@Model.CurrentFilter"
+           asp-route-PageSize="@Model.PageSize">Back to full List</a>
 
     </p>
 
@@ -25,11 +32,11 @@
     <thead>
         <tr>
             <th>
-                <a asp-page="./Index" asp-route-sortOrder="@Model.DateSort"
+                <a asp-page="./Index"
+                   asp-route-sortOrder="@Model.DateSort"
                    asp-route-currentFilter="@Model.CurrentFilter"
                    asp-route-PageSize="@Model.PageSize">
                     @Html.DisplayNameFor(model => model.ListItems[0].TransDate)
-
                 </a>
                 <i class="@Model.DateSortIcon"></i>
             </th>
@@ -43,7 +50,6 @@
                    asp-route-PageSize="@Model.PageSize">
                     @Html.DisplayNameFor(model => model.ListItems[0].SupplierName)
                 </a>
-
                 <i class="@Model.NameSortIcon"></i>
             </th>
 

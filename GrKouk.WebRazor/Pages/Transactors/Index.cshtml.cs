@@ -22,7 +22,10 @@ namespace GrKouk.WebRazor.Pages.Transactors
         }
 
         public string NameSort { get; set; }
+        public string NameSortIcon { get; set; }
         public string DateSort { get; set; }
+        public string DateSortIcon { get; set; }
+       
         public string CurrentFilter { get; set; }
         public string CurrentSort { get; set; }
         public int PageSize { get; set; }
@@ -34,10 +37,9 @@ namespace GrKouk.WebRazor.Pages.Transactors
         {
             PageSize = (int)((pageSize == null || pageSize == 0) ? 20 : pageSize);
             CurrentPageSize = PageSize;
-
             CurrentSort = sortOrder;
-
-            DateSort = String.IsNullOrEmpty(sortOrder) ? "date_desc" : "Date";
+            NameSort = sortOrder == "Name" ? "name_desc" : "Name";
+            DateSort = sortOrder == "Date" ? "date_desc" : "Date";
 
             if (searchString != null)
             {
@@ -59,23 +61,21 @@ namespace GrKouk.WebRazor.Pages.Transactors
 
             switch (sortOrder)
             {
-                case "Date":
+                
+                case "Name":
                     fullListIq = fullListIq.OrderBy(p => p.Name);
+                    NameSortIcon = "fas fa-sort-alpha-up ";
+                    DateSortIcon = "invisible";
                     break;
-                case "date_desc":
+                case "name_desc":
                     fullListIq = fullListIq.OrderByDescending(p => p.Name);
+                    NameSortIcon = "fas fa-sort-alpha-down ";
+                    DateSortIcon = "invisible";
                     break;
                 default:
                     fullListIq = fullListIq.OrderBy(p => p.Id);
                     break;
             }
-
-
-
-            //fullListIq = fullListIq.Include(f => f.Company)
-            //    .Include(f => f.CostCentre)
-            //    .Include(f => f.FinTransCategory)
-            //    .Include(f => f.Transactor);
 
             var t = fullListIq.ProjectTo<TransactorListDto>(_mapper.ConfigurationProvider);
 

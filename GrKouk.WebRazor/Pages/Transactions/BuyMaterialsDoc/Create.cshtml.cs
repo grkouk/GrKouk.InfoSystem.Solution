@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
@@ -52,6 +53,22 @@ namespace GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc
             await _context.SaveChangesAsync();
 
             return RedirectToPage("./Index");
+        }
+        public async Task<IActionResult> OnPostAjaxPostAsync([FromBody] BuyMaterialsDocCreateAjaxDto data)
+        {
+            Debug.Print(data.TransDate.ToString());
+            foreach (var dataBuyDocLine in data.BuyDocLines)
+            {
+                Debug.WriteLine("Lines ");
+                Debug.WriteLine(dataBuyDocLine.MaterialId.ToString());
+                Debug.WriteLine(dataBuyDocLine.Amount.ToString());
+                Debug.WriteLine(dataBuyDocLine.Q1.ToString());
+                Debug.WriteLine(dataBuyDocLine.Price.ToString());
+
+
+            }
+            
+            return new OkResult(); 
         }
     }
 }

@@ -1,54 +1,116 @@
-﻿@page
+﻿@page "{handler?}"
 @model GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc.CreateModel
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
 
 @{
     ViewData["Title"] = "Create";
 }
-
-<h2>Create</h2>
-
-<h4>BuyMaterialsDocument</h4>
+<style>
+    .ui-autocomplete-loading {
+        background: white url('@Url.Content("~/images/ui-anim_basic_16x16.gif")') right center no-repeat;
+    }
+</style>
+<h4>Νέο παραστατικό αγοράς υλικών</h4>
 <hr />
 <div class="container">
     <form method="post">
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div asp-validation-summary="ModelOnly" class="text-danger small"></div>
 
         <div class="form-row">
             <div class="form-group col-md-2">
-                <label asp-for="ItemVm.TransDate" class="control-label"></label>
-                <input asp-for="ItemVm.TransDate" class="form-control form-control-sm" />
-                <span asp-validation-for="ItemVm.TransDate" class="text-danger"></span>
+                <label asp-for="ItemVm.TransDate" class="control-label small "></label>
+                <input asp-for="ItemVm.TransDate" class="form-control form-control-sm small" />
+                <span asp-validation-for="ItemVm.TransDate" class="text-danger small"></span>
             </div>
             <div class="form-group col-md-7">
-                <label asp-for="ItemVm.MaterialDocSeriesId" class="control-label"></label>
-                <select asp-for="ItemVm.MaterialDocSeriesId" class="form-control form-control-sm" asp-items="ViewBag.MaterialDocSeriesId"></select>
+                <label asp-for="ItemVm.MaterialDocSeriesId" class="control-label small"></label>
+                <select asp-for="ItemVm.MaterialDocSeriesId" class="form-control form-control-sm small" asp-items="ViewBag.MaterialDocSeriesId"></select>
             </div>
             <div class="form-group col-md-3">
-                <label asp-for="ItemVm.TransRefCode" class="control-label"></label>
-                <input asp-for="ItemVm.TransRefCode" class="form-control form-control-sm" />
-                <span asp-validation-for="ItemVm.TransRefCode" class="text-danger"></span>
+                <label asp-for="ItemVm.TransRefCode" class="control-label small"></label>
+                <input asp-for="ItemVm.TransRefCode" class="form-control form-control-sm small" />
+                <span asp-validation-for="ItemVm.TransRefCode" class="text-danger small"></span>
 
             </div>
         </div>
         <div class="form-row">
             <div class="form-group col-md-8">
-                <label asp-for="ItemVm.SupplierId" class="control-label"></label>
-                <select asp-for="ItemVm.SupplierId" class="form-control form-control-sm" asp-items="ViewBag.SupplierId"></select>
+                <label asp-for="ItemVm.SupplierId" class="control-label small"></label>
+                <select asp-for="ItemVm.SupplierId" class="form-control form-control-sm small" asp-items="ViewBag.SupplierId"></select>
             </div>
             <div class="form-group col-md-4">
-                <label asp-for="ItemVm.CompanyId" class="control-label"></label>
-                <select asp-for="ItemVm.CompanyId" class="form-control form-control-sm" asp-items="ViewBag.CompanyId"></select>
+                <label asp-for="ItemVm.CompanyId" class="control-label" small></label>
+                <select asp-for="ItemVm.CompanyId" class="form-control form-control-sm small" asp-items="ViewBag.CompanyId"></select>
             </div>
         </div>
         <div class="form-row">
             <div class="form-group col-md-12">
-                <label asp-for="ItemVm.Etiology" class="control-label"></label>
-                <textarea asp-for="ItemVm.Etiology" class="form-control form-control-sm"></textarea>
-                <span asp-validation-for="ItemVm.Etiology" class="text-danger"></span>
+                <label asp-for="ItemVm.Etiology" class="control-label small"></label>
+                <textarea asp-for="ItemVm.Etiology" class="form-control form-control-sm small"></textarea>
+                <span asp-validation-for="ItemVm.Etiology" class="text-danger small"></span>
             </div>
         </div>
-        
+        <div class="form-row">
+            <input type="hidden" id="MaterialId" />
+            <input type="hidden" id="MaterialLastPrice" />
+            <input type="hidden" id="MaterialFactor" />
+            <div class="form-group col-sm-3">
 
+                <label class="small">LookUp</label>
+                <input class="form-control form-control-sm small" id="Lookup" />
+                <span class="text-danger small"></span>
+            </div>
+
+            <div class="form-group col-sm-2">
+                <label class="small" id="q1Label">Q1</label>
+                <input class="form-control form-control-sm small " type="number" placeholder="Q 1" id="Q1" />
+                <span class="text-danger small"></span>
+            </div>
+            <div class="form-group col-sm-2">
+                <label class="small" id="q2Label">Q2</label>
+                <input class="form-control form-control-sm small " type="number" placeholder="Q 2" id="Q2" />
+                <span class="text-danger small"></span>
+            </div>
+            <div class="form-group col-sm-2">
+                <label class="small">Price</label>
+                <input class="form-control form-control-sm small " type="number" placeholder="Price" id="Price" />
+                <span class="text-danger small"></span>
+            </div>
+            <div class="form-group col-sm-1">
+                <label class="small">Dis% </label>
+                <input class="form-control form-control-sm small " type="number" placeholder="Dis %" id="Discount" />
+                <span class="text-danger small"></span>
+            </div>
+            <div class="form-group col-sm-1">
+                <label class="small">VAT% </label>
+                <input class="form-control form-control-sm small " type="number" placeholder="Vat%" id="VatPercent" />
+                <span class="text-danger small"></span>
+            </div>
+            <div class="form-group col-sm-1 align-self-end">
+                <button id="addToList" class="btn btn-primary btn-sm">
+                    <i class="far fa-arrow-alt-circle-down"></i>
+                </button>
+            </div>
+        </div>
+        <div class="form-row">
+            <table id="detailsTable" class="table table-responsive-sm">
+                <thead class="small">
+                <tr>
+                    <th style="width: 0%"> Id</th>
+                    <th style="width: 20%">Product</th>
+                    <th style="width: 15%">Unit Price</th>
+                    <th style="width: 15%">Unit Discount</th>
+                    <th style="width: 15%">Q1</th>
+                    <th style="width: 15%">Q2</th>
+                    <th style="width: 10%">Amount</th>
+                    <th style="width: 10%"></th>
+
+                </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
         <div class="form-row">
 
             <div class="form-group">
@@ -67,9 +129,9 @@
                 <span asp-validation-for="ItemVm.AmountDiscount" class="text-danger"></span>
             </div>
         </div>
-        
+
         <div class="form-group">
-            <input type="submit" value="Create" class="btn btn-primary btn-sm" />
+            <input type="submit" value="Create" class="btn btn-primary btn-sm" id="saveForm" />
         </div>
     </form>
 
@@ -81,19 +143,168 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/lib/jqueryui/jquery-ui.min.js"></script>
     <script>
-        $(document).ready(function () {
+        $(document).ready(function() {
             console.log("Inside Document ready");
-           
-            //$('#SupplierTransactionDto_AmountFpa').change((event) => {
-            //    //console.log(event.toString());
-            //    console.log("Inside Fpa Change");
-            //});
-            // $('#SupplierTransactionDto_AmountFpa').val("10");
+            var securityToken = $('[name=__RequestVerificationToken]').val();
 
             $('#ItemVm_TransDate').val(new Date().toISOString().slice(0, 10));
 
-           
+
+            $('#Lookup').autocomplete({
+                source: '/api/materials/search',
+                minLength: 2,
+                select: function(event, ui) {
+                    $('#MaterialId').val(ui.item.value);
+                    console.log(ui.item.value.toString());
+                    this.value = ui.item.label;
+                    //Get Material data
+                    const Uri = '@Configuration.GetSection("WebApiSettings")["WebApiLocal"]';
+                    const FinalUri = `${Uri}/materials/materialdata?materialId=${ui.item.value}`;
+
+                    console.log(FinalUri);
+
+                    fetch(FinalUri)
+                        .then(function(response) {
+                            if (response.ok) {
+                                return response.json();
+                            } else {
+                                return "";
+                            }
+
+                        })
+                        .then(function(myJson) {
+                            if (myJson) {
+                                console.log(JSON.stringify(myJson));
+                                var rate = myJson.fpaRate;
+
+                                $('#q1Label').text(`Q1(${myJson.mainUnit})`);
+                                $('#q2Label').text(`Q2(${myJson.buyUnit})`);
+                                $('#VatPercent').val(rate);
+                                $('#MaterialFactor').val(myJson.factor);
+                            }
+
+                        })
+                        .catch(error => console.log(error));
+                    return false;
+                }
+                //_resizeMenu: function () { this.menu.element.outerWidth(300); }
+                //open: function(event, ui)
+                //{
+                //    //$("#autocompleteID").autocomplete("widget").css("width", "300px");
+                //    $('.ui-autocomplete').css('width', '300px');
+                //}
+            });
+
+            $('#addToList').click((e) => {
+                e.preventDefault();
+                if ($.trim($("#Lookup").val()) == "" ||
+                    $.trim($("#Price").val()) == "" ||
+                    $.trim($("#Q1").val()) == "") return;
+
+                var productName = $("#Lookup").val(),
+                    price = $("#Price").val(),
+                    quantity = $("#Q1").val(),
+                    discount = $("#Discount").val(),
+                    materialId=$('#MaterialId').val(),
+                    detailsTableBody = $("#detailsTable tbody");
+
+                var productItem = '<tr><td>' +
+                    materialId +
+                    '</td><td>' +
+                    productName +
+                    '</td><td>' +
+                    price +
+                    '</td><td>' +
+                    discount +
+                    '</td><td>' +
+                    quantity +
+                    '</td><td>' +
+                    0 +
+                    '</td><td>' +
+                    (parseFloat(price) * parseInt(quantity)) +
+                    '</td><td><a data-itemId="0" href="#" class="deleteItem">Remove</a></td></tr>';
+                detailsTableBody.append(productItem);
+                clearItem();
+                $('#Lookup').focus();
+            });
+
+            //After Add A New Order In The List, Clear Clean The Form For Add More Order.
+            function clearItem() {
+                $("#Lookup").val('');
+                $("#Price").val('');
+                $("#Q1").val('');
+                $("#Discount").val('');
+                $("#VatPercent").val('');
+            }
+            $(document).on('click', 'a.deleteItem', function (e) {
+                e.preventDefault();
+                var $self = $(this);
+                if ($(this).attr('data-itemId') == "0") {
+                    $(this).parents('tr').css("background-color", "#ff6347").fadeOut(800, function () {
+                        $(this).remove();
+                    });
+                }
+            });
+            //--------------------
+            function saveData(data) {
+                return $.ajax({
+                    contentType: 'application/json; charset=utf-8',
+
+                    dataType: 'json',
+                    type: 'POST',
+                   // url: "/Transactions/BuyMaterialsDoc/Create/AjaxPost",
+                    url: "/api/Materials/MaterialBuyDoc",
+                    data: data,
+                    headers: {
+                        'RequestVerificationToken': securityToken
+                    },
+                    success: function (result) {
+                        alert("Success" + result);
+                        location.reload();
+                    },
+                    error: function (e) {
+                        alert("Error" + e.message);
+                    }
+                });
+            }
+//-----------------
+            $("#saveForm").click(function (e) {
+                e.preventDefault();
+
+                var linesArr = [];
+                linesArr.length = 0;
+
+                $.each($("#detailsTable tbody tr"), function () {
+                    linesArr.push({
+                        materialId: $(this).find('td:eq(0)').html(),
+                        q1: $(this).find('td:eq(4)').html(),
+                        price: $(this).find('td:eq(2)').html(),
+                        amount: $(this).find('td:eq(5)').html()
+                    });
+                });
+
+
+                var data = JSON.stringify({
+                    transDate: $("#ItemVm_TransDate").val(),
+                    transRefCode: $("#ItemVm_TransRefCode").val(),
+                    buyDocLines: linesArr
+                   
+                });
+
+                console.log("Data->" + data);
+
+                $.when(saveData(data))
+                    .then(function (response) {
+                            console.log(response);
+                    })
+                    .fail(function (err) {
+                            console.log(err);
+                    });
+            });
+            //-------------
+
 
         });
 
