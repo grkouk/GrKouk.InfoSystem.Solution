@@ -48,11 +48,21 @@ namespace GrKouk.WebRazor.Controllers
         [HttpGet("materialdata")]
         public async Task<IActionResult> GetMaterialData(int materialId)
         {
-            var materialData = await _context.Materials.Where(p => p.Id== materialId)
+            var lastPr = await _context.WarehouseTransactions.Where(m => m.Id == materialId)
+                .Select(k => new
+                {
+                    LastPrice = k.AmountNet
+                }).FirstOrDefaultAsync();
+
+            var lastPrice = lastPr?.LastPrice ?? 0;
+
+            var materialData = await _context.Materials.Where(p => p.Id== materialId && p.Active)
                 .Select(p => new {
                     mainUnit =p.MainMeasureUnit.Code,
                     buyUnit =p.BuyMeasureUnit.Code,
                     factor=p.BuyUnitToMainRate,
+                    fpaId=p.FpaDefId,
+                    lastPrice=   lastPrice,
                     fpaRate=p.FpaDef.Rate
                 }).FirstOrDefaultAsync();
 

@@ -52,6 +52,7 @@ namespace GrKouk.WebRazor.Pages.Materials
 
             MaterialVm = _mapper.Map<MaterialModifyDto>(materialToModify);
            LoadCombos();
+           _toastNotification.AddInfoToastMessage("Welcome to edit page");
             return Page();
         }
         private void LoadCombos()
@@ -79,6 +80,7 @@ namespace GrKouk.WebRazor.Pages.Materials
         {
             if (!ModelState.IsValid)
             {
+                _toastNotification.AddAlertToastMessage("Please see errors");
                 return Page();
             }
 
@@ -89,15 +91,18 @@ namespace GrKouk.WebRazor.Pages.Materials
             try
             {
                 await _context.SaveChangesAsync();
+                _toastNotification.AddSuccessToastMessage("Material changes saved");
             }
             catch (DbUpdateConcurrencyException)
             {
                 if (!MaterialExists(MaterialVm.Id))
                 {
+                    _toastNotification.AddErrorToastMessage("Material was not found");
                     return NotFound();
                 }
                 else
                 {
+                    _toastNotification.AddErrorToastMessage("Concurency error");
                     throw;
                 }
             }
