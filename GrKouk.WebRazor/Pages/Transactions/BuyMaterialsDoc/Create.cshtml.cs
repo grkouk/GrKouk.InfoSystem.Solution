@@ -39,7 +39,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc
         }
 
         [BindProperty]
-        public BuyMaterialsDocCreateDto ItemVm { get; set; }
+        public BuyMaterialsDocCreateAjaxDto ItemVm { get; set; }
 
         public async Task<IActionResult> OnPostAsync()
         {
@@ -48,9 +48,9 @@ namespace GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc
                 return Page();
             }
 
-            var itemToAttach = _mapper.Map<BuyMaterialsDocument>(ItemVm);
-            _context.BuyMaterialsDocuments.Add(itemToAttach);
-            await _context.SaveChangesAsync();
+            //var itemToAttach = _mapper.Map<BuyMaterialsDocument>(ItemVm);
+            //_context.BuyMaterialsDocuments.Add(itemToAttach);
+            //await _context.SaveChangesAsync();
 
             return RedirectToPage("./Index");
         }

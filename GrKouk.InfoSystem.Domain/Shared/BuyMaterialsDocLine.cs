@@ -15,9 +15,6 @@ namespace GrKouk.InfoSystem.Domain.Shared
         public int MaterialId { get; set; }
         public virtual Material Material { get; set; }
 
-        public int FpaId { get; set; }
-        //TODO add navigation property for FPADef
-
         public Single FpaRate { get; set; }
 
         public int PrimaryUnitId { get; set; }

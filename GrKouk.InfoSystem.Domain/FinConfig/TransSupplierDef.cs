@@ -37,6 +37,10 @@ namespace GrKouk.InfoSystem.Domain.FinConfig
         /// Εταιρεία για την οποία είναι ενεργή η κίνηση
         /// </summary>
         public int CompanyId { get; set; }
+       
         public virtual Company Company { get; set; }
+         [Display(Name = "Default Series")]
+        public int TransSupplierDefaultDocSeriesId { get; set; }
+        public virtual TransSupplierDocSeriesDef TransSupplierDefaultDocSeries { get; set; }
     }
 }

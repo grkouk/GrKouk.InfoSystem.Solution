@@ -10,11 +10,15 @@
     .ui-autocomplete-loading {
         background: white url('@Url.Content("~/images/ui-anim_basic_16x16.gif")') right center no-repeat;
     }
+    .ui-autocomplete.ui-widget {
+        font-family: Verdana,Arial,sans-serif;
+        font-size: 12px;
+    }
 </style>
 <h4>Νέο παραστατικό αγοράς υλικών</h4>
 <hr />
 <div class="container">
-    <form method="post">
+    <form method="post" id="transForm">
         <fieldset id="thisForm">
             <div asp-validation-summary="ModelOnly" class="text-danger small"></div>
 
@@ -57,6 +61,9 @@
                 <input type="hidden" id="MaterialLastPrice" />
                 <input type="hidden" id="MaterialFactor" />
                 <input type="hidden" id="MaterialFpaId" />
+                <input type="hidden" id="MaterialMainUnitId" />
+                <input type="hidden" id="MaterialSecondaryUnitId" />
+                <input type="hidden" id="MaterialsCounter" />
                 <div class="form-group col-sm-3">
 
                     <label class="small">LookUp</label>
@@ -66,8 +73,11 @@
 
                 <div class="form-group col-sm-2">
                     <label class="small" id="q1Label">Q1</label>
-                    <input class="form-control form-control-sm small " type="number" min="10" placeholder="Q 1" id="Q1" />
-                    <span class="text-danger small"></span>
+                    <input class="form-control form-control-sm small " type="number" placeholder="Q 1" id="Q1" />
+                    <div class="invalid-feedback">
+                        Please enter a valid Q1.
+                    </div>
+                    @*<span class="text-danger invalid-feedback small">Invalid Q1</span>*@
                 </div>
                 <div class="form-group col-sm-2">
                     <label class="small" id="q2Label">Q2</label>
@@ -99,13 +109,16 @@
                 <table id="detailsTable" class="table table-responsive-sm">
                     <thead class="small">
                         <tr>
-                            <th class="small" style="width: 0%"> Id</th>
+                            <th class="small" style="width: 0%"> #</th>
                             <th class="small" style="width: 20%">Product</th>
-                            <th class="small" style="width: 15%">Unit Price</th>
-                            <th class="small" style="width: 15%">Unit Discount</th>
-                            <th class="small" style="width: 15%">Q1</th>
-                            <th class="small" style="width: 15%">Q2</th>
-                            <th class="small" style="width: 10%">Amount</th>
+                            <th class="small" style="width: 10%">Q1</th>
+                            <th class="small" style="width: 10%">Q2</th>
+                            <th class="small" style="width: 10%">Unit Price</th>
+                            <th class="small" style="width: 5%">Disc%</th>
+                            <th class="small" style="width: 5%">Vat%</th>
+                            <th class="small" style="width: 10%">Vat</th>
+                            <th class="small" style="width: 10%">Net</th>
+                            <th class="small" style="width: 10%">Gross</th>
                             <th class="small" style="width: 10%"></th>
 
                         </tr>
@@ -118,17 +131,22 @@
                 <div class="form-group">
                     <label asp-for="ItemVm.AmountFpa" class="control-label small"></label>
                     <input asp-for="ItemVm.AmountFpa" class="form-control form-control-sm small" />
-                    <span asp-validation-for="ItemVm.AmountFpa" class="text-danger"></span>
+                    <span asp-validation-for="ItemVm.AmountFpa" class="text-danger small"></span>
                 </div>
                 <div class="form-group">
                     <label asp-for="ItemVm.AmountNet" class="control-label small"></label>
                     <input asp-for="ItemVm.AmountNet" class="form-control form-control-sm small" />
-                    <span asp-validation-for="ItemVm.AmountNet" class="text-danger"></span>
+                    <span asp-validation-for="ItemVm.AmountNet" class="text-danger small"></span>
                 </div>
                 <div class="form-group">
                     <label asp-for="ItemVm.AmountDiscount" class="control-label small"></label>
                     <input asp-for="ItemVm.AmountDiscount" class="form-control form-control-sm small" />
-                    <span asp-validation-for="ItemVm.AmountDiscount" class="text-danger"></span>
+                    <span asp-validation-for="ItemVm.AmountDiscount" class="text-danger small"></span>
+                </div>
+                <div class="form-group">
+                    <label class="control-label small">Sum</label>
+                    <input id="DocumentSum" type="number" class="form-control form-control-sm small" disabled />
+
                 </div>
             </div>
 
@@ -150,25 +168,47 @@
     <script>
         $(document).ready(function() {
             console.log("Inside Document ready");
+            var formatterCurrency = new Intl.NumberFormat('el-GR', {
+                style: 'currency',
+                currency: 'EUR',
+                minimumFractionDigits:2,
+                maximumSignificantDigits: 2
+
+            });
+            var formatterNumber = new Intl.NumberFormat('el-GR', {
+
+                maximumSignificantDigits: 3
+
+            });
+            //#region Initial values
             var securityToken = $('[name=__RequestVerificationToken]').val();
             var $f = $('#MaterialFactor');
             var $q1 = $('#Q1');
             var $q2 = $('#Q2');
+            var $materialCounter = $('#MaterialsCounter');
+            //#endregion
 
-            $('#Q1').blur(function (event) {
-                console.log("Q1 validation");
-                $('#Q1').checkValidity();
-            });
-            $('#Price').blur(function(event) {
-                event.target.checkValidity();
-            });
-            $('#Discount').blur(function(event) {
-                event.target.checkValidity();
-            });
-            $('#VatPercent').blur(function(event) {
-                event.target.checkValidity();
-            });
+            //#region Initial values
+            $materialCounter.val(0);
+            $('#ItemVm_TransDate').val(new Date().toISOString().slice(0, 10));
+            //#endregion
+            //#region Comment Out
+            //$('#Q1').blur(function (event) {
+            //    console.log("Q1 validation");
+            //    var $e = $('#Q1');
+            //    console.log( $e[0].checkValidity());
 
+            //});
+            //$('#Price').blur(function(event) {
+            //    event.target.checkValidity();
+            //});
+            //$('#Discount').blur(function(event) {
+            //    event.target.checkValidity();
+            //});
+            //$('#VatPercent').blur(function(event) {
+            //    event.target.checkValidity();
+            //});
+            //#endregion
 
 
             $('#Q1').change(() => {
@@ -183,12 +223,11 @@
                 $q1.val($q2.val() * $f.val());
 
             });
-            $('#ItemVm_TransDate').val(new Date().toISOString().slice(0, 10));
-
-
+            //$('.ui-autocomplete-input').css('fontSize', '8px');
             $('#Lookup').autocomplete({
                 source: '/api/materials/search',
                 minLength: 2,
+               
                 select: function(event, ui) {
                     $('#MaterialId').val(ui.item.value);
                     console.log(ui.item.value.toString());
@@ -214,13 +253,15 @@
                                 var rate = myJson.fpaRate;
                                 var lastPrice = myJson.lastPrice;
                                 var fpaId = myJson.fpaId;
-
-                                $('#q1Label').text(`Q1(${myJson.mainUnit})`);
-                                $('#q2Label').text(`Q2(${myJson.buyUnit})`);
+                                //I Use main unit and Buy Unit as secondary
+                                $('#q1Label').text(`Q1(${myJson.mainUnitCode})`);
+                                $('#q2Label').text(`Q2(${myJson.buyUnitCode})`);
                                 $('#VatPercent').val(rate);
                                 $('#MaterialFpaId').val(fpaId);
                                 $('#Price').val(lastPrice);
-                                $('#MaterialFactor').val(myJson.factor);
+                                $('#MaterialMainUnitId').val(myJson.mainUnitId);
+                                $('#MaterialSecondaryUnitId').val(myJson.buyUnitId);
+                                $('#MaterialFactor').val(myJson.factorBuy);
                             }
 
                         })
@@ -247,24 +288,56 @@
                     quantity2 = $("#Q2").val(),
                     discount = $("#Discount").val(),
                     materialId = $('#MaterialId').val(),
+                    vatPercent = $('#VatPercent').val(),
                     factor = $('#MaterialFactor').val(),
+                    mainUnitId = $('#MaterialMainUnitId').val(),
+                    secUnitId = $('#MaterialSecondaryUnitId').val(),
+                    materialCounter = $materialCounter.val() + 1,
+                    netAmount = parseFloat(quantity1) * parseFloat(price),
+                    discountAmount = netAmount * parseFloat(discount),
+                    fpaAmount = netAmount * parseFloat(vatPercent),
+                    grosAmount =  netAmount+fpaAmount-discountAmount,
                     detailsTableBody = $("#detailsTable tbody");
 
+                var $amountNetSum = $('#ItemVm_AmountNet');
+                var $amountFpaSum = $('#ItemVm_AmountFpa');
+                var $amountDiscountSum = $('#ItemVm_AmountDiscount');
+                var $DocSum = $('#DocumentSum');
+                $amountNetSum.val(parseFloat( $amountNetSum.val()) +parseFloat(netAmount));
+                $amountFpaSum.val(parseFloat($amountFpaSum.val()) + parseFloat(fpaAmount));
+                $amountDiscountSum.val(parseFloat( $amountDiscountSum.val()) + parseFloat( discountAmount));
+                $DocSum.val(parseFloat( $DocSum.val()) + parseFloat( grosAmount));
                 var productItem = '<tr><td class="small">' +
-                    materialId +
+                    materialCounter +
                     '</td><td class="small" data-materialId="' + materialId + '"' +
-                       'data-factor="' + factor + '"' +'>' +
+                    'data-factor="' + factor + '"' +
+                    'data-mainUnitId="' + mainUnitId + '"' +
+                    'data-secUnitId="' + secUnitId + '"' +
+                     '>' +
                     productName +
+                    '</td><td class="small" ' +
+                    'data-actualValue="' + quantity1 +'" >' +
+                    formatterNumber.format(quantity1) +
+                    '</td><td class="small" ' +
+                    'data-actualValue="' + quantity2 + '" >' +
+                    formatterNumber.format( quantity2) +
+                    '</td><td class="small" ' +
+                    'data-actualValue="' + price +'" >' +
+                    formatterCurrency.format( price) +
                     '</td><td class="small">' +
-                    price +
-                    '</td><td class="small">' +
-                    discount +
-                    '</td><td class="small">' +
-                    quantity1 +
-                    '</td><td class="small">' +
-                    quantity2 +
-                    '</td><td class="small">' +
-                    (parseFloat(price) * parseInt(quantity1)) +
+                    formatterNumber.format( discount) +
+                    '</td><td class="small" ' +
+                    'data-actualValue="' + vatPercent + '" >' +
+                    formatterNumber.format(vatPercent) +
+                    '</td><td class="small" ' +
+                    'data-actualValue="' + fpaAmount +'" >' +
+                    formatterCurrency.format(fpaAmount) +
+                    '</td><td class="small" ' +
+                    'data-actualValue="' + netAmount + '" >' +
+                    formatterCurrency.format(netAmount) +
+                    '</td><td class="small" ' +
+                    'data-actualValue="' + grosAmount + '" >' +
+                    formatterCurrency.format(grosAmount) +
                     '</td><td class="small"><a data-itemId="0" href="#" class="deleteItem">Remove</a></td></tr>';
                 detailsTableBody.append(productItem);
                 clearItem();
@@ -276,6 +349,7 @@
                 $("#Lookup").val('');
                 $("#Price").val('');
                 $("#Q1").val('');
+                $("#Q2").val('');
                 $("#Discount").val('');
                 $("#VatPercent").val('');
             }
@@ -295,7 +369,6 @@
 
                     dataType: 'json',
                     type: 'POST',
-                   // url: "/Transactions/BuyMaterialsDoc/Create/AjaxPost",
                     url: "/api/Materials/MaterialBuyDoc",
                     data: data,
                     headers: {
@@ -303,18 +376,30 @@
                     },
                     success: function (result) {
                         toastr.success ("Success", "Success");
-                        //alert("Success" + result);
                         //location.reload();
                     },
                     error: function (e) {
 
                         toastr.error ("Error", "Error");
-                        //alert("Error" + e.message);
                     }
                 });
             }
 //-----------------
             $("#saveForm").click(function (e) {
+
+                var $form = $('#transForm');
+                var f = document.getElementById("transForm");
+                //#region validation that didt perform well
+               // var isValidate = $form[0].checkValidity();
+                //var isValidate2 = f.checkValidity();
+                //console.log("Check Form validation is " + isValidate);
+                //console.log("Check Form validation2 is " + isValidate2);
+                //if (!isValidate) {
+                //    $form.addClass('was-validated');
+                //    //e.preventDefault();
+                //    return;
+                //}
+                //#endregion
                 e.preventDefault();
 
                 $('#thisForm').prop("disabled", true);
@@ -324,19 +409,31 @@
 
                 $.each($("#detailsTable tbody tr"), function () {
                     linesArr.push({
-                        materialId: $(this).find('td:eq(0)').html(),
-                        materialId2: $(this).find('td:eq(1)').attr('data-materialId'),
+                       // materialId: $(this).find('td:eq(0)').html(),
+                        materialId: $(this).find('td:eq(1)').attr('data-materialId'),
+                        mainUnitId: $(this).find('td:eq(1)').attr('data-mainUnitId'),
+                        secUnitId: $(this).find('td:eq(1)').attr('data-secUnitId'),
                         factor: $(this).find('td:eq(1)').attr('data-factor'),
-                        q1: $(this).find('td:eq(4)').html(),
-                        price: $(this).find('td:eq(2)').html(),
+                        q1: $(this).find('td:eq(2)').attr('data-actualValue'),
+                        q2: $(this).find('td:eq(3)').attr('data-actualValue'),
+                        price: $(this).find('td:eq(4)').attr('data-actualValue'),
+                        discount: $(this).find('td:eq(5)').val(),
+                        vatPercent: $(this).find('td:eq(6)').attr('data-actualValue')
 
-                        amount: $(this).find('td:eq(5)').html()
                     });
                 });
 
                 var data = JSON.stringify({
                     transDate: $("#ItemVm_TransDate").val(),
                     transRefCode: $("#ItemVm_TransRefCode").val(),
+                    supplierId: $("#ItemVm_SupplierId").val(),
+                    companyId: $("#ItemVm_CompanyId").val(),
+                    materialDocSeriesId: $("#ItemVm_MaterialDocSeriesId").val(),
+                    Etiology: $("#ItemVm_Etiology").val(),
+                    amountFpa: $("#ItemVm_AmountFpa").val(),
+                    amountNet: $("#ItemVm_AmountNet").val(),
+                    amountDiscount: $("#ItemVm_AmountDiscount").val(),
+
                     buyDocLines: linesArr
 
                 });

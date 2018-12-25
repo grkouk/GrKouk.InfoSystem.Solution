@@ -39,7 +39,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.SupplierTransMng
            var  supplierTransactionToModify = await _context.SupplierTransactions
                 .Include(s => s.Company)
                 .Include(s => s.FiscalPeriod)
-                .Include(s => s.FpaDef)
+              
                 .Include(s => s.Section)
                 .Include(s => s.Supplier)
                 .Include(s => s.TransSupplierDocSeries)

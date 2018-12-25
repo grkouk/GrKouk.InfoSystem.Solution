@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using GrKouk.InfoSystem.Domain.FinConfig;
-using GrKouk.WebApi.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace GrKouk.WebRazor.Pages.Configuration.WarehouseTransDef
@@ -23,7 +20,7 @@ namespace GrKouk.WebRazor.Pages.Configuration.WarehouseTransDef
         public IActionResult OnGet()
         {
             var fMovements = _context.FinancialMovements.AsNoTracking().ToList();
-
+            ViewData["TransWarehouseDefaultDocSeriesDefId"] = new SelectList(_context.TransWarehouseDocSeriesDefs.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
             ViewData["AmtBuyTransId"] = new SelectList(fMovements, "Id", "Name", 3);
             ViewData["AmtExportsTransId"] = new SelectList(fMovements, "Id", "Name", 3);
             ViewData["AmtImportsTransId"] = new SelectList(fMovements, "Id", "Name", 3);

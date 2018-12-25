@@ -49,7 +49,8 @@ namespace GrKouk.WebRazor.Pages.Configuration.WarehouseTransDef
             {
                 return NotFound();
             }
-           ViewData["AmtBuyTransId"] = new SelectList(_context.FinancialMovements.AsNoTracking(), "Id", "Name");
+            ViewData["TransWarehouseDefaultDocSeriesDefId"] = new SelectList(_context.TransWarehouseDocSeriesDefs.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
+            ViewData["AmtBuyTransId"] = new SelectList(_context.FinancialMovements.AsNoTracking(), "Id", "Name");
            ViewData["AmtExportsTransId"] = new SelectList(_context.FinancialMovements.AsNoTracking(), "Id", "Name");
            ViewData["AmtImportsTransId"] = new SelectList(_context.FinancialMovements.AsNoTracking(), "Id", "Name");
            ViewData["AmtInvoicedExportsTransId"] = new SelectList(_context.FinancialMovements.AsNoTracking(), "Id", "Name");

@@ -40,7 +40,7 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.SupplierTransactions
 
         
 
-        public int FpaDefId { get; set; }
+      
         public Single FpaRate { get; set; }
         [DataType(DataType.Currency)]
         public decimal AmountFpa { get; set; }

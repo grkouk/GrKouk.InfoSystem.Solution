@@ -33,6 +33,9 @@ namespace GrKouk.InfoSystem.Domain.FinConfig
         [Display(Name = "Κίνηση Τζίρου")]
         public int TurnOverTransId { get; set; }
         public virtual FinancialMovement TurnOverTrans { get; set; }
+
+        public int? TransCustomerDefaultDocSeriesId { get; set; }
+        public virtual TransCustomerDocSeriesDef TransCustomerDefaultDocSeries { get; set; }
         /// <summary>
         /// Εταιρεία για την οποία είναι ενεργή η κίνηση
         /// </summary>

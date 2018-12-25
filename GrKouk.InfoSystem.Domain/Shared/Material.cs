@@ -23,17 +23,17 @@ namespace GrKouk.InfoSystem.Domain.Shared
         public bool Active { get; set; }
 
         [Display(Name = "Βασική Μονάδα Μέτρησης")]
-        public int? MainMeasureUnitId { get; set; }
+        public int MainMeasureUnitId { get; set; }
         public virtual MeasureUnit MainMeasureUnit { get; set; }
 
         [Display(Name = "Δευτερεύουσα Μονάδα Μέτρησης")]
-        public int? SecondaryMeasureUnitId { get; set; }
+        public int SecondaryMeasureUnitId { get; set; }
         public virtual MeasureUnit SecondaryMeasureUnit { get; set; }
         [Display(Name = "Συντελεστής μετατροπής σε βασική")]
         public double SecondaryUnitToMainRate { get; set; }
 
         [Display(Name = "Μονάδα Μέτρησης Αγορών")]
-        public int? BuyMeasureUnitId { get; set; }
+        public int BuyMeasureUnitId { get; set; }
         public virtual MeasureUnit BuyMeasureUnit { get; set; }
         [Display(Name = "Συντελεστής μετατροπής σε βασική")]
         public double BuyUnitToMainRate { get; set; }

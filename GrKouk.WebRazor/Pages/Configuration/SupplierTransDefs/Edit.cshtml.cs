@@ -53,6 +53,7 @@ namespace GrKouk.WebRazor.Pages.Configuration.SupplierTransDefs
             ViewData["CreditTransId"] = new SelectList(_context.FinancialMovements.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
             ViewData["DebitTransId"] = new SelectList(_context.FinancialMovements.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
             ViewData["TurnOverTransId"] = new SelectList(_context.FinancialMovements.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
+            ViewData["TransSupplierDefaultDocSeriesId"] = new SelectList(_context.TransSupplierDocSeriesDefs.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
         }
 
         public async Task<IActionResult> OnPostAsync()

@@ -99,6 +99,11 @@ namespace GrKouk.WebApi.Data
                    .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<TransWarehouseDef>()
+                .HasOne(bd => bd.TransWarehouseDefaultDocSeriesDef)
+                .WithMany()
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<TransWarehouseDef>()
                    .HasOne(bd => bd.VolImportsTrans)
                    .WithMany()
                    .OnDelete(DeleteBehavior.Restrict);
@@ -210,6 +215,10 @@ namespace GrKouk.WebApi.Data
                     .WithMany()
                     .OnDelete(DeleteBehavior.Restrict);
 
+                entity.HasOne(db => db.TransSupplierDefaultDocSeries)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+
                 entity.HasIndex(c => c.Code)
                     .IsUnique();
             });
@@ -259,7 +268,9 @@ namespace GrKouk.WebApi.Data
                 entity.HasOne(bd => bd.TurnOverTrans)
                     .WithMany()
                     .OnDelete(DeleteBehavior.Restrict);
-
+                entity.HasOne(bd => bd.TransCustomerDefaultDocSeries)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
                 entity.HasIndex(c => c.Code)
                     .IsUnique();
             });
@@ -316,9 +327,7 @@ namespace GrKouk.WebApi.Data
                 entity.HasOne(p => p.Supplier)
                     .WithMany()
                     .OnDelete(DeleteBehavior.Restrict);
-                entity.HasOne(p => p.FpaDef)
-                    .WithMany()
-                    .OnDelete(DeleteBehavior.Restrict);
+               
             });
             modelBuilder.Entity<WarehouseTransaction>(entity =>
             {
@@ -342,9 +351,7 @@ namespace GrKouk.WebApi.Data
                 entity.HasOne(p => p.Material)
                     .WithMany()
                     .OnDelete(DeleteBehavior.Restrict);
-                entity.HasOne(p => p.FpaDef)
-                    .WithMany()
-                    .OnDelete(DeleteBehavior.Restrict);
+               
             });
             modelBuilder.Entity<CustomerTransaction>(entity =>
             {
@@ -368,9 +375,7 @@ namespace GrKouk.WebApi.Data
                 entity.HasOne(p => p.Customer)
                     .WithMany()
                     .OnDelete(DeleteBehavior.Restrict);
-                entity.HasOne(p => p.FpaDef)
-                    .WithMany()
-                    .OnDelete(DeleteBehavior.Restrict);
+                
             });
             modelBuilder.Entity<BuyMaterialDocTypeDef>(entity =>
             {

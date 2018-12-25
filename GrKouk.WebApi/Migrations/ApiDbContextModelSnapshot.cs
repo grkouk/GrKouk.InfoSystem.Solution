@@ -158,6 +158,8 @@ namespace GrKouk.WebApi.Migrations
                     b.Property<string>("Name")
                         .HasMaxLength(200);
 
+                    b.Property<int?>("TransCustomerDefaultDocSeriesId");
+
                     b.Property<int>("TurnOverTransId");
 
                     b.HasKey("Id");
@@ -171,6 +173,8 @@ namespace GrKouk.WebApi.Migrations
                     b.HasIndex("CreditTransId");
 
                     b.HasIndex("DebitTransId");
+
+                    b.HasIndex("TransCustomerDefaultDocSeriesId");
 
                     b.HasIndex("TurnOverTransId");
 
@@ -259,6 +263,8 @@ namespace GrKouk.WebApi.Migrations
                     b.Property<string>("Name")
                         .HasMaxLength(200);
 
+                    b.Property<int>("TransSupplierDefaultDocSeriesId");
+
                     b.Property<int>("TurnOverTransId");
 
                     b.HasKey("Id");
@@ -272,6 +278,8 @@ namespace GrKouk.WebApi.Migrations
                     b.HasIndex("CreditTransId");
 
                     b.HasIndex("DebitTransId");
+
+                    b.HasIndex("TransSupplierDefaultDocSeriesId");
 
                     b.HasIndex("TurnOverTransId");
 
@@ -368,6 +376,8 @@ namespace GrKouk.WebApi.Migrations
                     b.Property<string>("Name")
                         .HasMaxLength(200);
 
+                    b.Property<int>("TransWarehouseDefaultDocSeriesDefId");
+
                     b.Property<int>("VolBuyTransId");
 
                     b.Property<int>("VolExportsTransId");
@@ -399,6 +409,8 @@ namespace GrKouk.WebApi.Migrations
                         .HasFilter("[Code] IS NOT NULL");
 
                     b.HasIndex("CompanyId");
+
+                    b.HasIndex("TransWarehouseDefaultDocSeriesDefId");
 
                     b.HasIndex("VolBuyTransId");
 
@@ -495,8 +507,6 @@ namespace GrKouk.WebApi.Migrations
 
                     b.Property<string>("Etiology")
                         .HasMaxLength(500);
-
-                    b.Property<int>("FpaId");
 
                     b.Property<float>("FpaRate");
 
@@ -636,8 +646,6 @@ namespace GrKouk.WebApi.Migrations
 
                     b.Property<int>("FiscalPeriodId");
 
-                    b.Property<int>("FpaDefId");
-
                     b.Property<float>("FpaRate");
 
                     b.Property<int>("SectionId");
@@ -665,8 +673,6 @@ namespace GrKouk.WebApi.Migrations
                     b.HasIndex("CustomerId");
 
                     b.HasIndex("FiscalPeriodId");
-
-                    b.HasIndex("FpaDefId");
 
                     b.HasIndex("SectionId");
 
@@ -789,7 +795,7 @@ namespace GrKouk.WebApi.Migrations
                     b.Property<string>("BarCode")
                         .HasMaxLength(50);
 
-                    b.Property<int?>("BuyMeasureUnitId");
+                    b.Property<int>("BuyMeasureUnitId");
 
                     b.Property<double>("BuyUnitToMainRate");
 
@@ -802,7 +808,7 @@ namespace GrKouk.WebApi.Migrations
 
                     b.Property<int>("FpaDefId");
 
-                    b.Property<int?>("MainMeasureUnitId");
+                    b.Property<int>("MainMeasureUnitId");
 
                     b.Property<string>("ManufacturerCode")
                         .HasMaxLength(50);
@@ -814,7 +820,7 @@ namespace GrKouk.WebApi.Migrations
                     b.Property<string>("Name")
                         .HasMaxLength(200);
 
-                    b.Property<int?>("SecondaryMeasureUnitId");
+                    b.Property<int>("SecondaryMeasureUnitId");
 
                     b.Property<double>("SecondaryUnitToMainRate");
 
@@ -957,8 +963,6 @@ namespace GrKouk.WebApi.Migrations
 
                     b.Property<int>("FiscalPeriodId");
 
-                    b.Property<int>("FpaDefId");
-
                     b.Property<float>("FpaRate");
 
                     b.Property<int>("SectionId");
@@ -986,8 +990,6 @@ namespace GrKouk.WebApi.Migrations
                     b.HasIndex("CreatorId");
 
                     b.HasIndex("FiscalPeriodId");
-
-                    b.HasIndex("FpaDefId");
 
                     b.HasIndex("SectionId");
 
@@ -1091,10 +1093,6 @@ namespace GrKouk.WebApi.Migrations
 
                     b.Property<int>("FiscalPeriodId");
 
-                    b.Property<int?>("FpaDefId");
-
-                    b.Property<int>("FpaId");
-
                     b.Property<float>("FpaRate");
 
                     b.Property<int>("MaterialId");
@@ -1130,8 +1128,6 @@ namespace GrKouk.WebApi.Migrations
                     b.HasIndex("CreatorId");
 
                     b.HasIndex("FiscalPeriodId");
-
-                    b.HasIndex("FpaDefId");
 
                     b.HasIndex("MaterialId");
 
@@ -1194,6 +1190,11 @@ namespace GrKouk.WebApi.Migrations
                         .HasForeignKey("DebitTransId")
                         .OnDelete(DeleteBehavior.Restrict);
 
+                    b.HasOne("GrKouk.InfoSystem.Domain.FinConfig.TransCustomerDocSeriesDef", "TransCustomerDefaultDocSeries")
+                        .WithMany()
+                        .HasForeignKey("TransCustomerDefaultDocSeriesId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("GrKouk.InfoSystem.Domain.FinConfig.FinancialMovement", "TurnOverTrans")
                         .WithMany()
                         .HasForeignKey("TurnOverTransId")
@@ -1241,6 +1242,11 @@ namespace GrKouk.WebApi.Migrations
                     b.HasOne("GrKouk.InfoSystem.Domain.FinConfig.FinancialMovement", "DebitTrans")
                         .WithMany()
                         .HasForeignKey("DebitTransId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("GrKouk.InfoSystem.Domain.FinConfig.TransSupplierDocSeriesDef", "TransSupplierDefaultDocSeries")
+                        .WithMany()
+                        .HasForeignKey("TransSupplierDefaultDocSeriesId")
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("GrKouk.InfoSystem.Domain.FinConfig.FinancialMovement", "TurnOverTrans")
@@ -1311,6 +1317,11 @@ namespace GrKouk.WebApi.Migrations
                         .WithMany()
                         .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("GrKouk.InfoSystem.Domain.FinConfig.TransWarehouseDocSeriesDef", "TransWarehouseDefaultDocSeriesDef")
+                        .WithMany()
+                        .HasForeignKey("TransWarehouseDefaultDocSeriesDefId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("GrKouk.InfoSystem.Domain.FinConfig.FinancialMovement", "VolBuyTrans")
                         .WithMany()
@@ -1436,11 +1447,6 @@ namespace GrKouk.WebApi.Migrations
                         .HasForeignKey("FiscalPeriodId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("GrKouk.InfoSystem.Domain.FinConfig.FpaDef", "FpaDef")
-                        .WithMany()
-                        .HasForeignKey("FpaDefId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.HasOne("GrKouk.InfoSystem.Domain.Shared.Section", "Section")
                         .WithMany()
                         .HasForeignKey("SectionId")
@@ -1530,11 +1536,6 @@ namespace GrKouk.WebApi.Migrations
                         .HasForeignKey("FiscalPeriodId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("GrKouk.InfoSystem.Domain.FinConfig.FpaDef", "FpaDef")
-                        .WithMany()
-                        .HasForeignKey("FpaDefId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.HasOne("GrKouk.InfoSystem.Domain.Shared.Section", "Section")
                         .WithMany()
                         .HasForeignKey("SectionId")
@@ -1574,11 +1575,6 @@ namespace GrKouk.WebApi.Migrations
                     b.HasOne("GrKouk.InfoSystem.Domain.Shared.FiscalPeriod", "FiscalPeriod")
                         .WithMany()
                         .HasForeignKey("FiscalPeriodId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("GrKouk.InfoSystem.Domain.FinConfig.FpaDef", "FpaDef")
-                        .WithMany()
-                        .HasForeignKey("FpaDefId")
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("GrKouk.InfoSystem.Domain.Shared.Material", "Material")

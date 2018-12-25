@@ -17,6 +17,7 @@ namespace GrKouk.WebRazor.Automapper
     {
         public AutoMapperProfile()
         {
+            #region 
             CreateMap<FinDiaryTransaction, FinDiaryExpenseTransactionDto>()
                 .ForMember(dest => dest.TransactorName, opt => opt.MapFrom(src => src.Transactor.Name))
                 .ForMember(dest => dest.FinTransCategoryName, opt => opt.MapFrom(src => src.FinTransCategory.Name))
@@ -26,7 +27,9 @@ namespace GrKouk.WebRazor.Automapper
                 .ForMember(dest => dest.CostCentreCode, opt => opt.MapFrom(src => src.CostCentre.Code))
                 .ForMember(dest => dest.AmountTotal,
                     opt => opt.MapFrom(src => src.AmountFpa + src.AmountNet));
+            #endregion
 
+            #region 
             CreateMap<FinDiaryTransaction, FinDiaryTransactionDto>()
                 .ForMember(dest => dest.TransactorName, opt => opt.MapFrom(src =>
                     src.Transactor.Name
@@ -40,7 +43,7 @@ namespace GrKouk.WebRazor.Automapper
                 .ForMember(dest => dest.RevenueCentreCode, opt => opt.MapFrom(src => src.RevenueCentre.Code))
                 .ForMember(dest => dest.AmountTotal,
                     opt => opt.MapFrom(src => src.AmountFpa + src.AmountNet));
-
+            #endregion
             CreateMap<FinDiaryTransaction, FinDiaryTransactionCreateDto>().ReverseMap();
             CreateMap<FinDiaryTransaction, FinDiaryTransactionModifyDto>().ReverseMap();
             CreateMap<FinDiaryTransaction, FinDiaryExpenceTransModifyDto>().ReverseMap();
@@ -61,7 +64,13 @@ namespace GrKouk.WebRazor.Automapper
                 //.ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.Company.Name));
             CreateMap<Material, MaterialCreateDto>().ReverseMap();
             CreateMap<Material, MaterialModifyDto>().ReverseMap();
-            CreateMap<BuyMaterialsDocument, BuyMaterialsDocListDto>();
+            CreateMap<BuyMaterialsDocument, BuyMaterialsDocCreateAjaxNoLinesDto>().ReverseMap();
+
+            CreateMap<BuyMaterialsDocCreateAjaxNoLinesDto, BuyMaterialDocLineAjaxDto>().ReverseMap();
+            CreateMap<BuyMaterialsDocument, BuyMaterialsDocListDto>().ReverseMap();
+            CreateMap<SupplierTransaction, BuyMaterialsDocCreateAjaxDto>().ReverseMap();
+
+            //CreateMap<WarehouseTransaction, BuyMaterialsDocCreateAjaxDto>().ReverseMap();
         }
     }
 }

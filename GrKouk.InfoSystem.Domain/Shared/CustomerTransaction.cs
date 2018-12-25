@@ -41,8 +41,7 @@ namespace GrKouk.InfoSystem.Domain.Shared
         /// </summary>
         public int CreatorId { get; set; }
 
-        public int FpaDefId { get; set; }
-        public virtual FpaDef FpaDef { get; set; }
+      
         public Single FpaRate { get; set; }
 
         public decimal AmountFpa { get; set; }

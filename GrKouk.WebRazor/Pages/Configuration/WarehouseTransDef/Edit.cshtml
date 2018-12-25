@@ -19,17 +19,21 @@
                 <input asp-for="TransWarehouseDef.Code" class="form-control form-control-sm" />
                 <span asp-validation-for="TransWarehouseDef.Code" class="text-danger"></span>
             </div>
-            <div class="form-group col-md-6">
+            <div class="form-group col-md-5">
                 <label asp-for="TransWarehouseDef.Name"></label>
                 <input asp-for="TransWarehouseDef.Name" class="form-control form-control-sm" />
                 <span asp-validation-for="TransWarehouseDef.Name" class="text-danger"></span>
             </div>
-            <div class="form-group col-md-3">
+            <div class="form-group col-md-2">
+                <label asp-for="TransWarehouseDef.TransWarehouseDefaultDocSeriesDefId"></label>
+                <select asp-for="TransWarehouseDef.TransWarehouseDefaultDocSeriesDefId" class="form-control form-control-sm" asp-items="ViewBag.TransWarehouseDefaultDocSeriesDefId"></select>
+            </div>
+            <div class="form-group col-md-2">
                 <label asp-for="TransWarehouseDef.CompanyId"></label>
                 <select asp-for="TransWarehouseDef.CompanyId" class="form-control form-control-sm" asp-items="ViewBag.CompanyId"></select>
                 <span asp-validation-for="TransWarehouseDef.CompanyId" class="text-danger"></span>
             </div>
-            
+
             <div class="form-group col-md-1 ">
 
                 <label asp-for="TransWarehouseDef.Active"></label>

@@ -1,0 +1,60 @@
+﻿@page
+@model GrKouk.WebRazor.Pages.Configuration.WarehouseTransDocSeriesDef.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.TransWarehouseDocSeriesDef[0].Code)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TransWarehouseDocSeriesDef[0].Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TransWarehouseDocSeriesDef[0].Active)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TransWarehouseDocSeriesDef[0].TransWarehouseDocTypeDef)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TransWarehouseDocSeriesDef[0].Company)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.TransWarehouseDocSeriesDef) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Code)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Active)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TransWarehouseDocTypeDef.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Company.Code)
+            </td>
+            <td>
+                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

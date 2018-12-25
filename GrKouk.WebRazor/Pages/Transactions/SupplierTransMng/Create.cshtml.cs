@@ -71,6 +71,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.SupplierTransMng
             _context.Entry(docTypeDef)
                 .Reference(t => t.TransSupplierDef)
                 .Load();
+
             var transSupplierDef = docTypeDef.TransSupplierDef;
             _context.Entry(transSupplierDef)
                 .Reference(t => t.CreditTrans)

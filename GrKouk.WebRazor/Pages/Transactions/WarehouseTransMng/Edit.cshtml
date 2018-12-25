@@ -1,0 +1,126 @@
+﻿@page
+@model GrKouk.WebRazor.Pages.Transactions.WarehouseTransMng.EditModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h2>Edit</h2>
+
+<h4>WarehouseTransaction</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="WarehouseTransaction.Id" />
+            <div class="form-group">
+                <label asp-for="WarehouseTransaction.TransDate" class="control-label"></label>
+                <input asp-for="WarehouseTransaction.TransDate" class="form-control" />
+                <span asp-validation-for="WarehouseTransaction.TransDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="WarehouseTransaction.TransWarehouseDocSeriesId" class="control-label"></label>
+                <select asp-for="WarehouseTransaction.TransWarehouseDocSeriesId" class="form-control" asp-items="ViewBag.TransWarehouseDocSeriesId"></select>
+                <span asp-validation-for="WarehouseTransaction.TransWarehouseDocSeriesId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="WarehouseTransaction.TransWarehouseDocTypeId" class="control-label"></label>
+                <select asp-for="WarehouseTransaction.TransWarehouseDocTypeId" class="form-control" asp-items="ViewBag.TransWarehouseDocTypeId"></select>
+                <span asp-validation-for="WarehouseTransaction.TransWarehouseDocTypeId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="WarehouseTransaction.TransRefCode" class="control-label"></label>
+                <input asp-for="WarehouseTransaction.TransRefCode" class="form-control" />
+                <span asp-validation-for="WarehouseTransaction.TransRefCode" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="WarehouseTransaction.SectionId" class="control-label"></label>
+                <select asp-for="WarehouseTransaction.SectionId" class="form-control" asp-items="ViewBag.SectionId"></select>
+                <span asp-validation-for="WarehouseTransaction.SectionId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="WarehouseTransaction.MaterialId" class="control-label"></label>
+                <select asp-for="WarehouseTransaction.MaterialId" class="form-control" asp-items="ViewBag.MaterialId"></select>
+                <span asp-validation-for="WarehouseTransaction.MaterialId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="WarehouseTransaction.FiscalPeriodId" class="control-label"></label>
+                <select asp-for="WarehouseTransaction.FiscalPeriodId" class="form-control" asp-items="ViewBag.FiscalPeriodId"></select>
+                <span asp-validation-for="WarehouseTransaction.FiscalPeriodId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="WarehouseTransaction.TransactionType" class="control-label"></label>
+                <select asp-for="WarehouseTransaction.TransactionType" class="form-control"></select>
+                <span asp-validation-for="WarehouseTransaction.TransactionType" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="WarehouseTransaction.CreatorId" class="control-label"></label>
+                <input asp-for="WarehouseTransaction.CreatorId" class="form-control" />
+                <span asp-validation-for="WarehouseTransaction.CreatorId" class="text-danger"></span>
+            </div>
+           
+            <div class="form-group">
+                <label asp-for="WarehouseTransaction.FpaRate" class="control-label"></label>
+                <input asp-for="WarehouseTransaction.FpaRate" class="form-control" />
+                <span asp-validation-for="WarehouseTransaction.FpaRate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="WarehouseTransaction.PrimaryUnitId" class="control-label"></label>
+                <input asp-for="WarehouseTransaction.PrimaryUnitId" class="form-control" />
+                <span asp-validation-for="WarehouseTransaction.PrimaryUnitId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="WarehouseTransaction.SecondaryUnitId" class="control-label"></label>
+                <input asp-for="WarehouseTransaction.SecondaryUnitId" class="form-control" />
+                <span asp-validation-for="WarehouseTransaction.SecondaryUnitId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="WarehouseTransaction.Quontity1" class="control-label"></label>
+                <input asp-for="WarehouseTransaction.Quontity1" class="form-control" />
+                <span asp-validation-for="WarehouseTransaction.Quontity1" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="WarehouseTransaction.Quontity2" class="control-label"></label>
+                <input asp-for="WarehouseTransaction.Quontity2" class="form-control" />
+                <span asp-validation-for="WarehouseTransaction.Quontity2" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="WarehouseTransaction.AmountFpa" class="control-label"></label>
+                <input asp-for="WarehouseTransaction.AmountFpa" class="form-control" />
+                <span asp-validation-for="WarehouseTransaction.AmountFpa" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="WarehouseTransaction.AmountNet" class="control-label"></label>
+                <input asp-for="WarehouseTransaction.AmountNet" class="form-control" />
+                <span asp-validation-for="WarehouseTransaction.AmountNet" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="WarehouseTransaction.AmountDiscount" class="control-label"></label>
+                <input asp-for="WarehouseTransaction.AmountDiscount" class="form-control" />
+                <span asp-validation-for="WarehouseTransaction.AmountDiscount" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="WarehouseTransaction.Etiology" class="control-label"></label>
+                <input asp-for="WarehouseTransaction.Etiology" class="form-control" />
+                <span asp-validation-for="WarehouseTransaction.Etiology" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="WarehouseTransaction.CompanyId" class="control-label"></label>
+                <select asp-for="WarehouseTransaction.CompanyId" class="form-control" asp-items="ViewBag.CompanyId"></select>
+                <span asp-validation-for="WarehouseTransaction.CompanyId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="./Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
