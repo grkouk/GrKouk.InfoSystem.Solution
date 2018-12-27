@@ -13,6 +13,11 @@ namespace GrKouk.InfoSystem.Domain.FinConfig
         public string Name { get; set; }
         [Display(Name = "Ενεργό")] public bool Active { get; set; }
 
+        [Display(Name = "Inv. Action")]
+        public WarehouseInventoryTransTypeEnum InventoryTransType { get; set; }
+        [Display(Name = "InvValue Action")]
+        public WarehouseValueTransTypeEnum InventoryValueTransType { get; set; }
+
         [Display(Name = "ΠοσΕισαγωγών")]
         public int VolImportsTransId { get; set; }
         public virtual FinancialMovement VolImportsTrans { get; set; }

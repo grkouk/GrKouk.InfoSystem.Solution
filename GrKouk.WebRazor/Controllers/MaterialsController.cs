@@ -5,12 +5,15 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using GrKouk.InfoSystem.Domain.FinConfig;
+using GrKouk.InfoSystem.Domain.Helpers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using GrKouk.InfoSystem.Domain.Shared;
 using GrKouk.InfoSystem.Dtos.WebDtos.BuyMaterialsDocs;
 using GrKouk.WebApi.Data;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.IdentityModel.Xml;
 
 namespace GrKouk.WebRazor.Controllers
 {
@@ -109,7 +112,7 @@ namespace GrKouk.WebRazor.Controllers
 
                 #endregion
 
-                var docSeries =await 
+                var docSeries = await
                     _context.BuyMaterialDocSeriesDefs.SingleOrDefaultAsync(m => m.Id == data.MaterialDocSeriesId);
 
                 if (docSeries is null)
@@ -122,7 +125,7 @@ namespace GrKouk.WebRazor.Controllers
                     });
                 }
 
-                _context.Entry(docSeries).Reference(t => t.BuyMaterialDocTypeDef).Load();
+                await _context.Entry(docSeries).Reference(t => t.BuyMaterialDocTypeDef).LoadAsync();
                 var docTypeDef = docSeries.BuyMaterialDocTypeDef;
                 await _context.Entry(docTypeDef)
                       .Reference(t => t.TransSupplierDef)
@@ -138,7 +141,7 @@ namespace GrKouk.WebRazor.Controllers
 
                 await _context.Entry(transSupplierDef)
                     .Reference(t => t.TransSupplierDefaultDocSeries)
-                    .LoadAsync( );
+                    .LoadAsync();
 
                 var transSupDefaultSeries = transSupplierDef.TransSupplierDefaultDocSeries;
                 var creditTrans = transSupplierDef.CreditTrans;
@@ -213,7 +216,7 @@ namespace GrKouk.WebRazor.Controllers
                     transaction.Rollback();
                     throw;
                 }
-               
+
 
                 foreach (var dataBuyDocLine in data.BuyDocLines)
                 {
@@ -228,6 +231,7 @@ namespace GrKouk.WebRazor.Controllers
                             error = "Could not locate material in Doc Line "
                         });
                     }
+                    #region MaterialLine
                     var buyMaterialLine = new BuyMaterialsDocLine();
                     buyMaterialLine.AmountFpa = 0;
                     buyMaterialLine.AmountNet = dataBuyDocLine.Price;
@@ -235,30 +239,122 @@ namespace GrKouk.WebRazor.Controllers
                     buyMaterialLine.MaterialId = dataBuyDocLine.MaterialId;
                     buyMaterialLine.Quontity1 = dataBuyDocLine.Q1;
                     buyMaterialLine.Quontity2 = dataBuyDocLine.Q2;
-                    buyMaterialLine.PrimaryUnitId = material.MainMeasureUnitId;
-                    buyMaterialLine.SecondaryUnitId = material.SecondaryMeasureUnitId;
+                    buyMaterialLine.PrimaryUnitId = dataBuyDocLine.MainMeasureUnitId;
+                    buyMaterialLine.SecondaryUnitId = dataBuyDocLine.SecondaryMeasureUnitId;
                     buyMaterialLine.BuyDocumentId = transToAttach.Id;
                     buyMaterialLine.Etiology = transToAttach.Etiology;
                     buyMaterialLine.FpaRate = dataBuyDocLine.FpaRate;
                     //_context.Entry(transToAttach).Entity
                     transToAttach.BuyDocLines.Add(buyMaterialLine);
+                    #endregion
+
+                    #region Warehouse transaction
+
+
+
+                    var buyMaterialTrans = new WarehouseTransaction();
+                    buyMaterialTrans.AmountDiscount =
+                        dataBuyDocLine.Price * (decimal)dataBuyDocLine.Q1 * (decimal)dataBuyDocLine.DiscountRate;
+                    buyMaterialTrans.AmountNet = dataBuyDocLine.Price * (decimal)dataBuyDocLine.Q1 -
+                                                 buyMaterialTrans.AmountDiscount;
+                    buyMaterialTrans.AmountFpa = buyMaterialTrans.AmountNet * (decimal)dataBuyDocLine.FpaRate;
+                    buyMaterialTrans.CompanyId = transToAttach.CompanyId;
+                    buyMaterialTrans.Etiology = transToAttach.Etiology;
+                    buyMaterialTrans.FiscalPeriodId = transToAttach.FiscalPeriodId;
+                    buyMaterialTrans.FpaRate = dataBuyDocLine.FpaRate;
+                    buyMaterialTrans.MaterialId = materialId;
+                    buyMaterialTrans.PrimaryUnitId = dataBuyDocLine.MainMeasureUnitId;
+                    buyMaterialTrans.SecondaryUnitId = dataBuyDocLine.SecondaryMeasureUnitId;
+                    buyMaterialTrans.SectionId = section.Id;
+                    buyMaterialTrans.CreatorId = transToAttach.Id;
+                    buyMaterialTrans.TransDate = transToAttach.TransDate;
+                    buyMaterialTrans.TransRefCode = transToAttach.TransRefCode;
+                    var transWarehouseDef = docTypeDef.TransWarehouseDef;
+                    await _context.Entry(transWarehouseDef)
+                        .Reference(t => t.AmtImportsTrans)
+                        .LoadAsync();
+                    await _context.Entry(transWarehouseDef)
+                        .Reference(t => t.AmtExportsTrans)
+                        .LoadAsync();
+                    await _context.Entry(transWarehouseDef)
+                        .Reference(t => t.TransWarehouseDefaultDocSeriesDef)
+                        .LoadAsync();
+                    #endregion
                 }
 
                 try
                 {
-                   await _context.SaveChangesAsync();
+                    await _context.SaveChangesAsync();
                     transaction.Commit();
                 }
                 catch (Exception e)
                 {
-                        Console.WriteLine(e);
-                        throw;
+                    Console.WriteLine(e);
+                    throw;
                 }
             }
 
             return Ok(new { });
 
 
+        }
+
+
+       
+
+        private void GetAmounts(FinancialMovement debitAction, FinancialMovement creditAction, decimal netAmount = 0,
+            decimal vatAmount = 0, decimal discountAmount = 0, double q1 = 0, double q2 = 0)
+        {
+            if (debitAction == null) throw new ArgumentNullException(nameof(debitAction));
+            if (creditAction == null) throw new ArgumentNullException(nameof(creditAction));
+
+            var o = new ActionProduct();
+
+
+            if (creditAction.Action == "=" && debitAction.Action != "=")
+            {
+                o.FinancialTransactionType = FinancialTransactionTypeEnum.FinancialTransactionTypeDebit;
+                o.WarehouseTransactionTypeCode = WarehouseTransactionTypeEnum.WarehouseTransactionTypeImport;
+                switch (debitAction.Action)
+                {
+                    case "+":
+                        o.NetAmount = netAmount;
+                        o.VatAmount = vatAmount;
+                        o.DiscountAmount = discountAmount;
+                        o.Quontity1 = q1;
+                        o.Quontity2 = q2;
+                        break;
+                    case "-":
+                        o.NetAmount = netAmount * -1;
+                        o.VatAmount = vatAmount * -1;
+                        o.DiscountAmount = discountAmount * -1;
+                        o.Quontity1 = q1 * -1;
+                        o.Quontity2 = q2 * -1;
+                        break;
+                }
+            }
+            else if (creditAction.Action != "=" && debitAction.Action == "=")
+            {
+                o.FinancialTransactionType = FinancialTransactionTypeEnum.FinancialTransactionTypeCredit;
+                o.WarehouseTransactionTypeCode = WarehouseTransactionTypeEnum.WarehouseTransactionTypeExport;
+                switch (creditAction.Action)
+                {
+                    case "+":
+                        o.NetAmount = netAmount;
+                        o.VatAmount = vatAmount;
+                        o.DiscountAmount = discountAmount;
+                        o.Quontity1 = q1;
+                        o.Quontity2 = q2;
+                        break;
+                    case "-":
+                        o.NetAmount = netAmount * -1;
+                        o.VatAmount = vatAmount * -1;
+                        o.DiscountAmount = discountAmount * -1;
+                        o.Quontity1 = q1 * -1;
+                        o.Quontity2 = q2 * -1;
+                        break;
+                }
+            }
         }
     }
 }
