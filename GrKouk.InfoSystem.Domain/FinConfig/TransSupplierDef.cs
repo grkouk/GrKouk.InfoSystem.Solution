@@ -20,13 +20,14 @@ namespace GrKouk.InfoSystem.Domain.FinConfig
         /// </summary>
         [Display(Name = "Credit Transaction Id")]
         public int CreditTransId { get; set; }
-        public virtual FinancialMovement CreditTrans { get; set; }
+
+        public FinancialTransTypeEnum FinancialTransType { get; set; }
         /// <summary>
         /// ΄Κωδικός κίνησης για την Χρέωση
         /// </summary>
         [Display(Name = "Debit Transaction Id")]
         public int DebitTransId { get; set; }
-        public virtual FinancialMovement DebitTrans { get; set; }
+       
         /// <summary>
         /// Κωδικός κίνησης για τον Τζίρο
         /// </summary>

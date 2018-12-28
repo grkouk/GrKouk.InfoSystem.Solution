@@ -41,6 +41,7 @@
     /// </summary>
     public enum WarehouseInventoryTransTypeEnum
     {
+        WarehouseInventoryTransTypeEnumNoChange = 0,
         WarehouseInventoryTransTypeEnumImport = 1,
         WarehouseInventoryTransTypeEnumExport = 2,
         WarehouseInventoryTransTypeEnumNegativeImport = 3,
@@ -48,6 +49,7 @@
     }
     public enum WarehouseValueTransTypeEnum
     {
+        WarehouseValueTransTypeEnumNoChange = 0,
         WarehouseValueTransTypeEnumIncrease = 1,
         WarehouseValueTransTypeEnumDecrease = 2,
         WarehouseValueTransTypeEnumNegativeIncrease = 3,
@@ -55,6 +57,7 @@
     }
     public enum FinancialTransTypeEnum
     {
+        FinancialTransTypeNoChange = 0,
         FinancialTransTypeDebit = 1,
         FinancialTransTypeCredit = 2,
         FinancialTransTypeNegativeDebit = 3,

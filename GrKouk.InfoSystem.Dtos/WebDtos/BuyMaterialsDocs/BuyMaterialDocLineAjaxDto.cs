@@ -12,9 +12,9 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.BuyMaterialsDocs
         public decimal Price { get; set; }
         public decimal Amount { get; set; }
         public Single DiscountRate { get; set; }
-        public int MainMeasureUnitId { get; set; }
-        public int SecondaryMeasureUnitId { get; set; }
-        public double SecondaryUnitToMainRate { get; set; }
+        public int MainUnitId { get; set; }
+        public int SecUnitId { get; set; }
+        
         public Single FpaRate { get; set; }
 
     }

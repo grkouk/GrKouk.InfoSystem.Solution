@@ -15,6 +15,7 @@ namespace GrKouk.InfoSystem.Domain.FinConfig
         public string Name { get; set; }
         [Display(Name = "Ενεργό")]
         public bool Active { get; set; }
+        public FinancialTransTypeEnum FinancialTransType { get; set; }
         /// <summary>
         /// Τύπος κίνησης για την Πίστωση
         /// </summary>

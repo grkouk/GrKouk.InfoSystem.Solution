@@ -43,6 +43,16 @@
         </div>
         <div class="form-row">
             <div class="form-group col-md-3">
+                <label asp-for="TransWarehouseDef.InventoryTransType" ></label>
+                <select asp-for="TransWarehouseDef.InventoryTransType" class="form-control form-control-sm" asp-items="ViewBag.inventoryTransTypes"></select>
+            </div>
+            <div class="form-group col-md-3">
+                <label asp-for="TransWarehouseDef.InventoryValueTransType" ></label>
+                <select asp-for="TransWarehouseDef.InventoryValueTransType" class="form-control form-control-sm" asp-items="ViewBag.InventoryValueTransTypes"></select>
+            </div>
+        </div>
+        <div class="form-row">
+            @*<div class="form-group col-md-3">
                 <label asp-for="TransWarehouseDef.VolImportsTransId" ></label>
                 <select asp-for="TransWarehouseDef.VolImportsTransId" class="form-control form-control-sm" asp-items="ViewBag.VolImportsTransId"></select>
                 <span asp-validation-for="TransWarehouseDef.VolImportsTransId" class="text-danger"></span>
@@ -51,7 +61,7 @@
                 <label asp-for="TransWarehouseDef.VolExportsTransId" ></label>
                 <select asp-for="TransWarehouseDef.VolExportsTransId" class="form-control form-control-sm" asp-items="ViewBag.VolExportsTransId"></select>
                 <span asp-validation-for="TransWarehouseDef.VolExportsTransId" class="text-danger"></span>
-            </div>
+            </div>*@
             <div class="form-group col-md-3">
                 <label asp-for="TransWarehouseDef.VolInvoicedExportsTransId" ></label>
                 <select asp-for="TransWarehouseDef.VolInvoicedExportsTransId" class="form-control form-control-sm" asp-items="ViewBag.VolInvoicedExportsTransId"></select>
@@ -65,7 +75,7 @@
 
         </div>
         <div class="form-row">
-            <div class="form-group col-md-3">
+            @*<div class="form-group col-md-3">
                 <label asp-for="TransWarehouseDef.AmtImportsTransId" ></label>
                 <select asp-for="TransWarehouseDef.AmtImportsTransId" class="form-control form-control-sm" asp-items="ViewBag.AmtImportsTransId"></select>
                 <span asp-validation-for="TransWarehouseDef.AmtImportsTransId" class="text-danger"></span>
@@ -74,7 +84,7 @@
                 <label asp-for="TransWarehouseDef.AmtExportsTransId" ></label>
                 <select asp-for="TransWarehouseDef.AmtExportsTransId" class="form-control form-control-sm" asp-items="ViewBag.AmtExportsTransId"></select>
                 <span asp-validation-for="TransWarehouseDef.AmtExportsTransId" class="text-danger"></span>
-            </div>
+            </div>*@
             <div class="form-group col-md-3">
                 <label asp-for="TransWarehouseDef.AmtInvoicedExportsTransId" ></label>
                 <select asp-for="TransWarehouseDef.AmtInvoicedExportsTransId" class="form-control form-control-sm" asp-items="ViewBag.AmtInvoicedExportsTransId"></select>
@@ -111,7 +121,7 @@
        
         <div class="form-row">
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary btn-sm" />
+                <input type="submit" value="Update" class="btn btn-primary btn-sm" />
             </div>
         </div>
     </form>

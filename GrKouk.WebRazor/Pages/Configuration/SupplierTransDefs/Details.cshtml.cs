@@ -30,8 +30,7 @@ namespace GrKouk.WebRazor.Pages.Configuration.SupplierTransDefs
 
             TransSupplierDef = await _context.TransSupplierDefs
                 .Include(t => t.Company)
-                .Include(t => t.CreditTrans)
-                .Include(t => t.DebitTrans)
+              
                 .Include(t => t.TurnOverTrans).FirstOrDefaultAsync(m => m.Id == id);
 
             if (TransSupplierDef == null)

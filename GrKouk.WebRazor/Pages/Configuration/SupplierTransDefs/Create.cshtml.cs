@@ -31,6 +31,36 @@ namespace GrKouk.WebRazor.Pages.Configuration.SupplierTransDefs
 
         private void LoadCombos()
         {
+            List<SelectListItem> financialTransTypes = new List<SelectListItem>
+            {
+                new SelectListItem()
+                {
+                    Value = FinancialTransTypeEnum.FinancialTransTypeNoChange.ToString(),
+                    Text = "No Change"
+                },
+               new SelectListItem()
+                {
+                    Value = FinancialTransTypeEnum.FinancialTransTypeDebit.ToString(),
+                    Text = "Debit"
+                },
+               new SelectListItem()
+               {
+                   Value = FinancialTransTypeEnum.FinancialTransTypeCredit.ToString(),
+                   Text = "Credit"
+               },
+               
+                new SelectListItem()
+                {
+                    Value = FinancialTransTypeEnum.FinancialTransTypeNegativeDebit.ToString(),
+                    Text = "Neg.Debit"
+                },
+                new SelectListItem()
+                {
+                    Value = FinancialTransTypeEnum.FinancialTransTypeNegativeCredit.ToString(),
+                    Text = "Neg.Credit"
+                }
+            };
+            ViewData["FinancialTransTypes"] = new SelectList(financialTransTypes, "Value", "Text");
             ViewData["CompanyId"] = new SelectList(_context.Companies.OrderBy(p => p.Code).AsNoTracking(), "Id", "Code");
             ViewData["CreditTransId"] = new SelectList(_context.FinancialMovements.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
             ViewData["DebitTransId"] = new SelectList(_context.FinancialMovements.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");

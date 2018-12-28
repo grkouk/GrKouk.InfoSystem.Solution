@@ -13,18 +13,18 @@ namespace GrKouk.InfoSystem.Domain.FinConfig
         public string Name { get; set; }
         [Display(Name = "Ενεργό")] public bool Active { get; set; }
 
-        [Display(Name = "Inv. Action")]
+        [Display(Name = "Inventory Action")]
         public WarehouseInventoryTransTypeEnum InventoryTransType { get; set; }
-        [Display(Name = "InvValue Action")]
+        [Display(Name = "Inventory Value Action")]
         public WarehouseValueTransTypeEnum InventoryValueTransType { get; set; }
 
         [Display(Name = "ΠοσΕισαγωγών")]
         public int VolImportsTransId { get; set; }
-        public virtual FinancialMovement VolImportsTrans { get; set; }
+       // public virtual FinancialMovement VolImportsTrans { get; set; }
 
         [Display(Name = "ΠοσΕξαγωγών")]
         public int VolExportsTransId { get; set; }
-        public virtual FinancialMovement VolExportsTrans { get; set; }
+        //public virtual FinancialMovement VolExportsTrans { get; set; }
 
         [Display(Name = "Ποσ Τιμ/νων Εξ")]
         public int VolInvoicedExportsTransId { get; set; }
@@ -38,11 +38,11 @@ namespace GrKouk.InfoSystem.Domain.FinConfig
 
         [Display(Name = "Αξία Εισ")]
         public int AmtImportsTransId { get; set; }
-        public virtual FinancialMovement AmtImportsTrans { get; set; }
+        //public virtual FinancialMovement AmtImportsTrans { get; set; }
 
         [Display(Name = "Αξία Εξα")]
         public int AmtExportsTransId { get; set; }
-        public virtual FinancialMovement AmtExportsTrans { get; set; }
+        //public virtual FinancialMovement AmtExportsTrans { get; set; }
 
         [Display(Name = "Αξία Τιμ/νων Εξ")]
         public int AmtInvoicedExportsTransId { get; set; }

@@ -4,14 +4,16 @@ using GrKouk.WebApi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace GrKouk.WebApi.Migrations
 {
     [DbContext(typeof(ApiDbContext))]
-    partial class ApiDbContextModelSnapshot : ModelSnapshot
+    [Migration("20181227143104_WarehouseTransTypeDefChanged")]
+    partial class WarehouseTransTypeDefChanged
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -155,8 +157,6 @@ namespace GrKouk.WebApi.Migrations
 
                     b.Property<int>("DebitTransId");
 
-                    b.Property<int>("FinancialTransType");
-
                     b.Property<string>("Name")
                         .HasMaxLength(200);
 
@@ -262,8 +262,6 @@ namespace GrKouk.WebApi.Migrations
 
                     b.Property<int>("DebitTransId");
 
-                    b.Property<int>("FinancialTransType");
-
                     b.Property<string>("Name")
                         .HasMaxLength(200);
 
@@ -278,6 +276,10 @@ namespace GrKouk.WebApi.Migrations
                         .HasFilter("[Code] IS NOT NULL");
 
                     b.HasIndex("CompanyId");
+
+                    b.HasIndex("CreditTransId");
+
+                    b.HasIndex("DebitTransId");
 
                     b.HasIndex("TransSupplierDefaultDocSeriesId");
 
@@ -491,8 +493,6 @@ namespace GrKouk.WebApi.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<decimal>("AmountDiscount");
-
                     b.Property<decimal>("AmountFpa");
 
                     b.Property<decimal>("AmountNet");
@@ -501,12 +501,12 @@ namespace GrKouk.WebApi.Migrations
 
                     b.Property<int?>("BuyMaterialsDocumentId");
 
-                    b.Property<decimal>("DiscountRate");
+                    b.Property<float>("DiscountRate");
 
                     b.Property<string>("Etiology")
                         .HasMaxLength(500);
 
-                    b.Property<decimal>("FpaRate");
+                    b.Property<float>("FpaRate");
 
                     b.Property<int>("MaterialId");
 
@@ -517,8 +517,6 @@ namespace GrKouk.WebApi.Migrations
                     b.Property<double>("Quontity2");
 
                     b.Property<int>("SecondaryUnitId");
-
-                    b.Property<decimal>("UnitPrice");
 
                     b.HasKey("Id");
 
@@ -641,16 +639,12 @@ namespace GrKouk.WebApi.Migrations
 
                     b.Property<int>("CustomerId");
 
-                    b.Property<decimal>("DiscountRate");
-
                     b.Property<string>("Etiology")
                         .HasMaxLength(500);
 
-                    b.Property<int>("FinancialAction");
-
                     b.Property<int>("FiscalPeriodId");
 
-                    b.Property<decimal>("FpaRate");
+                    b.Property<float>("FpaRate");
 
                     b.Property<int>("SectionId");
 
@@ -962,16 +956,12 @@ namespace GrKouk.WebApi.Migrations
 
                     b.Property<int>("CreatorId");
 
-                    b.Property<decimal>("DiscountRate");
-
                     b.Property<string>("Etiology")
                         .HasMaxLength(500);
 
-                    b.Property<int>("FinancialAction");
-
                     b.Property<int>("FiscalPeriodId");
 
-                    b.Property<decimal>("FpaRate");
+                    b.Property<float>("FpaRate");
 
                     b.Property<int>("SectionId");
 
@@ -1096,18 +1086,12 @@ namespace GrKouk.WebApi.Migrations
 
                     b.Property<int>("CreatorId");
 
-                    b.Property<decimal>("DiscountRate");
-
                     b.Property<string>("Etiology")
                         .HasMaxLength(500);
 
                     b.Property<int>("FiscalPeriodId");
 
-                    b.Property<decimal>("FpaRate");
-
-                    b.Property<int>("InventoryAction");
-
-                    b.Property<int>("InventoryValueAction");
+                    b.Property<float>("FpaRate");
 
                     b.Property<int>("MaterialId");
 
@@ -1134,8 +1118,6 @@ namespace GrKouk.WebApi.Migrations
                     b.Property<int>("TransWarehouseDocTypeId");
 
                     b.Property<int>("TransactionType");
-
-                    b.Property<decimal>("UnitPrice");
 
                     b.HasKey("Id");
 
@@ -1249,6 +1231,16 @@ namespace GrKouk.WebApi.Migrations
                         .WithMany()
                         .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("GrKouk.InfoSystem.Domain.FinConfig.FinancialMovement", "CreditTrans")
+                        .WithMany()
+                        .HasForeignKey("CreditTransId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("GrKouk.InfoSystem.Domain.FinConfig.FinancialMovement", "DebitTrans")
+                        .WithMany()
+                        .HasForeignKey("DebitTransId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("GrKouk.InfoSystem.Domain.FinConfig.TransSupplierDocSeriesDef", "TransSupplierDefaultDocSeries")
                         .WithMany()

@@ -6,8 +6,10 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using GrKouk.InfoSystem.Domain.Shared;
 using GrKouk.InfoSystem.Dtos.WebDtos.SupplierTransactions;
 using AutoMapper;
+using GrKouk.InfoSystem.Domain.FinConfig;
 using NToastNotify;
 using Microsoft.EntityFrameworkCore;
+using static GrKouk.InfoSystem.Domain.FinConfig.FinancialTransactionTypeEnum;
 
 namespace GrKouk.WebRazor.Pages.Transactions.SupplierTransMng
 {
@@ -29,11 +31,11 @@ namespace GrKouk.WebRazor.Pages.Transactions.SupplierTransMng
         public IActionResult OnGet()
         {
             
-            LoadCompbos();
+            LoadCombos();
             return Page();
         }
 
-        private void LoadCompbos()
+        private void LoadCombos()
         {
             var supplierList = _context.Transactors.Where(s => s.TransactorType.Code == "SYS.SUPPLIER").OrderBy(s => s.Name).AsNoTracking();
             ViewData["CompanyId"] = new SelectList(_context.Companies.OrderBy(c => c.Code).AsNoTracking(), "Id", "Code");
@@ -50,83 +52,77 @@ namespace GrKouk.WebRazor.Pages.Transactions.SupplierTransMng
         {
             if (!ModelState.IsValid)
             {
-                LoadCompbos();
+                LoadCombos();
                 return Page();
                 //return RedirectToPage("./create");
             }
 
             var spTransaction = mapper.Map<SupplierTransaction>(SupplierTransactionDto);
 
-            var docSeries = _context.TransSupplierDocSeriesDefs.SingleOrDefault(m => m.Id == SupplierTransactionDto.TransSupplierDocSeriesId);
+            var docSeries = await
+                _context.TransSupplierDocSeriesDefs.SingleOrDefaultAsync(m =>
+                    m.Id == SupplierTransactionDto.TransSupplierDocSeriesId);
 
             if (docSeries is null)
             {
                 ModelState.AddModelError(string.Empty, "Δεν βρέθηκε η σειρά παραστατικού");
-                LoadCompbos();
+                LoadCombos();
                 return Page();
             }
-            _context.Entry(docSeries).Reference(t => t.TransSupplierDocTypeDef).Load();
+            await _context.Entry(docSeries).Reference(t => t.TransSupplierDocTypeDef).LoadAsync();
 
             var docTypeDef = docSeries.TransSupplierDocTypeDef;
-            _context.Entry(docTypeDef)
+            await _context.Entry(docTypeDef)
                 .Reference(t => t.TransSupplierDef)
-                .Load();
+                .LoadAsync();
 
             var transSupplierDef = docTypeDef.TransSupplierDef;
-            _context.Entry(transSupplierDef)
-                .Reference(t => t.CreditTrans)
-                .Load();
+           
 
-            _context.Entry(transSupplierDef)
-                .Reference(t => t.DebitTrans)
-                .Load();
-            var creditTrans = transSupplierDef.CreditTrans;
-            var debitTrans = transSupplierDef.DebitTrans;
-
-            var section =  _context.Sections.SingleOrDefault(s => s.SystemName == _supplierTransSectionCode);
+            var section =  await _context.Sections.SingleOrDefaultAsync(s => s.SystemName == _supplierTransSectionCode);
             if (section == null)
             {
 
                 ModelState.AddModelError(string.Empty, "Δεν υπάρχει το Section");
-                LoadCompbos();
+                LoadCombos();
                 return Page();
             }
 
             spTransaction.SectionId = section.Id;
             spTransaction.TransSupplierDocTypeId = docSeries.TransSupplierDocTypeDefId;
             spTransaction.FiscalPeriodId = 1;
-
-            if (creditTrans.Action == "=" && debitTrans.Action != "=")
+            switch (transSupplierDef.FinancialTransType)
             {
-                spTransaction.TransactionType = InfoSystem.Domain.FinConfig.FinancialTransactionTypeEnum.FinancialTransactionTypeDebit;
-                switch (debitTrans.Action)
-                {
-                    case "+":
-
-                        break;
-                    case "-":
-                        spTransaction.AmountNet = spTransaction.AmountNet * -1;
-                        spTransaction.AmountFpa = spTransaction.AmountFpa * -1;
-                        spTransaction.AmountDiscount = spTransaction.AmountDiscount * -1;
-                        break;
-                }
+                case InfoSystem.Domain.FinConfig.FinancialTransTypeEnum.FinancialTransTypeNoChange:
+                    break;
+                case InfoSystem.Domain.FinConfig.FinancialTransTypeEnum.FinancialTransTypeDebit:
+                    spTransaction.FinancialAction = FinancialTransTypeEnum.FinancialTransTypeDebit;
+                    spTransaction.TransactionType = FinancialTransactionTypeDebit;
+                    break;
+                case InfoSystem.Domain.FinConfig.FinancialTransTypeEnum.FinancialTransTypeCredit:
+                    spTransaction.FinancialAction = FinancialTransTypeEnum.FinancialTransTypeCredit;
+                    spTransaction.TransactionType = FinancialTransactionTypeCredit;
+                    break;
+                case InfoSystem.Domain.FinConfig.FinancialTransTypeEnum.FinancialTransTypeNegativeDebit:
+                    spTransaction.FinancialAction = FinancialTransTypeEnum.FinancialTransTypeNegativeDebit;
+                    spTransaction.TransactionType = FinancialTransactionTypeDebit;
+                    spTransaction.AmountNet = spTransaction.AmountNet * -1;
+                    spTransaction.AmountFpa = spTransaction.AmountFpa * -1;
+                    spTransaction.AmountDiscount = spTransaction.AmountDiscount * -1;
+                    break;
+                case InfoSystem.Domain.FinConfig.FinancialTransTypeEnum.FinancialTransTypeNegativeCredit:
+                    spTransaction.FinancialAction = FinancialTransTypeEnum.FinancialTransTypeNegativeCredit;
+                    spTransaction.TransactionType = FinancialTransactionTypeCredit;
+                    spTransaction.AmountNet = spTransaction.AmountNet * -1;
+                    spTransaction.AmountFpa = spTransaction.AmountFpa * -1;
+                    spTransaction.AmountDiscount = spTransaction.AmountDiscount * -1;
+                    break;
+                default:
+                    break;
             }
-            else if (creditTrans.Action != "=" && debitTrans.Action == "=")
-            {
-                spTransaction.TransactionType = InfoSystem.Domain.FinConfig.FinancialTransactionTypeEnum.FinancialTransactionTypeCredit;
-                switch (creditTrans.Action)
-                {
-                    case "+":
-
-                        break;
-                    case "-":
-                        spTransaction.AmountNet = spTransaction.AmountNet * -1;
-                        spTransaction.AmountFpa = spTransaction.AmountFpa * -1;
-                        spTransaction.AmountDiscount = spTransaction.AmountDiscount * -1;
-                        break;
-                }
-            }
-            _context.SupplierTransactions.Add(spTransaction);
+           
+           
+            _context.SupplierTransactions.Add (spTransaction);
             await _context.SaveChangesAsync();
             toastNotification.AddSuccessToastMessage("Saved");
             return RedirectToPage("./Index");

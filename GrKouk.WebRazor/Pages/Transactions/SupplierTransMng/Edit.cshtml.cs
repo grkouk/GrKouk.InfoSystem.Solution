@@ -1,6 +1,8 @@
-﻿using System.Linq;
+﻿using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using GrKouk.InfoSystem.Domain.FinConfig;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -8,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using GrKouk.InfoSystem.Domain.Shared;
 using GrKouk.InfoSystem.Dtos.WebDtos.SupplierTransactions;
 using NToastNotify;
+using static GrKouk.InfoSystem.Domain.FinConfig.FinancialTransactionTypeEnum;
 
 namespace GrKouk.WebRazor.Pages.Transactions.SupplierTransMng
 {
@@ -88,59 +91,41 @@ namespace GrKouk.WebRazor.Pages.Transactions.SupplierTransMng
                 .Reference(t => t.TransSupplierDef)
                 .Load();
             var transSupplierDef = docTypeDef.TransSupplierDef;
-            _context.Entry(transSupplierDef)
-                .Reference(t => t.CreditTrans)
-                .Load();
-
-            _context.Entry(transSupplierDef)
-                .Reference(t => t.DebitTrans)
-                .Load();
-            var creditTrans = transSupplierDef.CreditTrans;
-            var debitTrans = transSupplierDef.DebitTrans;
-
-            //var section = _context.Sections.SingleOrDefault(s => s.SystemName == SupplierTransSectionCode);
-            //if (section == null)
-            //{
-
-            //    ModelState.AddModelError(string.Empty, "Δεν υπάρχει το Section");
-            //    LoadCompbos();
-            //    return Page();
-            //}
+           
 
             //spTransaction.SectionId = section.Id;
             spTransactionToAttach.TransSupplierDocTypeId = docSeries.TransSupplierDocTypeDefId;
-           // spTransaction.FiscalPeriodId = 1;
-
-            if (creditTrans.Action == "=" && debitTrans.Action != "=")
+            // spTransaction.FiscalPeriodId = 1;
+            switch (transSupplierDef.FinancialTransType)
             {
-                spTransactionToAttach.TransactionType = InfoSystem.Domain.FinConfig.FinancialTransactionTypeEnum.FinancialTransactionTypeDebit;
-                switch (debitTrans.Action)
-                {
-                    case "+":
-
-                        break;
-                    case "-":
-                        spTransactionToAttach.AmountNet = spTransactionToAttach.AmountNet * -1;
-                        spTransactionToAttach.AmountFpa = spTransactionToAttach.AmountFpa * -1;
-                        spTransactionToAttach.AmountDiscount = spTransactionToAttach.AmountDiscount * -1;
-                        break;
-                }
+                case InfoSystem.Domain.FinConfig.FinancialTransTypeEnum.FinancialTransTypeNoChange:
+                    break;
+                case InfoSystem.Domain.FinConfig.FinancialTransTypeEnum.FinancialTransTypeDebit:
+                    spTransactionToAttach.FinancialAction = FinancialTransTypeEnum.FinancialTransTypeDebit;
+                    spTransactionToAttach.TransactionType = FinancialTransactionTypeDebit;
+                    break;
+                case InfoSystem.Domain.FinConfig.FinancialTransTypeEnum.FinancialTransTypeCredit:
+                    spTransactionToAttach.FinancialAction = FinancialTransTypeEnum.FinancialTransTypeCredit;
+                    spTransactionToAttach.TransactionType = FinancialTransactionTypeCredit;
+                    break;
+                case InfoSystem.Domain.FinConfig.FinancialTransTypeEnum.FinancialTransTypeNegativeDebit:
+                    spTransactionToAttach.FinancialAction = FinancialTransTypeEnum.FinancialTransTypeNegativeDebit;
+                    spTransactionToAttach.TransactionType = FinancialTransactionTypeDebit;
+                    spTransactionToAttach.AmountNet = spTransactionToAttach.AmountNet * -1;
+                    spTransactionToAttach.AmountFpa = spTransactionToAttach.AmountFpa * -1;
+                    spTransactionToAttach.AmountDiscount = spTransactionToAttach.AmountDiscount * -1;
+                    break;
+                case InfoSystem.Domain.FinConfig.FinancialTransTypeEnum.FinancialTransTypeNegativeCredit:
+                    spTransactionToAttach.FinancialAction = FinancialTransTypeEnum.FinancialTransTypeNegativeCredit;
+                    spTransactionToAttach.TransactionType = FinancialTransactionTypeCredit;
+                    spTransactionToAttach.AmountNet = spTransactionToAttach.AmountNet * -1;
+                    spTransactionToAttach.AmountFpa = spTransactionToAttach.AmountFpa * -1;
+                    spTransactionToAttach.AmountDiscount = spTransactionToAttach.AmountDiscount * -1;
+                    break;
+                default:
+                    break;
             }
-            else if (creditTrans.Action != "=" && debitTrans.Action == "=")
-            {
-                spTransactionToAttach.TransactionType = InfoSystem.Domain.FinConfig.FinancialTransactionTypeEnum.FinancialTransactionTypeCredit;
-                switch (creditTrans.Action)
-                {
-                    case "+":
-
-                        break;
-                    case "-":
-                        spTransactionToAttach.AmountNet = spTransactionToAttach.AmountNet * -1;
-                        spTransactionToAttach.AmountFpa = spTransactionToAttach.AmountFpa * -1;
-                        spTransactionToAttach.AmountDiscount = spTransactionToAttach.AmountDiscount * -1;
-                        break;
-                }
-            }
+           
 
             _context.Attach(spTransactionToAttach).State = EntityState.Modified;
 
