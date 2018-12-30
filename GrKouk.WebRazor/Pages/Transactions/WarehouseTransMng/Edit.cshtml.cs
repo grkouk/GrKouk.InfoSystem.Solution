@@ -61,7 +61,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.WarehouseTransMng
                 _toastNotification.AddAlertToastMessage("Warehouse Transactions section not found in DB");
                 return BadRequest();
             }
-            //If section is not our section the canot update disable input controls
+            //If section is not our section the cannot update disable input controls
             NotUpdatable = transToEdit.SectionId != section.Id;
 
             ItemVm = _mapper.Map<WarehouseTransModifyDto>(transToEdit);

@@ -9,77 +9,146 @@
 
 <h4>BuyMaterialsDocument</h4>
 <hr />
-<div class="row">
-    <div class="col-md-4">
-        <form method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="BuyMaterialsDocument.Id" />
+
+<div class="container">
+    <form method="post" id="transForm">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="ItemVm.Id" />
+        <div class="form-row">
+            <div class="form-group col-md-2">
+                <label asp-for="ItemVm.TransDate" class="control-label small "></label>
+                <input asp-for="ItemVm.TransDate" class="form-control form-control-sm small" autofocus/>
+                <span asp-validation-for="ItemVm.TransDate" class="text-danger small"></span>
+            </div>
+            <div class="form-group col-md-7">
+                <label asp-for="ItemVm.MaterialDocSeriesId" class="control-label small"></label>
+                <select asp-for="ItemVm.MaterialDocSeriesId" class="form-control form-control-sm small" asp-items="ViewBag.MaterialDocSeriesId"></select>
+            </div>
+            <div class="form-group col-md-3">
+                <label asp-for="ItemVm.TransRefCode" class="control-label small"></label>
+                <input asp-for="ItemVm.TransRefCode" class="form-control form-control-sm small" />
+                <span asp-validation-for="ItemVm.TransRefCode" class="text-danger small"></span>
+
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-8">
+                <label asp-for="ItemVm.SupplierId" class="control-label small"></label>
+                <select asp-for="ItemVm.SupplierId" class="form-control form-control-sm small" asp-items="ViewBag.SupplierId"></select>
+            </div>
+            <div class="form-group col-md-4">
+                <label asp-for="ItemVm.CompanyId" class="control-label" small></label>
+                <select asp-for="ItemVm.CompanyId" class="form-control form-control-sm small" asp-items="ViewBag.CompanyId"></select>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-12">
+                <label asp-for="ItemVm.Etiology" class="control-label small"></label>
+                <textarea asp-for="ItemVm.Etiology" class="form-control form-control-sm small"></textarea>
+                <span asp-validation-for="ItemVm.Etiology" class="text-danger small"></span>
+            </div>
+        </div>
+        <div class="form-row">
+            <input type="hidden" id="MaterialId" />
+            <input type="hidden" id="MaterialLastPrice" />
+            <input type="hidden" id="MaterialFactor" />
+            <input type="hidden" id="MaterialFpaId" />
+            <input type="hidden" id="MaterialMainUnitId" />
+            <input type="hidden" id="MaterialSecondaryUnitId" />
+            <input type="hidden" id="MaterialsCounter" />
+            <div class="form-group col-sm-3">
+
+                <label class="small">LookUp</label>
+                <input class="form-control form-control-sm small" id="Lookup" />
+                <span class="text-danger small"></span>
+            </div>
+
+            <div class="form-group col-sm-2">
+                <label class="small" id="q1Label">Q1</label>
+                <input class="form-control form-control-sm small " type="number" placeholder="Q 1" id="Q1" />
+                <div class="invalid-feedback">
+                    Please enter a valid Q1.
+                </div>
+                @*<span class="text-danger invalid-feedback small">Invalid Q1</span>*@
+            </div>
+            <div class="form-group col-sm-2">
+                <label class="small" id="q2Label">Q2</label>
+                <input class="form-control form-control-sm small " type="number" placeholder="Q 2" id="Q2" />
+                <span class="text-danger small"></span>
+            </div>
+            <div class="form-group col-sm-2">
+                <label class="small">Price</label>
+                <input class="form-control form-control-sm small " type="number" placeholder="Price Net" id="Price" />
+                <span class="text-danger small"></span>
+            </div>
+            <div class="form-group col-sm-1">
+                <label class="small">Dis% </label>
+                <input class="form-control form-control-sm small " type="number" placeholder="Dis %" id="Discount" />
+                <span class="text-danger small"></span>
+            </div>
+            <div class="form-group col-sm-1">
+                <label class="small">VAT% </label>
+                <input class="form-control form-control-sm small " type="number" placeholder="Vat%" id="VatPercent" />
+                <span class="text-danger small"></span>
+            </div>
+            <div class="form-group col-sm-1 align-self-end">
+                <button id="addToList" class="btn btn-primary btn-sm">
+                    <i class="far fa-arrow-alt-circle-down"></i>
+                </button>
+            </div>
+        </div>
+        <div class="form-row">
+            <table id="detailsTable" class="table table-responsive-sm">
+                <thead class="small">
+                    <tr>
+                        <th class="small" style="width: 0%"> #</th>
+                        <th class="small" style="width: 20%">Product</th>
+                        <th class="small text-center" style="width: 5%">Q1</th>
+                        <th class="small text-center" style="width: 5%">Q2</th>
+                        <th class="small text-center" style="width: 10%">Unit Price</th>
+                        <th class="small text-center" style="width: 5%">Disc%</th>
+                        <th class="small text-center" style="width: 5%">Vat%</th>
+                        <th class="small text-center" style="width: 10%">Net</th>
+                        <th class="small text-center" style="width: 10%">Disc</th>
+                        <th class="small text-center" style="width: 10%">Vat</th>
+                        <th class="small text-center" style="width: 10%">Gross</th>
+                        <th class="small" style="width: 10%"></th>
+
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+        <div class="form-row">
+
             <div class="form-group">
-                <label asp-for="BuyMaterialsDocument.TransDate" class="control-label"></label>
-                <input asp-for="BuyMaterialsDocument.TransDate" class="form-control" />
-                <span asp-validation-for="BuyMaterialsDocument.TransDate" class="text-danger"></span>
+                <label class="small">Amount VAT</label>
+                <input id="ItemVm_AmountFpa" class="form-control form-control-sm small text-right" type="text" disabled />
+                <span asp-validation-for="ItemVm.AmountFpa" class="text-danger small"></span>
             </div>
             <div class="form-group">
-                <label asp-for="BuyMaterialsDocument.TransRefCode" class="control-label"></label>
-                <input asp-for="BuyMaterialsDocument.TransRefCode" class="form-control" />
-                <span asp-validation-for="BuyMaterialsDocument.TransRefCode" class="text-danger"></span>
+                <label class=" small">Net Amount</label>
+                <input id="ItemVm_AmountNet" class="form-control form-control-sm small text-right" type="text" disabled />
+                <span asp-validation-for="ItemVm.AmountNet" class="text-danger small"></span>
             </div>
             <div class="form-group">
-                <label asp-for="BuyMaterialsDocument.SectionId" class="control-label"></label>
-                <select asp-for="BuyMaterialsDocument.SectionId" class="form-control" asp-items="ViewBag.SectionId"></select>
-                <span asp-validation-for="BuyMaterialsDocument.SectionId" class="text-danger"></span>
+                <label class=" small">Discount</label>
+                <input id="ItemVm_AmountDiscount" class="form-control form-control-sm small text-right" type="text" disabled />
+                <span asp-validation-for="ItemVm.AmountDiscount" class="text-danger small"></span>
             </div>
             <div class="form-group">
-                <label asp-for="BuyMaterialsDocument.SupplierId" class="control-label"></label>
-                <select asp-for="BuyMaterialsDocument.SupplierId" class="form-control" asp-items="ViewBag.SupplierId"></select>
-                <span asp-validation-for="BuyMaterialsDocument.SupplierId" class="text-danger"></span>
+                <label class=" small">Sum</label>
+                <input id="DocumentSum" type="text" class="form-control form-control-sm small text-right" disabled />
+
             </div>
-            <div class="form-group">
-                <label asp-for="BuyMaterialsDocument.FiscalPeriodId" class="control-label"></label>
-                <select asp-for="BuyMaterialsDocument.FiscalPeriodId" class="form-control" asp-items="ViewBag.FiscalPeriodId"></select>
-                <span asp-validation-for="BuyMaterialsDocument.FiscalPeriodId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="BuyMaterialsDocument.MaterialDocSeriesId" class="control-label"></label>
-                <select asp-for="BuyMaterialsDocument.MaterialDocSeriesId" class="form-control" asp-items="ViewBag.MaterialDocSeriesId"></select>
-                <span asp-validation-for="BuyMaterialsDocument.MaterialDocSeriesId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="BuyMaterialsDocument.MaterialDocTypeId" class="control-label"></label>
-                <select asp-for="BuyMaterialsDocument.MaterialDocTypeId" class="form-control" asp-items="ViewBag.MaterialDocTypeId"></select>
-                <span asp-validation-for="BuyMaterialsDocument.MaterialDocTypeId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="BuyMaterialsDocument.AmountFpa" class="control-label"></label>
-                <input asp-for="BuyMaterialsDocument.AmountFpa" class="form-control" />
-                <span asp-validation-for="BuyMaterialsDocument.AmountFpa" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="BuyMaterialsDocument.AmountNet" class="control-label"></label>
-                <input asp-for="BuyMaterialsDocument.AmountNet" class="form-control" />
-                <span asp-validation-for="BuyMaterialsDocument.AmountNet" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="BuyMaterialsDocument.AmountDiscount" class="control-label"></label>
-                <input asp-for="BuyMaterialsDocument.AmountDiscount" class="form-control" />
-                <span asp-validation-for="BuyMaterialsDocument.AmountDiscount" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="BuyMaterialsDocument.Etiology" class="control-label"></label>
-                <input asp-for="BuyMaterialsDocument.Etiology" class="form-control" />
-                <span asp-validation-for="BuyMaterialsDocument.Etiology" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="BuyMaterialsDocument.CompanyId" class="control-label"></label>
-                <select asp-for="BuyMaterialsDocument.CompanyId" class="form-control" asp-items="ViewBag.CompanyId"></select>
-                <span asp-validation-for="BuyMaterialsDocument.CompanyId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-default" />
-            </div>
-        </form>
-    </div>
+        </div>
+
+        <div class="form-group">
+            <input type="submit" value="Create" class="btn btn-primary btn-sm" id="saveForm" />
+        </div>
+    </form>
 </div>
+
 
 <div>
     <a asp-page="./Index">Back to List</a>

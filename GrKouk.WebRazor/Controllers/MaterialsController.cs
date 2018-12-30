@@ -85,7 +85,7 @@ namespace GrKouk.WebRazor.Controllers
                     error = "Material not found "
                 });
             }
-           //Thread.Sleep(10000);
+            //Thread.Sleep(10000);
             return Ok(materialData);
         }
 
@@ -96,6 +96,7 @@ namespace GrKouk.WebRazor.Controllers
 
             var transToAttachNoLines = _mapper.Map<BuyMaterialsDocCreateAjaxNoLinesDto>(data);
             var transToAttach = _mapper.Map<BuyMaterialsDocument>(transToAttachNoLines);
+            var dateOfTrans = data.TransDate;
             using (var transaction = _context.Database.BeginTransaction())
             {
 
@@ -113,7 +114,20 @@ namespace GrKouk.WebRazor.Controllers
                 }
 
                 #endregion
+                #region Fiscal Period
 
+                var fiscalPeriod = await _context.FiscalPeriods.FirstOrDefaultAsync(p =>
+                    p.StartDate.CompareTo(dateOfTrans) > 0 & p.EndDate.CompareTo(dateOfTrans) < 0);
+                if (fiscalPeriod==null)
+                {
+                    transaction.Rollback();
+                    ModelState.AddModelError(string.Empty, "No Fiscal Period covers Transaction Date");
+                    return NotFound(new
+                    {
+                        error = "No Fiscal Period covers Transaction Date"
+                    });
+                }
+                #endregion
                 var docSeries = await
                     _context.BuyMaterialDocSeriesDefs.SingleOrDefaultAsync(m => m.Id == data.MaterialDocSeriesId);
 
@@ -145,13 +159,13 @@ namespace GrKouk.WebRazor.Controllers
                     .LoadAsync();
 
                 var transSupDefaultSeries = transSupplierDef.TransSupplierDefaultDocSeries;
-               
+
 
                 var spSupplierTransaction = _mapper.Map<SupplierTransaction>(data);
                 spSupplierTransaction.SectionId = section.Id;
                 spSupplierTransaction.TransSupplierDocTypeId = transSupDefaultSeries.TransSupplierDocTypeDefId;
                 spSupplierTransaction.TransSupplierDocSeriesId = transSupDefaultSeries.Id;
-                spSupplierTransaction.FiscalPeriodId = 1;
+                spSupplierTransaction.FiscalPeriodId = fiscalPeriod.Id;
                 switch (transSupplierDef.FinancialTransType)
                 {
                     case InfoSystem.Domain.FinConfig.FinancialTransTypeEnum.FinancialTransTypeNoChange:
@@ -183,7 +197,7 @@ namespace GrKouk.WebRazor.Controllers
                 }
 
                 transToAttach.SectionId = section.Id;
-                transToAttach.FiscalPeriodId = 1;
+                transToAttach.FiscalPeriodId = fiscalPeriod.Id;
                 transToAttach.MaterialDocTypeId = docSeries.BuyMaterialDocTypeDefId;
                 _context.BuyMaterialsDocuments.Add(transToAttach);
 
@@ -235,7 +249,7 @@ namespace GrKouk.WebRazor.Controllers
                     decimal unitPrice = dataBuyDocLine.Price;
                     decimal units = (decimal)dataBuyDocLine.Q1;
                     decimal fpaRate = (decimal)dataBuyDocLine.FpaRate;
-                    decimal discountRate = (decimal) dataBuyDocLine.DiscountRate;
+                    decimal discountRate = (decimal)dataBuyDocLine.DiscountRate;
                     decimal lineNetAmount = unitPrice * units;
                     decimal lineDiscountAmount = lineNetAmount * discountRate;
                     decimal lineFpaAmount = (lineNetAmount - lineDiscountAmount) * fpaRate;
@@ -252,7 +266,6 @@ namespace GrKouk.WebRazor.Controllers
                     buyMaterialLine.SecondaryUnitId = dataBuyDocLine.SecUnitId;
                     buyMaterialLine.BuyDocumentId = transToAttach.Id;
                     buyMaterialLine.Etiology = transToAttach.Etiology;
-                    
                     //_context.Entry(transToAttach).Entity
                     transToAttach.BuyDocLines.Add(buyMaterialLine);
                     #endregion
@@ -268,7 +281,7 @@ namespace GrKouk.WebRazor.Controllers
                     warehouseTrans.CompanyId = transToAttach.CompanyId;
                     warehouseTrans.Etiology = transToAttach.Etiology;
                     warehouseTrans.FiscalPeriodId = transToAttach.FiscalPeriodId;
-                  
+
                     warehouseTrans.MaterialId = materialId;
                     warehouseTrans.PrimaryUnitId = dataBuyDocLine.MainUnitId;
                     warehouseTrans.SecondaryUnitId = dataBuyDocLine.SecUnitId;
@@ -287,28 +300,28 @@ namespace GrKouk.WebRazor.Controllers
                         case WarehouseInventoryTransTypeEnum.WarehouseInventoryTransTypeEnumNoChange:
                             break;
                         case WarehouseInventoryTransTypeEnum.WarehouseInventoryTransTypeEnumImport:
-                           
+
                             warehouseTrans.TransactionType =
                                 WarehouseTransactionTypeEnum.WarehouseTransactionTypeImport;
                             warehouseTrans.Quontity1 = dataBuyDocLine.Q1;
                             warehouseTrans.Quontity2 = dataBuyDocLine.Q2;
                             break;
                         case WarehouseInventoryTransTypeEnum.WarehouseInventoryTransTypeEnumExport:
-                           
+
                             warehouseTrans.TransactionType =
                                 WarehouseTransactionTypeEnum.WarehouseTransactionTypeExport;
                             warehouseTrans.Quontity1 = dataBuyDocLine.Q1;
                             warehouseTrans.Quontity2 = dataBuyDocLine.Q2;
                             break;
                         case WarehouseInventoryTransTypeEnum.WarehouseInventoryTransTypeEnumNegativeImport:
-                           
+
                             warehouseTrans.TransactionType =
                                 WarehouseTransactionTypeEnum.WarehouseTransactionTypeImport;
-                            warehouseTrans.Quontity1 = dataBuyDocLine.Q1*-1;
-                            warehouseTrans.Quontity2 = dataBuyDocLine.Q2*-1;
+                            warehouseTrans.Quontity1 = dataBuyDocLine.Q1 * -1;
+                            warehouseTrans.Quontity2 = dataBuyDocLine.Q2 * -1;
                             break;
                         case WarehouseInventoryTransTypeEnum.WarehouseInventoryTransTypeEnumNegativeExport:
-                           
+
                             warehouseTrans.TransactionType =
                                 WarehouseTransactionTypeEnum.WarehouseTransactionTypeExport;
                             warehouseTrans.Quontity1 = dataBuyDocLine.Q1 * -1;
@@ -319,16 +332,16 @@ namespace GrKouk.WebRazor.Controllers
                     }
 
                     warehouseTrans.InventoryValueAction = transWarehouseDef.InventoryValueTransType;
-                        
+
                     switch (transWarehouseDef.InventoryValueTransType)
                     {
                         case WarehouseValueTransTypeEnum.WarehouseValueTransTypeEnumNoChange:
                             break;
                         case WarehouseValueTransTypeEnum.WarehouseValueTransTypeEnumIncrease:
-                        
+
                             break;
                         case WarehouseValueTransTypeEnum.WarehouseValueTransTypeEnumDecrease:
-                        
+
                             break;
                         case WarehouseValueTransTypeEnum.WarehouseValueTransTypeEnumNegativeIncrease:
                             warehouseTrans.AmountNet = warehouseTrans.AmountNet * -1;
@@ -367,7 +380,7 @@ namespace GrKouk.WebRazor.Controllers
         }
 
 
-       
+
 
         private void GetAmounts(FinancialMovement debitAction, FinancialMovement creditAction, decimal netAmount = 0,
             decimal vatAmount = 0, decimal discountAmount = 0, double q1 = 0, double q2 = 0)

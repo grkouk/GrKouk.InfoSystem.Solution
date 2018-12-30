@@ -54,11 +54,20 @@ namespace GrKouk.WebRazor.Pages.Transactions.SupplierTransMng
             {
                 LoadCombos();
                 return Page();
-                //return RedirectToPage("./create");
             }
 
             var spTransaction = mapper.Map<SupplierTransaction>(SupplierTransactionDto);
-
+            #region Fiscal Period
+            var dateOfTrans = SupplierTransactionDto.TransDate;
+            var fiscalPeriod = await _context.FiscalPeriods.FirstOrDefaultAsync(p =>
+                p.StartDate.CompareTo(dateOfTrans) > 0 & p.EndDate.CompareTo(dateOfTrans) < 0);
+            if (fiscalPeriod == null)
+            {
+                ModelState.AddModelError(string.Empty, "No Fiscal Period covers Transaction Date");
+                LoadCombos();
+                return Page();
+            }
+            #endregion
             var docSeries = await
                 _context.TransSupplierDocSeriesDefs.SingleOrDefaultAsync(m =>
                     m.Id == SupplierTransactionDto.TransSupplierDocSeriesId);
@@ -90,7 +99,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.SupplierTransMng
 
             spTransaction.SectionId = section.Id;
             spTransaction.TransSupplierDocTypeId = docSeries.TransSupplierDocTypeDefId;
-            spTransaction.FiscalPeriodId = 1;
+            spTransaction.FiscalPeriodId = fiscalPeriod.Id;
             switch (transSupplierDef.FinancialTransType)
             {
                 case InfoSystem.Domain.FinConfig.FinancialTransTypeEnum.FinancialTransTypeNoChange:

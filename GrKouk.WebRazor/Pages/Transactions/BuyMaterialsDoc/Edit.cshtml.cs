@@ -2,26 +2,33 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using GrKouk.InfoSystem.Domain.Shared;
 using GrKouk.WebApi.Data;
+using NToastNotify;
 
 namespace GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc
 {
     public class EditModel : PageModel
     {
         private readonly GrKouk.WebApi.Data.ApiDbContext _context;
+        private readonly IMapper _mapper;
+        private readonly IToastNotification _toastNotification;
+        public bool InitialLoad = true;
 
-        public EditModel(GrKouk.WebApi.Data.ApiDbContext context)
+        public EditModel(GrKouk.WebApi.Data.ApiDbContext context,IMapper mapper,IToastNotification toastNotification)
         {
             _context = context;
+            _mapper = mapper;
+            _toastNotification = toastNotification;
         }
 
         [BindProperty]
-        public BuyMaterialsDocument BuyMaterialsDocument { get; set; }
+        public BuyMaterialsDocument ItemVm { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -30,7 +37,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc
                 return NotFound();
             }
 
-            BuyMaterialsDocument = await _context.BuyMaterialsDocuments
+            ItemVm = await _context.BuyMaterialsDocuments
                 .Include(b => b.Company)
                 .Include(b => b.FiscalPeriod)
                 .Include(b => b.MaterialDocSeries)
@@ -38,7 +45,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc
                 .Include(b => b.Section)
                 .Include(b => b.Supplier).FirstOrDefaultAsync(m => m.Id == id);
 
-            if (BuyMaterialsDocument == null)
+            if (ItemVm == null)
             {
                 return NotFound();
             }
@@ -64,7 +71,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc
                 return Page();
             }
 
-            _context.Attach(BuyMaterialsDocument).State = EntityState.Modified;
+            _context.Attach(ItemVm).State = EntityState.Modified;
 
             try
             {
@@ -72,7 +79,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!BuyMaterialsDocumentExists(BuyMaterialsDocument.Id))
+                if (!BuyMaterialsDocumentExists(ItemVm.Id))
                 {
                     return NotFound();
                 }

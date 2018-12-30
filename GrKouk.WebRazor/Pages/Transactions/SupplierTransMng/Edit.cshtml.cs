@@ -21,6 +21,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.SupplierTransMng
         private readonly IMapper _mapper;
         private readonly IToastNotification _toastNotification;
         public bool NotUpdatable;
+        public bool InitialLoad = true;
         public EditModel(GrKouk.WebApi.Data.ApiDbContext context, IMapper mapper, IToastNotification toastNotification)
         {
             _context = context;
@@ -61,7 +62,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.SupplierTransMng
             NotUpdatable = supplierTransactionToModify.SectionId != section.Id;
 
             SupplierTransactionVm = _mapper.Map<SupplierTransactionModifyDto>(supplierTransactionToModify);
-            LoadCompbos();
+            LoadCombos();
             return Page();
         }
 
@@ -69,18 +70,28 @@ namespace GrKouk.WebRazor.Pages.Transactions.SupplierTransMng
         {
             if (!ModelState.IsValid)
             {
-                LoadCompbos();
+                LoadCombos();
                 return Page();
             }
 
             var spTransactionToAttach = _mapper.Map<SupplierTransaction>(SupplierTransactionVm);
-
+            #region Fiscal Period
+            var dateOfTrans = SupplierTransactionVm.TransDate;
+            var fiscalPeriod = await _context.FiscalPeriods.FirstOrDefaultAsync(p =>
+                p.StartDate.CompareTo(dateOfTrans) > 0 & p.EndDate.CompareTo(dateOfTrans) < 0);
+            if (fiscalPeriod == null)
+            {
+                ModelState.AddModelError(string.Empty, "No Fiscal Period covers Transaction Date");
+                LoadCombos();
+                return Page();
+            }
+            #endregion
             var docSeries = _context.TransSupplierDocSeriesDefs.SingleOrDefault(m => m.Id == spTransactionToAttach.TransSupplierDocSeriesId);
 
             if (docSeries is null)
             {
                 ModelState.AddModelError(string.Empty, "Δεν βρέθηκε η σειρά παραστατικού");
-                LoadCompbos();
+                LoadCombos();
                 return Page();
             }
             _context.Entry(docSeries).Reference(t => t.TransSupplierDocTypeDef).Load();
@@ -94,7 +105,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.SupplierTransMng
 
             //spTransaction.SectionId = section.Id;
             spTransactionToAttach.TransSupplierDocTypeId = docSeries.TransSupplierDocTypeDefId;
-            // spTransaction.FiscalPeriodId = 1;
+            spTransactionToAttach.FiscalPeriodId = fiscalPeriod.Id;
             switch (transSupplierDef.FinancialTransType)
             {
                 case InfoSystem.Domain.FinConfig.FinancialTransTypeEnum.FinancialTransTypeNoChange:
@@ -151,7 +162,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.SupplierTransMng
         {
             return _context.SupplierTransactions.Any(e => e.Id == id);
         }
-        private void LoadCompbos()
+        private void LoadCombos()
         {
             var supplierList = _context.Transactors.Where(s => s.TransactorType.Code == "SYS.SUPPLIER").OrderBy(s => s.Name).AsNoTracking();
             ViewData["CompanyId"] = new SelectList(_context.Companies.OrderBy(c => c.Code).AsNoTracking(), "Id", "Code");

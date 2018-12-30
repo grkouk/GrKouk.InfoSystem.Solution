@@ -33,10 +33,11 @@
             <input type="hidden" asp-for="SupplierTransactionVm.Timestamp" />
             <input type="hidden" asp-for="SupplierTransactionVm.SectionId" />
             <input type="hidden" asp-for="SupplierTransactionVm.TransSupplierDocTypeId" />
+            <input type="hidden" asp-for="@Model.InitialLoad" id="IsInitialLoad" />
             <div class="form-row">
                 <div class="form-group col-md-3">
                     <label asp-for="SupplierTransactionVm.TransDate" class="small"></label>
-                    <input asp-for="SupplierTransactionVm.TransDate" class="form-control form-control-sm small" />
+                    <input asp-for="SupplierTransactionVm.TransDate" class="form-control form-control-sm small" autofocus/>
                     <span asp-validation-for="SupplierTransactionVm.TransDate" class="text-danger"></span>
                 </div>
                 <div class="form-group col-md-6">
@@ -58,7 +59,7 @@
                 </div>
                 <div class="form-group col-md-3">
                     <label asp-for="SupplierTransactionVm.FiscalPeriodId" class="small"></label>
-                    <select asp-for="SupplierTransactionVm.FiscalPeriodId" class="form-control form-control-sm small" asp-items="ViewBag.FiscalPeriodId"></select>
+                    <select asp-for="SupplierTransactionVm.FiscalPeriodId" class="form-control form-control-sm small" asp-items="ViewBag.FiscalPeriodId" disabled></select>
                 </div>
                 <div class="form-group col-md-3">
                     <label asp-for="SupplierTransactionVm.CompanyId" class="small"></label>
