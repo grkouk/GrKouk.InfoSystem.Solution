@@ -1,4 +1,4 @@
-﻿@page "{handler?}"
+﻿@page 
 @model GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc.CreateModel
 @using Microsoft.Extensions.Configuration
 @inject IConfiguration Configuration
@@ -110,16 +110,16 @@
                     <thead class="small">
                         <tr>
                             <th class="small" style="width: 0%"> #</th>
-                            <th class="small" style="width: 10%">Product</th>
-                            <th class="small" style="width: 10%">Q1</th>
-                            <th class="small" style="width: 10%">Q2</th>
-                            <th class="small" style="width: 10%">Unit Price</th>
-                            <th class="small" style="width: 5%">Disc%</th>
-                            <th class="small" style="width: 5%">Vat%</th>
-                            <th class="small" style="width: 10%">Net</th>
-                            <th class="small" style="width: 10%">Disc</th>
-                            <th class="small" style="width: 10%">Vat</th>
-                            <th class="small" style="width: 10%">Gross</th>
+                            <th class="small" style="width: 20%">Product</th>
+                            <th class="small text-center" style="width: 5%">Q1</th>
+                            <th class="small text-center" style="width: 5%">Q2</th>
+                            <th class="small text-center" style="width: 10%">Unit Price</th>
+                            <th class="small text-center" style="width: 5%">Disc%</th>
+                            <th class="small text-center" style="width: 5%">Vat%</th>
+                            <th class="small text-center" style="width: 10%">Net</th>
+                            <th class="small text-center" style="width: 10%">Disc</th>
+                            <th class="small text-center" style="width: 10%">Vat</th>
+                            <th class="small text-center" style="width: 10%">Gross</th>
                             <th class="small" style="width: 10%"></th>
 
                         </tr>
@@ -131,22 +131,22 @@
 
                 <div class="form-group">
                     <label  class="small">Amount VAT</label>
-                    <input id="ItemVm_AmountFpa" class="form-control form-control-sm small" type="text" />
+                    <input id="ItemVm_AmountFpa" class="form-control form-control-sm small text-right" type="text" disabled/>
                     <span asp-validation-for="ItemVm.AmountFpa" class="text-danger small"></span>
                 </div>
                 <div class="form-group">
                     <label  class=" small">Net Amount</label>
-                    <input id="ItemVm_AmountNet" class="form-control form-control-sm small" type="text"/>
+                    <input id="ItemVm_AmountNet" class="form-control form-control-sm small text-right" type="text" disabled/>
                     <span asp-validation-for="ItemVm.AmountNet" class="text-danger small"></span>
                 </div>
                 <div class="form-group">
                     <label  class=" small">Discount</label>
-                    <input id="ItemVm_AmountDiscount" class="form-control form-control-sm small" type="text" />
+                    <input id="ItemVm_AmountDiscount" class="form-control form-control-sm small text-right" type="text" disabled/>
                     <span asp-validation-for="ItemVm.AmountDiscount" class="text-danger small"></span>
                 </div>
                 <div class="form-group">
                     <label class=" small">Sum</label>
-                    <input id="DocumentSum" type="text" class="form-control form-control-sm small" disabled />
+                    <input id="DocumentSum" type="text" class="form-control form-control-sm small text-right" disabled />
 
                 </div>
             </div>
@@ -337,38 +337,38 @@
                //#region Add Table Line
                 var productItem = '<tr><td class="small">' +
                     materialCounter +
-                    '</td><td class="small" data-materialId="' + materialId + '"' +
+                    '</td><td class="small " data-materialId="' + materialId + '"' +
                     'data-factor="' + factor + '"' +
                     'data-mainUnitId="' + mainUnitId + '"' +
                     'data-secUnitId="' + secUnitId + '"' +
                      '>' +
                     productName +
-                    '</td><td class="small" ' +
+                    '</td><td class="small text-right" ' +
                     'data-actualValue="' + quantity1 +'" >' +
                     formatterNumber.format(quantity1) +
-                    '</td><td class="small" ' +
+                    '</td><td class="small text-right" ' +
                     'data-actualValue="' + quantity2 + '" >' +
                     formatterNumber.format( quantity2) +
-                    '</td><td class="small" ' +
+                    '</td><td class="small text-right" ' +
                     'data-actualValue="' + price +'" >' +
                     formatterCurrency.format( price) +
-                    '</td><td class="small" ' +
+                    '</td><td class="small text-right" ' +
                     'data-actualValue="' + discount + '" >' +
                     formatterNumber.format(discount) +
-                    '</td><td class="small" ' +
+                    '</td><td class="small text-right" ' +
                     'data-actualValue="' + vatPercent + '" >' +
                     formatterNumber.format(vatPercent) +
-                    '</td><td class="small" ' +
+                    '</td><td class="small text-right" ' +
                     'data-actualValue="' + netAmount + '" >' +
                     formatterCurrency.format(netAmount) +
-                    '</td><td class="small" ' +
+                    '</td><td class="small text-right" ' +
                     'data-actualValue="' + discountAmount + '" >' +
                     formatterCurrency.format(discountAmount) +
 
-                    '</td><td class="small" ' +
+                    '</td><td class="small text-right" ' +
                     'data-actualValue="' + fpaAmount +'" >' +
                     formatterCurrency.format(fpaAmount) +
-                    '</td><td class="small" ' +
+                    '</td><td class="small text-right" ' +
                     'data-actualValue="' + grosAmount + '" >' +
                     formatterCurrency.format(grosAmount) +
                     '</td><td class="small"><a data-itemId="0" href="#" class="deleteItem"><i class="fas fa-trash"></i></a></td></tr>';

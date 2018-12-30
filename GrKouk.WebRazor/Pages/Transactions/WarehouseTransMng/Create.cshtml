@@ -1,119 +1,278 @@
 ﻿@page
 @model GrKouk.WebRazor.Pages.Transactions.WarehouseTransMng.CreateModel
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
 
 @{
     ViewData["Title"] = "Create";
 }
+<style>
+    .material-loading {
+        background: white url('@Url.Content("~/images/ui-anim_basic_16x16.gif")') right center no-repeat;
+    }
 
+</style>
 <h2>Create</h2>
 
 <h4>WarehouseTransaction</h4>
 <hr />
-<div class="row">
-    <div class="col-md-4">
-        <form method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="WarehouseTransaction.TransDate" class="control-label"></label>
-                <input asp-for="WarehouseTransaction.TransDate" class="form-control" />
-                <span asp-validation-for="WarehouseTransaction.TransDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="WarehouseTransaction.TransWarehouseDocSeriesId" class="control-label"></label>
-                <select asp-for="WarehouseTransaction.TransWarehouseDocSeriesId" class ="form-control" asp-items="ViewBag.TransWarehouseDocSeriesId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="WarehouseTransaction.TransWarehouseDocTypeId" class="control-label"></label>
-                <select asp-for="WarehouseTransaction.TransWarehouseDocTypeId" class ="form-control" asp-items="ViewBag.TransWarehouseDocTypeId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="WarehouseTransaction.TransRefCode" class="control-label"></label>
-                <input asp-for="WarehouseTransaction.TransRefCode" class="form-control" />
-                <span asp-validation-for="WarehouseTransaction.TransRefCode" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="WarehouseTransaction.SectionId" class="control-label"></label>
-                <select asp-for="WarehouseTransaction.SectionId" class ="form-control" asp-items="ViewBag.SectionId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="WarehouseTransaction.MaterialId" class="control-label"></label>
-                <select asp-for="WarehouseTransaction.MaterialId" class ="form-control" asp-items="ViewBag.MaterialId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="WarehouseTransaction.FiscalPeriodId" class="control-label"></label>
-                <select asp-for="WarehouseTransaction.FiscalPeriodId" class ="form-control" asp-items="ViewBag.FiscalPeriodId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="WarehouseTransaction.TransactionType" class="control-label"></label>
-                <select asp-for="WarehouseTransaction.TransactionType" class="form-control"></select>
-                <span asp-validation-for="WarehouseTransaction.TransactionType" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="WarehouseTransaction.CreatorId" class="control-label"></label>
-                <input asp-for="WarehouseTransaction.CreatorId" class="form-control" />
-                <span asp-validation-for="WarehouseTransaction.CreatorId" class="text-danger"></span>
-            </div>
-           
-            <div class="form-group">
-                <label asp-for="WarehouseTransaction.FpaRate" class="control-label"></label>
-                <input asp-for="WarehouseTransaction.FpaRate" class="form-control" />
-                <span asp-validation-for="WarehouseTransaction.FpaRate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="WarehouseTransaction.PrimaryUnitId" class="control-label"></label>
-                <input asp-for="WarehouseTransaction.PrimaryUnitId" class="form-control" />
-                <span asp-validation-for="WarehouseTransaction.PrimaryUnitId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="WarehouseTransaction.SecondaryUnitId" class="control-label"></label>
-                <input asp-for="WarehouseTransaction.SecondaryUnitId" class="form-control" />
-                <span asp-validation-for="WarehouseTransaction.SecondaryUnitId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="WarehouseTransaction.Quontity1" class="control-label"></label>
-                <input asp-for="WarehouseTransaction.Quontity1" class="form-control" />
-                <span asp-validation-for="WarehouseTransaction.Quontity1" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="WarehouseTransaction.Quontity2" class="control-label"></label>
-                <input asp-for="WarehouseTransaction.Quontity2" class="form-control" />
-                <span asp-validation-for="WarehouseTransaction.Quontity2" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="WarehouseTransaction.AmountFpa" class="control-label"></label>
-                <input asp-for="WarehouseTransaction.AmountFpa" class="form-control" />
-                <span asp-validation-for="WarehouseTransaction.AmountFpa" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="WarehouseTransaction.AmountNet" class="control-label"></label>
-                <input asp-for="WarehouseTransaction.AmountNet" class="form-control" />
-                <span asp-validation-for="WarehouseTransaction.AmountNet" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="WarehouseTransaction.AmountDiscount" class="control-label"></label>
-                <input asp-for="WarehouseTransaction.AmountDiscount" class="form-control" />
-                <span asp-validation-for="WarehouseTransaction.AmountDiscount" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="WarehouseTransaction.Etiology" class="control-label"></label>
-                <input asp-for="WarehouseTransaction.Etiology" class="form-control" />
-                <span asp-validation-for="WarehouseTransaction.Etiology" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="WarehouseTransaction.CompanyId" class="control-label"></label>
-                <select asp-for="WarehouseTransaction.CompanyId" class ="form-control" asp-items="ViewBag.CompanyId"></select>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-default" />
-            </div>
-        </form>
-    </div>
-</div>
+<div class="container">
 
+    <form method="post">
+
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="ItemVm.PrimaryUnitId" />
+        <input type="hidden" asp-for="ItemVm.SecondaryUnitId" />
+        <input type="hidden" asp-for="ItemVm.UnitFactor" />
+
+        @* <input type="hidden" asp-for="ItemVm.TransWarehouseDocTypeId" />*@
+        <div class="form-row">
+            <div class="form-group col-md-3">
+                <label asp-for="ItemVm.TransDate" class="small"></label>
+                <input asp-for="ItemVm.TransDate" class="form-control form-control-sm small" autofocus />
+                <span asp-validation-for="ItemVm.TransDate" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-6">
+                <label asp-for="ItemVm.TransWarehouseDocSeriesId" class="small"></label>
+                <select asp-for="ItemVm.TransWarehouseDocSeriesId" class="form-control form-control-sm small" asp-items="ViewBag.TransWarehouseDocSeriesId"></select>
+                <span id="MaterialLoading"></span>
+            </div>
+
+            <div class="form-group col-md-3">
+                <label asp-for="ItemVm.TransRefCode" class="small"></label>
+                <input asp-for="ItemVm.TransRefCode" class="form-control form-control-sm small" />
+                <span asp-validation-for="ItemVm.TransRefCode" class="text-danger"></span>
+            </div>
+
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label asp-for="ItemVm.MaterialId" class="small " id="materialLabel"></label>
+                <div class="input-group ">
+                    <select asp-for="ItemVm.MaterialId" class="form-control form-control-sm small " asp-items="ViewBag.MaterialId"></select>
+                    <div class="input-group-append">
+                        <span class="form-control-sm small" id="matLoading" hidden><i class="fas fa-spinner fa-spin"></i></span>
+                    </div>
+                </div>
+
+
+            </div>
+            <div class="form-group col-md-3">
+                <label asp-for="ItemVm.FiscalPeriodId" class="small"></label>
+                <select asp-for="ItemVm.FiscalPeriodId" class="form-control form-control-sm small" asp-items="ViewBag.FiscalPeriodId" disabled></select>
+            </div>
+            <div class="form-group col-md-3">
+                <label asp-for="ItemVm.CompanyId" class="small"></label>
+                <select asp-for="ItemVm.CompanyId" class="form-control form-control-sm small" asp-items="ViewBag.CompanyId"></select>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-3">
+                <label asp-for="ItemVm.TransactionType" class="small"></label>
+                <select asp-for="ItemVm.TransactionType" class="form-control form-control-sm small" asp-items="ViewBag.TransactionType"></select>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group  col-md-3">
+                <label asp-for="ItemVm.Quontity1" class="small"></label>
+                <div class="input-group ">
+                    <input asp-for="ItemVm.Quontity1" class="form-control form-control-sm small" />
+                    <div class="input-group-append">
+                        <span class="input-group-text form-control-sm small" id="primaryUnitCode"></span>
+                    </div>
+                </div>
+                <span asp-validation-for="ItemVm.Quontity1" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-3">
+                <label asp-for="ItemVm.Quontity2" class="small"></label>
+                <div class="input-group">
+                    <input asp-for="ItemVm.Quontity2" value="0" class="form-control form-control-sm small" />
+                    <div class="input-group-append">
+                        <span class="input-group-text form-control-sm small" id="secondaryUnitCode"></span>
+                    </div>
+                </div>
+
+                <span asp-validation-for="ItemVm.Quontity2" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-2">
+                <label asp-for="ItemVm.UnitPrice" class="small"></label>
+                <input asp-for="ItemVm.UnitPrice" value="0" class="form-control form-control-sm small" />
+                <span asp-validation-for="ItemVm.UnitPrice" class="text-danger"></span>
+            </div>
+
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-1">
+                <label asp-for="ItemVm.FpaRate" class="small"></label>
+                <input asp-for="ItemVm.FpaRate" class="form-control form-control-sm small" />
+                <span asp-validation-for="ItemVm.FpaRate" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-2">
+                <label asp-for="ItemVm.AmountNet" class="small"></label>
+                <input asp-for="ItemVm.AmountNet" value="0" class="form-control form-control-sm small" disabled />
+                <span asp-validation-for="ItemVm.AmountNet" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-2">
+                <label asp-for="ItemVm.AmountFpa" class="small"></label>
+                <input asp-for="ItemVm.AmountFpa" class="form-control form-control-sm small" disabled />
+                <span asp-validation-for="ItemVm.AmountFpa" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-2">
+                <label asp-for="ItemVm.AmountDiscount" class="small"></label>
+                <input asp-for="ItemVm.AmountDiscount" class="form-control form-control-sm small" />
+                <span asp-validation-for="ItemVm.AmountDiscount" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-2">
+                <label class="small">Sum</label>
+                <input id="SumAmount" class="form-control form-control-sm small" disabled />
+
+            </div>
+
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-12">
+                <label asp-for="ItemVm.Etiology" class="small"></label>
+                <textarea asp-for="ItemVm.Etiology" class="form-control form-control-sm small" placeholder="Αιτιολογία Κίνησης"> </textarea>
+                <span asp-validation-for="ItemVm.Etiology" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary btn-sm" />
+            </div>
+        </div>
+    </form>
+</div>
 <div>
     <a asp-page="Index">Back to List</a>
 </div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        $(document).ready(() => {
+            //#region Initial values
+            $('#matLoading').attr('hidden', true);
+            $('#ItemVm_TransDate').val(new Date().toISOString().slice(0, 10));
+            $('#ItemVm_AmountNet').attr('data-actualValue', '0');
+            $('#ItemVm_AmountNet').val(0);
+            $('#ItemVm_AmountFpa').attr('data-actualValue', '0');
+            $('#ItemVm_AmountFpa').val(0);
+            $('#ItemVm_AmountDiscount').attr('data-actualValue', '0');
+            $('#ItemVm_AmountDiscount').val(0);
+            $('#SumAmount').attr('data-actualValue', '0');
+            $('#SumAmount').val(0);
+            //#endregion
+            //#region
+            var $material = $('#ItemVm_MaterialId');
+            var $unitPrice = $('#ItemVm_UnitPrice');
+            var $Q1 = $('#ItemVm_Quontity1');
+            var $Q2 = $('#ItemVm_Quontity2');
+            var $amountNet = $('#ItemVm_AmountNet');
+            var $amountFpa = $('#ItemVm_AmountFpa');
+            var $amountDic = $('#ItemVm_AmountDiscount');
+            var $transDate = $('#ItemVm_TransDate');
+            var $primUnitId = $('#ItemVm_PrimaryUnitId');
+            var $secUnitId = $('#ItemVm_SecondaryUnitId');
+            var $unitFactor = $('#ItemVm_UnitFactor');
+            var $sumAmount = $('#SumAmount');
+            var $fpaRate = $('#ItemVm_FpaRate');
+            var $primaryUnitCode = $('#primaryUnitCode');
+            var $secondaryUnitCode = $('#secondaryUnitCode');
+            //#endregion
+            var calculateAmounts = () => {
+                var q1Val = parseFloat($Q1.val());
+                var fpaRate = parseFloat($fpaRate.val());
+                var unitPrice = parseFloat($unitPrice.val());
+                $amountNet.val(q1Val * unitPrice);
+                $amountFpa.val(q1Val * unitPrice * fpaRate);
+                var amountNet = parseFloat($amountNet.val());
+                var amountDic = parseFloat($amountDic.val());
+                var amountFpa = parseFloat($amountFpa.val());
+                $sumAmount.val(amountNet + amountFpa - amountDic);
+            };
+            var materialChanged = () => {
+                var $spinner = $('#matLoading');
+                $spinner.attr('hidden', false);
+                var materialId = $material.val();
+                console.log("Material change event ->" + materialId);
+
+                const Uri = '@Configuration.GetSection("WebApiSettings")["WebApiLocal"]';
+                const FinalUri = `${Uri}/materials/materialdata?materialId=${materialId}`;
+                //const FinalUri = `/api/materials/materialdata?materialId=${materialId}`;
+
+                fetch(FinalUri)
+                    .then(function(response) {
+                        if (response.ok) {
+                            return response.json();
+                        } else {
+                            return "";
+                        }
+
+                    })
+                    .then(function(myJson) {
+                        if (myJson) {
+                            console.log(JSON.stringify(myJson));
+                            var rate = parseFloat(myJson.fpaRate);
+                            var lastPrice = parseFloat(myJson.lastPrice);
+                            var fpaId = myJson.fpaId;
+                            //I Use main unit and Buy Unit as secondary
+                            $primaryUnitCode.text(` ${myJson.mainUnitCode}`);
+                            $secondaryUnitCode.text(` ${myJson.secUnitCode}`);
+                            $fpaRate.val(rate);
+                            //$('#MaterialFpaId').val(fpaId);
+                            $unitPrice.val(lastPrice);
+                            $primUnitId.val(myJson.mainUnitId);
+                            $secUnitId.val(myJson.secUnitId);
+                            $unitFactor.val(myJson.factorSeq);
+                        }
+                        $spinner.attr('hidden', true);
+                    })
+                    .catch((error) => {
+                            $spinner.attr('hidden', true);
+                            console.log(error);
+                        }
+                    );
+               
+            };
+            $Q1.change(() => {
+                var factor = parseFloat($unitFactor.val());
+                var q1val = parseFloat($Q1.val());
+                if (factor === 0) {
+                    return;
+                }
+                $Q2.val((q1val / factor).toFixed(2));
+                calculateAmounts();
+            });
+
+            $Q2.change(() => {
+                var factor = parseFloat($unitFactor.val());
+                var q2val = parseFloat($Q2.val());
+                if (factor === 0) {
+                    return;
+                }
+                $Q1.val(q2val * factor);
+                calculateAmounts();
+            });
+            $fpaRate.change(() => {
+                calculateAmounts();
+            });
+            $amountDic.change(() => {
+                calculateAmounts();
+            });
+            $unitPrice.change(() => {
+                calculateAmounts();
+            });
+            $material.change(() => {
+                materialChanged();
+            });
+           
+            //Hanlde initial material
+            if ($material.val()) {
+                materialChanged();
+            }
+
+
+        });
+    </script>
 }

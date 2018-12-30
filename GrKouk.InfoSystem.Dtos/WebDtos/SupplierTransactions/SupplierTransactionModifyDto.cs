@@ -35,8 +35,7 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.SupplierTransactions
         /// </summary>
         public FinancialTransactionTypeEnum TransactionType { get; set; }
 
-
-
+        public FinancialTransTypeEnum TransactionAction { get; set; }
        
         public Single FpaRate { get; set; }
         [DataType(DataType.Currency)]

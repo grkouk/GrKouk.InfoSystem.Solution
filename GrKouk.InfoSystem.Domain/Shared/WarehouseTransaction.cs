@@ -45,7 +45,7 @@ namespace GrKouk.InfoSystem.Domain.Shared
         //public virtual MeasureUnit PrimaryUnit { get; set; }
         public int SecondaryUnitId { get; set; }
         //public virtual MeasureUnit SecondaryUnit { get; set; }
-
+        public decimal UnitFactor { get; set; }
         /// <summary>
         /// Ποσότητα σε μονάδα μέτρησης 1
         /// </summary>

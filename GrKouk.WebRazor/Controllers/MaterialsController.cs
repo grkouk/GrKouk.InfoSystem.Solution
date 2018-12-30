@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using GrKouk.InfoSystem.Domain.FinConfig;
@@ -52,10 +53,11 @@ namespace GrKouk.WebRazor.Controllers
         [HttpGet("materialdata")]
         public async Task<IActionResult> GetMaterialData(int materialId)
         {
+            //TODO: Να βρίσκει τιμές μόνο για κινήσεις αγοράς ισως LasrPriceImport LastPriceExport???
             var lastPr = await _context.WarehouseTransactions.Where(m => m.Id == materialId)
                 .Select(k => new
                 {
-                    LastPrice = k.AmountNet
+                    LastPrice = k.UnitPrice
                 }).FirstOrDefaultAsync();
 
             var lastPrice = lastPr?.LastPrice ?? 0;
@@ -78,9 +80,12 @@ namespace GrKouk.WebRazor.Controllers
 
             if (materialData == null)
             {
-                return NotFound();
+                return NotFound(new
+                {
+                    error = "Material not found "
+                });
             }
-
+           //Thread.Sleep(10000);
             return Ok(materialData);
         }
 
@@ -271,7 +276,7 @@ namespace GrKouk.WebRazor.Controllers
                     warehouseTrans.CreatorId = transToAttach.Id;
                     warehouseTrans.TransDate = transToAttach.TransDate;
                     warehouseTrans.TransRefCode = transToAttach.TransRefCode;
-
+                    warehouseTrans.UnitFactor = (decimal)dataBuyDocLine.Factor;
 
                     warehouseTrans.TransWarehouseDocSeriesId = transWarehouseDef.TransWarehouseDefaultDocSeriesDefId;
                     warehouseTrans.TransWarehouseDocTypeId = transWarehouseDef.TransWarehouseDefaultDocSeriesDef

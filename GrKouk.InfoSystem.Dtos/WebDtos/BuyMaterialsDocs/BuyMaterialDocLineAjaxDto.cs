@@ -14,7 +14,7 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.BuyMaterialsDocs
         public Single DiscountRate { get; set; }
         public int MainUnitId { get; set; }
         public int SecUnitId { get; set; }
-        
+        public Single Factor { get; set; }
         public Single FpaRate { get; set; }
 
     }

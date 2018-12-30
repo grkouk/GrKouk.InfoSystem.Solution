@@ -42,13 +42,19 @@ namespace GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc
             {
                 return NotFound();
             }
-           ViewData["CompanyId"] = new SelectList(_context.Companies, "Id", "Code");
-           ViewData["FiscalPeriodId"] = new SelectList(_context.FiscalPeriods, "Id", "Id");
-           ViewData["MaterialDocSeriesId"] = new SelectList(_context.BuyMaterialDocSeriesDefs, "Id", "Code");
-           ViewData["MaterialDocTypeId"] = new SelectList(_context.BuyMaterialDocTypeDefs, "Id", "Code");
-           ViewData["SectionId"] = new SelectList(_context.Sections, "Id", "Code");
-           ViewData["SupplierId"] = new SelectList(_context.Transactors, "Id", "Id");
-            return Page();
+           LoadCombos();
+           return Page();
+        }
+
+        private void LoadCombos()
+        {
+            var supplierList = _context.Transactors.Where(s => s.TransactorType.Code == "SYS.SUPPLIER").OrderBy(s => s.Name).AsNoTracking();
+            ViewData["CompanyId"] = new SelectList(_context.Companies, "Id", "Code");
+            ViewData["FiscalPeriodId"] = new SelectList(_context.FiscalPeriods, "Id", "Id");
+            ViewData["MaterialDocSeriesId"] = new SelectList(_context.BuyMaterialDocSeriesDefs, "Id", "Code");
+            ViewData["MaterialDocTypeId"] = new SelectList(_context.BuyMaterialDocTypeDefs, "Id", "Code");
+            ViewData["SectionId"] = new SelectList(_context.Sections, "Id", "Code");
+            ViewData["SupplierId"] = new SelectList(supplierList, "Id", "Name");
         }
 
         public async Task<IActionResult> OnPostAsync()

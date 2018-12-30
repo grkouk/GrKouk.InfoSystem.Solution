@@ -134,7 +134,7 @@
        class="btn btn-light @prevDisabled">
         <
     </a>
-    Page:@Model.ListItems.CurrentPage of @Model.TotalPages Total Items @Model.TotalCount
+    Page:@Model.ListItems.CurrentPage of @Model.ListItems.TotalPages Total Items @Model.ListItems.TotalCount
     <a asp-page="./Index"
        asp-route-sortOrder="@Model.CurrentSort"
        asp-route-pageIndex="@(Model.ListItems.CurrentPage + 1)"

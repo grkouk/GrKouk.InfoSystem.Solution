@@ -15,71 +15,77 @@
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <div class="form-row">
             <div class="form-group col-md-3">
-                <label asp-for="SupplierTransactionDto.TransDate"></label>
-                <input asp-for="SupplierTransactionDto.TransDate" class="form-control"  />
+                <label asp-for="SupplierTransactionDto.TransDate" class="small"></label>
+                <input asp-for="SupplierTransactionDto.TransDate" class="form-control form-control-sm small"  />
                 <span asp-validation-for="SupplierTransactionDto.TransDate" class="text-danger"></span>
             </div>
             <div class="form-group col-md-6">
-                <label asp-for="SupplierTransactionDto.TransSupplierDocSeriesId"></label>
-                <select asp-for="SupplierTransactionDto.TransSupplierDocSeriesId" class="form-control" asp-items="ViewBag.TransSupplierDocSeriesId"></select>
+                <label asp-for="SupplierTransactionDto.TransSupplierDocSeriesId" class="small"></label>
+                <select asp-for="SupplierTransactionDto.TransSupplierDocSeriesId" class="form-control form-control-sm small" asp-items="ViewBag.TransSupplierDocSeriesId"></select>
             </div>
 
             <div class="form-group col-md-3">
-                <label asp-for="SupplierTransactionDto.TransRefCode"></label>
-                <input asp-for="SupplierTransactionDto.TransRefCode" class="form-control" />
+                <label asp-for="SupplierTransactionDto.TransRefCode" class="small"></label>
+                <input asp-for="SupplierTransactionDto.TransRefCode" class="form-control form-control-sm small" />
                 <span asp-validation-for="SupplierTransactionDto.TransRefCode" class="text-danger"></span>
             </div>
 
         </div>
         <div class="form-row">
             <div class="form-group col-md-6">
-                <label asp-for="SupplierTransactionDto.SupplierId"></label>
-                <select asp-for="SupplierTransactionDto.SupplierId" class="form-control" asp-items="ViewBag.SupplierId"></select>
+                <label asp-for="SupplierTransactionDto.SupplierId" class="small"></label>
+                <select asp-for="SupplierTransactionDto.SupplierId" class="form-control form-control-sm small" asp-items="ViewBag.SupplierId"></select>
             </div>
             <div class="form-group col-md-3">
-                <label asp-for="SupplierTransactionDto.FiscalPeriodId"></label>
-                <select asp-for="SupplierTransactionDto.FiscalPeriodId" class="form-control" asp-items="ViewBag.FiscalPeriodId"></select>
+                <label asp-for="SupplierTransactionDto.FiscalPeriodId" class="small"></label>
+                <select asp-for="SupplierTransactionDto.FiscalPeriodId" class="form-control form-control-sm small" asp-items="ViewBag.FiscalPeriodId"></select>
             </div>
             <div class="form-group col-md-3">
-                <label asp-for="SupplierTransactionDto.CompanyId"></label>
-                <select asp-for="SupplierTransactionDto.CompanyId" class="form-control" asp-items="ViewBag.CompanyId"></select>
+                <label asp-for="SupplierTransactionDto.CompanyId" class="small"></label>
+                <select asp-for="SupplierTransactionDto.CompanyId" class="form-control form-control-sm small" asp-items="ViewBag.CompanyId"></select>
             </div>
         </div>
         <div class="form-row">
            
-            <div class="form-group col-md-3">
-                <label asp-for="SupplierTransactionDto.FpaRate"></label>
-                <input asp-for="SupplierTransactionDto.FpaRate" class="form-control" />
-                <span asp-validation-for="SupplierTransactionDto.FpaRate" class="text-danger"></span>
-            </div>
+            
         </div>
         <div class="form-row">
-            <div class="form-group col-md-4">
-                <label asp-for="SupplierTransactionDto.AmountFpa"></label>
-                <input asp-for="SupplierTransactionDto.AmountFpa" class="form-control"  />
-                <span asp-validation-for="SupplierTransactionDto.AmountFpa" class="text-danger"></span>
+            <div class="form-group col-md-1">
+                <label asp-for="SupplierTransactionDto.FpaRate" class="small"></label>
+                <input asp-for="SupplierTransactionDto.FpaRate" class="form-control form-control-sm small" />
+                <span asp-validation-for="SupplierTransactionDto.FpaRate" class="text-danger"></span>
             </div>
-            <div class="form-group col-md-4">
-                <label asp-for="SupplierTransactionDto.AmountNet"></label>
-                <input asp-for="SupplierTransactionDto.AmountNet" value="0" class="form-control" />
+            <div class="form-group col-md-3">
+                <label asp-for="SupplierTransactionDto.AmountNet" class="small"></label>
+                <input asp-for="SupplierTransactionDto.AmountNet" value="0" class="form-control form-control-sm small" />
                 <span asp-validation-for="SupplierTransactionDto.AmountNet" class="text-danger"></span>
             </div>
-            <div class="form-group col-md-4">
-                <label asp-for="SupplierTransactionDto.AmountDiscount"></label>
-                <input asp-for="SupplierTransactionDto.AmountDiscount" value="0" class="form-control" />
+            <div class="form-group col-md-2">
+                <label asp-for="SupplierTransactionDto.AmountFpa" class="small"></label>
+                <input asp-for="SupplierTransactionDto.AmountFpa" class="form-control form-control-sm small" />
+                <span asp-validation-for="SupplierTransactionDto.AmountFpa" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-2">
+                <label asp-for="SupplierTransactionDto.AmountDiscount" class="small"></label>
+                <input asp-for="SupplierTransactionDto.AmountDiscount" class="form-control form-control-sm small" />
                 <span asp-validation-for="SupplierTransactionDto.AmountDiscount" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-4">
+                <label class="small">Sum</label>
+                <input id="SumAmount" class="form-control form-control-sm small" disabled />
+
             </div>
         </div>
         <div class="form-row">
             <div class="form-group col-md-12">
-                <label asp-for="SupplierTransactionDto.Etiology"></label>
-                <textarea asp-for="SupplierTransactionDto.Etiology" class="form-control" placeholder="Αιτιολογία Κίνησης"> </textarea>
+                <label asp-for="SupplierTransactionDto.Etiology" class="small"></label>
+                <textarea asp-for="SupplierTransactionDto.Etiology" class="form-control form-control-sm small" placeholder="Αιτιολογία Κίνησης"> </textarea>
                 <span asp-validation-for="SupplierTransactionDto.Etiology" class="text-danger"></span>
             </div>
         </div>
         <div class="form-row">
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Create" class="btn btn-primary btn-sm" />
             </div>
         </div>
     </form>
