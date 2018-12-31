@@ -24,7 +24,7 @@
         <input type="hidden" asp-for="ItemVm.PrimaryUnitId" />
         <input type="hidden" asp-for="ItemVm.SecondaryUnitId" />
         <input type="hidden" asp-for="ItemVm.UnitFactor" />
-
+        <input type="hidden" asp-for="@Model.InitialLoad" id="IsInitialLoad" />
         @* <input type="hidden" asp-for="ItemVm.TransWarehouseDocTypeId" />*@
         <div class="form-row">
             <div class="form-group col-md-3">
@@ -59,8 +59,9 @@
             </div>
             <div class="form-group col-md-3">
                 <label asp-for="ItemVm.FiscalPeriodId" class="small"></label>
-                <select asp-for="ItemVm.FiscalPeriodId" class="form-control form-control-sm small" asp-items="ViewBag.FiscalPeriodId" disabled></select>
-            </div>
+                <select asp-for="ItemVm.FiscalPeriodId" class="form-control form-control-sm small" asp-items="ViewBag.FiscalPeriodId" readonly></select>
+                <span asp-validation-for="ItemVm.FiscalPeriodId" class="text-danger"></span>
+                </div>
             <div class="form-group col-md-3">
                 <label asp-for="ItemVm.CompanyId" class="small"></label>
                 <select asp-for="ItemVm.CompanyId" class="form-control form-control-sm small" asp-items="ViewBag.CompanyId"></select>
@@ -109,12 +110,12 @@
             </div>
             <div class="form-group col-md-2">
                 <label asp-for="ItemVm.AmountNet" class="small"></label>
-                <input asp-for="ItemVm.AmountNet"  class="form-control form-control-sm small" disabled />
+                <input asp-for="ItemVm.AmountNet"  class="form-control form-control-sm small" readonly />
                 <span asp-validation-for="ItemVm.AmountNet" class="text-danger"></span>
             </div>
             <div class="form-group col-md-2">
                 <label asp-for="ItemVm.AmountFpa" class="small"></label>
-                <input asp-for="ItemVm.AmountFpa" class="form-control form-control-sm small" disabled />
+                <input asp-for="ItemVm.AmountFpa" class="form-control form-control-sm small" readonly />
                 <span asp-validation-for="ItemVm.AmountFpa" class="text-danger"></span>
             </div>
             <div class="form-group col-md-2">
@@ -151,7 +152,7 @@
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script>
         $(document).ready(() => {
-          
+            var $initialLoad = $('#IsInitialLoad');
             //#region
             var $material = $('#ItemVm_MaterialId');
             var $unitPrice = $('#ItemVm_UnitPrice');
@@ -174,11 +175,13 @@
                 var q1Val = parseFloat($Q1.val());
                 var fpaRate = parseFloat($fpaRate.val());
                 var unitPrice = parseFloat($unitPrice.val());
-                $amountNet.val(q1Val * unitPrice);
-                $amountFpa.val(q1Val * unitPrice * fpaRate);
-                var amountNet = parseFloat($amountNet.val());
                 var amountDic = parseFloat($amountDic.val());
-                var amountFpa = parseFloat($amountFpa.val());
+                var amountNet = q1Val * unitPrice;
+                var amountFpa = (amountNet - amountDic) * fpaRate;
+
+                $amountNet.val(amountNet);
+                $amountFpa.val(amountFpa);
+
                 $sumAmount.val(amountNet + amountFpa - amountDic);
             };
             var materialChanged = () => {
@@ -187,11 +190,9 @@
                 var materialId = $material.val();
                 console.log("Material change event ->" + materialId);
 
-                const Uri = '@Configuration.GetSection("WebApiSettings")["WebApiLocal"]';
-                const FinalUri = `${Uri}/materials/materialdata?materialId=${materialId}`;
-                //const FinalUri = `/api/materials/materialdata?materialId=${materialId}`;
-
-                fetch(FinalUri)
+                var uri = '@Configuration.GetSection("WebApiSettings")["WebApiLocal"]';
+                var finalUri = `${uri}/materials/materialdata?materialId=${materialId}`;
+                fetch(finalUri)
                     .then(function(response) {
                         if (response.ok) {
                             return response.json();
@@ -206,11 +207,11 @@
                             var rate = parseFloat(myJson.fpaRate);
                             var lastPrice = parseFloat(myJson.lastPrice);
                             var fpaId = myJson.fpaId;
-                            //I Use main unit and Buy Unit as secondary
+
                             $primaryUnitCode.text(` ${myJson.mainUnitCode}`);
                             $secondaryUnitCode.text(` ${myJson.secUnitCode}`);
                             $fpaRate.val(rate);
-                            //$('#MaterialFpaId').val(fpaId);
+
                             $unitPrice.val(lastPrice);
                             $primUnitId.val(myJson.mainUnitId);
                             $secUnitId.val(myJson.secUnitId);
@@ -223,7 +224,7 @@
                             console.log(error);
                         }
                     );
-               
+
             };
             var transactionDataChanged = () => {
                 console.log("Inside transDate Changed");
@@ -243,7 +244,7 @@
                     .then(function(myJson) {
                         console.log("Inside fetch then with myJson" + JSON.stringify(myJson));
                         if (myJson) {
-                            
+
                             var fiscalPeriodId = myJson.periodId;
                             console.log("Returned PeriodId=" + fiscalPeriodId);
                             $fiscalPeriod.val(fiscalPeriodId);
@@ -261,21 +262,21 @@
             });
             $Q1.change(() => {
                 var factor = parseFloat($unitFactor.val());
-                var q1val = parseFloat($Q1.val());
+                var q1Val = parseFloat($Q1.val());
                 if (factor === 0) {
                     return;
                 }
-                $Q2.val((q1val / factor).toFixed(2));
+                $Q2.val((q1Val / factor).toFixed(2));
                 calculateAmounts();
             });
 
             $Q2.change(() => {
                 var factor = parseFloat($unitFactor.val());
-                var q2val = parseFloat($Q2.val());
+                var q2Val = parseFloat($Q2.val());
                 if (factor === 0) {
                     return;
                 }
-                $Q1.val(q2val * factor);
+                $Q1.val(q2Val * factor);
                 calculateAmounts();
             });
             $fpaRate.change(() => {
@@ -292,24 +293,26 @@
             });
 
             //#region Initial values
-            $('#matLoading').attr('hidden', true);
-            $transDate.val(new Date().toISOString().slice(0, 10));
-
-            $amountNet.attr('data-actualValue', '0');
-            $amountNet.val(0);
-            $amountFpa.attr('data-actualValue', '0');
-            $amountFpa.val(0);
-            $amountDic.attr('data-actualValue', '0');
-            $amountDic.val(0);
-            $sumAmount.attr('data-actualValue', '0');
-            $sumAmount.val(0);
+            if ($initialLoad.val() == 'True') {
+                $('#matLoading').attr('hidden', true);
+                $transDate.val(new Date().toISOString().slice(0, 10));
+                transactionDataChanged();
+                $amountNet.attr('data-actualValue', '0');
+                $amountNet.val(0);
+                $amountFpa.attr('data-actualValue', '0');
+                $amountFpa.val(0);
+                $amountDic.attr('data-actualValue', '0');
+                $amountDic.val(0);
+                $sumAmount.attr('data-actualValue', '0');
+                $sumAmount.val(0);
+            }
             //#endregion
             //Hanlde initial material
             if ($material.val()) {
                 materialChanged();
             }
 
-            transactionDataChanged();
+            $initialLoad.val(false);
 
         });
     </script>

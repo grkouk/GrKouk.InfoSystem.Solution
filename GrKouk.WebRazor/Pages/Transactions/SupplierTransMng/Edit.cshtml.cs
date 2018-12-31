@@ -73,18 +73,23 @@ namespace GrKouk.WebRazor.Pages.Transactions.SupplierTransMng
                 LoadCombos();
                 return Page();
             }
-
-            var spTransactionToAttach = _mapper.Map<SupplierTransaction>(ItemVm);
-            #region Fiscal Period
-            var dateOfTrans = ItemVm.TransDate;
-            var fiscalPeriod = await _context.FiscalPeriods.FirstOrDefaultAsync(p =>
-                p.StartDate.CompareTo(dateOfTrans) > 0 & p.EndDate.CompareTo(dateOfTrans) < 0);
-            if (fiscalPeriod == null)
+            if (ItemVm.FiscalPeriodId <= 0)
             {
                 ModelState.AddModelError(string.Empty, "No Fiscal Period covers Transaction Date");
                 LoadCombos();
                 return Page();
             }
+            var spTransactionToAttach = _mapper.Map<SupplierTransaction>(ItemVm);
+            #region Fiscal Period
+            //var dateOfTrans = ItemVm.TransDate;
+            //var fiscalPeriod = await _context.FiscalPeriods.FirstOrDefaultAsync(p =>
+            //    p.StartDate.CompareTo(dateOfTrans) > 0 & p.EndDate.CompareTo(dateOfTrans) < 0);
+            //if (fiscalPeriod == null)
+            //{
+            //    ModelState.AddModelError(string.Empty, "No Fiscal Period covers Transaction Date");
+            //    LoadCombos();
+            //    return Page();
+            //}
             #endregion
             var docSeries = _context.TransSupplierDocSeriesDefs.SingleOrDefault(m => m.Id == spTransactionToAttach.TransSupplierDocSeriesId);
 
@@ -105,7 +110,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.SupplierTransMng
 
             //spTransaction.SectionId = section.Id;
             spTransactionToAttach.TransSupplierDocTypeId = docSeries.TransSupplierDocTypeDefId;
-            spTransactionToAttach.FiscalPeriodId = fiscalPeriod.Id;
+          
             switch (transSupplierDef.FinancialTransType)
             {
                 case InfoSystem.Domain.FinConfig.FinancialTransTypeEnum.FinancialTransTypeNoChange:
