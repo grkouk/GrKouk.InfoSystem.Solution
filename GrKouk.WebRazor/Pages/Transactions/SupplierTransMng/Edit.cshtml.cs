@@ -30,7 +30,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.SupplierTransMng
         }
 
         [BindProperty]
-        public SupplierTransactionModifyDto SupplierTransactionVm { get; set; }
+        public SupplierTransactionModifyDto ItemVm { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -61,7 +61,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.SupplierTransMng
             //If section is not our section the canot update disable input controls
             NotUpdatable = supplierTransactionToModify.SectionId != section.Id;
 
-            SupplierTransactionVm = _mapper.Map<SupplierTransactionModifyDto>(supplierTransactionToModify);
+            ItemVm = _mapper.Map<SupplierTransactionModifyDto>(supplierTransactionToModify);
             LoadCombos();
             return Page();
         }
@@ -74,9 +74,9 @@ namespace GrKouk.WebRazor.Pages.Transactions.SupplierTransMng
                 return Page();
             }
 
-            var spTransactionToAttach = _mapper.Map<SupplierTransaction>(SupplierTransactionVm);
+            var spTransactionToAttach = _mapper.Map<SupplierTransaction>(ItemVm);
             #region Fiscal Period
-            var dateOfTrans = SupplierTransactionVm.TransDate;
+            var dateOfTrans = ItemVm.TransDate;
             var fiscalPeriod = await _context.FiscalPeriods.FirstOrDefaultAsync(p =>
                 p.StartDate.CompareTo(dateOfTrans) > 0 & p.EndDate.CompareTo(dateOfTrans) < 0);
             if (fiscalPeriod == null)
@@ -145,7 +145,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.SupplierTransMng
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!SupplierTransactionExists(SupplierTransactionVm.Id))
+                if (!SupplierTransactionExists(ItemVm.Id))
                 {
                     return NotFound();
                 }

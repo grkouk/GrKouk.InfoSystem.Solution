@@ -29,77 +29,79 @@
     <form method="post">
         <fieldset @formDisabled>
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="SupplierTransactionVm.Id" />
-            <input type="hidden" asp-for="SupplierTransactionVm.Timestamp" />
-            <input type="hidden" asp-for="SupplierTransactionVm.SectionId" />
-            <input type="hidden" asp-for="SupplierTransactionVm.TransSupplierDocTypeId" />
+            <input type="hidden" asp-for="ItemVm.Id" />
+            <input type="hidden" asp-for="ItemVm.Timestamp" />
+            <input type="hidden" asp-for="ItemVm.SectionId" />
+            <input type="hidden" asp-for="ItemVm.TransSupplierDocTypeId" />
             <input type="hidden" asp-for="@Model.InitialLoad" id="IsInitialLoad" />
             <div class="form-row">
                 <div class="form-group col-md-3">
-                    <label asp-for="SupplierTransactionVm.TransDate" class="small"></label>
-                    <input asp-for="SupplierTransactionVm.TransDate" class="form-control form-control-sm small" autofocus/>
-                    <span asp-validation-for="SupplierTransactionVm.TransDate" class="text-danger"></span>
+                    <label asp-for="ItemVm.TransDate" class="small"></label>
+                    <input asp-for="ItemVm.TransDate" class="form-control form-control-sm small" autofocus />
+                    <span asp-validation-for="ItemVm.TransDate" class="text-danger"></span>
                 </div>
                 <div class="form-group col-md-6">
-                    <label asp-for="SupplierTransactionVm.TransSupplierDocSeriesId" class="small"></label>
-                    <select asp-for="SupplierTransactionVm.TransSupplierDocSeriesId" class="form-control form-control-sm small" asp-items="ViewBag.TransSupplierDocSeriesId"></select>
+                    <label asp-for="ItemVm.TransSupplierDocSeriesId" class="small"></label>
+                    <select asp-for="ItemVm.TransSupplierDocSeriesId" class="form-control form-control-sm small" asp-items="ViewBag.TransSupplierDocSeriesId"></select>
                 </div>
 
                 <div class="form-group col-md-3">
-                    <label asp-for="SupplierTransactionVm.TransRefCode" class="small"></label>
-                    <input asp-for="SupplierTransactionVm.TransRefCode" class="form-control form-control-sm small" />
-                    <span asp-validation-for="SupplierTransactionVm.TransRefCode" class="text-danger"></span>
+                    <label asp-for="ItemVm.TransRefCode" class="small"></label>
+                    <input asp-for="ItemVm.TransRefCode" class="form-control form-control-sm small" />
+                    <span asp-validation-for="ItemVm.TransRefCode" class="text-danger"></span>
                 </div>
 
             </div>
             <div class="form-row">
                 <div class="form-group col-md-6">
-                    <label asp-for="SupplierTransactionVm.SupplierId" class="small"></label>
-                    <select asp-for="SupplierTransactionVm.SupplierId" class="form-control form-control-sm small" asp-items="ViewBag.SupplierId"></select>
+                    <label asp-for="ItemVm.SupplierId" class="small"></label>
+                    <select asp-for="ItemVm.SupplierId" class="form-control form-control-sm small" asp-items="ViewBag.SupplierId"></select>
                 </div>
                 <div class="form-group col-md-3">
-                    <label asp-for="SupplierTransactionVm.FiscalPeriodId" class="small"></label>
-                    <select asp-for="SupplierTransactionVm.FiscalPeriodId" class="form-control form-control-sm small" asp-items="ViewBag.FiscalPeriodId" disabled></select>
+                    <label asp-for="ItemVm.FiscalPeriodId" class="small"></label>
+                    <select asp-for="ItemVm.FiscalPeriodId" class="form-control form-control-sm small" asp-items="ViewBag.FiscalPeriodId" disabled></select>
                 </div>
                 <div class="form-group col-md-3">
-                    <label asp-for="SupplierTransactionVm.CompanyId" class="small"></label>
-                    <select asp-for="SupplierTransactionVm.CompanyId" class="form-control form-control-sm small" asp-items="ViewBag.CompanyId"></select>
+                    <label asp-for="ItemVm.CompanyId" class="small"></label>
+                    <select asp-for="ItemVm.CompanyId" class="form-control form-control-sm small" asp-items="ViewBag.CompanyId"></select>
                 </div>
             </div>
-           
+
             <div class="form-row">
                 <div class="form-group col-md-1">
-                    <label asp-for="SupplierTransactionVm.FpaRate" class="small"></label>
-                    <input asp-for="SupplierTransactionVm.FpaRate" class="form-control form-control-sm small" />
-                    <span asp-validation-for="SupplierTransactionVm.FpaRate" class="text-danger"></span>
-                </div>
-                <div class="form-group col-md-3">
-                    <label asp-for="SupplierTransactionVm.AmountNet" class="small"></label>
-                    <input asp-for="SupplierTransactionVm.AmountNet" value="0" class="form-control form-control-sm small" />
-                    <span asp-validation-for="SupplierTransactionVm.AmountNet" class="text-danger"></span>
+                    <label asp-for="ItemVm.FpaRate" class="small"></label>
+                    <input asp-for="ItemVm.FpaRate" class="form-control form-control-sm small" />
+                    <span asp-validation-for="ItemVm.FpaRate" class="text-danger"></span>
                 </div>
                 <div class="form-group col-md-2">
-                    <label asp-for="SupplierTransactionVm.AmountFpa" class="small"></label>
-                    <input asp-for="SupplierTransactionVm.AmountFpa" class="form-control form-control-sm small" />
-                    <span asp-validation-for="SupplierTransactionVm.AmountFpa" class="text-danger"></span>
+                    <label asp-for="ItemVm.AmountNet" class="small"></label>
+                    <input asp-for="ItemVm.AmountNet"  class="form-control form-control-sm small" />
+                    <span asp-validation-for="ItemVm.AmountNet" class="text-danger"></span>
                 </div>
                 <div class="form-group col-md-2">
-                    <label asp-for="SupplierTransactionVm.AmountDiscount" class="small"></label>
-                    <input asp-for="SupplierTransactionVm.AmountDiscount" class="form-control form-control-sm small" />
-                    <span asp-validation-for="SupplierTransactionVm.AmountDiscount" class="text-danger"></span>
+                    <label asp-for="ItemVm.AmountFpa" class="small"></label>
+                    <input asp-for="ItemVm.AmountFpa" class="form-control form-control-sm small" />
+                    <span asp-validation-for="ItemVm.AmountFpa" class="text-danger"></span>
                 </div>
-                <div class="form-group col-md-4">
-                    <label class="small">Sum</label>
-                    <input id="SumAmount" class="form-control form-control-sm small" disabled />
+                <div class="form-group col-md-2">
+                    <label asp-for="ItemVm.AmountDiscount" class="small"></label>
+                    <input asp-for="ItemVm.AmountDiscount" class="form-control form-control-sm small" />
+                    <span asp-validation-for="ItemVm.AmountDiscount" class="text-danger"></span>
+                </div>
+
+                <div class="form-group col-md-2">
+                    <label asp-for="ItemVm.AmountSum" class="small">Sum</label>
+                    <input asp-for="ItemVm.AmountSum" class="form-control form-control-sm small" disabled />
 
                 </div>
-               
+
+
             </div>
             <div class="form-row">
                 <div class="form-group col-md-12">
-                    <label asp-for="SupplierTransactionVm.Etiology" class="small"></label>
-                    <textarea asp-for="SupplierTransactionVm.Etiology" class="form-control form-control-sm small" placeholder="Αιτιολογία Κίνησης"> </textarea>
-                    <span asp-validation-for="SupplierTransactionVm.Etiology" class="text-danger"></span>
+                    <label asp-for="ItemVm.Etiology" class="small"></label>
+                    <textarea asp-for="ItemVm.Etiology" class="form-control form-control-sm small" placeholder="Αιτιολογία Κίνησης"> </textarea>
+                    <span asp-validation-for="ItemVm.Etiology" class="text-danger"></span>
                 </div>
             </div>
             <div class="form-row">
@@ -123,13 +125,59 @@
     <script>
         $(document).ready(function () {
             console.log("Inside Document ready");
+            var $initialLoad = $('#IsInitialLoad');
 
-            $('#SupplierTransactionDto_AmountFpa').change((event) => {
-                //console.log(event.toString());
-               // console.log("Inside Fpa Change");
+
+
+            var $amountNet = $('#ItemVm_AmountNet');
+            var $amountFpa = $('#ItemVm_AmountFpa');
+            var $amountDic = $('#ItemVm_AmountDiscount');
+            var $fpaRate = $('#ItemVm_FpaRate');
+            var $amountSum = $('#ItemVm_AmountSum');
+            console.log('AMount Net ' + $amountNet.val());
+            console.log('AMount Fpa ' + $amountFpa.val());
+            console.log('AMount Discount ' + $amountDic.val());
+            console.log('Fpa Rate ' + $fpaRate.val());
+            var calculateAmounts = () => {
+                console.log("Calculate Values called");
+
+                var fpaRate = parseFloat($fpaRate.val());
+                var amountNet = parseFloat($amountNet.val());
+                var amountDic = parseFloat($amountDic.val());
+                var amountForFpa = amountNet - amountDic;
+                var amountFpa = amountForFpa * fpaRate;
+
+                $amountFpa.val(amountFpa);
+
+                $amountSum.val(amountNet + amountFpa - amountDic);
+            };
+
+
+            $fpaRate.change((event) => {
+                console.log("Inside Fpa Rate Change");
+                calculateAmounts();
             });
-           
+            $amountNet.change((event) => {
+                console.log("Inside Net Amount Change");
+                calculateAmounts();
+            });
 
+            $amountDic.change((event) => {
+                console.log("Inside Discount Amount Change");
+                calculateAmounts();
+            });
+
+            if (!$initialLoad.val()) {
+                console.log("Inside Initial values");
+                $fpaRate.val(0);
+                $amountDic.val(0);
+                $amountFpa.val(0);
+                $amountNet.val(0);
+
+                $('#ItemVm_TransDate').val(new Date().toISOString().slice(0, 10));
+            }
+
+            $initialLoad.val(false);
         });
 
 

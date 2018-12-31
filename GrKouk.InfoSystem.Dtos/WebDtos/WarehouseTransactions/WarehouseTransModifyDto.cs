@@ -45,12 +45,12 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.WarehouseTransactions
         public decimal UnitPrice { get; set; }
         [Display(Name = "Vat Amount")]
         public decimal AmountFpa { get; set; }
-        [Display(Name = "Amount Net")]
+        [Display(Name = "Net Amount")]
         public decimal AmountNet { get; set; }
-        [Display(Name = "Amount Desc")]
+        [Display(Name = "Discount Amount")]
         public decimal AmountDiscount { get; set; }
         [DisplayFormat(DataFormatString = "{0:C}")]
-        [Display(Name = "Sum")]
+        [Display(Name = "Sum Amount")]
         public decimal AmountSum => (AmountNet+AmountFpa-AmountDiscount);
 
         [MaxLength(500)]

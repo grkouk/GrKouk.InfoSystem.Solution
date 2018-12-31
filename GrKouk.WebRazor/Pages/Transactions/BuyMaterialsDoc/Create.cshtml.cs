@@ -55,21 +55,6 @@ namespace GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc
 
             return RedirectToPage("./Index");
         }
-        public async Task<IActionResult> OnPostAjaxPostAsync([FromBody] BuyMaterialsDocCreateAjaxDto data)
-        {
-            Debug.Print(data.TransDate.ToString());
-            foreach (var dataBuyDocLine in data.BuyDocLines)
-            {
-                Debug.WriteLine("Lines ");
-                Debug.WriteLine(dataBuyDocLine.MaterialId.ToString());
-                Debug.WriteLine(dataBuyDocLine.Amount.ToString());
-                Debug.WriteLine(dataBuyDocLine.Q1.ToString());
-                Debug.WriteLine(dataBuyDocLine.Price.ToString());
-
-
-            }
-            
-            return new OkResult(); 
-        }
+       
     }
 }

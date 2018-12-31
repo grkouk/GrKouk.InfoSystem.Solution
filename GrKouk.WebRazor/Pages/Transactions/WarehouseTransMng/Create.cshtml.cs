@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -47,7 +48,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.WarehouseTransMng
                
             };
             ViewData["CompanyId"] = new SelectList(_context.Companies.OrderBy(p => p.Code).AsNoTracking(), "Id", "Code");
-            //ViewData["FiscalPeriodId"] = new SelectList(_context.FiscalPeriods.OrderBy(p=>p.Name).AsNoTracking(), "Id", "Name");
+            ViewData["FiscalPeriodId"] = new SelectList(_context.FiscalPeriods.OrderBy(p=>p.Name).AsNoTracking(), "Id", "Name");
             ViewData["MaterialId"] = new SelectList(_context.Materials.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
             //ViewData["SectionId"] = new SelectList(_context.Sections, "Id", "Code");
             ViewData["TransWarehouseDocSeriesId"] = new SelectList(_context.TransWarehouseDocSeriesDefs.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
@@ -58,9 +59,11 @@ namespace GrKouk.WebRazor.Pages.Transactions.WarehouseTransMng
         {
             if (!ModelState.IsValid)
             {
+
                 return Page();
             }
 
+            Debug.Print("FiscalPeriodId-> " + ItemVm.FiscalPeriodId.ToString());
             //_context.WarehouseTransactions.Add(WarehouseTransaction);
             await _context.SaveChangesAsync();
 

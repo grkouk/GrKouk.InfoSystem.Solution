@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -20,7 +21,14 @@ namespace GrKouk.WebRazor.Pages.Transactions.SupplierTransMng
         private readonly GrKouk.WebApi.Data.ApiDbContext _context;
         private readonly IMapper mapper;
         private readonly IToastNotification toastNotification;
-
+       
+        private bool _initialLoad =true;
+        [BindProperty]
+        public bool InitialLoad
+        {
+            get => _initialLoad;
+            set => _initialLoad = value;
+        }
         public CreateModel(GrKouk.WebApi.Data.ApiDbContext context, IMapper mapper, IToastNotification toastNotification)
         {
             _context = context;
@@ -46,31 +54,31 @@ namespace GrKouk.WebRazor.Pages.Transactions.SupplierTransMng
         }
        
         [BindProperty]
-        public SupplierTransactionCreateDto SupplierTransactionDto { get; set; }
+        public SupplierTransactionCreateDto ItemVm { get; set; }
+
+       
 
         public async Task<IActionResult> OnPostAsync()
         {
+            Debug.Print("Inside Post IsInitial Load value" + _initialLoad.ToString());
             if (!ModelState.IsValid)
             {
                 LoadCombos();
                 return Page();
             }
-
-            var spTransaction = mapper.Map<SupplierTransaction>(SupplierTransactionDto);
             #region Fiscal Period
-            var dateOfTrans = SupplierTransactionDto.TransDate;
-            var fiscalPeriod = await _context.FiscalPeriods.FirstOrDefaultAsync(p =>
-                p.StartDate.CompareTo(dateOfTrans) > 0 & p.EndDate.CompareTo(dateOfTrans) < 0);
-            if (fiscalPeriod == null)
+            if (ItemVm.FiscalPeriodId <= 0)
             {
                 ModelState.AddModelError(string.Empty, "No Fiscal Period covers Transaction Date");
                 LoadCombos();
                 return Page();
             }
             #endregion
+            var spTransaction = mapper.Map<SupplierTransaction>(ItemVm);
+           
             var docSeries = await
                 _context.TransSupplierDocSeriesDefs.SingleOrDefaultAsync(m =>
-                    m.Id == SupplierTransactionDto.TransSupplierDocSeriesId);
+                    m.Id == ItemVm.TransSupplierDocSeriesId);
 
             if (docSeries is null)
             {
@@ -99,7 +107,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.SupplierTransMng
 
             spTransaction.SectionId = section.Id;
             spTransaction.TransSupplierDocTypeId = docSeries.TransSupplierDocTypeDefId;
-            spTransaction.FiscalPeriodId = fiscalPeriod.Id;
+            //spTransaction.FiscalPeriodId = fiscalPeriod.Id;
             switch (transSupplierDef.FinancialTransType)
             {
                 case InfoSystem.Domain.FinConfig.FinancialTransTypeEnum.FinancialTransTypeNoChange:

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -87,6 +88,26 @@ namespace GrKouk.WebRazor.Controllers
             }
             //Thread.Sleep(10000);
             return Ok(materialData);
+        }
+        [HttpGet("FiscalPeriod")]
+        public async Task<IActionResult> GetFiscalPeriod(DateTime forDate)
+        {
+            Debug.Print("******Inside GetFiscal period " + forDate.ToString());
+            var dateOfTrans = forDate;
+            var fiscalPeriod = await _context.FiscalPeriods.FirstOrDefaultAsync(p =>
+                dateOfTrans >= p.StartDate && dateOfTrans <= p.EndDate);
+            if (fiscalPeriod == null)
+            {
+                Debug.Print("******Inside GetFiscal period No Fiscal Period found" );
+                ModelState.AddModelError(string.Empty, "No Fiscal Period covers Transaction Date");
+                return NotFound(new
+                {
+                    error = "No fiscal period includes date"
+                });
+
+            }
+            Debug.Print("******Inside GetFiscal period Returning period id " + fiscalPeriod.Id);
+            return Ok(new {PeriodId = fiscalPeriod.Id});
         }
 
         [HttpPost("MaterialBuyDoc")]
