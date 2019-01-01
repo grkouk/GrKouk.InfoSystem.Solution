@@ -44,8 +44,12 @@
                 </div>
                 <div class="form-group col-md-6">
                     <label asp-for="ItemVm.TransWarehouseDocSeriesId" class="small"></label>
-                    <select asp-for="ItemVm.TransWarehouseDocSeriesId" class="form-control form-control-sm small" asp-items="ViewBag.TransWarehouseDocSeriesId"></select>
-                    <span id="MaterialLoading"></span>
+                    <div class="input-group ">
+                        <select asp-for="ItemVm.TransWarehouseDocSeriesId" class="form-control form-control-sm small" asp-items="ViewBag.TransWarehouseDocSeriesId"></select>
+                        <div class="input-group-append">
+                            <span class="form-control-sm small" id="seriesLoading" hidden><i class="fas fa-spinner fa-spin"></i></span>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="form-group col-md-3">
@@ -69,8 +73,9 @@
                 </div>
                 <div class="form-group col-md-3">
                     <label asp-for="ItemVm.FiscalPeriodId" class="small"></label>
-                    <select asp-for="ItemVm.FiscalPeriodId" class="form-control form-control-sm small" asp-items="ViewBag.FiscalPeriodId" disabled></select>
-                </div>
+                    <select asp-for="ItemVm.FiscalPeriodId" class="form-control form-control-sm small" asp-items="ViewBag.FiscalPeriodId" readonly></select>
+                    <span asp-validation-for="ItemVm.FiscalPeriodId" class="text-danger"></span>
+                    </div>
                 <div class="form-group col-md-3">
                     <label asp-for="ItemVm.CompanyId" class="small"></label>
                     <select asp-for="ItemVm.CompanyId" class="form-control form-control-sm small" asp-items="ViewBag.CompanyId"></select>
@@ -119,12 +124,12 @@
                 </div>
                 <div class="form-group col-md-2">
                     <label asp-for="ItemVm.AmountNet" class="small"></label>
-                    <input asp-for="ItemVm.AmountNet"  class="form-control form-control-sm small" disabled />
+                    <input asp-for="ItemVm.AmountNet"  class="form-control form-control-sm small" readonly />
                     <span asp-validation-for="ItemVm.AmountNet" class="text-danger"></span>
                 </div>
                 <div class="form-group col-md-2">
                     <label asp-for="ItemVm.AmountFpa" class="small"></label>
-                    <input asp-for="ItemVm.AmountFpa" class="form-control form-control-sm small" disabled />
+                    <input asp-for="ItemVm.AmountFpa" class="form-control form-control-sm small" readonly />
                     <span asp-validation-for="ItemVm.AmountFpa" class="text-danger"></span>
                 </div>
                 <div class="form-group col-md-2">
@@ -167,18 +172,18 @@
         $(document).ready(() => {
             //#region Initial values
 
-            $('#matLoading').attr('hidden', true);
-            if (!$('#IsInitialLoad').val()) {
-                $('#ItemVm_TransDate').val(new Date().toISOString().slice(0, 10));
-                $('#ItemVm_AmountNet').attr('data-actualValue', '0');
-                $('#ItemVm_AmountNet').val(0);
-                $('#ItemVm_AmountFpa').attr('data-actualValue', '0');
-                $('#ItemVm_AmountFpa').val(0);
-                $('#ItemVm_AmountDiscount').attr('data-actualValue', '0');
-                $('#ItemVm_AmountDiscount').val(0);
-                $('#SumAmount').attr('data-actualValue', '0');
-                $('#SumAmount').val(0);
-            }
+            //$('#matLoading').attr('hidden', true);
+            //if (!$('#IsInitialLoad').val()) {
+            //    $('#ItemVm_TransDate').val(new Date().toISOString().slice(0, 10));
+            //    $('#ItemVm_AmountNet').attr('data-actualValue', '0');
+            //    $('#ItemVm_AmountNet').val(0);
+            //    $('#ItemVm_AmountFpa').attr('data-actualValue', '0');
+            //    $('#ItemVm_AmountFpa').val(0);
+            //    $('#ItemVm_AmountDiscount').attr('data-actualValue', '0');
+            //    $('#ItemVm_AmountDiscount').val(0);
+            //    $('#SumAmount').attr('data-actualValue', '0');
+            //    $('#SumAmount').val(0);
+            //}
             //#endregion
             //#region
             var $initialLoad = $('#IsInitialLoad');
@@ -197,17 +202,22 @@
             var $fpaRate = $('#ItemVm_FpaRate');
             var $primaryUnitCode = $('#primaryUnitCode');
             var $secondaryUnitCode = $('#secondaryUnitCode');
+            var $fiscalPeriod = $('#ItemVm_FiscalPeriodId');
+            var $series = $('#ItemVm_TransWarehouseDocSeriesId');
+            var $transType = $('#ItemVm_TransactionType');
             //#endregion
             var calculateAmounts = () => {
                 console.log("Calculate Values called");
                 var q1Val = parseFloat($Q1.val());
                 var fpaRate = parseFloat($fpaRate.val());
                 var unitPrice = parseFloat($unitPrice.val());
-                $amountNet.val(q1Val * unitPrice);
-                $amountFpa.val(q1Val * unitPrice * fpaRate);
-                var amountNet = parseFloat($amountNet.val());
                 var amountDic = parseFloat($amountDic.val());
-                var amountFpa = parseFloat($amountFpa.val());
+                var amountNet = q1Val * unitPrice;
+                var amountFpa = (amountNet - amountDic) * fpaRate;
+
+                $amountNet.val(amountNet);
+                $amountFpa.val(amountFpa);
+
                 $sumAmount.val(amountNet + amountFpa - amountDic);
             };
             var materialChanged = () => {
@@ -255,6 +265,73 @@
                     );
 
             };
+            var seriesChanged = () => {
+                var $spinner = $('#seriesLoading');
+                $spinner.attr('hidden', false);
+                var seriesId = $series.val();
+                console.log("Series change event ->" + seriesId);
+
+                var uri = '@Configuration.GetSection("WebApiSettings")["WebApiLocal"]';
+                var finalUri = `${uri}/materials/WarehouseTransType?seriesId=${seriesId}`;
+                fetch(finalUri)
+                    .then(function(response) {
+                        if (response.ok) {
+                            return response.json();
+                        } else {
+                            return "";
+                        }
+
+                    })
+                    .then(function(myJson) {
+                        if (myJson) {
+                            console.log(JSON.stringify(myJson));
+                            var type = myJson.transType;
+                           
+                            $transType.val(type);
+                        }
+                        $spinner.attr('hidden', true);
+                    })
+                    .catch((error) => {
+                            $spinner.attr('hidden', true);
+                            console.log(error);
+                        }
+                    );
+
+            };
+            var transactionDateChanged = () => {
+                console.log("Inside transDate Changed");
+
+                var forDate = $transDate.val();
+                var uri = '@Configuration.GetSection("WebApiSettings")["WebApiLocal"]';
+                var finalUri = `${uri}/materials/FiscalPeriod?forDate=${forDate}`;
+                fetch(finalUri)
+                    .then(function(response) {
+                        if (response.ok) {
+                            return response.json();
+                        } else {
+                            return "-1";
+                        }
+
+                    })
+                    .then(function(myJson) {
+                        console.log("Inside fetch then with myJson" + JSON.stringify(myJson));
+                        if (myJson) {
+
+                            var fiscalPeriodId = myJson.periodId;
+                            console.log("Returned PeriodId=" + fiscalPeriodId);
+                            $fiscalPeriod.val(fiscalPeriodId);
+                        }
+                        // $spinner.attr('hidden', true);
+                    })
+                    .catch((error) => {
+                            // $spinner.attr('hidden', true);
+                            console.log(error);
+                        }
+                    );
+            };
+            $transDate.change(() => {
+                transactionDateChanged();
+            });
             $Q1.change(() => {
                 console.log("Q1 changed called");
                 var factor = parseFloat($unitFactor.val());
@@ -288,17 +365,11 @@
             $material.change(() => {
                 materialChanged();
             });
-
+            $series.change(() => {
+                seriesChanged();
+            });
             //Hanlde initial material
-            if ($material.val()) {
-                if ($initialLoad.val()) {
-                    console.log("Initial load was true");
-                    $initialLoad.val(false);
-                    return;
-                }
-                console.log("Initial load check passed");
-                materialChanged();
-            }
+          
 
 
         });

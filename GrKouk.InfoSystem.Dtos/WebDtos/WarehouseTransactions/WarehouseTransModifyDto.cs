@@ -13,12 +13,13 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.WarehouseTransactions
         [DataType(DataType.Date)]
         [Display(Name = "Date")]
         public DateTime TransDate { get; set; }
+        [Display(Name = "Series")]
         public int TransWarehouseDocSeriesId { get; set; }
         [Display(Name = "Ref")]
         public string TransRefCode { get; set; }
         [Display(Name = "Material")]
         public int MaterialId { get; set; }
-
+        [Display(Name = "Fiscal Period")]
         public int FiscalPeriodId { get; set; }
         public WarehouseTransactionTypeEnum TransactionType { get; set; }
         public WarehouseInventoryTransTypeEnum InventoryAction { get; set; }

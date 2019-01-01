@@ -61,7 +61,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.WarehouseTransMng
         {
             if (!ModelState.IsValid)
             {
-
+                LoadCombos();
                 return Page();
             }
             if (ItemVm.FiscalPeriodId <= 0)
@@ -171,7 +171,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.WarehouseTransMng
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                _toastNotification.AddSuccessToastMessage(e.Message);
+                _toastNotification.AddErrorToastMessage(e.Message);
                 LoadCombos();
                 return Page();
             }

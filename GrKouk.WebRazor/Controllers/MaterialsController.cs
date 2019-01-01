@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using GrKouk.InfoSystem.Domain.Shared;
 using GrKouk.InfoSystem.Dtos.WebDtos.BuyMaterialsDocs;
 using GrKouk.WebApi.Data;
+using Remotion.Linq.Clauses;
 using static GrKouk.InfoSystem.Domain.FinConfig.FinancialTransactionTypeEnum;
 
 namespace GrKouk.WebRazor.Controllers
@@ -109,7 +110,51 @@ namespace GrKouk.WebRazor.Controllers
             Debug.Print("******Inside GetFiscal period Returning period id " + fiscalPeriod.Id);
             return Ok(new {PeriodId = fiscalPeriod.Id});
         }
+        [HttpGet("WarehouseTransType")]
+        public async Task<IActionResult> GetWarehouseTransType(int seriesId)
+        {
+            Debug.Print("******Inside GetWarehouseTransType for series ID " + seriesId.ToString());
+            
+            var transWarehouseDocSeriesDef = await _context.TransWarehouseDocSeriesDefs.FirstOrDefaultAsync(p =>
+                p.Id==seriesId);
+            if (transWarehouseDocSeriesDef == null)
+            {
+                Debug.Print("******Inside GetWarehouseTransType No Series found");
+                ModelState.AddModelError(string.Empty, "No Series found");
+                return NotFound(new
+                {
+                    error = "No Series found"
+                });
 
+            }
+            await _context.Entry(transWarehouseDocSeriesDef).Reference(t => t.TransWarehouseDocTypeDef).LoadAsync();
+            var transWarehouseDocTypeDef = transWarehouseDocSeriesDef.TransWarehouseDocTypeDef;
+            await _context.Entry(transWarehouseDocTypeDef).Reference(t => t.TransWarehouseDef).LoadAsync();
+            var transWarehouseDef = transWarehouseDocTypeDef.TransWarehouseDef;
+            var inventoryActionType = transWarehouseDef.InventoryTransType;
+            string transType="";
+            switch (inventoryActionType)
+            {
+                case WarehouseInventoryTransTypeEnum.WarehouseInventoryTransTypeEnumNoChange:
+                    break;
+                case WarehouseInventoryTransTypeEnum.WarehouseInventoryTransTypeEnumImport:
+                    transType= "WarehouseTransactionTypeImport";
+                    break;
+                case WarehouseInventoryTransTypeEnum.WarehouseInventoryTransTypeEnumExport:
+                    transType = "WarehouseTransactionTypeExport";
+                    break;
+                case WarehouseInventoryTransTypeEnum.WarehouseInventoryTransTypeEnumNegativeImport:
+                    transType = "WarehouseTransactionTypeImport";
+                    break;
+                case WarehouseInventoryTransTypeEnum.WarehouseInventoryTransTypeEnumNegativeExport:
+                    transType = "WarehouseTransactionTypeExport";
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+            Debug.Print("******Inside GetWarehouseTransType Returning Action value " + transType);
+            return Ok(new { TransType = transType });
+        }
         [HttpPost("MaterialBuyDoc")]
         public async Task<IActionResult> PostMaterialBuyDoc([FromBody] BuyMaterialsDocCreateAjaxDto data)
         {
@@ -138,7 +183,7 @@ namespace GrKouk.WebRazor.Controllers
                 #region Fiscal Period
 
                 var fiscalPeriod = await _context.FiscalPeriods.FirstOrDefaultAsync(p =>
-                    p.StartDate.CompareTo(dateOfTrans) > 0 & p.EndDate.CompareTo(dateOfTrans) < 0);
+                    dateOfTrans >= p.StartDate && dateOfTrans <= p.EndDate);
                 if (fiscalPeriod==null)
                 {
                     transaction.Rollback();
@@ -400,62 +445,6 @@ namespace GrKouk.WebRazor.Controllers
 
         }
 
-
-
-
-        private void GetAmounts(FinancialMovement debitAction, FinancialMovement creditAction, decimal netAmount = 0,
-            decimal vatAmount = 0, decimal discountAmount = 0, double q1 = 0, double q2 = 0)
-        {
-            if (debitAction == null) throw new ArgumentNullException(nameof(debitAction));
-            if (creditAction == null) throw new ArgumentNullException(nameof(creditAction));
-
-            var o = new ActionProduct();
-
-
-            if (creditAction.Action == "=" && debitAction.Action != "=")
-            {
-                o.FinancialTransactionType = FinancialTransactionTypeEnum.FinancialTransactionTypeDebit;
-                o.WarehouseTransactionTypeCode = WarehouseTransactionTypeEnum.WarehouseTransactionTypeImport;
-                switch (debitAction.Action)
-                {
-                    case "+":
-                        o.NetAmount = netAmount;
-                        o.VatAmount = vatAmount;
-                        o.DiscountAmount = discountAmount;
-                        o.Quontity1 = q1;
-                        o.Quontity2 = q2;
-                        break;
-                    case "-":
-                        o.NetAmount = netAmount * -1;
-                        o.VatAmount = vatAmount * -1;
-                        o.DiscountAmount = discountAmount * -1;
-                        o.Quontity1 = q1 * -1;
-                        o.Quontity2 = q2 * -1;
-                        break;
-                }
-            }
-            else if (creditAction.Action != "=" && debitAction.Action == "=")
-            {
-                o.FinancialTransactionType = FinancialTransactionTypeEnum.FinancialTransactionTypeCredit;
-                o.WarehouseTransactionTypeCode = WarehouseTransactionTypeEnum.WarehouseTransactionTypeExport;
-                switch (creditAction.Action)
-                {
-                    case "+":
-                        o.NetAmount = netAmount;
-                        o.VatAmount = vatAmount;
-                        o.DiscountAmount = discountAmount;
-                        o.Quontity1 = q1;
-                        o.Quontity2 = q2;
-                        break;
-                    case "-":
-                        o.NetAmount = netAmount * -1;
-                        o.VatAmount = vatAmount * -1;
-                        o.DiscountAmount = discountAmount * -1;
-                        o.Quontity1 = q1 * -1;
-                        o.Quontity2 = q2 * -1;
-                        break;
-                }
-            }
-        }
+       
     }
 }

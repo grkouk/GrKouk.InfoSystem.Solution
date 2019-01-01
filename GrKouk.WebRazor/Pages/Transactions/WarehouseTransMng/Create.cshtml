@@ -34,8 +34,12 @@
             </div>
             <div class="form-group col-md-6">
                 <label asp-for="ItemVm.TransWarehouseDocSeriesId" class="small"></label>
-                <select asp-for="ItemVm.TransWarehouseDocSeriesId" class="form-control form-control-sm small" asp-items="ViewBag.TransWarehouseDocSeriesId"></select>
-                <span id="MaterialLoading"></span>
+                <div class="input-group ">
+                    <select asp-for="ItemVm.TransWarehouseDocSeriesId" class="form-control form-control-sm small" asp-items="ViewBag.TransWarehouseDocSeriesId"></select>
+                    <div class="input-group-append">
+                        <span class="form-control-sm small" id="seriesLoading" hidden><i class="fas fa-spinner fa-spin"></i></span>
+                    </div>
+                </div>
             </div>
 
             <div class="form-group col-md-3">
@@ -61,7 +65,7 @@
                 <label asp-for="ItemVm.FiscalPeriodId" class="small"></label>
                 <select asp-for="ItemVm.FiscalPeriodId" class="form-control form-control-sm small" asp-items="ViewBag.FiscalPeriodId" readonly></select>
                 <span asp-validation-for="ItemVm.FiscalPeriodId" class="text-danger"></span>
-                </div>
+            </div>
             <div class="form-group col-md-3">
                 <label asp-for="ItemVm.CompanyId" class="small"></label>
                 <select asp-for="ItemVm.CompanyId" class="form-control form-control-sm small" asp-items="ViewBag.CompanyId"></select>
@@ -87,7 +91,7 @@
             <div class="form-group col-md-3">
                 <label asp-for="ItemVm.Quontity2" class="small"></label>
                 <div class="input-group">
-                    <input asp-for="ItemVm.Quontity2"  class="form-control form-control-sm small" />
+                    <input asp-for="ItemVm.Quontity2" class="form-control form-control-sm small" />
                     <div class="input-group-append">
                         <span class="input-group-text form-control-sm small" id="secondaryUnitCode"></span>
                     </div>
@@ -97,7 +101,7 @@
             </div>
             <div class="form-group col-md-2">
                 <label asp-for="ItemVm.UnitPrice" class="small"></label>
-                <input asp-for="ItemVm.UnitPrice"  class="form-control form-control-sm small" />
+                <input asp-for="ItemVm.UnitPrice" class="form-control form-control-sm small" />
                 <span asp-validation-for="ItemVm.UnitPrice" class="text-danger"></span>
             </div>
 
@@ -110,7 +114,7 @@
             </div>
             <div class="form-group col-md-2">
                 <label asp-for="ItemVm.AmountNet" class="small"></label>
-                <input asp-for="ItemVm.AmountNet"  class="form-control form-control-sm small" readonly />
+                <input asp-for="ItemVm.AmountNet" class="form-control form-control-sm small" readonly />
                 <span asp-validation-for="ItemVm.AmountNet" class="text-danger"></span>
             </div>
             <div class="form-group col-md-2">
@@ -170,6 +174,8 @@
             var $primaryUnitCode = $('#primaryUnitCode');
             var $secondaryUnitCode = $('#secondaryUnitCode');
             var $fiscalPeriod = $('#ItemVm_FiscalPeriodId');
+            var $series = $('#ItemVm_TransWarehouseDocSeriesId');
+            var $transType = $('#ItemVm_TransactionType');
             //#endregion
             var calculateAmounts = () => {
                 var q1Val = parseFloat($Q1.val());
@@ -226,7 +232,40 @@
                     );
 
             };
-            var transactionDataChanged = () => {
+            var seriesChanged = () => {
+                var $spinner = $('#seriesLoading');
+                $spinner.attr('hidden', false);
+                var seriesId = $series.val();
+                console.log("Series change event ->" + seriesId);
+
+                var uri = '@Configuration.GetSection("WebApiSettings")["WebApiLocal"]';
+                var finalUri = `${uri}/materials/WarehouseTransType?seriesId=${seriesId}`;
+                fetch(finalUri)
+                    .then(function(response) {
+                        if (response.ok) {
+                            return response.json();
+                        } else {
+                            return "";
+                        }
+
+                    })
+                    .then(function(myJson) {
+                        if (myJson) {
+                            console.log(JSON.stringify(myJson));
+                            var type = myJson.transType;
+                           
+                            $transType.val(type);
+                        }
+                        $spinner.attr('hidden', true);
+                    })
+                    .catch((error) => {
+                            $spinner.attr('hidden', true);
+                            console.log(error);
+                        }
+                    );
+
+            };
+            var transactionDateChanged = () => {
                 console.log("Inside transDate Changed");
 
                 var forDate = $transDate.val();
@@ -257,8 +296,10 @@
                         }
                     );
             };
+
+
             $transDate.change(() => {
-                transactionDataChanged();
+                transactionDateChanged();
             });
             $Q1.change(() => {
                 var factor = parseFloat($unitFactor.val());
@@ -291,12 +332,14 @@
             $material.change(() => {
                 materialChanged();
             });
-
+            $series.change(() => {
+                seriesChanged();
+            });
             //#region Initial values
             if ($initialLoad.val() == 'True') {
                 $('#matLoading').attr('hidden', true);
                 $transDate.val(new Date().toISOString().slice(0, 10));
-                transactionDataChanged();
+                transactionDateChanged();
                 $amountNet.attr('data-actualValue', '0');
                 $amountNet.val(0);
                 $amountFpa.attr('data-actualValue', '0');
@@ -305,13 +348,16 @@
                 $amountDic.val(0);
                 $sumAmount.attr('data-actualValue', '0');
                 $sumAmount.val(0);
+                if ($material.val()) {
+                    materialChanged();
+                }
+                if ($series.val()) {
+                    seriesChanged();
+                }
             }
             //#endregion
-            //Hanlde initial material
-            if ($material.val()) {
-                materialChanged();
-            }
-
+            
+           
             $initialLoad.val(false);
 
         });

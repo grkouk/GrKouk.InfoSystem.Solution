@@ -93,23 +93,112 @@ namespace GrKouk.WebRazor.Pages.Transactions.WarehouseTransMng
             {
                 return Page();
             }
+            if (ItemVm.FiscalPeriodId <= 0)
+            {
+                ModelState.AddModelError(string.Empty, "No Fiscal Period covers Transaction Date");
+                LoadCombos();
+                return Page();
+            }
+            var transToAttach = _mapper.Map<WarehouseTransaction>(ItemVm);
+            var docSeries = await
+                _context.TransWarehouseDocSeriesDefs.SingleOrDefaultAsync(m =>
+                    m.Id == ItemVm.TransWarehouseDocSeriesId);
 
-            //_context.Attach(WarehouseTransaction).State = EntityState.Modified;
+            if (docSeries is null)
+            {
+                ModelState.AddModelError(string.Empty, "Δεν βρέθηκε η σειρά παραστατικού");
+                LoadCombos();
+                return Page();
+            }
+            await _context.Entry(docSeries).Reference(t => t.TransWarehouseDocTypeDef).LoadAsync();
+
+            var docTypeDef = docSeries.TransWarehouseDocTypeDef;
+            await _context.Entry(docTypeDef)
+                .Reference(t => t.TransWarehouseDef)
+                .LoadAsync();
+
+            var transWarehouseDef = docTypeDef.TransWarehouseDef;
+            transToAttach.TransWarehouseDocTypeId = docSeries.TransWarehouseDocTypeDefId;
+            transToAttach.InventoryAction = transWarehouseDef.InventoryTransType;
+            switch (transWarehouseDef.InventoryTransType)
+            {
+                case WarehouseInventoryTransTypeEnum.WarehouseInventoryTransTypeEnumNoChange:
+                    break;
+                case WarehouseInventoryTransTypeEnum.WarehouseInventoryTransTypeEnumImport:
+
+                    transToAttach.TransactionType =
+                        WarehouseTransactionTypeEnum.WarehouseTransactionTypeImport;
+                    //transToAttach.Quontity1 = dataBuyDocLine.Q1;
+                    //transToAttach.Quontity2 = dataBuyDocLine.Q2;
+                    break;
+                case WarehouseInventoryTransTypeEnum.WarehouseInventoryTransTypeEnumExport:
+
+                    transToAttach.TransactionType =
+                        WarehouseTransactionTypeEnum.WarehouseTransactionTypeExport;
+                    //transToAttach.Quontity1 = dataBuyDocLine.Q1;
+                    //transToAttach.Quontity2 = dataBuyDocLine.Q2;
+                    break;
+                case WarehouseInventoryTransTypeEnum.WarehouseInventoryTransTypeEnumNegativeImport:
+
+                    transToAttach.TransactionType =
+                        WarehouseTransactionTypeEnum.WarehouseTransactionTypeImport;
+                    transToAttach.Quontity1 = transToAttach.Quontity1 * -1;
+                    transToAttach.Quontity2 = transToAttach.Quontity2 * -1;
+                    break;
+                case WarehouseInventoryTransTypeEnum.WarehouseInventoryTransTypeEnumNegativeExport:
+
+                    transToAttach.TransactionType =
+                        WarehouseTransactionTypeEnum.WarehouseTransactionTypeExport;
+                    transToAttach.Quontity1 = transToAttach.Quontity1 * -1;
+                    transToAttach.Quontity2 = transToAttach.Quontity2 * -1;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            transToAttach.InventoryValueAction = transWarehouseDef.InventoryValueTransType;
+
+            switch (transWarehouseDef.InventoryValueTransType)
+            {
+                case WarehouseValueTransTypeEnum.WarehouseValueTransTypeEnumNoChange:
+                    break;
+                case WarehouseValueTransTypeEnum.WarehouseValueTransTypeEnumIncrease:
+
+                    break;
+                case WarehouseValueTransTypeEnum.WarehouseValueTransTypeEnumDecrease:
+
+                    break;
+                case WarehouseValueTransTypeEnum.WarehouseValueTransTypeEnumNegativeIncrease:
+                    transToAttach.AmountNet = transToAttach.AmountNet * -1;
+                    transToAttach.AmountDiscount = transToAttach.AmountDiscount * -1;
+                    transToAttach.AmountFpa = transToAttach.AmountFpa * -1;
+                    break;
+                case WarehouseValueTransTypeEnum.WarehouseValueTransTypeEnumNegativeDecrease:
+                    transToAttach.AmountNet = transToAttach.AmountNet * -1;
+                    transToAttach.AmountDiscount = transToAttach.AmountDiscount * -1;
+                    transToAttach.AmountFpa = transToAttach.AmountFpa * -1;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            _context.Attach(transToAttach).State = EntityState.Modified;
 
             try
             {
                 await _context.SaveChangesAsync();
+                _toastNotification.AddSuccessToastMessage("Saved");
             }
             catch (DbUpdateConcurrencyException)
             {
-                //if (!WarehouseTransactionExists(WarehouseTransaction.Id))
-                //{
-                //    return NotFound();
-                //}
-                //else
-                //{
-                //    throw;
-                //}
+                if (!WarehouseTransactionExists(transToAttach.Id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
             }
 
             return RedirectToPage("./Index");
