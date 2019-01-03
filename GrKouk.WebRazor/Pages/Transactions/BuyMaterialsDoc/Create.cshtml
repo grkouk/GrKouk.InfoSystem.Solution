@@ -1,4 +1,5 @@
-﻿@page 
+﻿@page
+
 @model GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc.CreateModel
 @using Microsoft.Extensions.Configuration
 @inject IConfiguration Configuration
@@ -25,7 +26,7 @@
             <div class="form-row">
                 <div class="form-group col-md-2">
                     <label asp-for="ItemVm.TransDate" class="control-label small "></label>
-                    <input asp-for="ItemVm.TransDate" class="form-control form-control-sm small" autofocus/>
+                    <input asp-for="ItemVm.TransDate" class="form-control form-control-sm small" autofocus />
                     <span asp-validation-for="ItemVm.TransDate" class="text-danger small"></span>
                 </div>
                 <div class="form-group col-md-7">
@@ -64,6 +65,7 @@
                 <input type="hidden" id="MaterialMainUnitId" />
                 <input type="hidden" id="MaterialSecondaryUnitId" />
                 <input type="hidden" id="MaterialsCounter" />
+                <input type="hidden" id="LineEditing" />
                 <div class="form-group col-sm-3">
 
                     <label class="small">LookUp</label>
@@ -120,7 +122,8 @@
                             <th class="small text-center" style="width: 10%">Disc</th>
                             <th class="small text-center" style="width: 10%">Vat</th>
                             <th class="small text-center" style="width: 10%">Gross</th>
-                            <th class="small" style="width: 10%"></th>
+                            <th class="small" style="width: 5%"></th>
+                            <th class="small" style="width: 5%"></th>
 
                         </tr>
                     </thead>
@@ -130,18 +133,18 @@
             <div class="form-row">
 
                 <div class="form-group">
-                    <label  class="small">Amount VAT</label>
-                    <input id="ItemVm_AmountFpa" class="form-control form-control-sm small text-right" type="text" disabled/>
+                    <label class="small">Amount VAT</label>
+                    <input id="ItemVm_AmountFpa" class="form-control form-control-sm small text-right" type="text" disabled />
                     <span asp-validation-for="ItemVm.AmountFpa" class="text-danger small"></span>
                 </div>
                 <div class="form-group">
-                    <label  class=" small">Net Amount</label>
-                    <input id="ItemVm_AmountNet" class="form-control form-control-sm small text-right" type="text" disabled/>
+                    <label class=" small">Net Amount</label>
+                    <input id="ItemVm_AmountNet" class="form-control form-control-sm small text-right" type="text" disabled />
                     <span asp-validation-for="ItemVm.AmountNet" class="text-danger small"></span>
                 </div>
                 <div class="form-group">
-                    <label  class=" small">Discount</label>
-                    <input id="ItemVm_AmountDiscount" class="form-control form-control-sm small text-right" type="text" disabled/>
+                    <label class=" small">Discount</label>
+                    <input id="ItemVm_AmountDiscount" class="form-control form-control-sm small text-right" type="text" disabled />
                     <span asp-validation-for="ItemVm.AmountDiscount" class="text-danger small"></span>
                 </div>
                 <div class="form-group">
@@ -169,56 +172,54 @@
     <script>
         $(document).ready(function() {
             console.log("Inside Document ready");
-            var formatterCurrency = new Intl.NumberFormat('el-GR', {
-                style: 'currency',
-                currency: 'EUR',
-                minimumFractionDigits:2
-                
+            $('#LineEditing').val(0);
+            var currentCulture = '@System.Globalization.CultureInfo.CurrentCulture';
+            console.log('Current Culture ' + currentCulture);
 
-            });
-            var formatterNumber = new Intl.NumberFormat('el-GR', {
+            var formatterCurrency = new Intl.NumberFormat(currentCulture,
+                {
+                    style: 'currency',
+                    currency: 'EUR',
+                    minimumFractionDigits: 2
+                });
+            var formatterNumber = new Intl.NumberFormat(currentCulture,
+                {
+                    maximumFractionDigits: 3
 
-                maximumFractionDigits: 3
-
-            });
+                });
             //#region variables
             var securityToken = $('[name=__RequestVerificationToken]').val();
             var $f = $('#MaterialFactor');
             var $q1 = $('#Q1');
             var $q2 = $('#Q2');
             var $materialCounter = $('#MaterialsCounter');
+
+            var $amountNet = $('#ItemVm_AmountNet');
+            var $amountFpa = $('#ItemVm_AmountFpa');
+            var $amountDiscount = $('#ItemVm_AmountDiscount');
+            var $amountSum = $('#DocumentSum');
             //#endregion
 
             //#region Initial values
             $materialCounter.val(0);
             $('#ItemVm_TransDate').val(new Date().toISOString().slice(0, 10));
-            $('#ItemVm_AmountNet').attr('data-actualValue','0');
-            $('#ItemVm_AmountNet').val(0);
-            $('#ItemVm_AmountFpa').attr('data-actualValue','0');
-            $('#ItemVm_AmountFpa').val(0);
-            $('#ItemVm_AmountDiscount').attr('data-actualValue', '0');
-            $('#ItemVm_AmountDiscount').val(0);
-            $('#DocumentSum').attr('data-actualValue', '0');
-            $('#DocumentSum').val(0);
+            $amountNet.attr('data-actualValue', '0');
+            $amountNet.val(0);
+            $amountFpa.attr('data-actualValue', '0');
+            $amountFpa.val(0);
+            $amountDiscount.attr('data-actualValue', '0');
+            $amountDiscount.val(0);
+            $amountSum.attr('data-actualValue', '0');
+            $amountSum.val(0);
             //#endregion
-            //#region Comment Out
-            //$('#Q1').blur(function (event) {
-            //    console.log("Q1 validation");
-            //    var $e = $('#Q1');
-            //    console.log( $e[0].checkValidity());
-
-            //});
-            //$('#Price').blur(function(event) {
-            //    event.target.checkValidity();
-            //});
-            //$('#Discount').blur(function(event) {
-            //    event.target.checkValidity();
-            //});
-            //$('#VatPercent').blur(function(event) {
-            //    event.target.checkValidity();
-            //});
-            //#endregion
-
+            var updateCounter = () => {
+                var lineCounter = 0;
+                $.each($('#detailsTable tbody tr'),
+                    function() {
+                        lineCounter++;
+                        $(this).find('td:eq(0)').text(lineCounter);
+                    });
+            };
 
             $('#Q1').change(() => {
                 console.log("Q1 change event ->" + $q1.val());
@@ -236,7 +237,7 @@
             $('#Lookup').autocomplete({
                 source: '/api/materials/search',
                 minLength: 2,
-               
+
                 select: function(event, ui) {
                     $('#MaterialId').val(ui.item.value);
                     console.log(ui.item.value.toString());
@@ -289,6 +290,13 @@
 
             $('#addToList').click((e) => {
                 e.preventDefault();
+                var lineEdit = $('#LineEditing').val();
+                console.log("Inside AddToList with lineEdit is " + lineEdit);
+                if (lineEdit==0) {
+                    console.log("Inside lineEdit is 0 check");
+                }
+                
+                $('#LineEditing').val(0);
                 if ($.trim($("#Lookup").val()) == "" ||
                     $.trim($("#Price").val()) == "" ||
                     $.trim($("#Q1").val()) == "") return;
@@ -307,8 +315,8 @@
                 var netAmount = parseFloat(quantity1) * parseFloat(price);
                 var discountAmount = netAmount * parseFloat(discount);
                 //netAmount = netAmount - discountAmount;
-                var fpaAmount = (netAmount-discountAmount)  * parseFloat(vatPercent);
-                var grosAmount = (netAmount-discountAmount) + fpaAmount ;
+                var fpaAmount = (netAmount - discountAmount) * parseFloat(vatPercent);
+                var grosAmount = (netAmount - discountAmount) + fpaAmount;
                 var detailsTableBody = $("#detailsTable tbody");
 
                 var $amountNetSum = $('#ItemVm_AmountNet');
@@ -334,47 +342,77 @@
                 $DocSum.val(formatterCurrency.format(amSumSum));
                 $DocSum.attr('data-actualValue', amSumSum);
 
-               //#region Add Table Line
+                //#region Add Table Line
                 var productItem = '<tr><td class="small">' +
                     materialCounter +
-                    '</td><td class="small " data-materialId="' + materialId + '"' +
-                    'data-factor="' + factor + '"' +
-                    'data-mainUnitId="' + mainUnitId + '"' +
-                    'data-secUnitId="' + secUnitId + '"' +
-                     '>' +
+                    '</td><td class="small " data-materialId="' +
+                    materialId +
+                    '"' +
+                    'data-factor="' +
+                    factor +
+                    '"' +
+                    'data-mainUnitId="' +
+                    mainUnitId +
+                    '"' +
+                    'data-secUnitId="' +
+                    secUnitId +
+                    '"' +
+                    '>' +
                     productName +
                     '</td><td class="small text-right" ' +
-                    'data-actualValue="' + quantity1 +'" >' +
+                    'data-actualValue="' +
+                    quantity1 +
+                    '" >' +
                     formatterNumber.format(quantity1) +
                     '</td><td class="small text-right" ' +
-                    'data-actualValue="' + quantity2 + '" >' +
-                    formatterNumber.format( quantity2) +
+                    'data-actualValue="' +
+                    quantity2 +
+                    '" >' +
+                    formatterNumber.format(quantity2) +
                     '</td><td class="small text-right" ' +
-                    'data-actualValue="' + price +'" >' +
-                    formatterCurrency.format( price) +
+                    'data-actualValue="' +
+                    price +
+                    '" >' +
+                    formatterCurrency.format(price) +
                     '</td><td class="small text-right" ' +
-                    'data-actualValue="' + discount + '" >' +
+                    'data-actualValue="' +
+                    discount +
+                    '" >' +
                     formatterNumber.format(discount) +
                     '</td><td class="small text-right" ' +
-                    'data-actualValue="' + vatPercent + '" >' +
+                    'data-actualValue="' +
+                    vatPercent +
+                    '" >' +
                     formatterNumber.format(vatPercent) +
                     '</td><td class="small text-right" ' +
-                    'data-actualValue="' + netAmount + '" >' +
+                    'data-actualValue="' +
+                    netAmount +
+                    '" >' +
                     formatterCurrency.format(netAmount) +
                     '</td><td class="small text-right" ' +
-                    'data-actualValue="' + discountAmount + '" >' +
+                    'data-actualValue="' +
+                    discountAmount +
+                    '" >' +
                     formatterCurrency.format(discountAmount) +
-
                     '</td><td class="small text-right" ' +
-                    'data-actualValue="' + fpaAmount +'" >' +
+                    'data-actualValue="' +
+                    fpaAmount +
+                    '" >' +
                     formatterCurrency.format(fpaAmount) +
                     '</td><td class="small text-right" ' +
-                    'data-actualValue="' + grosAmount + '" >' +
+                    'data-actualValue="' +
+                    grosAmount +
+                    '" >' +
                     formatterCurrency.format(grosAmount) +
-                    '</td><td class="small"><a data-itemId="0" href="#" class="deleteItem"><i class="fas fa-trash"></i></a></td></tr>';
+                    '</td><td class="small">' +
+                    '<a data-itemId="0" href="#" class="modifyItem"><i class="fas fa-edit"></i></a>' +
+                    '</td><td class="small">' +
+                    '<a data-itemId="0" href="#" class="deleteItem"><i class="fas fa-trash"></i></a>' +
+                    '</td></tr>';
                 detailsTableBody.append(productItem);
                 clearItem();
                 $('#Lookup').focus();
+                updateCounter();
                 //#endregion
             });
 
@@ -387,40 +425,85 @@
                 $("#Discount").val('');
                 $("#VatPercent").val('');
             }
-            $(document).on('click', 'a.deleteItem', function (e) {
-                e.preventDefault();
-                var $self = $(this);
-                if ($(this).attr('data-itemId') == "0") {
-                    var netAmount = $(this).parents('tr').find('td:eq(7)').attr('data-actualValue');
-                    var discountAmount = $(this).parents('tr').find('td:eq(8)').attr('data-actualValue') ;
-                    var fpaAmount = $(this).parents('tr').find('td:eq(9)').attr('data-actualValue');
-                    var grosAmount = $(this).parents('tr').find('td:eq(10)').attr('data-actualValue');
-                    var $amountNetSum = $('#ItemVm_AmountNet');
-                    var $amountFpaSum = $('#ItemVm_AmountFpa');
-                    var $amountDiscountSum = $('#ItemVm_AmountDiscount');
-                    var $DocSum = $('#DocumentSum');
-                    var amNetSum = parseFloat($amountNetSum.attr('data-actualValue')) - parseFloat(netAmount);
-                    var amFpaSum = parseFloat($amountFpaSum.attr('data-actualValue')) - parseFloat(fpaAmount);
-                    var amDisSum = parseFloat($amountDiscountSum.attr('data-actualValue')) - parseFloat(discountAmount);
-                    var amSumSum = parseFloat($DocSum.attr('data-actualValue')) - parseFloat(grosAmount);
 
-                    $amountNetSum.val(formatterCurrency.format(amNetSum));
-                    $amountNetSum.attr('data-actualValue', amNetSum);
+            $(document).on('click',
+                'a.deleteItem',
+                function(e) {
+                    e.preventDefault();
+                    var $self = $(this);
+                    if ($(this).attr('data-itemId') == "0") {
+                        var netAmount = $(this).parents('tr').find('td:eq(7)').attr('data-actualValue');
+                        var discountAmount = $(this).parents('tr').find('td:eq(8)').attr('data-actualValue');
+                        var fpaAmount = $(this).parents('tr').find('td:eq(9)').attr('data-actualValue');
+                        var grosAmount = $(this).parents('tr').find('td:eq(10)').attr('data-actualValue');
+                        var $amountNetSum = $('#ItemVm_AmountNet');
+                        var $amountFpaSum = $('#ItemVm_AmountFpa');
+                        var $amountDiscountSum = $('#ItemVm_AmountDiscount');
+                        var $DocSum = $('#DocumentSum');
+                        var amNetSum = parseFloat($amountNetSum.attr('data-actualValue')) - parseFloat(netAmount);
+                        var amFpaSum = parseFloat($amountFpaSum.attr('data-actualValue')) - parseFloat(fpaAmount);
+                        var amDisSum = parseFloat($amountDiscountSum.attr('data-actualValue')) -
+                            parseFloat(discountAmount);
+                        var amSumSum = parseFloat($DocSum.attr('data-actualValue')) - parseFloat(grosAmount);
 
-                    $amountFpaSum.val(formatterCurrency.format(amFpaSum));
-                    $amountFpaSum.attr('data-actualValue', amFpaSum);
+                        $amountNetSum.val(formatterCurrency.format(amNetSum));
+                        $amountNetSum.attr('data-actualValue', amNetSum);
 
-                    $amountDiscountSum.val(formatterCurrency.format(amDisSum));
-                    $amountDiscountSum.attr('data-actualValue', amDisSum);
+                        $amountFpaSum.val(formatterCurrency.format(amFpaSum));
+                        $amountFpaSum.attr('data-actualValue', amFpaSum);
 
-                    $DocSum.val(formatterCurrency.format(amSumSum));
-                    $DocSum.attr('data-actualValue', amSumSum);
-                    $(this).parents('tr').css("background-color", "#ff6347").fadeOut(800, function () {
-                        $(this).remove();
-                    });
-                }
-            });
+                        $amountDiscountSum.val(formatterCurrency.format(amDisSum));
+                        $amountDiscountSum.attr('data-actualValue', amDisSum);
+
+                        $DocSum.val(formatterCurrency.format(amSumSum));
+                        $DocSum.attr('data-actualValue', amSumSum);
+                        $(this).parents('tr').css("background-color", "#ff6347").fadeOut(800,
+                            function() {
+                                $(this).remove();
+                            });
+                        updateCounter();
+                    }
+                });
             //--------------------
+            $(document).on('click',
+                'a.modifyItem',
+                function(e) {
+                    e.preventDefault();
+                    var $self = $(this);
+                    if ($(this).attr('data-itemId') == "0") {
+                        //var $netAmount = $(this).parents('tr').find('td:eq(7)');
+                        //var $discountAmount = $(this).parents('tr').find('td:eq(8)');
+                        //var $fpaAmount = $(this).parents('tr').find('td:eq(9)');
+                        //var $grosAmount = $(this).parents('tr').find('td:eq(10)');
+                        var lineEdit = $(this).parents('tr').find('td:eq(0)').text();
+                        var materialId = $(this).parents('tr').find('td:eq(1)').attr('data-materialId');
+                        var materialName = $(this).parents('tr').find('td:eq(1)').text();
+                        var mainUnitId = $(this).parents('tr').find('td:eq(1)').attr('data-mainUnitId');
+                        var secUnitId = $(this).parents('tr').find('td:eq(1)').attr('data-secUnitId');
+                        var factor = $(this).parents('tr').find('td:eq(1)').attr('data-factor');
+                        var q1 = $(this).parents('tr').find('td:eq(2)').attr('data-actualValue');
+                        var q2 = $(this).parents('tr').find('td:eq(3)').attr('data-actualValue');
+                        var price = $(this).parents('tr').find('td:eq(4)').attr('data-actualValue');
+                        //var discount = $(this).parents('tr').find('td:eq(5)').attr('data-actualValue');
+                        var discountRate = $(this).parents('tr').find('td:eq(5)').attr('data-actualValue');
+                        var fpaRate = $(this).parents('tr').find('td:eq(6)').attr('data-actualValue');
+                       // var vatPercent = $(this).parents('tr').find('td:eq(6)').attr('data-actualValue');
+
+                        $('#LineEditing').val(lineEdit);
+                        $('#MaterialId').val(materialId);
+                        $("#Lookup").val(materialName);
+                        $("#Price").val(price);
+                        $("#Q1").val(q1);
+                        $("#Q2").val(q2);
+                        $('#VatPercent').val(fpaRate);
+                        $("#Discount").val(discountRate);
+                        $('#MaterialMainUnitId').val(mainUnitId);
+                        $('#MaterialSecondaryUnitId').val(secUnitId);
+                        $('#MaterialFactor').val(factor);
+                    }
+                });
+
+
             function saveData(data) {
                 return $.ajax({
                     contentType: 'application/json; charset=utf-8',
@@ -432,23 +515,24 @@
                     headers: {
                         'RequestVerificationToken': securityToken
                     },
-                    success: function (result) {
-                        toastr.success ("Success", "Success");
+                    success: function(result) {
+                        toastr.success("Success", "Success");
                         //location.reload();
                     },
-                    error: function (e) {
+                    error: function(e) {
 
-                        toastr.error ("Error", "Error");
+                        toastr.error("Error", "Error");
                     }
                 });
             }
+
 //-----------------
-            $("#saveForm").click(function (e) {
+            $("#saveForm").click(function(e) {
 
                 var $form = $('#transForm');
                 var f = document.getElementById("transForm");
                 //#region validation that didt perform well
-               // var isValidate = $form[0].checkValidity();
+                // var isValidate = $form[0].checkValidity();
                 //var isValidate2 = f.checkValidity();
                 //console.log("Check Form validation is " + isValidate);
                 //console.log("Check Form validation2 is " + isValidate2);
@@ -465,23 +549,24 @@
                 var linesArr = [];
                 linesArr.length = 0;
 
-                $.each($("#detailsTable tbody tr"), function () {
-                    linesArr.push({
-                       // materialId: $(this).find('td:eq(0)').html(),
-                        materialId: $(this).find('td:eq(1)').attr('data-materialId'),
-                        mainUnitId: $(this).find('td:eq(1)').attr('data-mainUnitId'),
-                        secUnitId: $(this).find('td:eq(1)').attr('data-secUnitId'),
-                        factor: $(this).find('td:eq(1)').attr('data-factor'),
-                        q1: $(this).find('td:eq(2)').attr('data-actualValue'),
-                        q2: $(this).find('td:eq(3)').attr('data-actualValue'),
-                        price: $(this).find('td:eq(4)').attr('data-actualValue'),
-                        discount: $(this).find('td:eq(5)').attr('data-actualValue'),
-                        discountRate: $(this).find('td:eq(5)').attr('data-actualValue'),
-                        fpaRate: $(this).find('td:eq(6)').attr('data-actualValue'),
-                        vatPercent: $(this).find('td:eq(6)').attr('data-actualValue')
+                $.each($("#detailsTable tbody tr"),
+                    function() {
+                        linesArr.push({
+                            // materialId: $(this).find('td:eq(0)').html(),
+                            materialId: $(this).find('td:eq(1)').attr('data-materialId'),
+                            mainUnitId: $(this).find('td:eq(1)').attr('data-mainUnitId'),
+                            secUnitId: $(this).find('td:eq(1)').attr('data-secUnitId'),
+                            factor: $(this).find('td:eq(1)').attr('data-factor'),
+                            q1: $(this).find('td:eq(2)').attr('data-actualValue'),
+                            q2: $(this).find('td:eq(3)').attr('data-actualValue'),
+                            price: $(this).find('td:eq(4)').attr('data-actualValue'),
+                            discount: $(this).find('td:eq(5)').attr('data-actualValue'),
+                            discountRate: $(this).find('td:eq(5)').attr('data-actualValue'),
+                            fpaRate: $(this).find('td:eq(6)').attr('data-actualValue'),
+                            vatPercent: $(this).find('td:eq(6)').attr('data-actualValue')
 
+                        });
                     });
-                });
 
                 var data = JSON.stringify({
                     transDate: $("#ItemVm_TransDate").val(),
@@ -499,16 +584,17 @@
                 });
                 console.log("Data->" + data);
                 $.when(saveData(data))
-                    .then(function (response) {
+                    .then(function(response) {
                         console.log(response);
                         $('#thisForm').prop("disabled", false);
                     })
-                    .fail(function (err) {
+                    .fail(function(err) {
                         console.log(err);
                         $('#thisForm').prop("disabled", false);
                     });
             });
             //-------------
+
         });
 
 

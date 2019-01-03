@@ -43,12 +43,17 @@ namespace GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc
                 .Include(b => b.MaterialDocSeries)
                 .Include(b => b.MaterialDocType)
                 .Include(b => b.Section)
-                .Include(b => b.Supplier).FirstOrDefaultAsync(m => m.Id == id);
+                
+                .Include(b => b.Supplier)
+                .Include(b=>b.BuyDocLines)
+                .FirstOrDefaultAsync(m => m.Id == id);
 
             if (ItemVm == null)
             {
                 return NotFound();
             }
+
+
            LoadCombos();
            return Page();
         }
@@ -56,12 +61,16 @@ namespace GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc
         private void LoadCombos()
         {
             var supplierList = _context.Transactors.Where(s => s.TransactorType.Code == "SYS.SUPPLIER").OrderBy(s => s.Name).AsNoTracking();
-            ViewData["CompanyId"] = new SelectList(_context.Companies, "Id", "Code");
-            ViewData["FiscalPeriodId"] = new SelectList(_context.FiscalPeriods, "Id", "Id");
-            ViewData["MaterialDocSeriesId"] = new SelectList(_context.BuyMaterialDocSeriesDefs, "Id", "Code");
-            ViewData["MaterialDocTypeId"] = new SelectList(_context.BuyMaterialDocTypeDefs, "Id", "Code");
-            ViewData["SectionId"] = new SelectList(_context.Sections, "Id", "Code");
+            ViewData["CompanyId"] = new SelectList(_context.Companies.OrderBy(p => p.Code).AsNoTracking(), "Id", "Code");
+            ViewData["MaterialDocSeriesId"] = new SelectList(_context.BuyMaterialDocSeriesDefs.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
             ViewData["SupplierId"] = new SelectList(supplierList, "Id", "Name");
+            //var supplierList = _context.Transactors.Where(s => s.TransactorType.Code == "SYS.SUPPLIER").OrderBy(s => s.Name).AsNoTracking();
+            //ViewData["CompanyId"] = new SelectList(_context.Companies, "Id", "Code");
+            //ViewData["FiscalPeriodId"] = new SelectList(_context.FiscalPeriods, "Id", "Id");
+            //ViewData["MaterialDocSeriesId"] = new SelectList(_context.BuyMaterialDocSeriesDefs, "Id", "Code");
+            //ViewData["MaterialDocTypeId"] = new SelectList(_context.BuyMaterialDocTypeDefs, "Id", "Code");
+            //ViewData["SectionId"] = new SelectList(_context.Sections, "Id", "Code");
+            //ViewData["SupplierId"] = new SelectList(supplierList, "Id", "Name");
         }
 
         public async Task<IActionResult> OnPostAsync()

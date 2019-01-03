@@ -1,4 +1,6 @@
 ﻿@page
+@using System.Net.Sockets
+@using Microsoft.AspNetCore.Http
 @model GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc.EditModel
 
 @{
@@ -14,10 +16,12 @@
     <form method="post" id="transForm">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <input type="hidden" asp-for="ItemVm.Id" />
+        <input type="hidden" asp-for="ItemVm.FiscalPeriodId" />
+        <input type="hidden" asp-for="ItemVm.Timestamp" />
         <div class="form-row">
             <div class="form-group col-md-2">
                 <label asp-for="ItemVm.TransDate" class="control-label small "></label>
-                <input asp-for="ItemVm.TransDate" class="form-control form-control-sm small" autofocus/>
+                <input asp-for="ItemVm.TransDate" class="form-control form-control-sm small" autofocus />
                 <span asp-validation-for="ItemVm.TransDate" class="text-danger small"></span>
             </div>
             <div class="form-group col-md-7">
@@ -116,7 +120,49 @@
 
                     </tr>
                 </thead>
-                <tbody></tbody>
+                <tbody>
+                @{
+                    var lineCount = 0;
+                    foreach (var docLine in Model.ItemVm.BuyDocLines)
+                    {
+                        lineCount++;
+                        var materialId = docLine.MaterialId;
+                        var q1 = docLine.Quontity1;
+                        var q1Str = $@"{q1:N2}"; 
+                        var q2 = docLine.Quontity2;
+                        var q2Str = $@"{q2:N2}";
+                        var unitPrice = docLine.UnitPrice;
+                        var vatRate = docLine.FpaRate;
+                        var mainUnitId = docLine.PrimaryUnitId;
+                        var secUnitId = docLine.SecondaryUnitId;
+                        var factor = 1;
+                        var materialName = "Material Name";
+                        var disRate = docLine.DiscountRate;
+                        var disAmount = docLine.AmountDiscount;
+                        var vatAmount = docLine.AmountFpa;
+                        var netAmount = docLine.AmountNet;
+                        var grosAmount = netAmount - disAmount + vatAmount;
+
+                        var tLine = $"<tr><td class=\"small\"> {lineCount}" +
+                                    $"</td><td class=\"small\" data-materialId=\"{materialId}\" " +
+                                    $"data-factor=\"{factor}\" data-mainUnitId=\"{mainUnitId}\" data-secUnitId=\"{secUnitId}\">" +
+                                    $"{materialName} </td><td class=\"small text-right\"  data-actualValue=\"{q1}\" >" +
+                                    $" {q1Str} </td><td class=\"small text-right\"  data-actualValue=\"{q2}\" > " +
+                                    $" {q2Str} </td><td class=\"small text-right\"  data-actualValue=\"{unitPrice}\" >" +
+                                    $" {unitPrice} </td><td class=\"small text-right\"  data-actualValue=\"{disRate}\" >" +
+                                    $"{disRate} </td><td class=\"small text-right\"  data-actualValue=\"{vatRate}\" >" +
+                                    $"{vatRate} </td><td class=\"small text-right\"  data-actualValue=\"{netAmount}\" >" +
+                                    $"{netAmount} </td><td class=\"small text-right\"  data-actualValue=\"{disAmount}\" >" +
+                                    $"{disAmount} </td><td class=\"small text-right\"  data-actualValue=\"{vatAmount}\" >" +
+                                    $"{vatAmount} </td><td class=\"small text-right\"  data-actualValue=\"{grosAmount}\" >" +
+                                    $"{grosAmount} </td>" +
+                                    $"<td class=\"small\">" +
+                                    $"<a data-itemId=\"0\" href=\"#\" class=\"deleteItem\"><i class=\"fas fa-trash\"></i></a></td></tr>";
+                        @Html.Raw(tLine);
+                    }
+
+                }
+                </tbody>
             </table>
         </div>
         <div class="form-row">
@@ -144,7 +190,7 @@
         </div>
 
         <div class="form-group">
-            <input type="submit" value="Create" class="btn btn-primary btn-sm" id="saveForm" />
+            <input type="submit" value="Update" class="btn btn-primary btn-sm" id="saveForm" />
         </div>
     </form>
 </div>

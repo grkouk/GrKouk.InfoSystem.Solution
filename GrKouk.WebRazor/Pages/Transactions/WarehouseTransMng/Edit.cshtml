@@ -227,11 +227,10 @@
                 var materialId = $material.val();
                 console.log("Material change event ->" + materialId);
 
-                const Uri = '@Configuration.GetSection("WebApiSettings")["WebApiLocal"]';
-                const FinalUri = `${Uri}/materials/materialdata?materialId=${materialId}`;
-                //const FinalUri = `/api/materials/materialdata?materialId=${materialId}`;
+                var uri = '@Configuration.GetSection("WebApiSettings")["WebApiLocal"]';
+                var finalUri = `${uri}/materials/materialdata?materialId=${materialId}`;
 
-                fetch(FinalUri)
+                fetch(finalUri)
                     .then(function(response) {
                         if (response.ok) {
                             return response.json();
