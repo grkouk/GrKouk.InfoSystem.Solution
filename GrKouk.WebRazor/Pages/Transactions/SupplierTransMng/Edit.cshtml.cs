@@ -110,28 +110,25 @@ namespace GrKouk.WebRazor.Pages.Transactions.SupplierTransMng
 
             //spTransaction.SectionId = section.Id;
             spTransactionToAttach.TransSupplierDocTypeId = docSeries.TransSupplierDocTypeDefId;
-          
+            spTransactionToAttach.FinancialAction = transSupplierDef.FinancialTransType;
             switch (transSupplierDef.FinancialTransType)
             {
                 case InfoSystem.Domain.FinConfig.FinancialTransTypeEnum.FinancialTransTypeNoChange:
+                    spTransactionToAttach.TransactionType = FinancialTransactionTypeIgnore;
                     break;
                 case InfoSystem.Domain.FinConfig.FinancialTransTypeEnum.FinancialTransTypeDebit:
-                    spTransactionToAttach.FinancialAction = FinancialTransTypeEnum.FinancialTransTypeDebit;
                     spTransactionToAttach.TransactionType = FinancialTransactionTypeDebit;
                     break;
                 case InfoSystem.Domain.FinConfig.FinancialTransTypeEnum.FinancialTransTypeCredit:
-                    spTransactionToAttach.FinancialAction = FinancialTransTypeEnum.FinancialTransTypeCredit;
                     spTransactionToAttach.TransactionType = FinancialTransactionTypeCredit;
                     break;
                 case InfoSystem.Domain.FinConfig.FinancialTransTypeEnum.FinancialTransTypeNegativeDebit:
-                    spTransactionToAttach.FinancialAction = FinancialTransTypeEnum.FinancialTransTypeNegativeDebit;
                     spTransactionToAttach.TransactionType = FinancialTransactionTypeDebit;
                     spTransactionToAttach.AmountNet = spTransactionToAttach.AmountNet * -1;
                     spTransactionToAttach.AmountFpa = spTransactionToAttach.AmountFpa * -1;
                     spTransactionToAttach.AmountDiscount = spTransactionToAttach.AmountDiscount * -1;
                     break;
                 case InfoSystem.Domain.FinConfig.FinancialTransTypeEnum.FinancialTransTypeNegativeCredit:
-                    spTransactionToAttach.FinancialAction = FinancialTransTypeEnum.FinancialTransTypeNegativeCredit;
                     spTransactionToAttach.TransactionType = FinancialTransactionTypeCredit;
                     spTransactionToAttach.AmountNet = spTransactionToAttach.AmountNet * -1;
                     spTransactionToAttach.AmountFpa = spTransactionToAttach.AmountFpa * -1;

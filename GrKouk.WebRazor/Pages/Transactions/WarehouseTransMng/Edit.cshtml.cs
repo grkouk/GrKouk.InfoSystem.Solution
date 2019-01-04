@@ -123,20 +123,18 @@ namespace GrKouk.WebRazor.Pages.Transactions.WarehouseTransMng
             switch (transWarehouseDef.InventoryTransType)
             {
                 case WarehouseInventoryTransTypeEnum.WarehouseInventoryTransTypeEnumNoChange:
+                    transToAttach.TransactionType =
+                        WarehouseTransactionTypeEnum.WarehouseTransactionTypeIgnore;
                     break;
                 case WarehouseInventoryTransTypeEnum.WarehouseInventoryTransTypeEnumImport:
 
                     transToAttach.TransactionType =
                         WarehouseTransactionTypeEnum.WarehouseTransactionTypeImport;
-                    //transToAttach.Quontity1 = dataBuyDocLine.Q1;
-                    //transToAttach.Quontity2 = dataBuyDocLine.Q2;
                     break;
                 case WarehouseInventoryTransTypeEnum.WarehouseInventoryTransTypeEnumExport:
 
                     transToAttach.TransactionType =
                         WarehouseTransactionTypeEnum.WarehouseTransactionTypeExport;
-                    //transToAttach.Quontity1 = dataBuyDocLine.Q1;
-                    //transToAttach.Quontity2 = dataBuyDocLine.Q2;
                     break;
                 case WarehouseInventoryTransTypeEnum.WarehouseInventoryTransTypeEnumNegativeImport:
 

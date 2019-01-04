@@ -21,6 +21,7 @@
     /// </summary>
     public enum FinancialTransactionTypeEnum
     {
+        FinancialTransactionTypeIgnore=0,
         FinancialTransactionTypeDebit = 1,
         FinancialTransactionTypeCredit = 2
     }
@@ -33,6 +34,7 @@
     /// </summary>
     public enum WarehouseTransactionTypeEnum
     {
+        WarehouseTransactionTypeIgnore=0,
         WarehouseTransactionTypeImport = 1,
         WarehouseTransactionTypeExport = 2
     }

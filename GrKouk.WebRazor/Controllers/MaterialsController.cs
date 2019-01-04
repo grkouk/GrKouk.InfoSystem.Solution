@@ -136,6 +136,7 @@ namespace GrKouk.WebRazor.Controllers
             switch (inventoryActionType)
             {
                 case WarehouseInventoryTransTypeEnum.WarehouseInventoryTransTypeEnumNoChange:
+                    transType = "WarehouseTransactionTypeIgnore";
                     break;
                 case WarehouseInventoryTransTypeEnum.WarehouseInventoryTransTypeEnumImport:
                     transType= "WarehouseTransactionTypeImport";
@@ -235,6 +236,8 @@ namespace GrKouk.WebRazor.Controllers
                 switch (transSupplierDef.FinancialTransType)
                 {
                     case InfoSystem.Domain.FinConfig.FinancialTransTypeEnum.FinancialTransTypeNoChange:
+                        spSupplierTransaction.FinancialAction = FinancialTransTypeEnum.FinancialTransTypeNoChange;
+                        spSupplierTransaction.TransactionType = FinancialTransactionTypeIgnore;
                         break;
                     case InfoSystem.Domain.FinConfig.FinancialTransTypeEnum.FinancialTransTypeDebit:
                         spSupplierTransaction.FinancialAction = FinancialTransTypeEnum.FinancialTransTypeDebit;
@@ -364,6 +367,8 @@ namespace GrKouk.WebRazor.Controllers
                     switch (transWarehouseDef.InventoryTransType)
                     {
                         case WarehouseInventoryTransTypeEnum.WarehouseInventoryTransTypeEnumNoChange:
+                            warehouseTrans.TransactionType =
+                                WarehouseTransactionTypeEnum.WarehouseTransactionTypeIgnore;
                             break;
                         case WarehouseInventoryTransTypeEnum.WarehouseInventoryTransTypeEnumImport:
 
