@@ -19,189 +19,193 @@
 
 <div class="container">
     <form method="post" id="transForm">
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <input type="hidden" asp-for="ItemVm.Id" />
-        <input type="hidden" asp-for="ItemVm.FiscalPeriodId" />
-        <input type="hidden" asp-for="ItemVm.Timestamp" />
-        <div class="form-row">
-            <div class="form-group col-md-2">
-                <label asp-for="ItemVm.TransDate" class="control-label small "></label>
-                <input asp-for="ItemVm.TransDate" class="form-control form-control-sm small" autofocus />
-                <span asp-validation-for="ItemVm.TransDate" class="text-danger small"></span>
-            </div>
-            <div class="form-group col-md-7">
-                <label asp-for="ItemVm.MaterialDocSeriesId" class="control-label small"></label>
-                <select asp-for="ItemVm.MaterialDocSeriesId" class="form-control form-control-sm small" asp-items="ViewBag.MaterialDocSeriesId"></select>
-            </div>
-            <div class="form-group col-md-3">
-                <label asp-for="ItemVm.TransRefCode" class="control-label small"></label>
-                <input asp-for="ItemVm.TransRefCode" class="form-control form-control-sm small" />
-                <span asp-validation-for="ItemVm.TransRefCode" class="text-danger small"></span>
-
-            </div>
-        </div>
-        <div class="form-row">
-            <div class="form-group col-md-8">
-                <label asp-for="ItemVm.SupplierId" class="control-label small"></label>
-                <select asp-for="ItemVm.SupplierId" class="form-control form-control-sm small" asp-items="ViewBag.SupplierId"></select>
-            </div>
-            <div class="form-group col-md-4">
-                <label asp-for="ItemVm.CompanyId" class="control-label" small></label>
-                <select asp-for="ItemVm.CompanyId" class="form-control form-control-sm small" asp-items="ViewBag.CompanyId"></select>
-            </div>
-        </div>
-        <div class="form-row">
-            <div class="form-group col-md-12">
-                <label asp-for="ItemVm.Etiology" class="control-label small"></label>
-                <textarea asp-for="ItemVm.Etiology" class="form-control form-control-sm small"></textarea>
-                <span asp-validation-for="ItemVm.Etiology" class="text-danger small"></span>
-            </div>
-        </div>
-        <div class="form-row">
-            <input type="hidden" id="MaterialId" />
-            <input type="hidden" id="MaterialLastPrice" />
-            <input type="hidden" id="MaterialFactor" />
-            <input type="hidden" id="MaterialFpaId" />
-            <input type="hidden" id="MaterialMainUnitId" />
-            <input type="hidden" id="MaterialSecondaryUnitId" />
-            <input type="hidden" id="MaterialsCounter" />
-            <input type="hidden" id="LineEditing" />
-            <div class="form-group col-sm-3">
-
-                <label class="small">LookUp</label>
-                <input class="form-control form-control-sm small" id="Lookup" />
-                <span class="text-danger small"></span>
-            </div>
-
-            <div class="form-group col-sm-2">
-                <label class="small" id="q1Label">Q1</label>
-                <input class="form-control form-control-sm small " type="number" placeholder="Q 1" id="Q1" />
-                <div class="invalid-feedback">
-                    Please enter a valid Q1.
+        <fieldset id="thisForm">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="ItemVm.Id" />
+            <input type="hidden" asp-for="ItemVm.FiscalPeriodId" />
+            <input type="hidden" asp-for="ItemVm.MaterialDocTypeId" />
+            <input type="hidden" asp-for="ItemVm.Timestamp" />
+            <div class="form-row">
+                <div class="form-group col-md-2">
+                    <label asp-for="ItemVm.TransDate" class="control-label small "></label>
+                    <input asp-for="ItemVm.TransDate" class="form-control form-control-sm small" autofocus />
+                    <span asp-validation-for="ItemVm.TransDate" class="text-danger small"></span>
                 </div>
-                @*<span class="text-danger invalid-feedback small">Invalid Q1</span>*@
-            </div>
-            <div class="form-group col-sm-2">
-                <label class="small" id="q2Label">Q2</label>
-                <input class="form-control form-control-sm small " type="number" placeholder="Q 2" id="Q2" />
-                <span class="text-danger small"></span>
-            </div>
-            <div class="form-group col-sm-2">
-                <label class="small">Price</label>
-                <input class="form-control form-control-sm small " type="number" placeholder="Price Net" id="Price" />
-                <span class="text-danger small"></span>
-            </div>
-            <div class="form-group col-sm-1">
-                <label class="small">Dis% </label>
-                <input class="form-control form-control-sm small " type="number" placeholder="Dis %" id="Discount" />
-                <span class="text-danger small"></span>
-            </div>
-            <div class="form-group col-sm-1">
-                <label class="small">VAT% </label>
-                <input class="form-control form-control-sm small " type="number" placeholder="Vat%" id="VatPercent" />
-                <span class="text-danger small"></span>
-            </div>
-            <div class="form-group col-sm-1 align-self-end">
-                <button id="addToList" class="btn btn-primary btn-sm">
-                    <i class="far fa-arrow-alt-circle-down"></i>
-                </button>
-            </div>
-        </div>
-        <div class="form-row">
-            <table id="detailsTable" class="table table-responsive-sm">
-                <thead class="small">
-                    <tr>
-                        <th class="small" style="width: 0%"> #</th>
-                        <th class="small" style="width: 20%">Product</th>
-                        <th class="small text-center" style="width: 5%">Q1</th>
-                        <th class="small text-center" style="width: 5%">Q2</th>
-                        <th class="small text-center" style="width: 10%">Unit Price</th>
-                        <th class="small text-center" style="width: 5%">Disc%</th>
-                        <th class="small text-center" style="width: 5%">Vat%</th>
-                        <th class="small text-center" style="width: 10%">Net</th>
-                        <th class="small text-center" style="width: 10%">Disc</th>
-                        <th class="small text-center" style="width: 10%">Vat</th>
-                        <th class="small text-center" style="width: 10%">Gross</th>
-                        <th class="small" style="width: 5%"></th>
-                        <th class="small" style="width: 5%"></th>
+                <div class="form-group col-md-7">
+                    <label asp-for="ItemVm.MaterialDocSeriesId" class="control-label small"></label>
+                    <select asp-for="ItemVm.MaterialDocSeriesId" class="form-control form-control-sm small" asp-items="ViewBag.MaterialDocSeriesId"></select>
+                </div>
+                <div class="form-group col-md-3">
+                    <label asp-for="ItemVm.TransRefCode" class="control-label small"></label>
+                    <input asp-for="ItemVm.TransRefCode" class="form-control form-control-sm small" />
+                    <span asp-validation-for="ItemVm.TransRefCode" class="text-danger small"></span>
 
-                    </tr>
-                </thead>
-                <tbody>
-                    @{
-                        var lineCount = 0;
-                        foreach (var docLine in Model.ItemVm.BuyDocLines)
-                        {
-                            lineCount++;
-                            var materialId = docLine.MaterialId;
-                            var q1 = docLine.Quontity1;
-                            var q1Str = $@"{q1:N2}";
-                            var q2 = docLine.Quontity2;
-                            var q2Str = $@"{q2:N2}";
-                            var unitPrice = docLine.UnitPrice;
-                            var vatRate = docLine.FpaRate;
-                            var mainUnitId = docLine.PrimaryUnitId;
-                            var secUnitId = docLine.SecondaryUnitId;
-                            var factor = 1;
-                            var materialName = "Material Name";
-                            var disRate = docLine.DiscountRate;
-                            var disAmount = docLine.AmountDiscount;
-                            var vatAmount = docLine.AmountFpa;
-                            var netAmount = docLine.AmountNet;
-                            var grosAmount = netAmount - disAmount + vatAmount;
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-8">
+                    <label asp-for="ItemVm.SupplierId" class="control-label small"></label>
+                    <select asp-for="ItemVm.SupplierId" class="form-control form-control-sm small" asp-items="ViewBag.SupplierId"></select>
+                </div>
+                <div class="form-group col-md-4">
+                    <label asp-for="ItemVm.CompanyId" class="control-label" small></label>
+                    <select asp-for="ItemVm.CompanyId" class="form-control form-control-sm small" asp-items="ViewBag.CompanyId"></select>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-12">
+                    <label asp-for="ItemVm.Etiology" class="control-label small"></label>
+                    <textarea asp-for="ItemVm.Etiology" class="form-control form-control-sm small"></textarea>
+                    <span asp-validation-for="ItemVm.Etiology" class="text-danger small"></span>
+                </div>
+            </div>
+            <div class="form-row">
+                <input type="hidden" id="MaterialId" />
+                <input type="hidden" id="MaterialLastPrice" />
+                <input type="hidden" id="MaterialFactor" />
+                <input type="hidden" id="MaterialFpaId" />
+                <input type="hidden" id="MaterialMainUnitId" />
+                <input type="hidden" id="MaterialSecondaryUnitId" />
+                <input type="hidden" id="MaterialsCounter" />
+                <input type="hidden" id="LineEditing" />
+                <div class="form-group col-sm-3">
 
-                            var tLine = $"<tr><td class=\"small\"> {lineCount}" +
-                                        $"</td><td class=\"small\" data-materialId=\"{materialId}\" " +
-                                        $"data-factor=\"{factor}\" data-mainUnitId=\"{mainUnitId}\" data-secUnitId=\"{secUnitId}\">" +
-                                        $"{materialName} </td><td class=\"small text-right\"  data-actualValue=\"{q1}\" >" +
-                                        $" {q1Str} </td><td class=\"small text-right\"  data-actualValue=\"{q2}\" > " +
-                                        $" {q2Str} </td><td class=\"small text-right\"  data-actualValue=\"{unitPrice}\" >" +
-                                        $" {unitPrice} </td><td class=\"small text-right\"  data-actualValue=\"{disRate}\" >" +
-                                        $"{disRate} </td><td class=\"small text-right\"  data-actualValue=\"{vatRate}\" >" +
-                                        $"{vatRate} </td><td class=\"small text-right\"  data-actualValue=\"{netAmount}\" >" +
-                                        $"{netAmount} </td><td class=\"small text-right\"  data-actualValue=\"{disAmount}\" >" +
-                                        $"{disAmount} </td><td class=\"small text-right\"  data-actualValue=\"{vatAmount}\" >" +
-                                        $"{vatAmount} </td><td class=\"small text-right\"  data-actualValue=\"{grosAmount}\" >" +
-                                        $"{grosAmount} </td>" +
-                                        $"<td class=\"small\">" +
-                                        $"<a data-itemId=\"0\" href=\"#\" class=\"modifyItem\"><i class=\"fas fa-edit\"></i></a></td>" +
-                                        $"<td class=\"small\">" +
-                                        $"<a data-itemId=\"0\" href=\"#\" class=\"deleteItem\"><i class=\"fas fa-trash\"></i></a></td></tr>";
-                            @Html.Raw(tLine);
+                    <label class="small">LookUp</label>
+                    <input class="form-control form-control-sm small" id="Lookup" />
+                    <span class="text-danger small"></span>
+                </div>
+
+                <div class="form-group col-sm-2">
+                    <label class="small" id="q1Label">Q1</label>
+                    <input class="form-control form-control-sm small " type="number" placeholder="Q 1" id="Q1" />
+                    <div class="invalid-feedback">
+                        Please enter a valid Q1.
+                    </div>
+                    @*<span class="text-danger invalid-feedback small">Invalid Q1</span>*@
+                </div>
+                <div class="form-group col-sm-2">
+                    <label class="small" id="q2Label">Q2</label>
+                    <input class="form-control form-control-sm small " type="number" placeholder="Q 2" id="Q2" />
+                    <span class="text-danger small"></span>
+                </div>
+                <div class="form-group col-sm-2">
+                    <label class="small">Price</label>
+                    <input class="form-control form-control-sm small " type="number" placeholder="Price Net" id="Price" />
+                    <span class="text-danger small"></span>
+                </div>
+                <div class="form-group col-sm-1">
+                    <label class="small">Dis% </label>
+                    <input class="form-control form-control-sm small " type="number" placeholder="Dis %" id="Discount" />
+                    <span class="text-danger small"></span>
+                </div>
+                <div class="form-group col-sm-1">
+                    <label class="small">VAT% </label>
+                    <input class="form-control form-control-sm small " type="number" placeholder="Vat%" id="VatPercent" />
+                    <span class="text-danger small"></span>
+                </div>
+                <div class="form-group col-sm-1 align-self-end">
+                    <button id="addToList" class="btn btn-primary btn-sm">
+                        <i class="far fa-arrow-alt-circle-down"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="form-row">
+                <table id="detailsTable" class="table table-responsive-sm">
+                    <thead class="small">
+                        <tr>
+                            <th class="small" style="width: 0%"> #</th>
+                            <th class="small" style="width: 20%">Product</th>
+                            <th class="small text-center" style="width: 5%">Q1</th>
+                            <th class="small text-center" style="width: 5%">Q2</th>
+                            <th class="small text-center" style="width: 10%">Unit Price</th>
+                            <th class="small text-center" style="width: 5%">Disc%</th>
+                            <th class="small text-center" style="width: 5%">Vat%</th>
+                            <th class="small text-center" style="width: 10%">Net</th>
+                            <th class="small text-center" style="width: 10%">Disc</th>
+                            <th class="small text-center" style="width: 10%">Vat</th>
+                            <th class="small text-center" style="width: 10%">Gross</th>
+                            <th class="small" style="width: 5%"></th>
+                            <th class="small" style="width: 5%"></th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            var lineCount = 0;
+                            foreach (var docLine in Model.ItemVm.BuyDocLines)
+                            {
+                                lineCount++;
+                                var materialId = docLine.MaterialId;
+                                var q1 = docLine.Quontity1;
+                                var q1Str = $@"{q1:N2}";
+                                var q2 = docLine.Quontity2;
+                                var q2Str = $@"{q2:N2}";
+                                var unitPrice = docLine.UnitPrice;
+                                var vatRate = docLine.FpaRate;
+                                var mainUnitId = docLine.PrimaryUnitId;
+                                var secUnitId = docLine.SecondaryUnitId;
+                                var factor = docLine.Factor;
+                                var materialName = docLine.MaterialName;
+                                var disRate = docLine.DiscountRate;
+                                var disAmount = docLine.DiscountRate;
+                                var vatAmount = docLine.AmountFpa;
+                                var netAmount = docLine.AmountNet;
+                                var grosAmount = netAmount - disAmount + vatAmount;
+
+                                var tLine = $"<tr><td class=\"small\"> {lineCount}" +
+                                            $"</td><td class=\"small\" data-materialId=\"{materialId}\" " +
+                                            $"data-factor=\"{factor}\" data-mainUnitId=\"{mainUnitId}\" data-secUnitId=\"{secUnitId}\">" +
+                                            $"{materialName} </td><td class=\"small text-right\"  data-actualValue=\"{q1}\" >" +
+                                            $" {q1Str} </td><td class=\"small text-right\"  data-actualValue=\"{q2}\" > " +
+                                            $" {q2Str} </td><td class=\"small text-right\"  data-actualValue=\"{unitPrice}\" >" +
+                                            $" {unitPrice} </td><td class=\"small text-right\"  data-actualValue=\"{disRate}\" >" +
+                                            $"{disRate} </td><td class=\"small text-right\"  data-actualValue=\"{vatRate}\" >" +
+                                            $"{vatRate} </td><td class=\"small text-right\"  data-actualValue=\"{netAmount}\" >" +
+                                            $"{netAmount} </td><td class=\"small text-right\"  data-actualValue=\"{disAmount}\" >" +
+                                            $"{disAmount} </td><td class=\"small text-right\"  data-actualValue=\"{vatAmount}\" >" +
+                                            $"{vatAmount} </td><td class=\"small text-right\"  data-actualValue=\"{grosAmount}\" >" +
+                                            $"{grosAmount} </td>" +
+                                            $"<td class=\"small\">" +
+                                            $"<a data-itemId=\"0\" href=\"#\" class=\"modifyItem\"><i class=\"fas fa-edit\"></i></a></td>" +
+                                            $"<td class=\"small\">" +
+                                            $"<a data-itemId=\"0\" href=\"#\" class=\"deleteItem\"><i class=\"fas fa-trash\"></i></a></td></tr>";
+                                @Html.Raw(tLine)
+                                ;
+                            }
+
                         }
+                    </tbody>
+                </table>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class=" small">Net Amount</label>
+                    <input id="ItemVm_AmountNet" class="form-control form-control-sm small text-right" type="text" disabled />
+                    <span asp-validation-for="ItemVm.AmountNet" class="text-danger small"></span>
+                </div>
 
-                    }
-                </tbody>
-            </table>
-        </div>
-        <div class="form-row">
-            <div class="form-group">
-                <label class=" small">Net Amount</label>
-                <input id="ItemVm_AmountNet" class="form-control form-control-sm small text-right" type="text" disabled />
-                <span asp-validation-for="ItemVm.AmountNet" class="text-danger small"></span>
-            </div>
-           
-           
-            <div class="form-group">
-                <label class=" small">Discount</label>
-                <input id="ItemVm_AmountDiscount" class="form-control form-control-sm small text-right" type="text" disabled />
-                <span asp-validation-for="ItemVm.AmountDiscount" class="text-danger small"></span>
-            </div>
-            <div class="form-group">
-                <label class="small">Amount VAT</label>
-                <input id="ItemVm_AmountFpa" class="form-control form-control-sm small text-right" type="text" disabled />
-                <span asp-validation-for="ItemVm.AmountFpa" class="text-danger small"></span>
-            </div>
-            <div class="form-group">
-                <label class=" small">Sum</label>
-                <input id="DocumentSum" type="text" class="form-control form-control-sm small text-right" disabled />
 
-            </div>
-        </div>
+                <div class="form-group">
+                    <label class=" small">Discount</label>
+                    <input id="ItemVm_AmountDiscount" class="form-control form-control-sm small text-right" type="text" disabled />
+                    <span asp-validation-for="ItemVm.AmountDiscount" class="text-danger small"></span>
+                </div>
+                <div class="form-group">
+                    <label class="small">Amount VAT</label>
+                    <input id="ItemVm_AmountFpa" class="form-control form-control-sm small text-right" type="text" disabled />
+                    <span asp-validation-for="ItemVm.AmountFpa" class="text-danger small"></span>
+                </div>
+                <div class="form-group">
+                    <label class=" small">Sum</label>
+                    <input id="DocumentSum" type="text" class="form-control form-control-sm small text-right" disabled />
 
-        <div class="form-group">
-            <input type="submit" value="Update" class="btn btn-primary btn-sm" id="saveForm" />
-        </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Update" class="btn btn-primary btn-sm" id="saveForm" />
+            </div>
+        </fieldset>
     </form>
 </div>
 
@@ -614,8 +618,8 @@
                     contentType: 'application/json; charset=utf-8',
 
                     dataType: 'json',
-                    type: 'POST',
-                    url: "/api/Materials/MaterialBuyDoc",
+                    type: 'PUT',
+                    url: "/api/Materials/MaterialBuyDocUpdate",
                     data: data,
                     headers: {
                         'RequestVerificationToken': securityToken
@@ -636,17 +640,7 @@
 
                 var $form = $('#transForm');
                 var f = document.getElementById("transForm");
-                //#region validation that didt perform well
-                // var isValidate = $form[0].checkValidity();
-                //var isValidate2 = f.checkValidity();
-                //console.log("Check Form validation is " + isValidate);
-                //console.log("Check Form validation2 is " + isValidate2);
-                //if (!isValidate) {
-                //    $form.addClass('was-validated');
-                //    //e.preventDefault();
-                //    return;
-                //}
-                //#endregion
+              
                 e.preventDefault();
 
                 $('#thisForm').prop("disabled", true);
@@ -674,16 +668,18 @@
                     });
 
                 var data = JSON.stringify({
+                    id: $("#ItemVm_Id").val(),
                     transDate: $("#ItemVm_TransDate").val(),
                     transRefCode: $("#ItemVm_TransRefCode").val(),
                     supplierId: $("#ItemVm_SupplierId").val(),
                     companyId: $("#ItemVm_CompanyId").val(),
                     materialDocSeriesId: $("#ItemVm_MaterialDocSeriesId").val(),
+                    materialDocTypeId: $("#ItemVm_MaterialDocTypeId").val(),
                     Etiology: $("#ItemVm_Etiology").val(),
                     amountFpa: $("#ItemVm_AmountFpa").attr('data-actualValue'),
                     amountNet: $("#ItemVm_AmountNet").attr('data-actualValue'),
                     amountDiscount: $("#ItemVm_AmountDiscount").attr('data-actualValue'),
-
+                    timestamp: $("#ItemVm_Timestamp").val(),
                     buyDocLines: linesArr
 
                 });

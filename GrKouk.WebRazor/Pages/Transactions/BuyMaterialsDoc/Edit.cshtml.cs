@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using GrKouk.InfoSystem.Domain.Shared;
+using GrKouk.InfoSystem.Dtos.WebDtos.BuyMaterialsDocs;
 using GrKouk.WebApi.Data;
 using NToastNotify;
 
@@ -28,7 +29,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc
         }
 
         [BindProperty]
-        public BuyMaterialsDocument ItemVm { get; set; }
+        public BuyMaterialsDocModifyDto ItemVm { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -36,17 +37,19 @@ namespace GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc
             {
                 return NotFound();
             }
-
-            ItemVm = await _context.BuyMaterialsDocuments
+            var buyMatDoc = await _context.BuyMaterialsDocuments
                 .Include(b => b.Company)
                 .Include(b => b.FiscalPeriod)
                 .Include(b => b.MaterialDocSeries)
                 .Include(b => b.MaterialDocType)
                 .Include(b => b.Section)
-                
+
                 .Include(b => b.Supplier)
-                .Include(b=>b.BuyDocLines)
+                .Include(b => b.BuyDocLines)
+                .ThenInclude(m=>m.Material)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
+            ItemVm = _mapper.Map<BuyMaterialsDocModifyDto>(buyMatDoc);
 
             if (ItemVm == null)
             {

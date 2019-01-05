@@ -66,11 +66,12 @@ namespace GrKouk.WebRazor.Automapper
             CreateMap<Material, MaterialCreateDto>().ReverseMap();
             CreateMap<Material, MaterialModifyDto>().ReverseMap();
             CreateMap<BuyMaterialsDocument, BuyMaterialsDocCreateAjaxNoLinesDto>().ReverseMap();
-
+            CreateMap<BuyMaterialsDocument, BuyMaterialsDocModifyAjaxNoLinesDto>().ReverseMap();
             CreateMap<BuyMaterialsDocCreateAjaxNoLinesDto, BuyMaterialDocLineAjaxDto>().ReverseMap();
             CreateMap<BuyMaterialsDocument, BuyMaterialsDocListDto>().ReverseMap();
             CreateMap<SupplierTransaction, BuyMaterialsDocCreateAjaxDto>().ReverseMap();
-
+            CreateMap<SupplierTransaction, BuyMaterialsDocModifyAjaxDto>().ReverseMap();
+            CreateMap<SupplierTransactionCreateDto, BuyMaterialsDocModifyAjaxDto>().ReverseMap();
             CreateMap<WarehouseTransaction, WarehouseTransListDto>();
             CreateMap<WarehouseTransaction, WarehouseTransCreateDto>().ReverseMap();
             CreateMap<WarehouseTransaction, WarehouseTransModifyDto>().ReverseMap();

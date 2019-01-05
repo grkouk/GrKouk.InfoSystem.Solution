@@ -46,16 +46,35 @@ namespace GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc
 
         public async Task<IActionResult> OnPostAsync(int? id)
         {
+            const string sectionCode = "SYS-BUY-MATERIALS-SCN";
             if (id == null)
             {
                 return NotFound();
             }
+            #region Section Management
 
+            var section = await _context.Sections.SingleOrDefaultAsync(s => s.SystemName == sectionCode);
+            if (section == null)
+            {
+               
+               
+                return NotFound(new
+                {
+                    error = "Could not locate section "
+                });
+            }
+
+            #endregion
             BuyMaterialsDocument = await _context.BuyMaterialsDocuments.FindAsync(id);
 
             if (BuyMaterialsDocument != null)
             {
+                _context.BuyMaterialsDocLines.RemoveRange(_context.BuyMaterialsDocLines.Where(p => p.BuyDocumentId == id));
+                _context.SupplierTransactions.RemoveRange(_context.SupplierTransactions.Where(p => p.SectionId == section.Id && p.CreatorId == id));
+                _context.WarehouseTransactions.RemoveRange(_context.WarehouseTransactions.Where(p => p.SectionId == section.Id && p.CreatorId == id));
+
                 _context.BuyMaterialsDocuments.Remove(BuyMaterialsDocument);
+
                 await _context.SaveChangesAsync();
             }
 

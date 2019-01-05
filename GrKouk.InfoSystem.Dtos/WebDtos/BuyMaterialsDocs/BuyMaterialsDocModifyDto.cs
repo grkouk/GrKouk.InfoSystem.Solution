@@ -7,12 +7,11 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.BuyMaterialsDocs
 {
     public class BuyMaterialsDocModifyDto
     {
-        private ICollection<BuyMaterialsDocLine> _buyDocLines;
+        private ICollection<BuyMaterialsDocLineModifyDto> _buyDocLines;
 
         public int Id { get; set; }
 
-        [DataType(DataType.Date)]
-        public DateTime TransDate { get; set; }
+        [DataType(DataType.Date)] public DateTime TransDate { get; set; }
 
         public string TransRefCode { get; set; }
 
@@ -32,27 +31,25 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.BuyMaterialsDocs
         public int MaterialDocTypeId { get; set; }
         public string MaterialDocTypeCode { get; set; }
         public string MaterialDocTypeName { get; set; }
-        [Display(Name = "Vat Amount")]
-        public decimal AmountFpa { get; set; }
-        [Display(Name = "Net Amount")]
-        public decimal AmountNet { get; set; }
-        [Display(Name = "Discount Amount")]
-        public decimal AmountDiscount { get; set; }
+        [Display(Name = "Vat Amount")] public decimal AmountFpa { get; set; }
+        [Display(Name = "Net Amount")] public decimal AmountNet { get; set; }
+        [Display(Name = "Discount Amount")] public decimal AmountDiscount { get; set; }
 
         [DisplayFormat(DataFormatString = "{0:C}")]
         [Display(Name = "Sum")]
         public decimal AmountSum => (AmountNet + AmountFpa - AmountDiscount);
-        [MaxLength(500)]
-        public string Etiology { get; set; }
+
+        [MaxLength(500)] public string Etiology { get; set; }
         public int CompanyId { get; set; }
         public string CompanyCode { get; set; }
 
-        [Timestamp]
-        public byte[] Timestamp { get; set; }
-        public virtual ICollection<BuyMaterialsDocLine> BuyDocLines
+        [Timestamp] public byte[] Timestamp { get; set; }
+
+        public virtual ICollection<BuyMaterialsDocLineModifyDto> BuyDocLines
         {
-            get { return _buyDocLines ?? (_buyDocLines = new List<BuyMaterialsDocLine>()); }
+            get { return _buyDocLines ?? (_buyDocLines = new List<BuyMaterialsDocLineModifyDto>()); }
             set { _buyDocLines = value; }
         }
     }
 }
+    
