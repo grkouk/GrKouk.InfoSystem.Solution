@@ -7,16 +7,22 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using GrKouk.InfoSystem.Domain.Shared;
 using GrKouk.WebApi.Data;
+using NToastNotify;
 
 namespace GrKouk.WebRazor.Pages.Transactions.WarehouseTransMng
 {
     public class DeleteModel : PageModel
     {
         private readonly GrKouk.WebApi.Data.ApiDbContext _context;
+        private readonly IToastNotification _toastNotification;
+        public bool NotUpdatable;
+        public bool InitialLoad = true;
 
-        public DeleteModel(GrKouk.WebApi.Data.ApiDbContext context)
+        private const string SectionSystemCode = "SYS-WAREHOUSE-TRANS";
+        public DeleteModel(GrKouk.WebApi.Data.ApiDbContext context,IToastNotification toastNotification)
         {
             _context = context;
+            _toastNotification = toastNotification;
         }
 
         [BindProperty]
@@ -41,6 +47,14 @@ namespace GrKouk.WebRazor.Pages.Transactions.WarehouseTransMng
             {
                 return NotFound();
             }
+            var section = _context.Sections.SingleOrDefault(s => s.SystemName == SectionSystemCode);
+            if (section is null)
+            {
+                _toastNotification.AddAlertToastMessage("Supplier Transactions section not found in DB");
+                return BadRequest();
+            }
+            //If section is not our section the canot update disable input controls
+            NotUpdatable = WarehouseTransaction.SectionId != section.Id;
             return Page();
         }
 

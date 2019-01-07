@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -7,6 +8,8 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using GrKouk.InfoSystem.Domain.Shared;
 using GrKouk.InfoSystem.Dtos.WebDtos;
 using GrKouk.WebRazor.Helpers;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 
 namespace GrKouk.WebRazor.Pages.Transactors
 {
@@ -30,11 +33,13 @@ namespace GrKouk.WebRazor.Pages.Transactors
         public string CurrentSort { get; set; }
         public int PageSize { get; set; }
         public int CurrentPageSize { get; set; }
-
+        public int CurrentTransactorTypeFilter { get; set; }
        
         public PagedList<TransactorListDto> ListItems { get; set; }
-        public async Task OnGetAsync(string sortOrder, string searchString, int? pageIndex, int? pageSize)
+        public async Task OnGetAsync(string sortOrder, string searchString,int? transactorTypeFilter, int? pageIndex, int? pageSize)
         {
+            LoadFilters();
+
             PageSize = (int)((pageSize == null || pageSize == 0) ? 20 : pageSize);
             CurrentPageSize = PageSize;
             CurrentSort = sortOrder;
@@ -50,6 +55,11 @@ namespace GrKouk.WebRazor.Pages.Transactors
                 searchString = CurrentFilter;
             }
             CurrentFilter = searchString;
+            if (transactorTypeFilter==null)
+            {
+                transactorTypeFilter = 0;
+            }
+            CurrentTransactorTypeFilter = (int) (transactorTypeFilter ?? 0);
 
             IQueryable<Transactor> fullListIq = from s in _context.Transactors
                                                          select s;
@@ -59,6 +69,10 @@ namespace GrKouk.WebRazor.Pages.Transactors
                 fullListIq = fullListIq.Where(s => s.Name.Contains(searchString));
             }
 
+            if (transactorTypeFilter > 0)
+            {
+                fullListIq = fullListIq.Where(p => p.TransactorTypeId == transactorTypeFilter);
+            }
             switch (sortOrder)
             {
                 
@@ -83,6 +97,18 @@ namespace GrKouk.WebRazor.Pages.Transactors
             ListItems = await PagedList<TransactorListDto>.CreateAsync(
                 t, pageIndex ?? 1, PageSize);
 
+        }
+
+        private void LoadFilters()
+        {
+            var dbTransactorTypes = _context.TransactorTypes.OrderBy(p => p.Code).AsNoTracking();
+            List<SelectListItem> transactorTypes = new List<SelectListItem>();
+            transactorTypes.Add(new SelectListItem() { Value = 0.ToString(), Text = "{All Types}" });
+            foreach (var dbTransactorType in dbTransactorTypes)
+            {
+                transactorTypes.Add(new SelectListItem() { Value = dbTransactorType.Id.ToString(), Text = dbTransactorType.Code });
+            }
+            ViewData["TransactorTypeId"] = new SelectList(transactorTypes, "Value", "Text");
         }
     }
 }

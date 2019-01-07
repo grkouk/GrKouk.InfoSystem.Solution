@@ -1,4 +1,5 @@
 ﻿@page
+@using System.Collections.Specialized
 @model GrKouk.WebRazor.Pages.Expenses.IndexModel
 
 @{
@@ -18,9 +19,23 @@
 
     <p>
         Find by name:
-        <input type="text" name="SearchString" value="@Model.CurrentFilter" />
-        <input type="submit" value="Search" class="btn btn-light" /> |
-        <a asp-page="./Index">Back to full List</a>
+        <input class="form-control-sm" type="text" name="SearchString" value="@Model.CurrentFilter" />
+        <select name="DatePeriodFilter" asp-for="CurrentDatePeriod" class="form-control-sm" asp-items="ViewBag.DataFilterValues"></select>
+        <input type="submit" value="Refresh" class="btn btn-light btn-sm" /> |
+        Page Size:
+        <select asp-for="PageSize" onchange="this.form.submit()" >
+            <option value="3">3</option>
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="20">20</option>
+            <option value="100">100</option>
+        </select>
+        |
+        <a asp-page="./Index"
+           asp-route-sortOrder="@Model.CurrentSort"
+           asp-route-pageIndex="@(Model.ListItems.CurrentPage )"
+          asp-route-datePeriodFilter="CURMONTH"
+           asp-route-PageSize="@Model.PageSize">Back to full List</a>
 
     </p>
 
@@ -29,48 +44,50 @@
     <table class="table table-bordered table-sm">
         <thead class="thead-light">
             <tr>
-                <th >
+                <th>
                     <a asp-page="./Index" asp-route-sortOrder="@Model.DateSort"
-                       asp-route-currentFilter="@Model.CurrentFilter"
+                       asp-route-searchFilter="@Model.CurrentFilter"
+                       asp-route-datePeriodFilter="@Model.CurrentDatePeriod"
                        asp-route-PageSize="@Model.PageSize">
-                        @Html.DisplayNameFor(model => model.FinDiaryTransaction[0].TransactionDate)
+                        @Html.DisplayNameFor(model => model.ListItems[0].TransactionDate)
 
                     </a>
                     <i class="@Model.DateSortIcon"></i>
                 </th>
-                <th >
-                    @Html.DisplayNameFor(model => model.FinDiaryTransaction[0].ReferenceCode)
+                <th>
+                    @Html.DisplayNameFor(model => model.ListItems[0].ReferenceCode)
                 </th>
                 <th>
                     <a asp-page="./Index" asp-route-sortOrder="@Model.NameSort"
-                       asp-route-currentFilter="@Model.CurrentFilter"
+                       asp-route-searchFilter="@Model.CurrentFilter"
+                       asp-route-datePeriodFilter="@Model.CurrentDatePeriod"
                        asp-route-PageSize="@Model.PageSize">
-                        @Html.DisplayNameFor(model => model.FinDiaryTransaction[0].TransactorName)
+                        @Html.DisplayNameFor(model => model.ListItems[0].TransactorName)
                     </a>
 
                     <i class="@Model.NameSortIcon"></i>
                 </th>
-                <th >
-                    @Html.DisplayNameFor(model => model.FinDiaryTransaction[0].FinTransCategoryName)
+                <th>
+                    @Html.DisplayNameFor(model => model.ListItems[0].FinTransCategoryName)
                 </th>
-                <th >
-                    @Html.DisplayNameFor(model => model.FinDiaryTransaction[0].CompanyName)
+                <th>
+                    @Html.DisplayNameFor(model => model.ListItems[0].CompanyName)
                 </th>
-                <th >
-                    @Html.DisplayNameFor(model => model.FinDiaryTransaction[0].CostCentreName)
-                </th>
-
-
-
-                <th >
-                    @Html.DisplayNameFor(model => model.FinDiaryTransaction[0].AmountTotal)
+                <th>
+                    @Html.DisplayNameFor(model => model.ListItems[0].CostCentreName)
                 </th>
 
-                <th >Available Actions</th>
+
+
+                <th>
+                    @Html.DisplayNameFor(model => model.ListItems[0].AmountTotal)
+                </th>
+
+                <th>Available Actions</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in Model.FinDiaryTransaction)
+            @foreach (var item in Model.ListItems)
             {
                 <tr>
                     <td class="text-right">
@@ -108,35 +125,53 @@
 </div>
 @{
 
-    var prevDisabled = !Model.FinDiaryTransaction.HasPrevious ? "disabled" : "";
-    var nextDisabled = !Model.FinDiaryTransaction.HasNext ? "disabled" : "";
+    var prevDisabled = !Model.ListItems.HasPrevious ? "disabled" : "";
+    var nextDisabled = !Model.ListItems.HasNext ? "disabled" : "";
 }
 
-<form class="form-inline" method="get">
-    Page Size:
-    <select asp-for="PageSize" onchange="this.form.submit()">
-        <option value="3">3</option>
-        <option value="5">5</option>
-        <option value="10">10</option>
-        <option value="20">20</option>
-        <option value="100">100</option>
-    </select>
+<form class="form-inline" name="PageSizeForm" method="get">
+  
     <a asp-page="./Index"
        asp-route-sortOrder="@Model.CurrentSort"
-       asp-route-pageIndex="@(Model.FinDiaryTransaction.CurrentPage - 1)"
-       asp-route-currentFilter="@Model.CurrentFilter"
+       asp-route-pageIndex="@(Model.ListItems.CurrentPage - 1)"
+       asp-route-searchFilter="@Model.CurrentFilter"
+       asp-route-datePeriodFilter="@Model.CurrentDatePeriod"
        asp-route-PageSize="@Model.PageSize"
        class="btn btn-light @prevDisabled">
         <
     </a>
-    Page:@Model.FinDiaryTransaction.CurrentPage of @Model.TotalPages Total Items @Model.TotalCount
+    Page:@Model.ListItems.CurrentPage of @Model.TotalPages Total Items @Model.TotalCount
     <a asp-page="./Index"
        asp-route-sortOrder="@Model.CurrentSort"
-       asp-route-pageIndex="@(Model.FinDiaryTransaction.CurrentPage + 1)"
-       asp-route-currentFilter="@Model.CurrentFilter"
+       asp-route-pageIndex="@(Model.ListItems.CurrentPage + 1)"
+       asp-route-searchFilter="@Model.CurrentFilter"
+       asp-route-datePeriodFilter="@Model.CurrentDatePeriod"
        asp-route-PageSize="@Model.PageSize"
        class="btn btn-light @nextDisabled">
         >
     </a>
 
 </form>
+@section Scripts {
+    <script>
+        //$(document).ready(function () { });
+        //var $pageSize = $('#PageSize');
+        //var $datePeriod = $('#CurrentDatePeriod');
+        //var $searchString = $('[name="SearchString"]');
+        //$pageSize.change((e) => {
+        //    console.log(e.tostring);
+        //    $('#searchFilter').val($searchString.val());
+        //    console.log("Parameter Search Filter is " + $searchString.val());
+        //    $('#datePeriodFilter').val($datePeriod.val());
+        //    console.log("Parameter datePeriodFilter is " + $datePeriod.val());
+        //    //$('#sortOrder').val();
+        //    console.log(this.toString());
+        //    console.log($(this).toString());
+        //    var $f = $('[name="PageSizeForm"]');
+        //    console.log($f.toString());
+        //    console.log('Form Data');
+        //    console.log($f.serialize().toString());
+        //    $f.submit();
+        //});
+    </script>
+}

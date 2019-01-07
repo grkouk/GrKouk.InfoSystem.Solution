@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using GrKouk.InfoSystem.Domain.Shared;
 using GrKouk.InfoSystem.Dtos.WebDtos.BuyMaterialsDocs;
 using GrKouk.WebRazor.Helpers;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using NToastNotify;
 
 namespace GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc
@@ -22,6 +24,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc
         public string DateSort { get; set; }
         public string DateSortIcon { get; set; }
         public string CurrentFilter { get; set; }
+        public string CurrentDatePeriod { get; set; }
         public string CurrentSort { get; set; }
         public int PageSize { get; set; }
         public int CurrentPageSize { get; set; }
@@ -36,8 +39,9 @@ namespace GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc
 
        
         public PagedList<BuyMaterialsDocListDto> ListItems { get; set; }
-        public async Task OnGetAsync(string sortOrder, string searchString, int? pageIndex, int? pageSize)
+        public async Task OnGetAsync(string sortOrder, string searchString, string datePeriodFilter, int? pageIndex, int? pageSize)
         {
+            LoadFilters();
             PageSize = (int)((pageSize == null || pageSize == 0) ? 20 : pageSize);
             CurrentPageSize = PageSize;
             CurrentSort = sortOrder;
@@ -53,8 +57,38 @@ namespace GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc
                 searchString = CurrentFilter;
             }
             CurrentFilter = searchString;
-
+            CurrentDatePeriod = datePeriodFilter;
             IQueryable<BuyMaterialsDocument> fullListIq = _context.BuyMaterialsDocuments;
+            DateTime fromDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+            DateTime toDate = DateTime.Now;
+            switch (datePeriodFilter)
+            {
+                case "CURMONTH":
+                    fromDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+                    toDate = DateTime.Now;
+                    break;
+                case "30DAYS":
+                    toDate = DateTime.Now;
+                    fromDate = toDate.AddDays(-30);
+                    break;
+                case "60DAYS":
+                    toDate = DateTime.Now;
+                    fromDate = toDate.AddDays(-60);
+                    break;
+                case "360DAYS":
+                    toDate = DateTime.Now;
+                    fromDate = toDate.AddDays(-360);
+                    break;
+                case "CURYEAR":
+                    break;
+                default:
+                    fromDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+                    toDate = DateTime.Now;
+                    CurrentDatePeriod = "CURMONTH";
+                    break;
+
+            }
+            fullListIq = fullListIq.Where(p => p.TransDate >= fromDate && p.TransDate <= toDate);
             if (!String.IsNullOrEmpty(searchString))
             {
                 fullListIq = fullListIq.Where(s => s.Supplier.Name.Contains(searchString));
@@ -90,6 +124,22 @@ namespace GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc
 
             ListItems = await PagedList<BuyMaterialsDocListDto>.CreateAsync(t, pageIndex ?? 1, PageSize);
            
+        }
+        private void LoadFilters()
+        {
+            List<SelectListItem> datePeriods = new List<SelectListItem>
+            {
+                new SelectListItem() {Value = "CURMONTH", Text = "Τρέχων Μήνας"},
+                new SelectListItem() {Value = "30DAYS", Text = "30 Ημέρες"},
+                new SelectListItem() {Value = "60DAYS", Text = "60 Ημέρες"},
+                new SelectListItem() {Value = "360DAYS", Text = "360 Ημέρες"},
+                new SelectListItem() {Value = "CURYEAR", Text = "Τρέχων Ετος"}
+
+            };
+
+
+
+            ViewData["DataFilterValues"] = new SelectList(datePeriods, "Value", "Text");
         }
     }
 }

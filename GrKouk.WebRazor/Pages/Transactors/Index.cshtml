@@ -16,12 +16,22 @@
 <form class="form-inline" asp-page="./Index" method="get">
     <p>
         Find by name:
-        <input type="text" name="SearchString" value="@Model.CurrentFilter" />
-        <input type="submit" value="Search" class="btn btn-light" /> |
+        <input class="form-control-sm" type="text" name="SearchString" value="@Model.CurrentFilter" />
+        <select name="TransactorTypeFilter" asp-for="CurrentTransactorTypeFilter" class="form-control-sm"  asp-items="ViewBag.TransactorTypeId"></select>
+        <input type="submit" value="Refresh" class="btn btn-light btn-sm" /> |
+        Page Size:
+        <select asp-for="PageSize" onchange="this.form.submit()" >
+            <option value="3">3</option>
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="20">20</option>
+            <option value="100">100</option>
+        </select>
+        |
         <a asp-page="./Index"
            asp-route-sortOrder="@Model.CurrentSort"
            asp-route-pageIndex="@(Model.ListItems.CurrentPage )"
-           asp-route-currentFilter="@Model.CurrentFilter"
+          asp-route-transactorTypeFilter="0"
            asp-route-PageSize="@Model.PageSize">Back to full List</a>
     </p>
 </form>
@@ -33,7 +43,8 @@
             </th>
             <th>
                 <a asp-page="./Index" asp-route-sortOrder="@Model.NameSort"
-                   asp-route-currentFilter="@Model.CurrentFilter"
+                   asp-route-searchString="@Model.CurrentFilter"
+                   asp-route-transactorTypeFilter="@Model.CurrentTransactorTypeFilter"
                    asp-route-PageSize="@Model.PageSize">
                     @Html.DisplayNameFor(model => model.ListItems[0].Name)
                 </a>
@@ -83,18 +94,12 @@
 
 
 <form class="form-inline" method="get">
-    Page Size:
-    <select asp-for="PageSize" onchange="this.form.submit()">
-        <option value="3">3</option>
-        <option value="5">5</option>
-        <option value="10">10</option>
-        <option value="20">20</option>
-        <option value="100">100</option>
-    </select>
+    
     <a asp-page="./Index"
        asp-route-sortOrder="@Model.CurrentSort"
        asp-route-pageIndex="@(Model.ListItems.CurrentPage - 1)"
-       asp-route-currentFilter="@Model.CurrentFilter"
+       asp-route-searchString="@Model.CurrentFilter"
+       asp-route-transactorTypeFilter="@Model.CurrentTransactorTypeFilter"
        asp-route-PageSize="@Model.PageSize"
        class="btn btn-light @prevDisabled">
         <
@@ -103,7 +108,8 @@
     <a asp-page="./Index"
        asp-route-sortOrder="@Model.CurrentSort"
        asp-route-pageIndex="@(Model.ListItems.CurrentPage + 1)"
-       asp-route-currentFilter="@Model.CurrentFilter"
+       asp-route-searchString="@Model.CurrentFilter"
+       asp-route-transactorTypeFilter="@Model.CurrentTransactorTypeFilter"
        asp-route-PageSize="@Model.PageSize"
        class="btn btn-light @nextDisabled">
         >

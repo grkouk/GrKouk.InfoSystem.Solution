@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using GrKouk.InfoSystem.Domain.Shared;
+using Microsoft.EntityFrameworkCore;
 using NToastNotify;
 
 namespace GrKouk.WebRazor.Pages.Transactors
@@ -21,7 +23,7 @@ namespace GrKouk.WebRazor.Pages.Transactors
 
         public IActionResult OnGet()
         {
-            ViewData["TransactorTypeId"] = new SelectList(_context.TransactorTypes, "Id", "Code");
+            ViewData["TransactorTypeId"] = new SelectList(_context.TransactorTypes.OrderBy(p=>p.Code).AsNoTracking(), "Id", "Code");
             return Page();
         }
 
