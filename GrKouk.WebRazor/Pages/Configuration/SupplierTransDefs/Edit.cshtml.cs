@@ -8,16 +8,19 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using GrKouk.InfoSystem.Domain.FinConfig;
 using GrKouk.WebApi.Data;
+using NToastNotify;
 
 namespace GrKouk.WebRazor.Pages.Configuration.SupplierTransDefs
 {
     public class EditModel : PageModel
     {
         private readonly GrKouk.WebApi.Data.ApiDbContext _context;
+        private readonly IToastNotification toastNotification;
 
-        public EditModel(GrKouk.WebApi.Data.ApiDbContext context)
+        public EditModel(GrKouk.WebApi.Data.ApiDbContext context, IToastNotification toastNotification)
         {
             _context = context;
+            this.toastNotification = toastNotification;
         }
 
         [BindProperty]
@@ -32,19 +35,54 @@ namespace GrKouk.WebRazor.Pages.Configuration.SupplierTransDefs
 
             TransSupplierDef = await _context.TransSupplierDefs
                 .Include(t => t.Company)
-                .Include(t => t.CreditTrans)
-                .Include(t => t.DebitTrans)
+               
                 .Include(t => t.TurnOverTrans).FirstOrDefaultAsync(m => m.Id == id);
 
             if (TransSupplierDef == null)
             {
                 return NotFound();
             }
-           ViewData["CompanyId"] = new SelectList(_context.Companies, "Id", "Code");
-           ViewData["CreditTransId"] = new SelectList(_context.FinancialMovements, "Id", "Code");
-           ViewData["DebitTransId"] = new SelectList(_context.FinancialMovements, "Id", "Code");
-           ViewData["TurnOverTransId"] = new SelectList(_context.FinancialMovements, "Id", "Code");
+            LoadCombos();
             return Page();
+        }
+
+        private void LoadCombos()
+        {
+            List<SelectListItem> financialTransTypes = new List<SelectListItem>
+            {
+                new SelectListItem()
+                {
+                    Value = FinancialTransTypeEnum.FinancialTransTypeNoChange.ToString(),
+                    Text = "No Change"
+                },
+                new SelectListItem()
+                {
+                    Value = FinancialTransTypeEnum.FinancialTransTypeDebit.ToString(),
+                    Text = "Debit"
+                },
+                new SelectListItem()
+                {
+                    Value = FinancialTransTypeEnum.FinancialTransTypeCredit.ToString(),
+                    Text = "Credit"
+                },
+
+                new SelectListItem()
+                {
+                    Value = FinancialTransTypeEnum.FinancialTransTypeNegativeDebit.ToString(),
+                    Text = "Neg.Debit"
+                },
+                new SelectListItem()
+                {
+                    Value = FinancialTransTypeEnum.FinancialTransTypeNegativeCredit.ToString(),
+                    Text = "Neg.Credit"
+                }
+            };
+            ViewData["FinancialTransTypes"] = new SelectList(financialTransTypes, "Value", "Text");
+            ViewData["CompanyId"] = new SelectList(_context.Companies.OrderBy(p => p.Code).AsNoTracking(), "Id", "Code");
+           // ViewData["CreditTransId"] = new SelectList(_context.FinancialMovements.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
+           // ViewData["DebitTransId"] = new SelectList(_context.FinancialMovements.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
+            ViewData["TurnOverTransId"] = new SelectList(_context.FinancialMovements.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
+            ViewData["TransSupplierDefaultDocSeriesId"] = new SelectList(_context.TransSupplierDocSeriesDefs.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
         }
 
         public async Task<IActionResult> OnPostAsync()
@@ -59,6 +97,7 @@ namespace GrKouk.WebRazor.Pages.Configuration.SupplierTransDefs
             try
             {
                 await _context.SaveChangesAsync();
+                toastNotification.AddSuccessToastMessage("Saved");
             }
             catch (DbUpdateConcurrencyException)
             {

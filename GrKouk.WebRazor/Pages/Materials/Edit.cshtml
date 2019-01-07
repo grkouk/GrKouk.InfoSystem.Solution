@@ -1,0 +1,124 @@
+﻿@page
+@model GrKouk.WebRazor.Pages.Materials.EditModel
+
+@{
+    ViewData["Title"] = "Material Edit";
+}
+
+<h2>Edit</h2>
+
+<h4>Material</h4>
+<hr />
+
+<div class="container">
+    <form method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="MaterialVm.Id" />
+        <input type="hidden" asp-for="MaterialVm.Timestamp" />
+        <div class="form-row">
+            <div class="form-group col-md-2">
+                <label asp-for="MaterialVm.Code" class="control-label small"></label>
+                <input asp-for="MaterialVm.Code" class="form-control form-control-sm small" />
+                <span asp-validation-for="MaterialVm.Code" class="text-danger small"></span>
+            </div>
+            <div class="form-group col-md-6">
+                <label asp-for="MaterialVm.Name" class="control-label small"></label>
+                <input asp-for="MaterialVm.Name" class="form-control form-control-sm small" />
+                <span asp-validation-for="MaterialVm.Name" class="text-danger small"></span>
+            </div>
+
+            <div class="form-group col-md-3">
+                <label asp-for="MaterialVm.MaterialNature" class="control-label small"></label>
+                <select asp-for="MaterialVm.MaterialNature" class="form-control form-control-sm small" asp-items="ViewBag.MaterialNatures"></select>
+                <span asp-validation-for="MaterialVm.MaterialNature" class="text-danger small"></span>
+            </div>
+            <div class="form-group col-md-1 ">
+                <label asp-for="MaterialVm.Active" class="small"></label>
+                <input asp-for="MaterialVm.Active" class="form-check form-control-sm" />
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-12">
+                <label asp-for="MaterialVm.ShortDescription" class="small"></label>
+                <textarea asp-for="MaterialVm.ShortDescription" class="form-control form-control-sm small" placeholder="Σύντομη Περιγραφή"> </textarea>
+                <span asp-validation-for="MaterialVm.ShortDescription" class="text-danger small"></span>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-12">
+                <label asp-for="MaterialVm.Description" class="small"></label>
+                <textarea asp-for="MaterialVm.Description" class="form-control form-control-sm small" placeholder="Περιγραφή"> </textarea>
+                <span asp-validation-for="MaterialVm.Description" class="text-danger small"></span>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-4">
+                <label asp-for="MaterialVm.MainMeasureUnitId" class="control-label small"></label>
+                <select asp-for="MaterialVm.MainMeasureUnitId" class="form-control form-control-sm small" asp-items="ViewBag.MainMeasureUnitId"></select>
+            </div>
+            <div class="form-group col-md-3">
+                <label asp-for="MaterialVm.SecondaryMeasureUnitId" class="control-label small"></label>
+                <select asp-for="MaterialVm.SecondaryMeasureUnitId" class="form-control form-control-sm small" asp-items="ViewBag.SecondaryMeasureUnitId"></select>
+            </div>
+            <div class="form-group col-md-1">
+                <label asp-for="MaterialVm.SecondaryUnitToMainRate" class="control-label small"></label>
+                <input asp-for="MaterialVm.SecondaryUnitToMainRate" class="form-control form-control-sm small" />
+                <span asp-validation-for="MaterialVm.SecondaryUnitToMainRate" class="text-danger small"></span>
+            </div>
+            <div class="form-group col-md-3">
+                <label asp-for="MaterialVm.BuyMeasureUnitId" class="control-label small"></label>
+                <select asp-for="MaterialVm.BuyMeasureUnitId" class="form-control form-control-sm small" asp-items="ViewBag.BuyMeasureUnitId"></select>
+            </div>
+            <div class="form-group col-md-1">
+                <label asp-for="MaterialVm.BuyUnitToMainRate" class="control-label small"></label>
+                <input asp-for="MaterialVm.BuyUnitToMainRate" class="form-control form-control-sm small" />
+                <span asp-validation-for="MaterialVm.BuyUnitToMainRate" class="text-danger small"></span>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-4">
+                <label asp-for="MaterialVm.FpaDefId" class="control-label small"></label>
+                <select asp-for="MaterialVm.FpaDefId" class="form-control form-control-sm small" asp-items="ViewBag.FpaDefId"></select>
+            </div>
+            <div class="form-group col-md-4">
+                <label asp-for="MaterialVm.BarCode" class="control-label small"></label>
+                <input asp-for="MaterialVm.BarCode" class="form-control form-control-sm small" />
+                <span asp-validation-for="MaterialVm.BarCode" class="text-danger small"></span>
+            </div>
+            <div class="form-group col-md-4">
+                <label asp-for="MaterialVm.ManufacturerCode" class="control-label small"></label>
+                <input asp-for="MaterialVm.ManufacturerCode" class="form-control form-control-sm small" />
+                <span asp-validation-for="MaterialVm.ManufacturerCode" class="text-danger small"></span>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-3">
+                <label asp-for="MaterialVm.MaterialType" class="control-label small"></label>
+                <select asp-for="MaterialVm.MaterialType" class="form-control form-control-sm small" asp-items="ViewBag.MaterialType"></select>
+                <span asp-validation-for="MaterialVm.MaterialType" class="text-danger small"></span>
+            </div>
+            <div class="form-group col-md-6">
+                <label asp-for="MaterialVm.MaterialCategoryId" class="control-label small"></label>
+                <select asp-for="MaterialVm.MaterialCategoryId" class="form-control form-control-sm small" asp-items="ViewBag.MaterialCategoryId"></select>
+            </div>
+
+            <div class="form-group col-md-3">
+                <label asp-for="MaterialVm.CompanyId" class="control-label small"></label>
+                <select asp-for="MaterialVm.CompanyId" class="form-control form-control-sm small" asp-items="ViewBag.CompanyId"></select>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <input type="submit" value="Update" class="btn btn-primary btn-sm" />
+            </div>
+        </div>
+    </form>
+</div>
+
+<div>
+    <a asp-page="./Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

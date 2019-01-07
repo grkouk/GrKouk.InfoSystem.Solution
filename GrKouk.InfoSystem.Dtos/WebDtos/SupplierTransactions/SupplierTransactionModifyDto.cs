@@ -15,8 +15,6 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.SupplierTransactions
 
         public int TransSupplierDocTypeId { get; set; }
 
-
-
         /// <summary>
         /// Αριθμός Παραστατικού
         /// </summary>
@@ -27,7 +25,6 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.SupplierTransactions
 
         public int SupplierId { get; set; }
 
-
         public int FiscalPeriodId { get; set; }
 
         /// <summary>
@@ -35,16 +32,23 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.SupplierTransactions
         /// </summary>
         public FinancialTransactionTypeEnum TransactionType { get; set; }
 
+        public FinancialTransTypeEnum TransactionAction { get; set; }
 
-
-        public int FpaDefId { get; set; }
+        [Display(Name = "VAT%")]
         public Single FpaRate { get; set; }
         [DataType(DataType.Currency)]
+        [Display(Name = "VAT Amount")]
         public decimal AmountFpa { get; set; }
         [DataType(DataType.Currency)]
+        [Display(Name = "Net Amount")]
         public decimal AmountNet { get; set; }
         [DataType(DataType.Currency)]
+        [Display(Name = "Discount Amount")]
         public decimal AmountDiscount { get; set; }
+        [DisplayFormat(DataFormatString = "{0:C}")]
+        [Display(Name = "Sum Amount")]
+        public decimal AmountSum => (AmountNet + AmountFpa - AmountDiscount);
+
         [MaxLength(500)]
         public string Etiology { get; set; }
 

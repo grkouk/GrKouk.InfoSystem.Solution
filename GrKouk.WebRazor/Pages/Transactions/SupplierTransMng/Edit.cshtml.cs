@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using GrKouk.InfoSystem.Domain.FinConfig;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -8,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using GrKouk.InfoSystem.Domain.Shared;
 using GrKouk.InfoSystem.Dtos.WebDtos.SupplierTransactions;
 using NToastNotify;
+using static GrKouk.InfoSystem.Domain.FinConfig.FinancialTransactionTypeEnum;
 
 namespace GrKouk.WebRazor.Pages.Transactions.SupplierTransMng
 {
@@ -19,6 +21,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.SupplierTransMng
         private readonly IMapper _mapper;
         private readonly IToastNotification _toastNotification;
         public bool NotUpdatable;
+        public bool InitialLoad = true;
         public EditModel(GrKouk.WebApi.Data.ApiDbContext context, IMapper mapper, IToastNotification toastNotification)
         {
             _context = context;
@@ -27,7 +30,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.SupplierTransMng
         }
 
         [BindProperty]
-        public SupplierTransactionModifyDto SupplierTransactionVm { get; set; }
+        public SupplierTransactionModifyDto ItemVm { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -39,7 +42,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.SupplierTransMng
            var  supplierTransactionToModify = await _context.SupplierTransactions
                 .Include(s => s.Company)
                 .Include(s => s.FiscalPeriod)
-                .Include(s => s.FpaDef)
+              
                 .Include(s => s.Section)
                 .Include(s => s.Supplier)
                 .Include(s => s.TransSupplierDocSeries)
@@ -58,8 +61,8 @@ namespace GrKouk.WebRazor.Pages.Transactions.SupplierTransMng
             //If section is not our section the canot update disable input controls
             NotUpdatable = supplierTransactionToModify.SectionId != section.Id;
 
-            SupplierTransactionVm = _mapper.Map<SupplierTransactionModifyDto>(supplierTransactionToModify);
-            LoadCompbos();
+            ItemVm = _mapper.Map<SupplierTransactionModifyDto>(supplierTransactionToModify);
+            LoadCombos();
             return Page();
         }
 
@@ -67,18 +70,33 @@ namespace GrKouk.WebRazor.Pages.Transactions.SupplierTransMng
         {
             if (!ModelState.IsValid)
             {
-                LoadCompbos();
+                LoadCombos();
                 return Page();
             }
-
-            var spTransactionToAttach = _mapper.Map<SupplierTransaction>(SupplierTransactionVm);
-
+            if (ItemVm.FiscalPeriodId <= 0)
+            {
+                ModelState.AddModelError(string.Empty, "No Fiscal Period covers Transaction Date");
+                LoadCombos();
+                return Page();
+            }
+            var spTransactionToAttach = _mapper.Map<SupplierTransaction>(ItemVm);
+            #region Fiscal Period
+            //var dateOfTrans = ItemVm.TransDate;
+            //var fiscalPeriod = await _context.FiscalPeriods.FirstOrDefaultAsync(p =>
+            //    p.StartDate.CompareTo(dateOfTrans) > 0 & p.EndDate.CompareTo(dateOfTrans) < 0);
+            //if (fiscalPeriod == null)
+            //{
+            //    ModelState.AddModelError(string.Empty, "No Fiscal Period covers Transaction Date");
+            //    LoadCombos();
+            //    return Page();
+            //}
+            #endregion
             var docSeries = _context.TransSupplierDocSeriesDefs.SingleOrDefault(m => m.Id == spTransactionToAttach.TransSupplierDocSeriesId);
 
             if (docSeries is null)
             {
                 ModelState.AddModelError(string.Empty, "Δεν βρέθηκε η σειρά παραστατικού");
-                LoadCompbos();
+                LoadCombos();
                 return Page();
             }
             _context.Entry(docSeries).Reference(t => t.TransSupplierDocTypeDef).Load();
@@ -88,59 +106,38 @@ namespace GrKouk.WebRazor.Pages.Transactions.SupplierTransMng
                 .Reference(t => t.TransSupplierDef)
                 .Load();
             var transSupplierDef = docTypeDef.TransSupplierDef;
-            _context.Entry(transSupplierDef)
-                .Reference(t => t.CreditTrans)
-                .Load();
-
-            _context.Entry(transSupplierDef)
-                .Reference(t => t.DebitTrans)
-                .Load();
-            var creditTrans = transSupplierDef.CreditTrans;
-            var debitTrans = transSupplierDef.DebitTrans;
-
-            //var section = _context.Sections.SingleOrDefault(s => s.SystemName == SupplierTransSectionCode);
-            //if (section == null)
-            //{
-
-            //    ModelState.AddModelError(string.Empty, "Δεν υπάρχει το Section");
-            //    LoadCompbos();
-            //    return Page();
-            //}
+           
 
             //spTransaction.SectionId = section.Id;
             spTransactionToAttach.TransSupplierDocTypeId = docSeries.TransSupplierDocTypeDefId;
-           // spTransaction.FiscalPeriodId = 1;
-
-            if (creditTrans.Action == "=" && debitTrans.Action != "=")
+            spTransactionToAttach.FinancialAction = transSupplierDef.FinancialTransType;
+            switch (transSupplierDef.FinancialTransType)
             {
-                spTransactionToAttach.TransactionType = InfoSystem.Domain.FinConfig.FinancialTransactionTypeEnum.FinancialTransactionTypeDebit;
-                switch (debitTrans.Action)
-                {
-                    case "+":
-
-                        break;
-                    case "-":
-                        spTransactionToAttach.AmountNet = spTransactionToAttach.AmountNet * -1;
-                        spTransactionToAttach.AmountFpa = spTransactionToAttach.AmountFpa * -1;
-                        spTransactionToAttach.AmountDiscount = spTransactionToAttach.AmountDiscount * -1;
-                        break;
-                }
+                case InfoSystem.Domain.FinConfig.FinancialTransTypeEnum.FinancialTransTypeNoChange:
+                    spTransactionToAttach.TransactionType = FinancialTransactionTypeIgnore;
+                    break;
+                case InfoSystem.Domain.FinConfig.FinancialTransTypeEnum.FinancialTransTypeDebit:
+                    spTransactionToAttach.TransactionType = FinancialTransactionTypeDebit;
+                    break;
+                case InfoSystem.Domain.FinConfig.FinancialTransTypeEnum.FinancialTransTypeCredit:
+                    spTransactionToAttach.TransactionType = FinancialTransactionTypeCredit;
+                    break;
+                case InfoSystem.Domain.FinConfig.FinancialTransTypeEnum.FinancialTransTypeNegativeDebit:
+                    spTransactionToAttach.TransactionType = FinancialTransactionTypeDebit;
+                    spTransactionToAttach.AmountNet = spTransactionToAttach.AmountNet * -1;
+                    spTransactionToAttach.AmountFpa = spTransactionToAttach.AmountFpa * -1;
+                    spTransactionToAttach.AmountDiscount = spTransactionToAttach.AmountDiscount * -1;
+                    break;
+                case InfoSystem.Domain.FinConfig.FinancialTransTypeEnum.FinancialTransTypeNegativeCredit:
+                    spTransactionToAttach.TransactionType = FinancialTransactionTypeCredit;
+                    spTransactionToAttach.AmountNet = spTransactionToAttach.AmountNet * -1;
+                    spTransactionToAttach.AmountFpa = spTransactionToAttach.AmountFpa * -1;
+                    spTransactionToAttach.AmountDiscount = spTransactionToAttach.AmountDiscount * -1;
+                    break;
+                default:
+                    break;
             }
-            else if (creditTrans.Action != "=" && debitTrans.Action == "=")
-            {
-                spTransactionToAttach.TransactionType = InfoSystem.Domain.FinConfig.FinancialTransactionTypeEnum.FinancialTransactionTypeCredit;
-                switch (creditTrans.Action)
-                {
-                    case "+":
-
-                        break;
-                    case "-":
-                        spTransactionToAttach.AmountNet = spTransactionToAttach.AmountNet * -1;
-                        spTransactionToAttach.AmountFpa = spTransactionToAttach.AmountFpa * -1;
-                        spTransactionToAttach.AmountDiscount = spTransactionToAttach.AmountDiscount * -1;
-                        break;
-                }
-            }
+           
 
             _context.Attach(spTransactionToAttach).State = EntityState.Modified;
 
@@ -150,7 +147,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.SupplierTransMng
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!SupplierTransactionExists(SupplierTransactionVm.Id))
+                if (!SupplierTransactionExists(ItemVm.Id))
                 {
                     return NotFound();
                 }
@@ -167,7 +164,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.SupplierTransMng
         {
             return _context.SupplierTransactions.Any(e => e.Id == id);
         }
-        private void LoadCompbos()
+        private void LoadCombos()
         {
             var supplierList = _context.Transactors.Where(s => s.TransactorType.Code == "SYS.SUPPLIER").OrderBy(s => s.Name).AsNoTracking();
             ViewData["CompanyId"] = new SelectList(_context.Companies.OrderBy(c => c.Code).AsNoTracking(), "Id", "Code");

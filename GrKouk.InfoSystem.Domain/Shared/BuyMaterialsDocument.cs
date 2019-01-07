@@ -11,26 +11,26 @@ namespace GrKouk.InfoSystem.Domain.Shared
         private ICollection<BuyMaterialsDocLine> _buyDocLines;
 
         public int Id { get; set; }
-
+        [Required]
         [DataType(DataType.Date)]
         public DateTime TransDate { get; set; }
         /// <summary>
         /// Αριθμός Παραστατικού
         /// </summary>
         public string TransRefCode { get; set; }
-
+        [Required]
         public int SectionId { get; set; }
         public virtual Section Section { get; set; }
-
+        [Required]
         public int SupplierId { get; set; }
         public virtual Transactor Supplier { get; set; }
 
         public int FiscalPeriodId { get; set; }
         public virtual FiscalPeriod FiscalPeriod { get; set; }
-
+        [Required]
         public int MaterialDocSeriesId { get; set; }
         public virtual BuyMaterialDocSeriesDef MaterialDocSeries { get; set; }
-
+        [Required]
         public int MaterialDocTypeId { get; set; }
         public virtual BuyMaterialDocTypeDef MaterialDocType { get; set; }
 
@@ -40,11 +40,10 @@ namespace GrKouk.InfoSystem.Domain.Shared
 
         [MaxLength(500)]
         public string Etiology { get; set; }
+
+        [Required]
         public int CompanyId { get; set; }
         public virtual Company Company { get; set; }
-
-
-
         [Timestamp]
         public byte[] Timestamp { get; set; }
         public virtual ICollection<BuyMaterialsDocLine> BuyDocLines

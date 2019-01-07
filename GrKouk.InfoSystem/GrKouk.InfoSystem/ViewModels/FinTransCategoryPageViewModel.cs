@@ -24,7 +24,19 @@ namespace GrKouk.InfoSystem.ViewModels
             //_navigationService = navigationService;
             _dialogService = dialogService;
             _itemsDs = itemsDs;
+            Title = "Εισαγωγή Κατηγορίας";
         }
+
+        #region IsBusy
+
+        private bool _isBusy = false;
+        public bool IsBusy
+        {
+            get => _isBusy;
+            set => SetProperty(ref _isBusy, value);
+        }
+
+        #endregion
         #region Save Command
         private DelegateCommand _saveCommand;
         public DelegateCommand SaveCommand =>
@@ -59,6 +71,7 @@ namespace GrKouk.InfoSystem.ViewModels
 
         }
         #endregion
+       
         #region Data Bind Properties
         private string _code;
         public string Code

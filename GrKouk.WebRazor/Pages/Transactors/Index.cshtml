@@ -2,39 +2,60 @@
 @model GrKouk.WebRazor.Pages.Transactors.IndexModel
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Transactors List";
 }
 
 <h2>Συναλλασόμενοι</h2>
 
 <p>
-    <a asp-page="Create">Create New</a>
+    <a asp-page="Create" asp-route-sortOrder="@Model.CurrentSort"
+       asp-route-pageIndex="@(Model.ListItems.CurrentPage )"
+       asp-route-currentFilter="@Model.CurrentFilter"
+       asp-route-PageSize="@Model.PageSize">Create New</a>
 </p>
 <form class="form-inline" asp-page="./Index" method="get">
-
     <p>
         Find by name:
-        <input type="text" name="SearchString" value="@Model.CurrentFilter" />
-        <input type="submit" value="Search" class="btn btn-light" /> |
-        <a asp-page="./Index">Back to full List</a>
-
+        <input class="form-control-sm" type="text" name="SearchString" value="@Model.CurrentFilter" />
+        <select name="TransactorTypeFilter" asp-for="CurrentTransactorTypeFilter" class="form-control-sm"  asp-items="ViewBag.TransactorTypeId"></select>
+        <input type="submit" value="Refresh" class="btn btn-light btn-sm" /> |
+        Page Size:
+        <select asp-for="PageSize" onchange="this.form.submit()" >
+            <option value="3">3</option>
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="20">20</option>
+            <option value="100">100</option>
+        </select>
+        |
+        <a asp-page="./Index"
+           asp-route-sortOrder="@Model.CurrentSort"
+           asp-route-pageIndex="@(Model.ListItems.CurrentPage )"
+          asp-route-transactorTypeFilter="0"
+           asp-route-PageSize="@Model.PageSize">Back to full List</a>
     </p>
-
 </form>
-<table class="table-responsive-sm">
+<table class="table table-bordered table-sm">
     <thead>
         <tr>
             <th>
                 @Html.DisplayNameFor(model => model.ListItems[0].Code)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ListItems[0].Name)
+                <a asp-page="./Index" asp-route-sortOrder="@Model.NameSort"
+                   asp-route-searchString="@Model.CurrentFilter"
+                   asp-route-transactorTypeFilter="@Model.CurrentTransactorTypeFilter"
+                   asp-route-PageSize="@Model.PageSize">
+                    @Html.DisplayNameFor(model => model.ListItems[0].Name)
+                </a>
+                <i class="@Model.NameSortIcon"></i>
             </th>
+
             <th>
                 @Html.DisplayNameFor(model => model.ListItems[0].EMail)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ListItems[0].TransactorTypeCode )
+                @Html.DisplayNameFor(model => model.ListItems[0].TransactorTypeCode)
             </th>
 
             <th></th>
@@ -73,18 +94,12 @@
 
 
 <form class="form-inline" method="get">
-    Page Size:
-    <select asp-for="PageSize" onchange="this.form.submit()">
-        <option value="3">3</option>
-        <option value="5">5</option>
-        <option value="10">10</option>
-        <option value="20">20</option>
-        <option value="100">100</option>
-    </select>
+    
     <a asp-page="./Index"
        asp-route-sortOrder="@Model.CurrentSort"
        asp-route-pageIndex="@(Model.ListItems.CurrentPage - 1)"
-       asp-route-currentFilter="@Model.CurrentFilter"
+       asp-route-searchString="@Model.CurrentFilter"
+       asp-route-transactorTypeFilter="@Model.CurrentTransactorTypeFilter"
        asp-route-PageSize="@Model.PageSize"
        class="btn btn-light @prevDisabled">
         <
@@ -93,7 +108,8 @@
     <a asp-page="./Index"
        asp-route-sortOrder="@Model.CurrentSort"
        asp-route-pageIndex="@(Model.ListItems.CurrentPage + 1)"
-       asp-route-currentFilter="@Model.CurrentFilter"
+       asp-route-searchString="@Model.CurrentFilter"
+       asp-route-transactorTypeFilter="@Model.CurrentTransactorTypeFilter"
        asp-route-PageSize="@Model.PageSize"
        class="btn btn-light @nextDisabled">
         >

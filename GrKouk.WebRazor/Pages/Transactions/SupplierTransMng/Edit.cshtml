@@ -1,6 +1,7 @@
 ﻿@page
 @model GrKouk.WebRazor.Pages.Transactions.SupplierTransMng.EditModel
-
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
 @{
     ViewData["Title"] = "Edit";
     var formDisabled = Model.NotUpdatable ? "disabled" : "";
@@ -22,87 +23,91 @@
     }
 }
 
-<h4>SupplierTransaction</h4>
+<h4>Supplier Transaction</h4>
 <hr />
 <div class="container">
 
     <form method="post">
         <fieldset @formDisabled>
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="SupplierTransactionVm.Id" />
-            <input type="hidden" asp-for="SupplierTransactionVm.Timestamp" />
-            <input type="hidden" asp-for="SupplierTransactionVm.SectionId" />
-            <input type="hidden" asp-for="SupplierTransactionVm.TransSupplierDocTypeId" />
+            <input type="hidden" asp-for="ItemVm.Id" />
+            <input type="hidden" asp-for="ItemVm.Timestamp" />
+            <input type="hidden" asp-for="ItemVm.SectionId" />
+            <input type="hidden" asp-for="ItemVm.TransSupplierDocTypeId" />
+            <input type="hidden" asp-for="@Model.InitialLoad" id="IsInitialLoad" />
             <div class="form-row">
                 <div class="form-group col-md-3">
-                    <label asp-for="SupplierTransactionVm.TransDate"></label>
-                    <input asp-for="SupplierTransactionVm.TransDate" class="form-control" />
-                    <span asp-validation-for="SupplierTransactionVm.TransDate" class="text-danger"></span>
+                    <label asp-for="ItemVm.TransDate" class="small"></label>
+                    <input asp-for="ItemVm.TransDate" class="form-control form-control-sm small" autofocus />
+                    <span asp-validation-for="ItemVm.TransDate" class="text-danger"></span>
                 </div>
                 <div class="form-group col-md-6">
-                    <label asp-for="SupplierTransactionVm.TransSupplierDocSeriesId"></label>
-                    <select asp-for="SupplierTransactionVm.TransSupplierDocSeriesId" class="form-control" asp-items="ViewBag.TransSupplierDocSeriesId"></select>
+                    <label asp-for="ItemVm.TransSupplierDocSeriesId" class="small"></label>
+                    <select asp-for="ItemVm.TransSupplierDocSeriesId" class="form-control form-control-sm small" asp-items="ViewBag.TransSupplierDocSeriesId"></select>
                 </div>
 
                 <div class="form-group col-md-3">
-                    <label asp-for="SupplierTransactionVm.TransRefCode"></label>
-                    <input asp-for="SupplierTransactionVm.TransRefCode" class="form-control" />
-                    <span asp-validation-for="SupplierTransactionVm.TransRefCode" class="text-danger"></span>
+                    <label asp-for="ItemVm.TransRefCode" class="small"></label>
+                    <input asp-for="ItemVm.TransRefCode" class="form-control form-control-sm small" />
+                    <span asp-validation-for="ItemVm.TransRefCode" class="text-danger"></span>
                 </div>
 
             </div>
             <div class="form-row">
                 <div class="form-group col-md-6">
-                    <label asp-for="SupplierTransactionVm.SupplierId"></label>
-                    <select asp-for="SupplierTransactionVm.SupplierId" class="form-control" asp-items="ViewBag.SupplierId"></select>
+                    <label asp-for="ItemVm.SupplierId" class="small"></label>
+                    <select asp-for="ItemVm.SupplierId" class="form-control form-control-sm small" asp-items="ViewBag.SupplierId"></select>
                 </div>
                 <div class="form-group col-md-3">
-                    <label asp-for="SupplierTransactionVm.FiscalPeriodId"></label>
-                    <select asp-for="SupplierTransactionVm.FiscalPeriodId" class="form-control" asp-items="ViewBag.FiscalPeriodId"></select>
+                    <label asp-for="ItemVm.FiscalPeriodId" class="small"></label>
+                    <select asp-for="ItemVm.FiscalPeriodId" class="form-control form-control-sm small" asp-items="ViewBag.FiscalPeriodId" readonly></select>
                 </div>
                 <div class="form-group col-md-3">
-                    <label asp-for="SupplierTransactionVm.CompanyId"></label>
-                    <select asp-for="SupplierTransactionVm.CompanyId" class="form-control" asp-items="ViewBag.CompanyId"></select>
+                    <label asp-for="ItemVm.CompanyId" class="small"></label>
+                    <select asp-for="ItemVm.CompanyId" class="form-control form-control-sm small" asp-items="ViewBag.CompanyId"></select>
                 </div>
             </div>
+
             <div class="form-row">
-                <div class="form-group col-md-5">
-                    <label asp-for="SupplierTransactionVm.FpaDefId"></label>
-                    <select asp-for="SupplierTransactionVm.FpaDefId" class="form-control" asp-items="ViewBag.FpaDefId"></select>
+                <div class="form-group col-md-1">
+                    <label asp-for="ItemVm.FpaRate" class="small"></label>
+                    <input asp-for="ItemVm.FpaRate" class="form-control form-control-sm small" />
+                    <span asp-validation-for="ItemVm.FpaRate" class="text-danger"></span>
                 </div>
-                <div class="form-group col-md-3">
-                    <label asp-for="SupplierTransactionVm.FpaRate"></label>
-                    <input asp-for="SupplierTransactionVm.FpaRate" class="form-control" />
-                    <span asp-validation-for="SupplierTransactionVm.FpaRate" class="text-danger"></span>
+                <div class="form-group col-md-2">
+                    <label asp-for="ItemVm.AmountNet" class="small"></label>
+                    <input asp-for="ItemVm.AmountNet" class="form-control form-control-sm small" />
+                    <span asp-validation-for="ItemVm.AmountNet" class="text-danger"></span>
                 </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group col-md-4">
-                    <label asp-for="SupplierTransactionVm.AmountFpa"></label>
-                    <input asp-for="SupplierTransactionVm.AmountFpa" class="form-control" />
-                    <span asp-validation-for="SupplierTransactionVm.AmountFpa" class="text-danger"></span>
+                <div class="form-group col-md-2">
+                    <label asp-for="ItemVm.AmountFpa" class="small"></label>
+                    <input asp-for="ItemVm.AmountFpa" class="form-control form-control-sm small" />
+                    <span asp-validation-for="ItemVm.AmountFpa" class="text-danger"></span>
                 </div>
-                <div class="form-group col-md-4">
-                    <label asp-for="SupplierTransactionVm.AmountNet"></label>
-                    <input asp-for="SupplierTransactionVm.AmountNet" class="form-control" />
-                    <span asp-validation-for="SupplierTransactionVm.AmountNet" class="text-danger"></span>
+                <div class="form-group col-md-2">
+                    <label asp-for="ItemVm.AmountDiscount" class="small"></label>
+                    <input asp-for="ItemVm.AmountDiscount" class="form-control form-control-sm small" />
+                    <span asp-validation-for="ItemVm.AmountDiscount" class="text-danger"></span>
                 </div>
-                <div class="form-group col-md-4">
-                    <label asp-for="SupplierTransactionVm.AmountDiscount"></label>
-                    <input asp-for="SupplierTransactionVm.AmountDiscount" class="form-control" />
-                    <span asp-validation-for="SupplierTransactionVm.AmountDiscount" class="text-danger"></span>
+
+                <div class="form-group col-md-2">
+                    <label asp-for="ItemVm.AmountSum" class="small">Sum</label>
+                    <input asp-for="ItemVm.AmountSum" class="form-control form-control-sm small" disabled />
+
                 </div>
+
+
             </div>
             <div class="form-row">
                 <div class="form-group col-md-12">
-                    <label asp-for="SupplierTransactionVm.Etiology"></label>
-                    <textarea asp-for="SupplierTransactionVm.Etiology" class="form-control" placeholder="Αιτιολογία Κίνησης"> </textarea>
-                    <span asp-validation-for="SupplierTransactionVm.Etiology" class="text-danger"></span>
+                    <label asp-for="ItemVm.Etiology" class="small"></label>
+                    <textarea asp-for="ItemVm.Etiology" class="form-control form-control-sm small" placeholder="Αιτιολογία Κίνησης"> </textarea>
+                    <span asp-validation-for="ItemVm.Etiology" class="text-danger"></span>
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group">
-                    <input type="submit" value="Update" class="btn btn-primary" />
+                    <input type="submit" value="Update" class="btn btn-primary btn-sm" />
                 </div>
             </div>
         </fieldset>
@@ -121,24 +126,98 @@
     <script>
         $(document).ready(function () {
             console.log("Inside Document ready");
+            var $initialLoad = $('#IsInitialLoad');
 
-            $('#SupplierTransactionDto_AmountFpa').change((event) => {
-                //console.log(event.toString());
-               // console.log("Inside Fpa Change");
+
+
+            var $transDate = $('#ItemVm_TransDate');
+            var $amountNet = $('#ItemVm_AmountNet');
+            var $amountFpa = $('#ItemVm_AmountFpa');
+            var $amountDic = $('#ItemVm_AmountDiscount');
+            var $fpaRate = $('#ItemVm_FpaRate');
+            var $amountSum = $('#ItemVm_AmountSum');
+            var $fiscalPeriod = $('#ItemVm_FiscalPeriodId');
+            var fiscalPeriodDom = document.getElementById("ItemVm_FiscalPeriodId");
+            console.log('AMount Net ' + $amountNet.val());
+            console.log('AMount Fpa ' + $amountFpa.val());
+            console.log('AMount Discount ' + $amountDic.val());
+            console.log('Fpa Rate ' + $fpaRate.val());
+            var calculateAmounts = () => {
+                console.log("Calculate Values called");
+
+                var fpaRate = parseFloat($fpaRate.val());
+                var amountNet = parseFloat($amountNet.val());
+                var amountDic = parseFloat($amountDic.val());
+                var amountForFpa = amountNet - amountDic;
+                var amountFpa = amountForFpa * fpaRate;
+
+                $amountFpa.val(amountFpa);
+
+                $amountSum.val(amountNet + amountFpa - amountDic);
+            };
+
+            var transactionDataChanged = () => {
+                console.log("Inside transDate Changed");
+
+                var forDate = $transDate.val();
+                var uri = '@Configuration.GetSection("WebApiSettings")["WebApiLocal"]';
+                var finalUri = `${uri}/materials/FiscalPeriod?forDate=${forDate}`;
+                fetch(finalUri)
+                    .then(function(response) {
+                        if (response.ok) {
+                            return response.json();
+                        } else {
+                            return "-1";
+                        }
+
+                    })
+                    .then(function(myJson) {
+                        console.log("Inside fetch then with myJson" + JSON.stringify(myJson));
+                        if (myJson) {
+
+                            var fiscalPeriodId = myJson.periodId;
+                            console.log("Returned PeriodId=" + fiscalPeriodId);
+                            //var fId = parseInt(fiscalPeriodId);
+                            //$fiscalPeriod.val(fiscalPeriodId).trigger("chosen:updated");
+                            fiscalPeriodDom.value = fiscalPeriodId;
+
+                        }
+                        // $spinner.attr('hidden', true);
+                    })
+                    .catch((error) => {
+                            // $spinner.attr('hidden', true);
+                            console.log(error);
+                        }
+                    );
+            };
+            $transDate.change(() => {
+                transactionDataChanged();
             });
-            // $('#SupplierTransactionDto_AmountFpa').val("10");
+            $fpaRate.change((event) => {
+                console.log("Inside Fpa Rate Change");
+                calculateAmounts();
+            });
+            $amountNet.change((event) => {
+                console.log("Inside Net Amount Change");
+                calculateAmounts();
+            });
 
-            // $('#SupplierTransactionDto_TransDate').val(new Date().toISOString().slice(0, 10));
+            $amountDic.change((event) => {
+                console.log("Inside Discount Amount Change");
+                calculateAmounts();
+            });
 
-            //$.validator.methods.date = function (value, element) {
-            //    if (element.type === "date") {
-            //        value = new Date(value).toLocaleDateString();
-            //    }
-            //    val = Globalize.parseDate(value,
-            //        $.validator.methods.dateGlobalizeOptions.dateParseFormat);
-            //    return this.optional(element) || !/Invalid|NaN/.test(new Date(val).toString());
-            //};
+            //if (!$initialLoad.val()) {
+            //    console.log("Inside Initial values");
+            //    $fpaRate.val(0);
+            //    $amountDic.val(0);
+            //    $amountFpa.val(0);
+            //    $amountNet.val(0);
 
+            //    $('#ItemVm_TransDate').val(new Date().toISOString().slice(0, 10));
+            //}
+
+            $initialLoad.val(false);
         });
 
 

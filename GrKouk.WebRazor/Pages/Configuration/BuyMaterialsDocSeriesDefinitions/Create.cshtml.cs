@@ -7,23 +7,32 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using GrKouk.InfoSystem.Domain.FinConfig;
 using GrKouk.WebApi.Data;
+using Microsoft.EntityFrameworkCore;
+using NToastNotify;
 
 namespace GrKouk.WebRazor.Pages.Configuration.BuyMaterialsDocSeriesDefinitions
 {
     public class CreateModel : PageModel
     {
         private readonly GrKouk.WebApi.Data.ApiDbContext _context;
+        private readonly IToastNotification _toastNotification;
 
-        public CreateModel(GrKouk.WebApi.Data.ApiDbContext context)
+        public CreateModel(GrKouk.WebApi.Data.ApiDbContext context, IToastNotification toastNotification)
         {
             _context = context;
+            this._toastNotification = toastNotification;
         }
 
         public IActionResult OnGet()
         {
-        ViewData["BuyMaterialDocTypeDefId"] = new SelectList(_context.BuyMaterialDocTypeDefs, "Id", "Code");
-        ViewData["CompanyId"] = new SelectList(_context.Companies, "Id", "Code");
+            LoadCombos();
             return Page();
+        }
+
+        private void LoadCombos()
+        {
+            ViewData["BuyMaterialDocTypeDefId"] = new SelectList(_context.BuyMaterialDocTypeDefs.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
+            ViewData["CompanyId"] = new SelectList(_context.Companies.OrderBy(p => p.Code).AsNoTracking(), "Id", "Code");
         }
 
         [BindProperty]
@@ -38,7 +47,7 @@ namespace GrKouk.WebRazor.Pages.Configuration.BuyMaterialsDocSeriesDefinitions
 
             _context.BuyMaterialDocSeriesDefs.Add(BuyMaterialDocSeriesDef);
             await _context.SaveChangesAsync();
-
+            _toastNotification.AddInfoToastMessage("Saved");
             return RedirectToPage("./Index");
         }
     }

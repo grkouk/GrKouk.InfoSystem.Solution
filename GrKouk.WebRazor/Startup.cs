@@ -48,7 +48,7 @@ namespace GrKouk.WebRazor
                 .AddDefaultTokenProviders()
                 .AddEntityFrameworkStores<SecurityDbContext>();
 
-            
+
             services.AddLocalization(o =>
             {
                 // We will put our translations in a folder called Resources
@@ -59,9 +59,18 @@ namespace GrKouk.WebRazor
                 .AddNToastNotifyToastr(new ToastrOptions()
                 {
                     ProgressBar = true,
-                    PositionClass = ToastPositions.BottomRight
-                    
+                    PositionClass = ToastPositions.BottomRight,
+                    TimeOut=5000,
+                    ExtendedTimeOut=1000
                 })
+
+                //.AddNToastNotifyNoty(new NotyOptions()
+                //{
+                //    ProgressBar = true,
+                //    Timeout = 5000,
+                //    Layout = "bottomRight",
+                //    Theme = "bootstrap-v4"
+                //})
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddAutoMapper(cfg =>
             {

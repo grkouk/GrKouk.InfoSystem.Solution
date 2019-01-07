@@ -8,16 +8,19 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using GrKouk.InfoSystem.Domain.FinConfig;
 using GrKouk.WebApi.Data;
+using NToastNotify;
 
 namespace GrKouk.WebRazor.Pages.Configuration.BuyMaterialsDocSeriesDefinitions
 {
     public class EditModel : PageModel
     {
         private readonly GrKouk.WebApi.Data.ApiDbContext _context;
+        private readonly IToastNotification toastNotification;
 
-        public EditModel(GrKouk.WebApi.Data.ApiDbContext context)
+        public EditModel(GrKouk.WebApi.Data.ApiDbContext context, IToastNotification toastNotification)
         {
             _context = context;
+            this.toastNotification = toastNotification;
         }
 
         [BindProperty]
@@ -38,9 +41,14 @@ namespace GrKouk.WebRazor.Pages.Configuration.BuyMaterialsDocSeriesDefinitions
             {
                 return NotFound();
             }
-           ViewData["BuyMaterialDocTypeDefId"] = new SelectList(_context.BuyMaterialDocTypeDefs, "Id", "Code");
-           ViewData["CompanyId"] = new SelectList(_context.Companies, "Id", "Code");
+            LoadCompbos();
             return Page();
+        }
+
+        private void LoadCompbos()
+        {
+            ViewData["BuyMaterialDocTypeDefId"] = new SelectList(_context.BuyMaterialDocTypeDefs.OrderBy(p=>p.Name).AsNoTracking(), "Id", "Name");
+            ViewData["CompanyId"] = new SelectList(_context.Companies.OrderBy(p => p.Code).AsNoTracking(), "Id", "Code");
         }
 
         public async Task<IActionResult> OnPostAsync()
@@ -55,6 +63,7 @@ namespace GrKouk.WebRazor.Pages.Configuration.BuyMaterialsDocSeriesDefinitions
             try
             {
                 await _context.SaveChangesAsync();
+                toastNotification.AddSuccessToastMessage("Saved");
             }
             catch (DbUpdateConcurrencyException)
             {

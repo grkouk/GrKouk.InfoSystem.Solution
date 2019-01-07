@@ -23,17 +23,17 @@ namespace GrKouk.InfoSystem.Domain.Shared
         public bool Active { get; set; }
 
         [Display(Name = "Βασική Μονάδα Μέτρησης")]
-        public int? MainMeasureUnitId { get; set; }
+        public int MainMeasureUnitId { get; set; }
         public virtual MeasureUnit MainMeasureUnit { get; set; }
 
         [Display(Name = "Δευτερεύουσα Μονάδα Μέτρησης")]
-        public int? SecondaryMeasureUnitId { get; set; }
+        public int SecondaryMeasureUnitId { get; set; }
         public virtual MeasureUnit SecondaryMeasureUnit { get; set; }
         [Display(Name = "Συντελεστής μετατροπής σε βασική")]
         public double SecondaryUnitToMainRate { get; set; }
 
         [Display(Name = "Μονάδα Μέτρησης Αγορών")]
-        public int? BuyMeasureUnitId { get; set; }
+        public int BuyMeasureUnitId { get; set; }
         public virtual MeasureUnit BuyMeasureUnit { get; set; }
         [Display(Name = "Συντελεστής μετατροπής σε βασική")]
         public double BuyUnitToMainRate { get; set; }
@@ -61,7 +61,8 @@ namespace GrKouk.InfoSystem.Domain.Shared
         [Display(Name = "Τύπος Υλικού", Prompt = "Τύπος υλικού, Σετ, Κανονικό, Συντιθέμενο")]
       
         public MaterialTypeEnum MaterialType { get; set; }
-
+        [Display(Name = "Φύση Είδους", Prompt = "Υλικό,Υπηρεσία,Παγιο,Δαπάνη")]
+        public MaterialNatureEnum MaterialNature { get; set; }
         public int CompanyId { get; set; }
         public virtual Company Company { get; set; }
 

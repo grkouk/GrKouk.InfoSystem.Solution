@@ -32,15 +32,15 @@ namespace GrKouk.WebRazor.Pages.Configuration.WarehouseTransDef
 
             TransWarehouseDef = await _context.TransWarehouseDefs
                 .Include(t => t.AmtBuyTrans)
-                .Include(t => t.AmtExportsTrans)
-                .Include(t => t.AmtImportsTrans)
+               // .Include(t => t.AmtExportsTrans)
+               // .Include(t => t.AmtImportsTrans)
                 .Include(t => t.AmtInvoicedExportsTrans)
                 .Include(t => t.AmtInvoicedImportsTrans)
                 .Include(t => t.AmtSellTrans)
                 .Include(t => t.Company)
                 .Include(t => t.VolBuyTrans)
-                .Include(t => t.VolExportsTrans)
-                .Include(t => t.VolImportsTrans)
+                //.Include(t => t.VolExportsTrans)
+               // .Include(t => t.VolImportsTrans)
                 .Include(t => t.VolInvoicedExportsTrans)
                 .Include(t => t.VolInvoicedImportsTrans)
                 .Include(t => t.VolSellTrans).FirstOrDefaultAsync(m => m.Id == id);
@@ -49,22 +49,87 @@ namespace GrKouk.WebRazor.Pages.Configuration.WarehouseTransDef
             {
                 return NotFound();
             }
-           ViewData["AmtBuyTransId"] = new SelectList(_context.FinancialMovements.AsNoTracking(), "Id", "Name");
-           ViewData["AmtExportsTransId"] = new SelectList(_context.FinancialMovements.AsNoTracking(), "Id", "Name");
-           ViewData["AmtImportsTransId"] = new SelectList(_context.FinancialMovements.AsNoTracking(), "Id", "Name");
-           ViewData["AmtInvoicedExportsTransId"] = new SelectList(_context.FinancialMovements.AsNoTracking(), "Id", "Name");
-           ViewData["AmtInvoicedImportsTransId"] = new SelectList(_context.FinancialMovements.AsNoTracking(), "Id", "Name");
-           ViewData["AmtSellTransId"] = new SelectList(_context.FinancialMovements.AsNoTracking(), "Id", "Name");
-           ViewData["CompanyId"] = new SelectList(_context.Companies.AsNoTracking(), "Id", "Code");
-           ViewData["VolBuyTransId"] = new SelectList(_context.FinancialMovements.AsNoTracking(), "Id", "Name");
-           ViewData["VolExportsTransId"] = new SelectList(_context.FinancialMovements.AsNoTracking(), "Id", "Name");
-           ViewData["VolImportsTransId"] = new SelectList(_context.FinancialMovements.AsNoTracking(), "Id", "Name");
-           ViewData["VolInvoicedExportsTransId"] = new SelectList(_context.FinancialMovements.AsNoTracking(), "Id", "Name");
-           ViewData["VolInvoicedImportsTransId"] = new SelectList(_context.FinancialMovements.AsNoTracking(), "Id", "Name");
-           ViewData["VolSellTransId"] = new SelectList(_context.FinancialMovements.AsNoTracking(), "Id", "Name");
+            LoadCombos();
             return Page();
         }
+        private void LoadCombos()
+        {
+            var fMovements = _context.FinancialMovements.AsNoTracking().ToList();
+            ViewData["TransWarehouseDefaultDocSeriesDefId"] =
+                new SelectList(_context.TransWarehouseDocSeriesDefs.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
 
+            List<SelectListItem> inventoryTransTypes = new List<SelectListItem>
+            {
+                new SelectListItem()
+                {
+                    Value = WarehouseInventoryTransTypeEnum.WarehouseInventoryTransTypeEnumNoChange.ToString(),
+                    Text = "No Change"
+                },
+                new SelectListItem()
+                {
+                    Value = WarehouseInventoryTransTypeEnum.WarehouseInventoryTransTypeEnumExport.ToString(),
+                    Text = "Export"
+                },
+                new SelectListItem()
+                {
+                    Value = WarehouseInventoryTransTypeEnum.WarehouseInventoryTransTypeEnumImport.ToString(),
+                    Text = "Import"
+                },
+                new SelectListItem()
+                {
+                    Value = WarehouseInventoryTransTypeEnum.WarehouseInventoryTransTypeEnumNegativeExport.ToString(),
+                    Text = "Neg.Export"
+                },
+                new SelectListItem()
+                {
+                    Value = WarehouseInventoryTransTypeEnum.WarehouseInventoryTransTypeEnumNegativeImport.ToString(),
+                    Text = "Neg.Import"
+                }
+            };
+            List<SelectListItem> inventoryValueTransTypes = new List<SelectListItem>
+            {
+                new SelectListItem()
+                {
+                    Value = WarehouseValueTransTypeEnum.WarehouseValueTransTypeEnumNoChange.ToString(),
+                    Text = "No Change"
+                },
+                new SelectListItem()
+                {
+                    Value = WarehouseValueTransTypeEnum.WarehouseValueTransTypeEnumDecrease.ToString(),
+                    Text = "Decrease"
+                },
+                new SelectListItem()
+                {
+                    Value = WarehouseValueTransTypeEnum.WarehouseValueTransTypeEnumIncrease.ToString(),
+                    Text = "Increase"
+                },
+                new SelectListItem()
+                {
+                    Value = WarehouseValueTransTypeEnum.WarehouseValueTransTypeEnumNegativeDecrease.ToString(),
+                    Text = "Neg.Decrease"
+                },
+                new SelectListItem()
+                {
+                    Value = WarehouseValueTransTypeEnum.WarehouseValueTransTypeEnumNegativeIncrease.ToString(),
+                    Text = "Neg.Increase"
+                }
+            };
+            ViewData["InventoryTransTypes"] = new SelectList(inventoryTransTypes, "Value", "Text");
+            ViewData["InventoryValueTransTypes"] = new SelectList(inventoryValueTransTypes, "Value", "Text");
+            ViewData["AmtBuyTransId"] = new SelectList(fMovements, "Id", "Name", 3);
+            // ViewData["AmtExportsTransId"] = new SelectList(fMovements, "Id", "Name", 3);
+            // ViewData["AmtImportsTransId"] = new SelectList(fMovements, "Id", "Name", 3);
+            ViewData["AmtInvoicedExportsTransId"] = new SelectList(fMovements, "Id", "Name", 3);
+            ViewData["AmtInvoicedImportsTransId"] = new SelectList(fMovements, "Id", "Name", 3);
+            ViewData["AmtSellTransId"] = new SelectList(fMovements, "Id", "Name", 3);
+            ViewData["CompanyId"] = new SelectList(_context.Companies.AsNoTracking(), "Id", "Code");
+            ViewData["VolBuyTransId"] = new SelectList(fMovements, "Id", "Name", 3);
+            //ViewData["VolExportsTransId"] = new SelectList(fMovements, "Id", "Name", 3);
+            //ViewData["VolImportsTransId"] = new SelectList(fMovements, "Id", "Name", 3);
+            ViewData["VolInvoicedExportsTransId"] = new SelectList(fMovements, "Id", "Name", 3);
+            ViewData["VolInvoicedImportsTransId"] = new SelectList(fMovements, "Id", "Name", 3);
+            ViewData["VolSellTransId"] = new SelectList(fMovements, "Id", "Name", 3);
+        }
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)

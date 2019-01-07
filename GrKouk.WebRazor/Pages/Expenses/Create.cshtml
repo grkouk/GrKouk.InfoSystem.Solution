@@ -1,6 +1,7 @@
 ﻿@page
 @model GrKouk.WebRazor.Pages.Expenses.CreateModel
-
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
 @{
     ViewData["Title"] = "Create";
 }
@@ -15,52 +16,53 @@
         <div class="form-row">
 
             <div class="form-group col-md-4">
-                <label asp-for="FinDiaryTransaction.TransactionDate" ></label>
+                <label asp-for="FinDiaryTransaction.TransactionDate"></label>
                 <input asp-for="FinDiaryTransaction.TransactionDate" class="form-control form-control-sm" />
                 <span asp-validation-for="FinDiaryTransaction.TransactionDate" class="text-danger"></span>
             </div>
             <div class="form-group col-md-8">
-                <label asp-for="FinDiaryTransaction.TransactorId" ></label>
-                <select asp-for="FinDiaryTransaction.TransactorId" class="form-control form-control-sm" asp-items="ViewBag.TransactorId"></select>
+                <label asp-for="FinDiaryTransaction.TransactorId"></label>
+                <select asp-for="FinDiaryTransaction.TransactorId" class="form-control form-control-sm"
+                        onchange=""
+                        asp-items="ViewBag.TransactorId"></select>
             </div>
         </div>
         <div class="form-row">
             <div class="form-group col-md-4">
-                <label asp-for="FinDiaryTransaction.ReferenceCode" ></label>
+                <label asp-for="FinDiaryTransaction.ReferenceCode"></label>
                 <input asp-for="FinDiaryTransaction.ReferenceCode" class="form-control form-control-sm" />
                 <span asp-validation-for="FinDiaryTransaction.ReferenceCode" class="text-danger"></span>
             </div>
             <div class="form-group col-md-8">
-                <label asp-for="FinDiaryTransaction.FinTransCategoryId" ></label>
+                <label asp-for="FinDiaryTransaction.FinTransCategoryId"></label>
                 <select asp-for="FinDiaryTransaction.FinTransCategoryId" class="form-control form-control-sm" asp-items="ViewBag.FinTransCategoryId"></select>
             </div>
         </div>
         <div class="form-row">
             <div class="form-group col-md-6">
-                <label asp-for="FinDiaryTransaction.CompanyId" ></label>
-                <select asp-for="FinDiaryTransaction.CompanyId" class ="form-control form-control-sm" asp-items="ViewBag.CompanyId"></select>
+                <label asp-for="FinDiaryTransaction.CompanyId"></label>
+                <select asp-for="FinDiaryTransaction.CompanyId" class="form-control form-control-sm" asp-items="ViewBag.CompanyId"></select>
             </div>
             <div class="form-group col-md-6">
-                <label asp-for="FinDiaryTransaction.CostCentreId" ></label>
-                <select asp-for="FinDiaryTransaction.CostCentreId" class ="form-control form-control-sm" asp-items="ViewBag.CostCentreId"></select>
+                <label asp-for="FinDiaryTransaction.CostCentreId"></label>
+                <select asp-for="FinDiaryTransaction.CostCentreId" class="form-control form-control-sm" asp-items="ViewBag.CostCentreId"></select>
             </div>
         </div>
         <div class="form-row">
             <div class="form-group col-md-12">
-                <label asp-for="FinDiaryTransaction.Description" ></label>
-                @*<input asp-for="FinDiaryTransaction.Description" class="form-control" />*@
+                <label asp-for="FinDiaryTransaction.Description"></label>
                 <textarea asp-for="FinDiaryTransaction.Description" class="form-control form-control-sm" placeholder="Description of Transaction"></textarea>
                 <span asp-validation-for="FinDiaryTransaction.Description" class="text-danger"></span>
             </div>
         </div>
         <div class="form-row">
             <div class="form-group col-md-6">
-                <label asp-for="FinDiaryTransaction.AmountFpa" ></label>
+                <label asp-for="FinDiaryTransaction.AmountFpa"></label>
                 <input asp-for="FinDiaryTransaction.AmountFpa" class="form-control form-control-sm" />
                 <span asp-validation-for="FinDiaryTransaction.AmountFpa" class="text-danger"></span>
             </div>
             <div class="form-group col-md-6">
-                <label asp-for="FinDiaryTransaction.AmountNet" ></label>
+                <label asp-for="FinDiaryTransaction.AmountNet"></label>
                 <input asp-for="FinDiaryTransaction.AmountNet" class="form-control form-control-sm" />
                 <span asp-validation-for="FinDiaryTransaction.AmountNet" class="text-danger"></span>
             </div>
@@ -70,8 +72,8 @@
                 <input type="submit" value="Create" class="btn btn-primary btn-sm" />
             </div>
         </div>
-        </form>
-</div>  
+    </form>
+</div>
 
 
 <div>
@@ -79,10 +81,50 @@
 </div>
 
 @section Scripts {
+
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script>
         $(document).ready(function () {
             console.log("Inside Document ready");
+            $('#FinDiaryTransaction_TransactorId').change(() => {
+                console.log("Value of select");
+                console.log($('#FinDiaryTransaction_TransactorId').val());
+                var selectedTransactorId = $('#FinDiaryTransaction_TransactorId').val();
+                const Uri = '@Configuration.GetSection("WebApiSettings")["WebApiUrl"]';
+                const FinalUri = `${Uri}/Transactions/LastDiaryTransactionData?transactorId=${selectedTransactorId}`;
+                console.log(`Final Uri=${FinalUri}`);
+
+                //const callParameters = {
+                //    headers: { "Content-Type": "application/json;charset=UTF-8" },
+                //    body: data,
+                //    method: "GET"
+                //};
+                fetch(FinalUri )
+                    .then(function (response) {
+                        if (response.ok) {
+                            return response.json();
+                        }
+                        else {
+                            return "";
+                        }
+
+                    })
+                    .then(function (myJson) {
+                        if (myJson) {
+                            console.log(JSON.stringify(myJson));
+                            $('#FinDiaryTransaction_CompanyId').val(myJson.companyId);
+                            $('#FinDiaryTransaction_FinTransCategoryId').val(myJson.categoryId);
+                            $('#FinDiaryTransaction_CostCentreId').val(myJson.costCentreId);
+                        }
+
+                    })
+                    .catch(error => console.log(error));
+            });
+
+            $('#FinDiaryTransaction_TransactionDate').val(new Date().toISOString().slice(0, 10));
+            $('#FinDiaryTransaction_AmountNet').val(0);
+            $('#FinDiaryTransaction_AmountFpa').val(0);
         });
     </script>
+
 }

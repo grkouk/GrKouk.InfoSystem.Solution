@@ -13,7 +13,19 @@ namespace GrKouk.WebRazor.Pages.Transactors
     public class DetailsModel : PageModel
     {
         private readonly GrKouk.WebApi.Data.ApiDbContext _context;
+        private int _id;
 
+        public string Total
+        {
+            get
+            {
+                string _total;
+
+                _total=_context.FinDiaryTransactions.Where(p => p.TransactorId == _id).Sum(p => p.AmountNet).ToString();
+                return _total;
+            }
+            set { }
+        } 
         public DetailsModel(GrKouk.WebApi.Data.ApiDbContext context)
         {
             _context = context;
@@ -27,7 +39,7 @@ namespace GrKouk.WebRazor.Pages.Transactors
             {
                 return NotFound();
             }
-
+            _id = (int)id;
             Transactor = await _context.Transactors
                 .Include(t => t.TransactorType).FirstOrDefaultAsync(m => m.Id == id);
 

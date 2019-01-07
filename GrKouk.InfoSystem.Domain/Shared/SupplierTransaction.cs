@@ -36,15 +36,15 @@ namespace GrKouk.InfoSystem.Domain.Shared
         /// </summary>
         public FinancialTransactionTypeEnum TransactionType { get; set; }
 
+        public FinancialTransTypeEnum FinancialAction { get; set; }
         /// <summary>
         /// Ανάλογα με το sectionid το πεδίο αυτό περιέχει το id του αντικειμένου που ορίζει το sectionID 
         /// </summary>
         public int CreatorId { get; set; }
 
-        public int FpaDefId { get; set; }
-        public virtual FpaDef FpaDef { get; set; }
-        public Single FpaRate { get; set; }
-
+      
+        public decimal FpaRate { get; set; }
+        public decimal DiscountRate { get; set; }   
         public decimal AmountFpa { get; set; }
         public decimal AmountNet { get; set; }
         public decimal AmountDiscount { get; set; }

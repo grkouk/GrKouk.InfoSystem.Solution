@@ -6,10 +6,10 @@
     <title>@ViewData["Title"] - GrKouk Info System</title>
 
     <environment include="Development">
-    @*<link rel="stylesheet" href="~/lib/font-awesome/css/font-awesome.css" />*@
-    <link rel="stylesheet" href="~/lib/font-awesome/css/all.css" >
-    <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.css" />
-    <link rel="stylesheet" href="~/css/site.css" />
+        <link rel="stylesheet" href="~/lib/font-awesome/css/all.css">
+        <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.css" />
+        <link rel="stylesheet" href="~/lib/jqueryui/jquery-ui.min.css">
+        <link rel="stylesheet" href="~/css/site.css" />
     </environment>
     <environment exclude="Development">
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" 
@@ -55,24 +55,47 @@
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                             @* <span class="dropdown-item-text">Configuration</span>*@
-                            <a class="dropdown-item" asp-page="/Companies/index">Companies(Εταιρείες)</a>
+                            <a class="dropdown-item" asp-page="/Transactions/SupplierTransMng/index">Supplier Transactions</a>
                             <a class="dropdown-item" asp-page="/Expenses/index">Exprenses(Εξοδα)</a>
-                            <a class="dropdown-item" asp-page="/configuration/warehousetransdef/index">Warehouse Trans Def</a>
+                            <a class="dropdown-item" asp-page="/Transactions/WarehouseTransMng/index">Warehouse Transactions</a>
+                            <a class="dropdown-item" asp-page="/transactions/buymaterialsDoc/index">Αγορές Υλικών</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" asp-page="/Transactors/index">Transactors</a>
+                            <a class="dropdown-item" asp-page="/Materials/index">Materials</a>
+
+                        </div>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown"
+                           aria-haspopup="true" aria-expanded="false">
+                            Configuration
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                            @* <span class="dropdown-item-text">Configuration</span>*@
+
+                            <a class="dropdown-item" asp-page="/commonentities/MeasureUnits/index">Measure Units</a>
+                            <a class="dropdown-item" asp-page="/commonentities/MaterialCategories/index">Meterial Categories</a>
+                            <div class="dropdown-divider"></div>
+
                             <a class="dropdown-item" asp-page="/configuration/Buydoctypedefinition/index">Materials Buy Type Def</a>
                             <a class="dropdown-item" asp-page="/configuration/BuyMaterialsDocSeriesdefinitions/index">Materials Buy Series Def</a>
+                            <div class="dropdown-divider"></div>
                             <a class="dropdown-item" asp-page="/configuration/supplierTransDefs/index">Supplier Trans Def</a>
-                            <a class="dropdown-item" asp-page="/configuration/sectionsManagement/index">Sections Management</a>
-                            <a class="dropdown-item" asp-page="/commonentities/fiscalperiodsmanagement/index">Fiscal Periods Management</a>
-
                             <a class="dropdown-item" asp-page="/configuration/SupplierTransDocType/index">Supplier Trans Doc Type Defs</a>
                             <a class="dropdown-item" asp-page="/configuration/SupplierTransDocSeries/index">Supplier Trans Doc Series Defs</a>
                             <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" asp-page="/configuration/warehousetransdef/index">Warehouse Trans Def</a>
+                            <a class="dropdown-item" asp-page="/configuration/WarehouseTransDocTypeDef/index">Warehouse Trans Doc Type Def</a>
+                            <a class="dropdown-item" asp-page="/configuration/WarehouseTransDocSeriesDef/index">Warehouse Trans Doc Series Def</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" asp-page="/configuration/sectionsManagement/index">Sections Management</a>
+                            <a class="dropdown-item" asp-page="/commonentities/fiscalperiodsmanagement/index">Fiscal Periods Management</a>
                             <a class="dropdown-item" asp-page="/FinancialMovements/index">Financial Movements</a>
                             <a class="dropdown-item" asp-page="/TransactorTypes/index">Transactor Types</a>
-                            <a class="dropdown-divider"></a>
-                            <a class="dropdown-item" asp-page="/Transactors/index">Transactors</a>
-                            @*<span class="dropdown-item-text">Transactions</span>*@
-                            <a class="dropdown-item" asp-page="/Transactions/SupplierTransMng/index">Supplier Transactions</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" asp-page="/commonentities/costcentres/index">Cost Centres Management</a>
+                            <a class="dropdown-item" asp-page="/commonentities/FinCategories/index">Financial Categories Management</a>
+                            <a class="dropdown-item" asp-page="/Companies/index">Companies(Εταιρείες)</a>
                         </div>
                     </li>
                 }

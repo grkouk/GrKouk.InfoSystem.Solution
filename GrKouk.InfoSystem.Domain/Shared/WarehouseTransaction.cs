@@ -35,20 +35,17 @@ namespace GrKouk.InfoSystem.Domain.Shared
         /// </summary>
         public WarehouseTransactionTypeEnum TransactionType { get; set; }
 
+        public WarehouseInventoryTransTypeEnum InventoryAction { get; set; }
+        public WarehouseValueTransTypeEnum InventoryValueAction { get; set; }
         /// <summary>
         /// Ανάλογα με το sectionid το πεδίο αυτό περιέχει το id του αντικειμένου που ορίζει το sectionID 
         /// </summary>
         public int CreatorId { get; set; }
-
-        public int FpaId { get; set; }
-        public virtual FpaDef FpaDef { get; set; }
-        public Single FpaRate { get; set; }
-
         public int PrimaryUnitId { get; set; }
         //public virtual MeasureUnit PrimaryUnit { get; set; }
         public int SecondaryUnitId { get; set; }
         //public virtual MeasureUnit SecondaryUnit { get; set; }
-
+        public decimal UnitFactor { get; set; }
         /// <summary>
         /// Ποσότητα σε μονάδα μέτρησης 1
         /// </summary>
@@ -57,7 +54,9 @@ namespace GrKouk.InfoSystem.Domain.Shared
         /// Ποσότητα σε μονάδα μέτρησης 2
         /// </summary>
         public double Quontity2 { get; set; }
-
+        public decimal FpaRate { get; set; }
+        public decimal DiscountRate { get; set; }
+        public decimal UnitPrice { get; set; }  
         public decimal AmountFpa { get; set; }
         public decimal AmountNet { get; set; }
         public decimal AmountDiscount { get; set; }
