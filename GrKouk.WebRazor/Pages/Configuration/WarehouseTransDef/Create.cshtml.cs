@@ -27,10 +27,7 @@ namespace GrKouk.WebRazor.Pages.Configuration.WarehouseTransDef
         private void LoadCombos()
         {
             var fMovements = _context.FinancialMovements.AsNoTracking().ToList();
-            ViewData["TransWarehouseDefaultDocSeriesDefId"] =
-                new SelectList(_context.TransWarehouseDocSeriesDefs.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
-
-
+           
             List<SelectListItem> inventoryTransTypes = new List<SelectListItem>
             {
                 new SelectListItem()
@@ -90,18 +87,24 @@ namespace GrKouk.WebRazor.Pages.Configuration.WarehouseTransDef
             ViewData["InventoryTransTypes"] = new SelectList(inventoryTransTypes, "Value", "Text");
             ViewData["InventoryValueTransTypes"] = new SelectList(inventoryValueTransTypes, "Value", "Text");
             ViewData["AmtBuyTransId"] = new SelectList(fMovements, "Id", "Name", 3);
-           // ViewData["AmtExportsTransId"] = new SelectList(fMovements, "Id", "Name", 3);
-           // ViewData["AmtImportsTransId"] = new SelectList(fMovements, "Id", "Name", 3);
+          
             ViewData["AmtInvoicedExportsTransId"] = new SelectList(fMovements, "Id", "Name", 3);
             ViewData["AmtInvoicedImportsTransId"] = new SelectList(fMovements, "Id", "Name", 3);
             ViewData["AmtSellTransId"] = new SelectList(fMovements, "Id", "Name", 3);
             ViewData["CompanyId"] = new SelectList(_context.Companies.AsNoTracking(), "Id", "Code");
             ViewData["VolBuyTransId"] = new SelectList(fMovements, "Id", "Name", 3);
-            //ViewData["VolExportsTransId"] = new SelectList(fMovements, "Id", "Name", 3);
-            //ViewData["VolImportsTransId"] = new SelectList(fMovements, "Id", "Name", 3);
             ViewData["VolInvoicedExportsTransId"] = new SelectList(fMovements, "Id", "Name", 3);
             ViewData["VolInvoicedImportsTransId"] = new SelectList(fMovements, "Id", "Name", 3);
             ViewData["VolSellTransId"] = new SelectList(fMovements, "Id", "Name", 3);
+
+            var dbSeriesList = _context.TransWarehouseDocSeriesDefs.OrderBy(p => p.Name).AsNoTracking();
+            List<SelectListItem> seriesList = new List<SelectListItem>();
+            seriesList.Add(new SelectListItem() { Value = 0.ToString(), Text = "{No Default series}" });
+            foreach (var dbSeriesItem in dbSeriesList)
+            {
+                seriesList.Add(new SelectListItem() { Value = dbSeriesItem.Id.ToString(), Text = dbSeriesItem.Name });
+            }
+            ViewData["TransWarehouseDefaultDocSeriesDefId"] = new SelectList(seriesList, "Value", "Text");
         }
 
         [BindProperty]

@@ -71,7 +71,7 @@ namespace GrKouk.InfoSystem.Domain.FinConfig
         public virtual FinancialMovement AmtSellTrans { get; set; }
         [Display(Name = "Default Series")]
         public int TransWarehouseDefaultDocSeriesDefId { get; set; }
-        public virtual TransWarehouseDocSeriesDef TransWarehouseDefaultDocSeriesDef { get; set; }
+       // public virtual TransWarehouseDocSeriesDef TransWarehouseDefaultDocSeriesDef { get; set; }
         public int CompanyId { get; set; }
         public virtual Company Company { get; set; }
     }

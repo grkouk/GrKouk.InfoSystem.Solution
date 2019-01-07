@@ -79,10 +79,16 @@ namespace GrKouk.WebRazor.Pages.Configuration.SupplierTransDefs
             };
             ViewData["FinancialTransTypes"] = new SelectList(financialTransTypes, "Value", "Text");
             ViewData["CompanyId"] = new SelectList(_context.Companies.OrderBy(p => p.Code).AsNoTracking(), "Id", "Code");
-           // ViewData["CreditTransId"] = new SelectList(_context.FinancialMovements.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
-           // ViewData["DebitTransId"] = new SelectList(_context.FinancialMovements.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
-            ViewData["TurnOverTransId"] = new SelectList(_context.FinancialMovements.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
-            ViewData["TransSupplierDefaultDocSeriesId"] = new SelectList(_context.TransSupplierDocSeriesDefs.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
+            ViewData["TurnOverTransId"] = new SelectList(_context.FinancialMovements.AsNoTracking(), "Id", "Name");
+
+            var dbSeriesList = _context.TransSupplierDocSeriesDefs.OrderBy(p => p.Name).AsNoTracking();
+            List<SelectListItem> seriesList = new List<SelectListItem>();
+            seriesList.Add(new SelectListItem() { Value = 0.ToString(), Text = "{No Default series}" });
+            foreach (var dbSeriesItem in dbSeriesList)
+            {
+                seriesList.Add(new SelectListItem() { Value = dbSeriesItem.Id.ToString(), Text = dbSeriesItem.Name });
+            }
+            ViewData["TransSupplierDefaultDocSeriesId"] = new SelectList(seriesList, "Value", "Text");
         }
 
         public async Task<IActionResult> OnPostAsync()

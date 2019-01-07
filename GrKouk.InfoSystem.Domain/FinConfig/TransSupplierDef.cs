@@ -42,6 +42,6 @@ namespace GrKouk.InfoSystem.Domain.FinConfig
         public virtual Company Company { get; set; }
          [Display(Name = "Default Series")]
         public int TransSupplierDefaultDocSeriesId { get; set; }
-        public virtual TransSupplierDocSeriesDef TransSupplierDefaultDocSeries { get; set; }
+       // public virtual TransSupplierDocSeriesDef TransSupplierDefaultDocSeries { get; set; }
     }
 }

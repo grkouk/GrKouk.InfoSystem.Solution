@@ -93,25 +93,10 @@ namespace GrKouk.WebApi.Data
                 .HasIndex(c => c.Code)
                 .IsUnique();
 
-            //modelBuilder.Entity<TransWarehouseDef>()
-            //       .HasOne(bd => bd.AmtExportsTrans)
-            //       .WithMany()
-            //       .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<TransWarehouseDef>()
-                .HasOne(bd => bd.TransWarehouseDefaultDocSeriesDef)
-                .WithMany()
-                .OnDelete(DeleteBehavior.Restrict);
+           
 
-            //modelBuilder.Entity<TransWarehouseDef>()
-            //       .HasOne(bd => bd.VolImportsTrans)
-            //       .WithMany()
-            //       .OnDelete(DeleteBehavior.Restrict);
-
-            //modelBuilder.Entity<TransWarehouseDef>()
-            //       .HasOne(bd => bd.VolExportsTrans)
-            //       .WithMany()
-            //       .OnDelete(DeleteBehavior.Restrict);
+          
 
             modelBuilder.Entity<TransWarehouseDef>()
                    .HasOne(bd => bd.VolInvoicedExportsTrans)
@@ -123,10 +108,7 @@ namespace GrKouk.WebApi.Data
                    .WithMany()
                    .OnDelete(DeleteBehavior.Restrict);
 
-            //modelBuilder.Entity<TransWarehouseDef>()
-            //       .HasOne(bd => bd.AmtImportsTrans)
-            //       .WithMany()
-            //       .OnDelete(DeleteBehavior.Restrict);
+          
 
             modelBuilder.Entity<TransWarehouseDef>()
                    .HasOne(bd => bd.AmtInvoicedExportsTrans)
@@ -203,22 +185,13 @@ namespace GrKouk.WebApi.Data
             #endregion
             modelBuilder.Entity<TransSupplierDef>(entity =>
             {
-                //entity.HasOne(bd => bd.DebitTrans)
-                //    .WithMany()
-                //    .OnDelete(DeleteBehavior.Restrict);
-
-                //entity.HasOne(bd => bd.CreditTrans)
-                //    .WithMany()
-                //    .OnDelete(DeleteBehavior.Restrict);
+              
 
                 entity.HasOne(bd => bd.TurnOverTrans)
                     .WithMany()
                     .OnDelete(DeleteBehavior.Restrict);
-
-                entity.HasOne(db => db.TransSupplierDefaultDocSeries)
-                    .WithMany()
-                    .OnDelete(DeleteBehavior.Restrict);
-
+                
+                entity.HasIndex(c => c.TransSupplierDefaultDocSeriesId);
                 entity.HasIndex(c => c.Code)
                     .IsUnique();
             });
