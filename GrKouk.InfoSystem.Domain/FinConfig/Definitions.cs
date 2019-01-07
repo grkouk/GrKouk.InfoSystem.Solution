@@ -5,6 +5,19 @@
         Expence = 1,
         Income = 2
     }
+
+    /// <summary>
+    /// Material Nature
+    /// Υλικό, Υπηρεσία, Πάγιο, Δαπάνη
+    /// </summary>
+    public enum MaterialNatureEnum
+    {
+        MaterialNatureEnumUndefined=0,
+        MaterialNatureEnumMaterial=1,
+        MaterialNatureEnumService=2,
+        MaterialNatureEnumExpense=3,
+        MaterialNatureEnumFixedAsset =4
+    }
     public enum MaterialTypeEnum
     {
         MaterialTypeNormal = 1,

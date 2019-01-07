@@ -61,7 +61,8 @@ namespace GrKouk.InfoSystem.Domain.Shared
         [Display(Name = "Τύπος Υλικού", Prompt = "Τύπος υλικού, Σετ, Κανονικό, Συντιθέμενο")]
       
         public MaterialTypeEnum MaterialType { get; set; }
-
+        [Display(Name = "Φύση Είδους", Prompt = "Υλικό,Υπηρεσία,Παγιο,Δαπάνη")]
+        public MaterialNatureEnum MaterialNature { get; set; }
         public int CompanyId { get; set; }
         public virtual Company Company { get; set; }
 

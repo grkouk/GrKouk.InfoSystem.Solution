@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using GrKouk.InfoSystem.Domain.FinConfig;
@@ -8,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using GrKouk.InfoSystem.Domain.Shared;
 using GrKouk.InfoSystem.Dtos.WebDtos.Materials;
+using Microsoft.EntityFrameworkCore;
 using NToastNotify;
 
 namespace GrKouk.WebRazor.Pages.Materials
@@ -34,23 +36,27 @@ namespace GrKouk.WebRazor.Pages.Materials
         private void LoadCombos()
         {
 
-            List<SelectListItem> newList = new List<SelectListItem>
+            List<SelectListItem> materialTypes = new List<SelectListItem>
             {
                 new SelectListItem() {Value = MaterialTypeEnum.MaterialTypeNormal.ToString(), Text = "Κανονικό"},
                 new SelectListItem() {Value = MaterialTypeEnum.MaterialTypeSet.ToString(), Text = "Set"},
-                new SelectListItem()
-                {
-                    Value = MaterialTypeEnum.MaterialTypeComposed.ToString(), Text = "Συντιθέμενο"
-                }
+                new SelectListItem() {Value = MaterialTypeEnum.MaterialTypeComposed.ToString(), Text = "Συντιθέμενο"}
             };
-
-            ViewData["BuyMeasureUnitId"] = new SelectList(_context.MeasureUnits, "Id", "Code");
-            ViewData["CompanyId"] = new SelectList(_context.Companies, "Id", "Code");
-            ViewData["FpaDefId"] = new SelectList(_context.FpaKategories, "Id", "Code");
-            ViewData["MainMeasureUnitId"] = new SelectList(_context.MeasureUnits, "Id", "Code");
-            ViewData["MaterialCategoryId"] = new SelectList(_context.MaterialCategories, "Id", "Code");
-            ViewData["SecondaryMeasureUnitId"] = new SelectList(_context.MeasureUnits, "Id", "Code");
-            ViewData["MaterialType"] = new SelectList(newList,"Value","Text");
+            List<SelectListItem> materialNatures = new List<SelectListItem>
+            {
+                new SelectListItem() {Value = MaterialNatureEnum.MaterialNatureEnumUndefined.ToString(), Text = "Undefined"},
+                new SelectListItem() {Value = MaterialNatureEnum.MaterialNatureEnumMaterial.ToString(), Text = "Υλικό"},
+                new SelectListItem() {Value = MaterialNatureEnum.MaterialNatureEnumService.ToString(), Text = "Υπηρεσία"},
+                new SelectListItem() {Value = MaterialNatureEnum.MaterialNatureEnumFixedAsset.ToString(), Text = "Πάγιο"}
+            };
+            ViewData["BuyMeasureUnitId"] = new SelectList(_context.MeasureUnits.OrderBy(p => p.Code).AsNoTracking(), "Id", "Code");
+            ViewData["CompanyId"] = new SelectList(_context.Companies.OrderBy(p => p.Code).AsNoTracking(), "Id", "Code");
+            ViewData["FpaDefId"] = new SelectList(_context.FpaKategories.OrderBy(p => p.Code).AsNoTracking(), "Id", "Code");
+            ViewData["MainMeasureUnitId"] = new SelectList(_context.MeasureUnits.OrderBy(p => p.Code).AsNoTracking(), "Id", "Code");
+            ViewData["MaterialCategoryId"] = new SelectList(_context.MaterialCategories.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
+            ViewData["SecondaryMeasureUnitId"] = new SelectList(_context.MeasureUnits.OrderBy(p => p.Code).AsNoTracking(), "Id", "Code");
+            ViewData["MaterialNatures"] = new SelectList(materialNatures, "Value", "Text");
+            ViewData["MaterialType"] = new SelectList(materialTypes, "Value", "Text");
         }
 
         [BindProperty]

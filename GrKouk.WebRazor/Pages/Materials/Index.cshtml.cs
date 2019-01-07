@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using GrKouk.InfoSystem.Domain.FinConfig;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +13,7 @@ using GrKouk.InfoSystem.Dtos.WebDtos.Materials;
 using GrKouk.InfoSystem.Dtos.WebDtos.SupplierTransactions;
 using GrKouk.WebApi.Data;
 using GrKouk.WebRazor.Helpers;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace GrKouk.WebRazor.Pages.Materials
 {
@@ -25,6 +27,7 @@ namespace GrKouk.WebRazor.Pages.Materials
         public string DateSort { get; set; }
         public string DateSortIcon { get; set; }
         public string CurrentFilter { get; set; }
+        public string CurrentMaterialNature { get; set; }
         public string CurrentSort { get; set; }
         public int PageSize { get; set; }
         public int CurrentPageSize { get; set; }
@@ -39,8 +42,9 @@ namespace GrKouk.WebRazor.Pages.Materials
         public PagedList<MaterialListDto> ListItems { get; set; }
        // public IList<Material> Material { get;set; }
 
-        public async Task OnGetAsync(string sortOrder, string searchString, int? pageIndex, int? pageSize)
+        public async Task OnGetAsync(string sortOrder, string searchString, string materialNatureFilter, int? pageIndex, int? pageSize)
         {
+            LoadFilters();
             PageSize = (int)((pageSize == null || pageSize == 0) ? 20 : pageSize);
             CurrentPageSize = PageSize;
             CurrentSort = sortOrder;
@@ -56,9 +60,40 @@ namespace GrKouk.WebRazor.Pages.Materials
                 searchString = CurrentFilter;
             }
             CurrentFilter = searchString;
+            CurrentMaterialNature = materialNatureFilter;
 
             IQueryable<Material> fullListIq = from s in _context.Materials
                                                          select s;
+
+
+            MaterialNatureEnum natureFilterValue = MaterialNatureEnum.MaterialNatureEnumUndefined;
+
+            switch (CurrentMaterialNature)
+            {
+                case "MaterialNatureEnumUndefined":
+                    natureFilterValue = MaterialNatureEnum.MaterialNatureEnumUndefined;
+                    break;
+                case "MaterialNatureEnumMaterial":
+                    natureFilterValue = MaterialNatureEnum.MaterialNatureEnumMaterial;
+                    break;
+                case "MaterialNatureEnumService":
+                    natureFilterValue = MaterialNatureEnum.MaterialNatureEnumService;
+                    break;
+                case "MaterialNatureEnumExpense":
+                    natureFilterValue = MaterialNatureEnum.MaterialNatureEnumExpense;
+                    break;
+                case "MaterialNatureEnumFixedAsset":
+                    natureFilterValue = MaterialNatureEnum.MaterialNatureEnumFixedAsset;
+                    break;
+                default:
+                    natureFilterValue = MaterialNatureEnum.MaterialNatureEnumUndefined;
+                    break;
+            }
+
+            if (natureFilterValue!=MaterialNatureEnum.MaterialNatureEnumUndefined)
+            {
+                fullListIq = fullListIq.Where(s => s.MaterialNature==natureFilterValue);
+            }
 
             if (!String.IsNullOrEmpty(searchString))
             {
@@ -85,6 +120,20 @@ namespace GrKouk.WebRazor.Pages.Materials
             var t = fullListIq.ProjectTo<MaterialListDto>(_mapper.ConfigurationProvider);
             ListItems = await PagedList<MaterialListDto>.CreateAsync(
                 t, pageIndex ?? 1, PageSize);
+        }
+        private void LoadFilters()
+        {
+            List<SelectListItem> materialNatures = new List<SelectListItem>
+            {
+                new SelectListItem() {Value = "0", Text = "{All Natures}"},
+                new SelectListItem() {Value = MaterialNatureEnum.MaterialNatureEnumMaterial.ToString(), Text = "Υλικό"},
+                new SelectListItem() {Value = MaterialNatureEnum.MaterialNatureEnumService.ToString(), Text = "Υπηρεσία"},
+                new SelectListItem() {Value = MaterialNatureEnum.MaterialNatureEnumExpense.ToString(), Text = "Δαπάνη"},
+                new SelectListItem() {Value = MaterialNatureEnum.MaterialNatureEnumFixedAsset.ToString(), Text = "Πάγιο"}
+                
+
+            };
+            ViewData["MaterialNatureValues"] = new SelectList(materialNatures, "Value", "Text");
         }
     }
 }

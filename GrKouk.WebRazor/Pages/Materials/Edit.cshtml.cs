@@ -52,29 +52,33 @@ namespace GrKouk.WebRazor.Pages.Materials
 
             MaterialVm = _mapper.Map<MaterialModifyDto>(materialToModify);
            LoadCombos();
-           _toastNotification.AddInfoToastMessage("Welcome to edit page");
+          // _toastNotification.AddInfoToastMessage("Welcome to edit page");
             return Page();
         }
         private void LoadCombos()
         {
 
-            List<SelectListItem> newList = new List<SelectListItem>
+            List<SelectListItem> materialTypes = new List<SelectListItem>
             {
                 new SelectListItem() {Value = MaterialTypeEnum.MaterialTypeNormal.ToString(), Text = "Κανονικό"},
                 new SelectListItem() {Value = MaterialTypeEnum.MaterialTypeSet.ToString(), Text = "Set"},
-                new SelectListItem()
-                {
-                    Value = MaterialTypeEnum.MaterialTypeComposed.ToString(), Text = "Συντιθέμενο"
-                }
+                new SelectListItem() {Value = MaterialTypeEnum.MaterialTypeComposed.ToString(), Text = "Συντιθέμενο"}
             };
-
-            ViewData["BuyMeasureUnitId"] = new SelectList(_context.MeasureUnits.OrderBy(p=>p.Name).AsNoTracking(), "Id", "Name");
+            List<SelectListItem> materialNatures = new List<SelectListItem>
+            {
+                new SelectListItem() {Value = MaterialNatureEnum.MaterialNatureEnumUndefined.ToString(), Text = "Undefined"},
+                new SelectListItem() {Value = MaterialNatureEnum.MaterialNatureEnumMaterial.ToString(), Text = "Υλικό"},
+                new SelectListItem() {Value = MaterialNatureEnum.MaterialNatureEnumService.ToString(), Text = "Υπηρεσία"},
+                new SelectListItem() {Value = MaterialNatureEnum.MaterialNatureEnumFixedAsset.ToString(), Text = "Πάγιο"}
+            };
+            ViewData["BuyMeasureUnitId"] = new SelectList(_context.MeasureUnits.OrderBy(p => p.Code).AsNoTracking(), "Id", "Code");
             ViewData["CompanyId"] = new SelectList(_context.Companies.OrderBy(p => p.Code).AsNoTracking(), "Id", "Code");
-            ViewData["FpaDefId"] = new SelectList(_context.FpaKategories.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
-            ViewData["MainMeasureUnitId"] = new SelectList(_context.MeasureUnits.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
+            ViewData["FpaDefId"] = new SelectList(_context.FpaKategories.OrderBy(p => p.Code).AsNoTracking(), "Id", "Code");
+            ViewData["MainMeasureUnitId"] = new SelectList(_context.MeasureUnits.OrderBy(p => p.Code).AsNoTracking(), "Id", "Code");
             ViewData["MaterialCategoryId"] = new SelectList(_context.MaterialCategories.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
-            ViewData["SecondaryMeasureUnitId"] = new SelectList(_context.MeasureUnits.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
-            ViewData["MaterialType"] = new SelectList(newList, "Value", "Text");
+            ViewData["SecondaryMeasureUnitId"] = new SelectList(_context.MeasureUnits.OrderBy(p => p.Code).AsNoTracking(), "Id", "Code");
+            ViewData["MaterialNatures"] = new SelectList(materialNatures, "Value", "Text");
+            ViewData["MaterialType"] = new SelectList(materialTypes, "Value", "Text");
         }
         public async Task<IActionResult> OnPostAsync()
         {

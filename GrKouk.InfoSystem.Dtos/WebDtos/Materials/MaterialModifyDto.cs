@@ -44,14 +44,16 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.Materials
         [MaxLength(50)]
         public string ManufacturerCode { get; set; }
 
-        [Display(Name = "Κατ.Υλικού")]
+        [Display(Name = "Κατ.Είδους")]
         public int MaterialCategoryId { get; set; }
         /// <summary>
         /// Τύπος υλικού, Σετ, Κανονικό, Συντιθέμενο
         /// </summary>
-        [Display(Name = "Τύπος Υλικού", Prompt = "Τύπος υλικού, Σετ, Κανονικό, Συντιθέμενο")]
+        [Display(Name = "Τύπος Είδους", Prompt = "Τύπος υλικού, Σετ, Κανονικό, Συντιθέμενο")]
 
         public MaterialTypeEnum MaterialType { get; set; }
+        [Display(Name = "Φύση Είδους", Prompt = "Υλικό,Υπηρεσία,Παγιο,Δαπάνη")]
+        public MaterialNatureEnum MaterialNature { get; set; }
         [Display(Name = "Company")]
         public int CompanyId { get; set; }
 
