@@ -4,14 +4,16 @@ using GrKouk.WebApi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace GrKouk.WebApi.Migrations
 {
     [DbContext(typeof(ApiDbContext))]
-    partial class ApiDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190107163619_removedefautseries2")]
+    partial class removedefautseries2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -171,6 +173,12 @@ namespace GrKouk.WebApi.Migrations
                         .HasFilter("[Code] IS NOT NULL");
 
                     b.HasIndex("CompanyId");
+
+                    b.HasIndex("CreditTransId");
+
+                    b.HasIndex("DebitTransId");
+
+                    b.HasIndex("TransCustomerDefaultDocSeriesId");
 
                     b.HasIndex("TurnOverTransId");
 
@@ -1193,6 +1201,21 @@ namespace GrKouk.WebApi.Migrations
                         .WithMany()
                         .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("GrKouk.InfoSystem.Domain.FinConfig.FinancialMovement", "CreditTrans")
+                        .WithMany()
+                        .HasForeignKey("CreditTransId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("GrKouk.InfoSystem.Domain.FinConfig.FinancialMovement", "DebitTrans")
+                        .WithMany()
+                        .HasForeignKey("DebitTransId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("GrKouk.InfoSystem.Domain.FinConfig.TransCustomerDocSeriesDef", "TransCustomerDefaultDocSeries")
+                        .WithMany()
+                        .HasForeignKey("TransCustomerDefaultDocSeriesId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("GrKouk.InfoSystem.Domain.FinConfig.FinancialMovement", "TurnOverTrans")
                         .WithMany()

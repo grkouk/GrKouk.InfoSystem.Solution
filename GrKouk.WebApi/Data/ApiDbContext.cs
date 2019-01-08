@@ -230,20 +230,10 @@ namespace GrKouk.WebApi.Data
 
             modelBuilder.Entity<TransCustomerDef>(entity =>
             {
-                entity.HasOne(bd => bd.DebitTrans)
-                    .WithMany()
-                    .OnDelete(DeleteBehavior.Restrict);
-
-                entity.HasOne(bd => bd.CreditTrans)
-                    .WithMany()
-                    .OnDelete(DeleteBehavior.Restrict);
-
                 entity.HasOne(bd => bd.TurnOverTrans)
                     .WithMany()
                     .OnDelete(DeleteBehavior.Restrict);
-                entity.HasOne(bd => bd.TransCustomerDefaultDocSeries)
-                    .WithMany()
-                    .OnDelete(DeleteBehavior.Restrict);
+               
                 entity.HasIndex(c => c.Code)
                     .IsUnique();
             });

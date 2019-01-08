@@ -21,13 +21,13 @@ namespace GrKouk.InfoSystem.Domain.FinConfig
         /// </summary>
         [Display(Name = "Credit Transaction Id")]
         public int CreditTransId { get; set; }
-        public virtual FinancialMovement CreditTrans { get; set; }
+        //public virtual FinancialMovement CreditTrans { get; set; }
         /// <summary>
         /// ΄Κωδικός κίνησης για την Χρέωση
         /// </summary>
         [Display(Name = "Debit Transaction Id")]
         public int DebitTransId { get; set; }
-        public virtual FinancialMovement DebitTrans { get; set; }
+       // public virtual FinancialMovement DebitTrans { get; set; }
         /// <summary>
         /// Κωδικός κίνησης για τον Τζίρο
         /// </summary>
@@ -36,7 +36,7 @@ namespace GrKouk.InfoSystem.Domain.FinConfig
         public virtual FinancialMovement TurnOverTrans { get; set; }
 
         public int? TransCustomerDefaultDocSeriesId { get; set; }
-        public virtual TransCustomerDocSeriesDef TransCustomerDefaultDocSeries { get; set; }
+        //public virtual TransCustomerDocSeriesDef TransCustomerDefaultDocSeries { get; set; }
         /// <summary>
         /// Εταιρεία για την οποία είναι ενεργή η κίνηση
         /// </summary>
