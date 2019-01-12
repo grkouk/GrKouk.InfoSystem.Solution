@@ -1,0 +1,49 @@
+﻿@page
+@model GrKouk.WebRazor.Pages.Configuration.CustomerTransDocTypes.DetailsModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>TransCustomerDocTypeDef</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.TransCustomerDocTypeDef.Code)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.TransCustomerDocTypeDef.Code)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.TransCustomerDocTypeDef.Name)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.TransCustomerDocTypeDef.Name)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.TransCustomerDocTypeDef.Active)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.TransCustomerDocTypeDef.Active)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.TransCustomerDocTypeDef.TransCustomerDef)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.TransCustomerDocTypeDef.TransCustomerDef.Id)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.TransCustomerDocTypeDef.Company)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.TransCustomerDocTypeDef.Company.Code)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-page="./Edit" asp-route-id="@Model.TransCustomerDocTypeDef.Id">Edit</a> |
+    <a asp-page="./Index">Back to List</a>
+</div>

@@ -14,9 +14,7 @@ namespace GrKouk.InfoSystem.Domain.FinConfig
         public string Name { get; set; }
         [Display(Name = "Ενεργό")]
         public bool Active { get; set; }
-        /// <summary>
-        /// Κωδικός κίνησης προμηθευτή που δημιουργεί αυτός ο τύπος παραστατικού
-        /// </summary>
+       
         [Display(Name = "Κίνηση Προμηθευτή")]
         public int? TransSupplierDefId { get; set; }
         public TransSupplierDef TransSupplierDef { get; set; }

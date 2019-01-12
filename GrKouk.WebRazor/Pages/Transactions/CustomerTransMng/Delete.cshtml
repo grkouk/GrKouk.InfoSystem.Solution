@@ -1,0 +1,94 @@
+﻿@page
+@model GrKouk.WebRazor.Pages.Transactions.CustomerTransMng.DeleteModel
+
+@{
+    ViewData["Title"] = "Delete";
+    var formDisabled = Model.NotUpdatable ? "disabled" : "";
+}
+
+<h4>Delete CustomerTransaction</h4>
+@{
+    if (Model.NotUpdatable)
+    {
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <strong>Not updateable!</strong> This transaction is from other section and cannot be updated.
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    }
+}
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.CustomerTransaction.TransDate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.CustomerTransaction.TransDate)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.CustomerTransaction.TransCustomerDocSeries)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.CustomerTransaction.TransCustomerDocSeries.Name)
+        </dd>
+        
+        <dt>
+            @Html.DisplayNameFor(model => model.CustomerTransaction.TransRefCode)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.CustomerTransaction.TransRefCode)
+        </dd>
+        
+        <dt>
+            @Html.DisplayNameFor(model => model.CustomerTransaction.Customer)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.CustomerTransaction.Customer.Name)
+        </dd>
+       
+        <dt>
+            @Html.DisplayNameFor(model => model.CustomerTransaction.AmountFpa)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.CustomerTransaction.AmountFpa)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.CustomerTransaction.AmountNet)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.CustomerTransaction.AmountNet)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.CustomerTransaction.AmountDiscount)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.CustomerTransaction.AmountDiscount)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.CustomerTransaction.Etiology)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.CustomerTransaction.Etiology)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.CustomerTransaction.Company)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.CustomerTransaction.Company.Code)
+        </dd>
+      
+    </dl>
+
+    <form method="post">
+        <fieldset @formDisabled>
+            <input type="hidden" asp-for="CustomerTransaction.Id" />
+            <input type="submit" value="Delete" class="btn btn-primary" /> |
+            <a asp-page="./Index">Back to List</a>
+        </fieldset>
+    </form>
+</div>

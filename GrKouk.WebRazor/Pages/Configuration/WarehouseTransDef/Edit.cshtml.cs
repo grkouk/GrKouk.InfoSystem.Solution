@@ -56,64 +56,64 @@ namespace GrKouk.WebRazor.Pages.Configuration.WarehouseTransDef
         {
             var fMovements = _context.FinancialMovements.AsNoTracking().ToList();
            
-            List<SelectListItem> inventoryTransTypes = new List<SelectListItem>
+            List<SelectListItem> inventoryActions = new List<SelectListItem>
             {
                 new SelectListItem()
                 {
-                    Value = WarehouseInventoryTransTypeEnum.WarehouseInventoryTransTypeEnumNoChange.ToString(),
+                    Value = InventoryActionEnum.InventoryActionEnumNoChange.ToString(),
                     Text = "No Change"
                 },
                 new SelectListItem()
                 {
-                    Value = WarehouseInventoryTransTypeEnum.WarehouseInventoryTransTypeEnumExport.ToString(),
+                    Value = InventoryActionEnum.InventoryActionEnumExport.ToString(),
                     Text = "Export"
                 },
                 new SelectListItem()
                 {
-                    Value = WarehouseInventoryTransTypeEnum.WarehouseInventoryTransTypeEnumImport.ToString(),
+                    Value = InventoryActionEnum.InventoryActionEnumImport.ToString(),
                     Text = "Import"
                 },
                 new SelectListItem()
                 {
-                    Value = WarehouseInventoryTransTypeEnum.WarehouseInventoryTransTypeEnumNegativeExport.ToString(),
+                    Value = InventoryActionEnum.InventoryActionEnumNegativeExport.ToString(),
                     Text = "Neg.Export"
                 },
                 new SelectListItem()
                 {
-                    Value = WarehouseInventoryTransTypeEnum.WarehouseInventoryTransTypeEnumNegativeImport.ToString(),
+                    Value = InventoryActionEnum.InventoryActionEnumNegativeImport.ToString(),
                     Text = "Neg.Import"
                 }
             };
-            List<SelectListItem> inventoryValueTransTypes = new List<SelectListItem>
+            List<SelectListItem> inventoryValueActions = new List<SelectListItem>
             {
                 new SelectListItem()
                 {
-                    Value = WarehouseValueTransTypeEnum.WarehouseValueTransTypeEnumNoChange.ToString(),
+                    Value = InventoryValueActionEnum.InventoryValueActionEnumNoChange.ToString(),
                     Text = "No Change"
                 },
                 new SelectListItem()
                 {
-                    Value = WarehouseValueTransTypeEnum.WarehouseValueTransTypeEnumDecrease.ToString(),
+                    Value = InventoryValueActionEnum.InventoryValueActionEnumDecrease.ToString(),
                     Text = "Decrease"
                 },
                 new SelectListItem()
                 {
-                    Value = WarehouseValueTransTypeEnum.WarehouseValueTransTypeEnumIncrease.ToString(),
+                    Value = InventoryValueActionEnum.InventoryValueActionEnumIncrease.ToString(),
                     Text = "Increase"
                 },
                 new SelectListItem()
                 {
-                    Value = WarehouseValueTransTypeEnum.WarehouseValueTransTypeEnumNegativeDecrease.ToString(),
+                    Value = InventoryValueActionEnum.InventoryValueActionEnumNegativeDecrease.ToString(),
                     Text = "Neg.Decrease"
                 },
                 new SelectListItem()
                 {
-                    Value = WarehouseValueTransTypeEnum.WarehouseValueTransTypeEnumNegativeIncrease.ToString(),
+                    Value = InventoryValueActionEnum.InventoryValueActionEnumNegativeIncrease.ToString(),
                     Text = "Neg.Increase"
                 }
             };
-            ViewData["InventoryTransTypes"] = new SelectList(inventoryTransTypes, "Value", "Text");
-            ViewData["InventoryValueTransTypes"] = new SelectList(inventoryValueTransTypes, "Value", "Text");
+            ViewData["InventoryActions"] = new SelectList(inventoryActions, "Value", "Text");
+            ViewData["InventoryValueActions"] = new SelectList(inventoryValueActions, "Value", "Text");
             ViewData["AmtBuyTransId"] = new SelectList(fMovements, "Id", "Name", 3);
             ViewData["AmtInvoicedExportsTransId"] = new SelectList(fMovements, "Id", "Name", 3);
             ViewData["AmtInvoicedImportsTransId"] = new SelectList(fMovements, "Id", "Name", 3);
@@ -130,7 +130,7 @@ namespace GrKouk.WebRazor.Pages.Configuration.WarehouseTransDef
             {
                 seriesList.Add(new SelectListItem() { Value = dbSeriesItem.Id.ToString(), Text = dbSeriesItem.Name });
             }
-            ViewData["TransWarehouseDefaultDocSeriesDefId"] = new SelectList(seriesList, "Value", "Text");
+            ViewData["DefaultDocSeriesId"] = new SelectList(seriesList, "Value", "Text");
         }
         public async Task<IActionResult> OnPostAsync()
         {

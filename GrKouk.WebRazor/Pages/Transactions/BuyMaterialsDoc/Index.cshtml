@@ -16,12 +16,19 @@
 <form class="form-inline" asp-page="./Index" method="get">
 
     <p>
-        Find by name:
-        <input class="form-control-sm" type="text" name="SearchString" value="@Model.CurrentFilter" />
-        <select name="DatePeriodFilter" asp-for="CurrentDatePeriod" class="form-control-sm" asp-items="ViewBag.DataFilterValues"></select>
-        <input type="submit" value="Refresh" class="btn btn-light" /> |
-        Page Size:
-        <select asp-for="PageSize" onchange="this.form.submit()">
+        <small>
+            Find by name:
+        </small>
+        <input class="form-control form-control-sm small" type="text" name="SearchString" value="@Model.CurrentFilter" />
+        <input type="submit" value="Refresh" class="btn btn-light btn-sm" /> |
+        <small>
+            Period:
+        </small>
+        <select name="DatePeriodFilter" asp-for="CurrentDatePeriod" class="form-control form-control-sm small" asp-items="ViewBag.DataFilterValues"
+                onchange="this.form.submit()"></select>
+
+        <small> Page Size:</small>
+        <select asp-for="PageSize" onchange="this.form.submit()" class="form-control form-control-sm small">
             <option value="3">3</option>
             <option value="5">5</option>
             <option value="10">10</option>
@@ -29,9 +36,9 @@
             <option value="100">100</option>
         </select>
         |
-        <a asp-page="./Index"
+        <a class="small" asp-page="./Index"
            asp-route-sortOrder="@Model.CurrentSort"
-           asp-route-pageIndex="@(Model.ListItems.CurrentPage )"
+           asp-route-pageIndex="@(Model.ListItems.CurrentPage)"
            asp-route-currentFilter="@Model.CurrentFilter"
            asp-route-datePeriodFilter="CURMONTH"
            asp-route-PageSize="@Model.PageSize">Back to full List</a>
@@ -42,7 +49,7 @@
 <table class="table table-bordered table-sm">
     <thead>
         <tr>
-            <th>
+            <th class="small">
                 <a asp-page="./Index"
                    asp-route-sortOrder="@Model.DateSort"
                    asp-route-searchFilter="@Model.CurrentFilter"
@@ -53,10 +60,10 @@
                 <i class="@Model.DateSortIcon"></i>
             </th>
 
-            <th>
+            <th class="small">
                 @Html.DisplayNameFor(model => model.ListItems[0].MaterialDocSeriesCode)
             </th>
-            <th>
+            <th class="small">
                 <a asp-page="./Index" asp-route-sortOrder="@Model.NameSort"
                    asp-route-searchFilter="@Model.CurrentFilter"
                    asp-route-datePeriodFilter="@Model.CurrentDatePeriod"
@@ -66,42 +73,42 @@
                 <i class="@Model.NameSortIcon"></i>
             </th>
 
-            <th>
+            <th class="small">
                 @Html.DisplayNameFor(model => model.ListItems[0].TransRefCode)
             </th>
-            <th>
+            <th class="small">
                 @Html.DisplayNameFor(model => model.ListItems[0].TotalAmount)
             </th>
-            <th>
+            <th class="small">
                 @Html.DisplayNameFor(model => model.ListItems[0].CompanyCode)
             </th>
-            <th></th>
+            <th class="small"></th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model.ListItems)
         {
             <tr>
-                <td>
+              <td class="small">
                     @Html.DisplayFor(modelItem => item.TransDate)
                 </td>
-                <td>
+              <td class="small">
                     @Html.DisplayFor(modelItem => item.MaterialDocSeriesCode)
                 </td>
-                <td>
+              <td class="small">
                     @Html.DisplayFor(modelItem => item.SupplierName)
                 </td>
-                <td>
+              <td class="small">
                     @Html.DisplayFor(modelItem => item.TransRefCode)
                 </td>
-                <td>
+              <td class="small">
                     @Html.DisplayFor(modelItem => item.TotalAmount)
                 </td>
-                <td>
+              <td class="small">
                     @Html.DisplayFor(modelItem => item.CompanyCode)
                 </td>
 
-                <td>
+              <td class="small">
                     <a asp-page="./Edit" asp-route-id="@item.Id"><i class="fas fa-edit"></i></a> |
                     <a asp-page="./Details" asp-route-id="@item.Id"><i class="fas fa-info-circle"></i></a> |
                     <a asp-page="./Delete" asp-route-id="@item.Id"><i class="fas fa-trash"></i></a>
@@ -126,15 +133,16 @@
        class="btn btn-light @prevDisabled">
         <
     </a>
-    Page:@Model.ListItems.CurrentPage of @Model.TotalPages Total Items @Model.TotalCount
-    <a asp-page="./Index"
-       asp-route-sortOrder="@Model.CurrentSort"
-       asp-route-pageIndex="@(Model.ListItems.CurrentPage + 1)"
-       asp-route-searchFilter="@Model.CurrentFilter"
-       asp-route-datePeriodFilter="@Model.CurrentDatePeriod"
-       asp-route-PageSize="@Model.PageSize"
-       class="btn btn-light @nextDisabled">
-        >
-    </a>
+    <small>
+        Page:@Model.ListItems.CurrentPage of @Model.TotalPages Total Items @Model.TotalCount </small>
+        <a asp-page="./Index"
+           asp-route-sortOrder="@Model.CurrentSort"
+           asp-route-pageIndex="@(Model.ListItems.CurrentPage + 1)"
+           asp-route-searchFilter="@Model.CurrentFilter"
+           asp-route-datePeriodFilter="@Model.CurrentDatePeriod"
+           asp-route-PageSize="@Model.PageSize"
+           class="btn btn-light @nextDisabled">
+            >
+        </a>
 
 </form>

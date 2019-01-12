@@ -35,8 +35,8 @@ namespace GrKouk.InfoSystem.Domain.Shared
         /// </summary>
         public WarehouseTransactionTypeEnum TransactionType { get; set; }
 
-        public WarehouseInventoryTransTypeEnum InventoryAction { get; set; }
-        public WarehouseValueTransTypeEnum InventoryValueAction { get; set; }
+        public InventoryActionEnum InventoryAction { get; set; }
+        public InventoryValueActionEnum InventoryValueAction { get; set; }
         /// <summary>
         /// Ανάλογα με το sectionid το πεδίο αυτό περιέχει το id του αντικειμένου που ορίζει το sectionID 
         /// </summary>
@@ -60,6 +60,11 @@ namespace GrKouk.InfoSystem.Domain.Shared
         public decimal AmountFpa { get; set; }
         public decimal AmountNet { get; set; }
         public decimal AmountDiscount { get; set; }
+        public decimal TransQ1 { get; set; }
+        public decimal TransQ2 { get; set; }
+        public decimal TransFpaAmount { get; set; }
+        public decimal TransNetAmount { get; set; }
+        public decimal TransDiscountAmount { get; set; }
         [MaxLength(500)]
         public string Etiology { get; set; }
 

@@ -54,28 +54,28 @@
     /// <summary>
     /// Warehouse Transaction New Type Enum
     /// </summary>
-    public enum WarehouseInventoryTransTypeEnum
+    public enum InventoryActionEnum
     {
-        WarehouseInventoryTransTypeEnumNoChange = 0,
-        WarehouseInventoryTransTypeEnumImport = 1,
-        WarehouseInventoryTransTypeEnumExport = 2,
-        WarehouseInventoryTransTypeEnumNegativeImport = 3,
-        WarehouseInventoryTransTypeEnumNegativeExport = 4
+        InventoryActionEnumNoChange = 0,
+        InventoryActionEnumImport = 1,
+        InventoryActionEnumExport = 2,
+        InventoryActionEnumNegativeImport = 3,
+        InventoryActionEnumNegativeExport = 4
     }
-    public enum WarehouseValueTransTypeEnum
+    public enum InventoryValueActionEnum
     {
-        WarehouseValueTransTypeEnumNoChange = 0,
-        WarehouseValueTransTypeEnumIncrease = 1,
-        WarehouseValueTransTypeEnumDecrease = 2,
-        WarehouseValueTransTypeEnumNegativeIncrease = 3,
-        WarehouseValueTransTypeEnumNegativeDecrease = 4
+        InventoryValueActionEnumNoChange = 0,
+        InventoryValueActionEnumIncrease = 1,
+        InventoryValueActionEnumDecrease = 2,
+        InventoryValueActionEnumNegativeIncrease = 3,
+        InventoryValueActionEnumNegativeDecrease = 4
     }
-    public enum FinancialTransTypeEnum
+    public enum FinActionsEnum
     {
-        FinancialTransTypeNoChange = 0,
-        FinancialTransTypeDebit = 1,
-        FinancialTransTypeCredit = 2,
-        FinancialTransTypeNegativeDebit = 3,
-        FinancialTransTypeNegativeCredit = 4
+        FinActionsEnumNoChange = 0,
+        FinActionsEnumDebit = 1,
+        FinActionsEnumCredit = 2,
+        FinActionsEnumNegativeDebit = 3,
+        FinActionsEnumNegativeCredit = 4
     }
 }

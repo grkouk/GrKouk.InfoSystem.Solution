@@ -15,12 +15,20 @@
 <form class="form-inline" asp-page="./Index" method="get">
 
     <p>
-        Find by name:
-        <input class="form-control-sm" type="text" name="SearchString" value="@Model.CurrentFilter" />
-        <select name="DatePeriodFilter" asp-for="CurrentDatePeriod" class="form-control-sm" asp-items="ViewBag.DataFilterValues"></select>
-        <input type="submit" value="Refresh" class="btn btn-light" /> |
-        Page Size:
-        <select asp-for="PageSize" onchange="this.form.submit()">
+        <small>
+            Find by name:
+        </small>
+        <input class="form-control form-control-sm" type="text" name="SearchString" value="@Model.CurrentFilter" />
+        <input type="submit" value="Search" class="btn btn-light" /> |
+        <small>
+            Period:
+        </small>
+        <select name="DatePeriodFilter" asp-for="CurrentDatePeriod" class="form-control form-control-sm" onchange="this.form.submit()" 
+                asp-items="ViewBag.DataFilterValues"></select>
+        <small>
+            Page Size:
+        </small>
+        <select asp-for="PageSize" onchange="this.form.submit()" class="form-control form-control-sm">
             <option value="3">3</option>
             <option value="5">5</option>
             <option value="10">10</option>
@@ -28,9 +36,9 @@
             <option value="100">100</option>
         </select>
         |
-        <a asp-page="./Index"
+        <a asp-page="./Index" class="small"
            asp-route-sortOrder="@Model.CurrentSort"
-           asp-route-pageIndex="@(Model.ListItems.CurrentPage )"
+           asp-route-pageIndex="@(Model.ListItems.CurrentPage)"
            asp-route-currentFilter="@Model.CurrentFilter"
            asp-route-datePeriodFilter="CURMONTH"
            asp-route-PageSize="@Model.PageSize">Back to full List</a>
@@ -42,7 +50,7 @@
 <table class="table table-bordered table-sm">
     <thead class="thead-light">
         <tr>
-            <th>
+            <th class="small">
                 <a asp-page="./Index" asp-route-sortOrder="@Model.DateSort"
                    asp-route-searchFilter="@Model.CurrentFilter"
                    asp-route-datePeriodFilter="@Model.CurrentDatePeriod"
@@ -53,17 +61,17 @@
                 <i class="@Model.DateSortIcon"></i>
             </th>
 
-            <th>
+            <th class="small">
                 @Html.DisplayNameFor(model => model.ListItems[0].TransWarehouseDocSeriesName)
             </th>
-            @*<th>
+            @*<th class="small">
                     @Html.DisplayNameFor(model => model.ListItems[0].SectionCode)
                 </th>*@
-            <th>
+            <th class="small">
                 @Html.DisplayNameFor(model => model.ListItems[0].TransRefCode)
             </th>
 
-            <th>
+            <th class="small">
                 <a asp-page="./Index" asp-route-sortOrder="@Model.NameSort"
                    asp-route-searchFilter="@Model.CurrentFilter"
                    asp-route-datePeriodFilter="@Model.CurrentDatePeriod"
@@ -73,65 +81,65 @@
 
                 <i class="@Model.NameSortIcon"></i>
             </th>
-            <th>
+            <th class="small">
                 @Html.DisplayNameFor(model => model.ListItems[0].ImportUnits)
             </th>
-            <th>
+            <th class="small">
                 @Html.DisplayNameFor(model => model.ListItems[0].ExportUnits)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ListItems[0].DebitAmount)
+            <th class="small">
+                @Html.DisplayNameFor(model => model.ListItems[0].ImportAmount)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ListItems[0].CreditAmount)
+            <th class="small">
+                @Html.DisplayNameFor(model => model.ListItems[0].ExportAmount)
             </th>
 
-            <th>
+            <th class="small">
                 @Html.DisplayNameFor(model => model.ListItems[0].CompanyCode)
             </th>
 
-            <th></th>
+            <th class="small"></th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model.ListItems)
         {
             <tr>
-                <td class="text-right">
+                <td class="text-right small">
                     @Html.DisplayFor(modelItem => item.TransDate)
                 </td>
-                <td>
+                <td class="small">
                     @Html.DisplayFor(modelItem => item.TransWarehouseDocSeriesName)
                 </td>
-                @*<td>
+                @*<td class="small">
                         @Html.DisplayFor(modelItem => item.SectionCode)
                     </td>*@
-                <td>
+                <td class="small">
                     @Html.DisplayFor(modelItem => item.TransRefCode)
                 </td>
-                <td>
+                <td class="small">
                     @Html.DisplayFor(modelItem => item.MaterialName)
                 </td>
-                <td class="text-right">
+                <td class="text-right small">
                     @Html.DisplayFor(modelItem => item.ImportUnits)
                 </td>
-                <td class="text-right">
+                <td class="text-right small">
                     @Html.DisplayFor(modelItem => item.ExportUnits)
                 </td>
-                <td class="text-right">
-                    @Html.DisplayFor(modelItem => item.DebitAmount)
+                <td class="text-right small">
+                    @Html.DisplayFor(modelItem => item.ImportAmount)
                 </td>
-                <td class="text-right">
-                    @Html.DisplayFor(modelItem => item.CreditAmount)
+                <td class="text-right small">
+                    @Html.DisplayFor(modelItem => item.ExportAmount)
                 </td>
 
 
 
-                <td>
+                <td class="small">
                     @Html.DisplayFor(modelItem => item.CompanyCode)
                 </td>
 
-                <td>
+                <td class="small">
                     <a asp-page="./Edit" asp-route-id="@item.Id"><i class="fas fa-edit"></i></a> |
                     <a asp-page="./Details" asp-route-id="@item.Id"><i class="fas fa-info-circle"></i></a> |
                     <a asp-page="./Delete" asp-route-id="@item.Id"><i class="fas fa-trash"></i></a>
@@ -157,15 +165,17 @@
        class="btn btn-light @prevDisabled">
         <
     </a>
-    Page:@Model.ListItems.CurrentPage of @Model.ListItems.TotalPages Total Items @Model.ListItems.TotalCount
-    <a asp-page="./Index"
-       asp-route-sortOrder="@Model.CurrentSort"
-       asp-route-pageIndex="@(Model.ListItems.CurrentPage + 1)"
-       asp-route-searchFilter="@Model.CurrentFilter"
-       asp-route-datePeriodFilter="@Model.CurrentDatePeriod"
-       asp-route-PageSize="@Model.PageSize"
-       class="btn btn-light @nextDisabled">
-        >
-    </a>
+    <small>
+        Page:@Model.ListItems.CurrentPage of @Model.ListItems.TotalPages Total Items @Model.ListItems.TotalCount
+</small>
+        <a asp-page="./Index"
+           asp-route-sortOrder="@Model.CurrentSort"
+           asp-route-pageIndex="@(Model.ListItems.CurrentPage + 1)"
+           asp-route-searchFilter="@Model.CurrentFilter"
+           asp-route-datePeriodFilter="@Model.CurrentDatePeriod"
+           asp-route-PageSize="@Model.PageSize"
+           class="btn btn-light @nextDisabled">
+            >
+        </a>
 
 </form>

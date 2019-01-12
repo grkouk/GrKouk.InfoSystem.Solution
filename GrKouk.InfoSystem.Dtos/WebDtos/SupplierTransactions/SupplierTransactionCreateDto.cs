@@ -17,12 +17,6 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.SupplierTransactions
         public virtual TransSupplierDocSeriesDef TransSupplierDocSeries { get; set; }
 
         public int TransSupplierDocTypeId { get; set; }
-       
-
-
-        /// <summary>
-        /// Αριθμός Παραστατικού
-        /// </summary>
         public string TransRefCode { get; set; }
 
         public int SectionId { get; set; }
@@ -33,12 +27,8 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.SupplierTransactions
 
         public int FiscalPeriodId { get; set; }
 
-        /// <summary>
-        /// Debit or Credit
-        /// </summary>
+       
         public FinancialTransactionTypeEnum TransactionType { get; set; }
-
-
 
 
         [Display(Name = "VAT%")]

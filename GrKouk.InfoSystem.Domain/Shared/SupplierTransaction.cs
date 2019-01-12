@@ -16,11 +16,7 @@ namespace GrKouk.InfoSystem.Domain.Shared
 
         public int TransSupplierDocTypeId { get; set; }
         public virtual TransSupplierDocTypeDef TransSupplierDocType { get; set; }
-
-
-        /// <summary>
-        /// Αριθμός Παραστατικού
-        /// </summary>
+     
         public string TransRefCode { get; set; }
 
         public int SectionId { get; set; }
@@ -36,10 +32,8 @@ namespace GrKouk.InfoSystem.Domain.Shared
         /// </summary>
         public FinancialTransactionTypeEnum TransactionType { get; set; }
 
-        public FinancialTransTypeEnum FinancialAction { get; set; }
-        /// <summary>
-        /// Ανάλογα με το sectionid το πεδίο αυτό περιέχει το id του αντικειμένου που ορίζει το sectionID 
-        /// </summary>
+        public FinActionsEnum FinancialAction { get; set; }
+       
         public int CreatorId { get; set; }
 
       

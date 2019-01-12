@@ -8,8 +8,10 @@ using GrKouk.InfoSystem.Domain.Shared;
 using GrKouk.InfoSystem.Dtos;
 using GrKouk.InfoSystem.Dtos.WebDtos;
 using GrKouk.InfoSystem.Dtos.WebDtos.BuyMaterialsDocs;
+using GrKouk.InfoSystem.Dtos.WebDtos.CustomerTransactions;
 using GrKouk.InfoSystem.Dtos.WebDtos.Materials;
 using GrKouk.InfoSystem.Dtos.WebDtos.SupplierTransactions;
+using GrKouk.InfoSystem.Dtos.WebDtos.TransactorTransactions;
 using GrKouk.InfoSystem.Dtos.WebDtos.WarehouseTransactions;
 
 namespace GrKouk.WebRazor.Automapper
@@ -75,8 +77,24 @@ namespace GrKouk.WebRazor.Automapper
             CreateMap<WarehouseTransaction, WarehouseTransListDto>();
             CreateMap<WarehouseTransaction, WarehouseTransCreateDto>().ReverseMap();
             CreateMap<WarehouseTransaction, WarehouseTransModifyDto>().ReverseMap();
-
+            CreateMap<CustomerTransaction, CustomerTransactionCreateDto>()
+                .ReverseMap();
+            CreateMap<CustomerTransaction, CustomerTransactionModifyDto>()
+                .ReverseMap();
+            CreateMap<CustomerTransaction, CustomerTransactionListDto>()
+                .ForMember(dest => dest.TransCustomerSeriesCode, opt => opt.MapFrom(src => src.TransCustomerDocSeries.Code))
+                .ForMember(dest => dest.TransCustomerSeriesName, opt => opt.MapFrom(src => src.TransCustomerDocSeries.Name));
+            CreateMap<TransactorTransaction, TransactorTransCreateDto>()
+                .ReverseMap();
+            CreateMap<TransactorTransaction, TransactorTransModifyDto>()
+                .ReverseMap();
+            CreateMap<TransactorTransaction, TransactorTransListDto>()
+                .ForMember(dest => dest.TransTransactorDocSeriesCode, opt => opt.MapFrom(src => src.TransTransactorDocSeries.Code))
+                .ForMember(dest => dest.TransTransactorDocSeriesName, opt => opt.MapFrom(src => src.TransTransactorDocSeries.Name));
             //CreateMap<WarehouseTransaction, BuyMaterialsDocCreateAjaxDto>().ReverseMap();
+            CreateMap<TransactorTransaction, BuyMaterialsDocCreateAjaxDto>().ReverseMap();
+            CreateMap<TransactorTransaction, BuyMaterialsDocModifyAjaxDto>().ReverseMap();
+            CreateMap<TransactorTransCreateDto, BuyMaterialsDocModifyAjaxDto>().ReverseMap();
         }
     }
 }

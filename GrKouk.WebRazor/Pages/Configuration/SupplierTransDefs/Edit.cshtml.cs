@@ -48,36 +48,36 @@ namespace GrKouk.WebRazor.Pages.Configuration.SupplierTransDefs
 
         private void LoadCombos()
         {
-            List<SelectListItem> financialTransTypes = new List<SelectListItem>
+            List<SelectListItem> financialActions = new List<SelectListItem>
             {
                 new SelectListItem()
                 {
-                    Value = FinancialTransTypeEnum.FinancialTransTypeNoChange.ToString(),
+                    Value = FinActionsEnum.FinActionsEnumNoChange.ToString(),
                     Text = "No Change"
                 },
                 new SelectListItem()
                 {
-                    Value = FinancialTransTypeEnum.FinancialTransTypeDebit.ToString(),
+                    Value = FinActionsEnum.FinActionsEnumDebit.ToString(),
                     Text = "Debit"
                 },
                 new SelectListItem()
                 {
-                    Value = FinancialTransTypeEnum.FinancialTransTypeCredit.ToString(),
+                    Value = FinActionsEnum.FinActionsEnumCredit.ToString(),
                     Text = "Credit"
                 },
 
                 new SelectListItem()
                 {
-                    Value = FinancialTransTypeEnum.FinancialTransTypeNegativeDebit.ToString(),
+                    Value = FinActionsEnum.FinActionsEnumNegativeDebit.ToString(),
                     Text = "Neg.Debit"
                 },
                 new SelectListItem()
                 {
-                    Value = FinancialTransTypeEnum.FinancialTransTypeNegativeCredit.ToString(),
+                    Value = FinActionsEnum.FinActionsEnumNegativeCredit.ToString(),
                     Text = "Neg.Credit"
                 }
             };
-            ViewData["FinancialTransTypes"] = new SelectList(financialTransTypes, "Value", "Text");
+            ViewData["FinancialActions"] = new SelectList(financialActions, "Value", "Text");
             ViewData["CompanyId"] = new SelectList(_context.Companies.OrderBy(p => p.Code).AsNoTracking(), "Id", "Code");
             ViewData["TurnOverTransId"] = new SelectList(_context.FinancialMovements.AsNoTracking(), "Id", "Name");
 
@@ -88,7 +88,7 @@ namespace GrKouk.WebRazor.Pages.Configuration.SupplierTransDefs
             {
                 seriesList.Add(new SelectListItem() { Value = dbSeriesItem.Id.ToString(), Text = dbSeriesItem.Name });
             }
-            ViewData["TransSupplierDefaultDocSeriesId"] = new SelectList(seriesList, "Value", "Text");
+            ViewData["DefaultDocSeriesId"] = new SelectList(seriesList, "Value", "Text");
         }
 
         public async Task<IActionResult> OnPostAsync()

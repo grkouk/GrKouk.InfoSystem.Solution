@@ -22,8 +22,8 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.WarehouseTransactions
         [Display(Name = "Fiscal Period")]
         public int FiscalPeriodId { get; set; }
         public WarehouseTransactionTypeEnum TransactionType { get; set; }
-        public WarehouseInventoryTransTypeEnum InventoryAction { get; set; }
-        public WarehouseValueTransTypeEnum InventoryValueAction { get; set; }
+        public InventoryActionEnum InventoryAction { get; set; }
+        public InventoryValueActionEnum InventoryValueAction { get; set; }
         public int SectionId { get; set; }
         [Display(Name = "Main Unit")]
         public int PrimaryUnitId { get; set; }

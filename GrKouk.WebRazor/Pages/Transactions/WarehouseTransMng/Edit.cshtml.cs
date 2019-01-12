@@ -119,62 +119,76 @@ namespace GrKouk.WebRazor.Pages.Transactions.WarehouseTransMng
 
             var transWarehouseDef = docTypeDef.TransWarehouseDef;
             transToAttach.TransWarehouseDocTypeId = docSeries.TransWarehouseDocTypeDefId;
-            transToAttach.InventoryAction = transWarehouseDef.InventoryTransType;
-            switch (transWarehouseDef.InventoryTransType)
+            transToAttach.InventoryAction = transWarehouseDef.InventoryAction;
+            switch (transWarehouseDef.InventoryAction)
             {
-                case WarehouseInventoryTransTypeEnum.WarehouseInventoryTransTypeEnumNoChange:
+                case InventoryActionEnum.InventoryActionEnumNoChange:
                     transToAttach.TransactionType =
                         WarehouseTransactionTypeEnum.WarehouseTransactionTypeIgnore;
+                    transToAttach.TransQ1 = 0;
+                    transToAttach.TransQ2 = 0;
                     break;
-                case WarehouseInventoryTransTypeEnum.WarehouseInventoryTransTypeEnumImport:
+                case InventoryActionEnum.InventoryActionEnumImport:
 
                     transToAttach.TransactionType =
                         WarehouseTransactionTypeEnum.WarehouseTransactionTypeImport;
+                    transToAttach.TransQ1 = (decimal)transToAttach.Quontity1;
+                    transToAttach.TransQ2 = (decimal)transToAttach.Quontity2;
                     break;
-                case WarehouseInventoryTransTypeEnum.WarehouseInventoryTransTypeEnumExport:
+                case InventoryActionEnum.InventoryActionEnumExport:
 
                     transToAttach.TransactionType =
                         WarehouseTransactionTypeEnum.WarehouseTransactionTypeExport;
+                    transToAttach.TransQ1 = (decimal)transToAttach.Quontity1;
+                    transToAttach.TransQ2 = (decimal)transToAttach.Quontity2;
                     break;
-                case WarehouseInventoryTransTypeEnum.WarehouseInventoryTransTypeEnumNegativeImport:
+                case InventoryActionEnum.InventoryActionEnumNegativeImport:
 
                     transToAttach.TransactionType =
                         WarehouseTransactionTypeEnum.WarehouseTransactionTypeImport;
-                    transToAttach.Quontity1 = transToAttach.Quontity1 * -1;
-                    transToAttach.Quontity2 = transToAttach.Quontity2 * -1;
+                    transToAttach.TransQ1 = (decimal)transToAttach.Quontity1 * -1;
+                    transToAttach.TransQ2 = (decimal)transToAttach.Quontity2 * -1;
                     break;
-                case WarehouseInventoryTransTypeEnum.WarehouseInventoryTransTypeEnumNegativeExport:
+                case InventoryActionEnum.InventoryActionEnumNegativeExport:
 
                     transToAttach.TransactionType =
                         WarehouseTransactionTypeEnum.WarehouseTransactionTypeExport;
-                    transToAttach.Quontity1 = transToAttach.Quontity1 * -1;
-                    transToAttach.Quontity2 = transToAttach.Quontity2 * -1;
+                    transToAttach.TransQ1 = (decimal)transToAttach.Quontity1 * -1;
+                    transToAttach.TransQ2 = (decimal)transToAttach.Quontity2 * -1;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
 
-            transToAttach.InventoryValueAction = transWarehouseDef.InventoryValueTransType;
+            transToAttach.InventoryValueAction = transWarehouseDef.InventoryValueAction;
 
-            switch (transWarehouseDef.InventoryValueTransType)
+            switch (transWarehouseDef.InventoryValueAction)
             {
-                case WarehouseValueTransTypeEnum.WarehouseValueTransTypeEnumNoChange:
+                case InventoryValueActionEnum.InventoryValueActionEnumNoChange:
+                    transToAttach.TransNetAmount = 0;
+                    transToAttach.TransFpaAmount = 0;
+                    transToAttach.TransDiscountAmount = 0;
                     break;
-                case WarehouseValueTransTypeEnum.WarehouseValueTransTypeEnumIncrease:
+                case InventoryValueActionEnum.InventoryValueActionEnumIncrease:
+                    transToAttach.TransNetAmount = transToAttach.AmountNet;
+                    transToAttach.TransFpaAmount = transToAttach.AmountFpa;
+                    transToAttach.TransDiscountAmount = transToAttach.AmountDiscount;
+                    break;
+                case InventoryValueActionEnum.InventoryValueActionEnumDecrease:
+                    transToAttach.TransNetAmount = transToAttach.AmountNet;
+                    transToAttach.TransFpaAmount = transToAttach.AmountFpa;
+                    transToAttach.TransDiscountAmount = transToAttach.AmountDiscount;
+                    break;
+                case InventoryValueActionEnum.InventoryValueActionEnumNegativeIncrease:
+                    transToAttach.TransNetAmount = transToAttach.AmountNet * -1;
+                    transToAttach.TransFpaAmount = transToAttach.AmountFpa * -1;
+                    transToAttach.TransDiscountAmount = transToAttach.AmountDiscount * -1;
 
                     break;
-                case WarehouseValueTransTypeEnum.WarehouseValueTransTypeEnumDecrease:
-
-                    break;
-                case WarehouseValueTransTypeEnum.WarehouseValueTransTypeEnumNegativeIncrease:
-                    transToAttach.AmountNet = transToAttach.AmountNet * -1;
-                    transToAttach.AmountDiscount = transToAttach.AmountDiscount * -1;
-                    transToAttach.AmountFpa = transToAttach.AmountFpa * -1;
-                    break;
-                case WarehouseValueTransTypeEnum.WarehouseValueTransTypeEnumNegativeDecrease:
-                    transToAttach.AmountNet = transToAttach.AmountNet * -1;
-                    transToAttach.AmountDiscount = transToAttach.AmountDiscount * -1;
-                    transToAttach.AmountFpa = transToAttach.AmountFpa * -1;
+                case InventoryValueActionEnum.InventoryValueActionEnumNegativeDecrease:
+                    transToAttach.TransNetAmount = transToAttach.AmountNet * -1;
+                    transToAttach.TransFpaAmount = transToAttach.AmountFpa * -1;
+                    transToAttach.TransDiscountAmount = transToAttach.AmountDiscount * -1;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

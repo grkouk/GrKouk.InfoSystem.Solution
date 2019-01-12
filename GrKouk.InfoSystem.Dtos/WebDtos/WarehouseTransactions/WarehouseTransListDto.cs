@@ -31,8 +31,8 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.WarehouseTransactions
       
         public WarehouseTransactionTypeEnum TransactionType { get; set; }
 
-        public WarehouseInventoryTransTypeEnum InventoryAction { get; set; }
-        public WarehouseValueTransTypeEnum InventoryValueAction { get; set; }
+        public InventoryActionEnum InventoryAction { get; set; }
+        public InventoryValueActionEnum InventoryValueAction { get; set; }
        
         public double Quontity1 { get; set; }
         public double Quontity2 { get; set; }
@@ -40,37 +40,51 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.WarehouseTransactions
         public decimal UnitPrice { get; set; }
         public decimal AmountFpa { get; set; }
         public decimal AmountNet { get; set; }
+        public decimal TransQ1 { get; set; }
+        public decimal TransQ2 { get; set; }
         public decimal AmountDiscount { get; set; }
-
+        public decimal TransFpaAmount { get; set; }
+        public decimal TransNetAmount { get; set; }
+        public decimal TransDiscountAmount { get; set; }
         public decimal TotalAmount
         {
-            get => AmountNet + AmountFpa - AmountDiscount;
+            get => TransNetAmount + TransFpaAmount - TransDiscountAmount;
 
         }
         [DisplayFormat(DataFormatString = "{0:C}")]
         [Display(Name = "Import Value")]
-        public decimal DebitAmount
+        public decimal ImportAmount
         {
-            get => (TransactionType.Equals(WarehouseTransactionTypeEnum.WarehouseTransactionTypeImport) ? TotalAmount : 0);
+            get => (InventoryValueAction.Equals(InventoryValueActionEnum.InventoryValueActionEnumIncrease) ||
+                    InventoryValueAction.Equals(InventoryValueActionEnum.InventoryValueActionEnumNegativeIncrease)
+                ? TotalAmount
+                : 0);
 
         }
         [DisplayFormat(DataFormatString = "{0:C}")]
         [Display(Name = "Export Value")]
-        public decimal CreditAmount => (TransactionType.Equals(WarehouseTransactionTypeEnum.WarehouseTransactionTypeExport)
+        public decimal ExportAmount => (InventoryValueAction.Equals(InventoryValueActionEnum.InventoryValueActionEnumDecrease) ||
+                                        InventoryValueAction.Equals(InventoryValueActionEnum.InventoryValueActionEnumNegativeDecrease)
             ? TotalAmount
             : 0);
+       
+       
 
         [DisplayFormat(DataFormatString = "{0:N2}")]
         [Display(Name = "Import Units")]
         public decimal ImportUnits
         {
-            get => (TransactionType.Equals(WarehouseTransactionTypeEnum.WarehouseTransactionTypeImport) ?(decimal) Quontity1 : 0);
+            get => (InventoryAction.Equals(InventoryActionEnum.InventoryActionEnumImport) ||
+                    InventoryAction.Equals(InventoryActionEnum.InventoryActionEnumNegativeImport)
+                ? TransQ1 
+                : 0);
 
         }
         [DisplayFormat(DataFormatString = "{0:N2}")]
         [Display(Name = "Export Units")]
-        public decimal ExportUnits => (TransactionType.Equals(WarehouseTransactionTypeEnum.WarehouseTransactionTypeExport)
-            ? (decimal ) Quontity1
+        public decimal ExportUnits => (InventoryAction.Equals(InventoryActionEnum.InventoryActionEnumExport) ||
+                                       InventoryAction.Equals(InventoryActionEnum.InventoryActionEnumNegativeExport)
+            ? TransQ1
             : 0);
         public int CompanyId { get; set; }
         [Display(Name = "Company")]

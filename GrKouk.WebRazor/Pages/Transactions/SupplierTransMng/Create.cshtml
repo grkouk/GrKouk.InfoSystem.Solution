@@ -5,11 +5,10 @@
 @{
     ViewData["Title"] = "Create";
 }
-@System.Globalization.CultureInfo.CurrentCulture
-@System.Globalization.CultureInfo.CurrentUICulture
-<h2>Create</h2>
+@*@System.Globalization.CultureInfo.CurrentCulture
+@System.Globalization.CultureInfo.CurrentUICulture*@
 
-<h4>Supplier Transaction</h4>
+<h4>Create Supplier Transaction</h4>
 <hr />
 <div class="container">
     <form method="post">
@@ -42,16 +41,13 @@
                 <label asp-for="ItemVm.FiscalPeriodId" class="small"></label>
                 <select asp-for="ItemVm.FiscalPeriodId" class="form-control form-control-sm small" asp-items="ViewBag.FiscalPeriodId" readonly></select>
                 <span asp-validation-for="ItemVm.FiscalPeriodId" class="text-danger"></span>
-                </div>
+            </div>
             <div class="form-group col-md-3">
                 <label asp-for="ItemVm.CompanyId" class="small"></label>
                 <select asp-for="ItemVm.CompanyId" class="form-control form-control-sm small" asp-items="ViewBag.CompanyId"></select>
             </div>
         </div>
-        <div class="form-row">
-
-
-        </div>
+       
         <div class="form-row">
             <div class="form-group col-md-1">
                 <label asp-for="ItemVm.FpaRate" class="small"></label>
@@ -181,7 +177,7 @@
                 calculateAmounts();
             });
 
-            
+
             if ($initialLoad.val()=='True') {
                 console.log("Initial load is true setting initial values");
                 $fpaRate.val(0);

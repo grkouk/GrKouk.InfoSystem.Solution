@@ -13,48 +13,49 @@
 <table class="table">
     <thead>
         <tr>
-            <th>
+            <th class="small">
                 @Html.DisplayNameFor(model => model.TransSupplierDocTypeDef[0].Code)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.TransSupplierDocTypeDef[0].Name)
             </th>
-            <th>
+            <th class="small">
                 @Html.DisplayNameFor(model => model.TransSupplierDocTypeDef[0].Active)
             </th>
-            <th>
+            <th class="small">
                 @Html.DisplayNameFor(model => model.TransSupplierDocTypeDef[0].TransSupplierDef)
             </th>
-            <th>
+            <th class="small">
                 @Html.DisplayNameFor(model => model.TransSupplierDocTypeDef[0].Company)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.TransSupplierDocTypeDef) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Code)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Active)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TransSupplierDef.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Company.Code)
-            </td>
-            <td>
-                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model.TransSupplierDocTypeDef)
+        {
+            <tr>
+                <td class="small">
+                    @Html.DisplayFor(modelItem => item.Code)
+                </td>
+                <td class="small">
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td class="small">
+                    @Html.DisplayFor(modelItem => item.Active)
+                </td>
+                <td class="small">
+                    @Html.DisplayFor(modelItem => item.TransSupplierDef.Id)
+                </td>
+                <td class="small">
+                    @Html.DisplayFor(modelItem => item.Company.Code)
+                </td>
+                <td class="small">
+                    <a asp-page="./Edit" asp-route-id="@item.Id"><i class="fas fa-edit"></i></a> |
+                    <a asp-page="./Details" asp-route-id="@item.Id"><i class="fas fa-info-circle"></i></a> |
+                    <a asp-page="./Delete" asp-route-id="@item.Id"><i class="fas fa-trash"></i></a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

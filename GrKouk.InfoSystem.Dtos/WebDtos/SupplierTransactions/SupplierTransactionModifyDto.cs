@@ -32,7 +32,7 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.SupplierTransactions
         /// </summary>
         public FinancialTransactionTypeEnum TransactionType { get; set; }
 
-        public FinancialTransTypeEnum TransactionAction { get; set; }
+        public FinActionsEnum TransactionAction { get; set; }
 
         [Display(Name = "VAT%")]
         public Single FpaRate { get; set; }

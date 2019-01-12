@@ -1,0 +1,61 @@
+﻿@page
+@model GrKouk.WebRazor.Pages.Configuration.CustomerTransDocSeries.EditModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+
+<h4>Edit TransCustomerDocSeriesDef</h4>
+<hr />
+<div class="container">
+    <form method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="TransCustomerDocSeriesDef.Id" />
+        <div class="form-row">
+            <div class="form-group col-md-3">
+                <label asp-for="TransCustomerDocSeriesDef.Code" class="control-label"></label>
+                <input asp-for="TransCustomerDocSeriesDef.Code" class="form-control form-control-sm" />
+                <span asp-validation-for="TransCustomerDocSeriesDef.Code" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-7">
+                <label asp-for="TransCustomerDocSeriesDef.Name" class="control-label"></label>
+                <input asp-for="TransCustomerDocSeriesDef.Name" class="form-control form-control-sm" />
+                <span asp-validation-for="TransCustomerDocSeriesDef.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-2 ">
+
+                <label asp-for="TransCustomerDocSeriesDef.Active"></label>
+                <input asp-for="TransCustomerDocSeriesDef.Active" class="form-check form-control-sm" />
+
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label asp-for="TransCustomerDocSeriesDef.TransCustomerDocTypeDefId" class="control-label"></label>
+                <select asp-for="TransCustomerDocSeriesDef.TransCustomerDocTypeDefId" class="form-control form-control-sm" asp-items="ViewBag.TransCustomerDocTypeDefId"></select>
+            </div>
+
+            <div class="form-group col-md-6">
+                <label asp-for="TransCustomerDocSeriesDef.CompanyId" class="control-label"></label>
+                <select asp-for="TransCustomerDocSeriesDef.CompanyId" class="form-control form-control-sm" asp-items="ViewBag.CompanyId"></select>
+                <span asp-validation-for="TransCustomerDocSeriesDef.CompanyId" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary btn-sm" />
+            </div>
+        </div>
+    </form>
+</div>
+
+
+<div>
+    <a asp-page="./Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

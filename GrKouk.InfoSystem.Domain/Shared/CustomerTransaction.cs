@@ -35,7 +35,7 @@ namespace GrKouk.InfoSystem.Domain.Shared
         /// Debit or Credit
         /// </summary>
         public FinancialTransactionTypeEnum TransactionType { get; set; }
-        public FinancialTransTypeEnum FinancialAction { get; set; }
+        public FinActionsEnum FinancialAction { get; set; }
         /// <summary>
         /// Ανάλογα με το sectionid το πεδίο αυτό περιέχει το id του αντικειμένου που ορίζει το sectionID 
         /// </summary>
