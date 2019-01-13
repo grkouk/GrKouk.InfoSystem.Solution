@@ -13,12 +13,13 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.TransactorTransactions
         public DateTime TransDate { get; set; }
 
         public int TransTransactorDocSeriesId { get; set; }
+        [Display(Name = "Series")]
         public string TransTransactorDocSeriesName { get; set; }
         [Display(Name = "Series")]
         public string TransTransactorDocSeriesCode { get; set; }
 
         public int TransTransactorDocTypeId { get; set; }
-        [Display(Name = "Ref Code")]
+        [Display(Name = "Ref")]
         public string TransRefCode { get; set; }
         public int TransactorId { get; set; }
         [Display(Name = "Transactor")]

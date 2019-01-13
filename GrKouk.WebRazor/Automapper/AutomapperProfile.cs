@@ -13,6 +13,7 @@ using GrKouk.InfoSystem.Dtos.WebDtos.Materials;
 using GrKouk.InfoSystem.Dtos.WebDtos.SupplierTransactions;
 using GrKouk.InfoSystem.Dtos.WebDtos.TransactorTransactions;
 using GrKouk.InfoSystem.Dtos.WebDtos.WarehouseTransactions;
+using GrKouk.WebRazor.Helpers;
 
 namespace GrKouk.WebRazor.Automapper
 {
@@ -95,6 +96,8 @@ namespace GrKouk.WebRazor.Automapper
             CreateMap<TransactorTransaction, BuyMaterialsDocCreateAjaxDto>().ReverseMap();
             CreateMap<TransactorTransaction, BuyMaterialsDocModifyAjaxDto>().ReverseMap();
             CreateMap<TransactorTransCreateDto, BuyMaterialsDocModifyAjaxDto>().ReverseMap();
+            CreateMap<TransactorTransListDto, KartelaLine>()
+                .ForMember(dest => dest.DocSeriesCode, opt => opt.MapFrom(src => src.TransTransactorDocSeriesCode));
         }
     }
 }

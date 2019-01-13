@@ -71,6 +71,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc
             {
                 _context.BuyMaterialsDocLines.RemoveRange(_context.BuyMaterialsDocLines.Where(p => p.BuyDocumentId == id));
                 _context.SupplierTransactions.RemoveRange(_context.SupplierTransactions.Where(p => p.SectionId == section.Id && p.CreatorId == id));
+                _context.TransactorTransactions.RemoveRange(_context.TransactorTransactions.Where(p => p.SectionId == section.Id && p.CreatorId == id));
                 _context.WarehouseTransactions.RemoveRange(_context.WarehouseTransactions.Where(p => p.SectionId == section.Id && p.CreatorId == id));
 
                 _context.BuyMaterialsDocuments.Remove(BuyMaterialsDocument);

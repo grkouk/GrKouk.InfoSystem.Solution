@@ -4,46 +4,64 @@
 @{
     ViewData["Title"] = "Transactors List";
 }
-@*<style>
-        .fa-flag:hover {
-            color: red;
-        }
-    </style>*@
+
 <h2>Συναλλασόμενοι</h2>
 
 <p>
-    <a asp-page="Create" asp-route-sortOrder="@Model.CurrentSort"
-       asp-route-pageIndex="@(Model.ListItems.CurrentPage )"
-       asp-route-currentFilter="@Model.CurrentFilter"
-       asp-route-PageSize="@Model.PageSize">Create New</a>
-</p>
-<form class="form-inline" asp-page="./Index" method="get">
-    <p>
-        <small>
-            Find by name:
-        </small>
-        <input class="form-control form-control-sm" type="text" name="SearchString" value="@Model.CurrentFilter" />
-        <input type="submit" value="Refresh" class="btn btn-light btn-sm" /> |
-        <select name="TransactorTypeFilter" asp-for="CurrentTransactorTypeFilter" class="form-control form-control-sm"
-                asp-items="ViewBag.TransactorTypeId" onchange="this.form.submit()"></select>
-        <small>
-            Page Size:
-        </small>
-        <select asp-for="PageSize" onchange="this.form.submit()" class="form-control form-control-sm">
-            <option value="3">3</option>
-            <option value="5">5</option>
-            <option value="10">10</option>
-            <option value="20">20</option>
-            <option value="100">100</option>
-        </select>
-        |
-        <a asp-page="./Index" class="small"
-           asp-route-sortOrder="@Model.CurrentSort"
+    <small>
+        <a asp-page="Create" asp-route-sortOrder="@Model.CurrentSort"
            asp-route-pageIndex="@(Model.ListItems.CurrentPage)"
-           asp-route-transactorTypeFilter="0"
-           asp-route-PageSize="@Model.PageSize">Back to full List</a>
-    </p>
+           asp-route-currentFilter="@Model.CurrentFilter"
+           asp-route-PageSize="@Model.PageSize">Create New</a>
+    </small>
+</p>
+
+<form class="form-inline" asp-page="./Index" method="get">
+<div class="container">
+    <div class="form-row">
+
+        <div class="form-group col-md-auto">
+            <label class="small"> Search:</label>
+            <input class="form-control form-control-sm small" type="text" name="SearchString" value="@Model.CurrentFilter" />
+            <input type="submit" value="Search" class="btn btn-light btn-sm" />
+        </div>
+        <div class="form-group col-md-auto">
+            <a class="small" asp-page="./Index"
+               asp-route-sortOrder="@Model.CurrentSort"
+               asp-route-pageIndex="@(Model.ListItems.CurrentPage)"
+               asp-route-currentFilter="@Model.CurrentFilter"
+               asp-route-datePeriodFilter="CURMONTH"
+               asp-route-PageSize="@Model.PageSize">Back to full List</a>
+        </div>
+        <div class="form-group col-md-auto">
+            <label class="small"> Transactor Type:</label>
+            <select name="TransactorTypeFilter" asp-for="CurrentTransactorTypeFilter" class="form-control form-control-sm small"
+                    asp-items="ViewBag.TransactorTypeId" onchange="this.form.submit()"></select>
+            
+        </div>
+        <div class="form-group col-md-auto">
+            <label class="small"> Page Size:</label>
+            <select asp-for="PageSize" onchange="this.form.submit()" class="form-control form-control-sm small">
+                <option value="3">3</option>
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="100">100</option>
+            </select>
+        </div>
+        <div class="form-group col-md-auto">
+            <small>
+
+                Page:@Model.ListItems.CurrentPage of @Model.ListItems.TotalPages Total Items @Model.ListItems.TotalCount
+            </small>
+        </div>
+
+    </div>
+</div>
 </form>
+
+
+<br />
 <table class="table table-bordered table-sm">
     <thead>
         <tr>
@@ -94,10 +112,13 @@
                     <a asp-page="./Delete" asp-route-id="@item.Id"><i class="fas fa-trash" style="color:slategray"></i></a> |
                     <a class="btn  btn-sm dropdown-toggle" role="button" id="dropdownMenuButton" data-toggle="dropdown"
                        aria-haspopup="true" aria-expanded="false"><i class="fas fa-bars" style="color:slategray"></i></a>
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <div class="dropdown-menu small" aria-labelledby="dropdownMenuButton">
                         <h6 class="dropdown-header">Available Actions</h6>
-                        <a asp-page="./Details" asp-route-id="@item.Id" class="dropdown-item">Details</a>
-                        <a class="dropdown-item" role="button" href="#" data-toggle="modal"  data-transactorId="@item.Id"
+                        <a asp-page="./Kartela"  class="dropdown-item"
+                           asp-route-transactorTypeFilter="@Model.CurrentTransactorTypeFilter"
+                           asp-route-parentPageSize="@Model.PageSize"  asp-route-parentPageIndex="@Model.ListItems.CurrentPage "
+                            asp-route-id="@item.Id"  asp-route-transactorName="@item.Name" >Kartella</a>
+                        <a class="dropdown-item" role="button" href="#" data-toggle="modal" data-transactorId="@item.Id"
                            data-target="#transactorInfo">Open Modal</a>
                         <a class="dropdown-item" href="#">Something else here</a>
                     </div>
@@ -114,26 +135,61 @@
 
 
 <form class="form-inline" method="get">
-
-    <a asp-page="./Index"
-       asp-route-sortOrder="@Model.CurrentSort"
-       asp-route-pageIndex="@(Model.ListItems.CurrentPage - 1)"
-       asp-route-searchString="@Model.CurrentFilter"
-       asp-route-transactorTypeFilter="@Model.CurrentTransactorTypeFilter"
-       asp-route-PageSize="@Model.PageSize"
-       class="btn btn-light @prevDisabled">
-        <
-    </a>
-    Page:@Model.ListItems.CurrentPage of @Model.ListItems.TotalPages Total Items @Model.ListItems.TotalCount
-    <a asp-page="./Index"
-       asp-route-sortOrder="@Model.CurrentSort"
-       asp-route-pageIndex="@(Model.ListItems.CurrentPage + 1)"
-       asp-route-searchString="@Model.CurrentFilter"
-       asp-route-transactorTypeFilter="@Model.CurrentTransactorTypeFilter"
-       asp-route-PageSize="@Model.PageSize"
-       class="btn btn-light @nextDisabled">
-        >
-    </a>
+    <nav aria-label="Page navigation example">
+        <ul class="pagination pagination-sm">
+            <li class="page-item @prevDisabled">
+                <a asp-page="./Index"
+                   asp-route-sortOrder="@Model.CurrentSort"
+                   asp-route-pageIndex="1"
+                   asp-route-searchFilter="@Model.CurrentFilter"
+                   asp-route-transactorTypeFilter="@Model.CurrentTransactorTypeFilter"
+                   asp-route-PageSize="@Model.PageSize"
+                   class="page-link" aria-label="First">
+                    @*<span aria-hidden="true">;</span>*@
+                    First
+                </a>
+            </li>
+            <li class="page-item @prevDisabled">
+                <a asp-page="./Index"
+                   asp-route-sortOrder="@Model.CurrentSort"
+                   asp-route-pageIndex="@(Model.ListItems.CurrentPage - 1)"
+                   asp-route-searchFilter="@Model.CurrentFilter"
+                   asp-route-transactorTypeFilter="@Model.CurrentTransactorTypeFilter"
+                   asp-route-PageSize="@Model.PageSize"
+                   class="page-link" aria-label="Previous">
+                    @*<span aria-hidden="true">&laquo;</span>*@
+                    Previous
+                </a>
+            </li>
+            @*<li class="page-item"><a class="page-link" href="#">1</a></li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>*@
+            <li class="page-item @nextDisabled">
+                <a asp-page="./Index"
+                   asp-route-sortOrder="@Model.CurrentSort"
+                   asp-route-pageIndex="@(Model.ListItems.CurrentPage + 1)"
+                   asp-route-searchFilter="@Model.CurrentFilter"
+                   asp-route-transactorTypeFilter="@Model.CurrentTransactorTypeFilter"
+                   asp-route-PageSize="@Model.PageSize"
+                   class="page-link" aria-label="Next">
+                    @*<span aria-hidden="true">&raquo;</span>*@
+                    Next
+                </a>
+            </li>
+            <li class="page-item  @nextDisabled">
+                <a asp-page="./Index"
+                   asp-route-sortOrder="@Model.CurrentSort"
+                   asp-route-pageIndex="@Model.ListItems.TotalPages"
+                   asp-route-searchFilter="@Model.CurrentFilter"
+                   asp-route-transactorTypeFilter="@Model.CurrentTransactorTypeFilter"
+                   asp-route-PageSize="@Model.PageSize"
+                   class="page-link" aria-label="First">
+                    @*<span aria-hidden="true">;</span>*@
+                    Last
+                </a>
+            </li>
+        </ul>
+    </nav>
 
 </form>
 
@@ -168,7 +224,7 @@
             // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
             var modal = $(this);
             modal.find('.modal-title').text('New message to ' + recipient);
-           // modal.find('.modal-body input').val(recipient)
+            // modal.find('.modal-body input').val(recipient)
         })
     </script>
 }

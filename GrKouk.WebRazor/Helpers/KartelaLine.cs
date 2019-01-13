@@ -1,0 +1,19 @@
+﻿using System;
+using System.ComponentModel.DataAnnotations;
+
+namespace GrKouk.WebRazor.Helpers
+{
+    public class KartelaLine
+    {
+        [DataType(DataType.Date)]
+      
+        public DateTime TransDate { get; set; }
+
+        public string TransactorName { get; set; }
+        public string DocSeriesCode { get; set; }
+       
+        public decimal Debit { get; set; }
+        public decimal Credit { get; set; }
+        public decimal RunningTotal { get; set; }
+    }
+}

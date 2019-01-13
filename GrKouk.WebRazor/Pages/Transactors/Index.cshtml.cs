@@ -32,16 +32,15 @@ namespace GrKouk.WebRazor.Pages.Transactors
         public string CurrentFilter { get; set; }
         public string CurrentSort { get; set; }
         public int PageSize { get; set; }
-        public int CurrentPageSize { get; set; }
-        public int CurrentTransactorTypeFilter { get; set; }
-       
+       public int CurrentTransactorTypeFilter { get; set; }
+        //public int CurrentPageSize { get; set; }
         public PagedList<TransactorListDto> ListItems { get; set; }
         public async Task OnGetAsync(string sortOrder, string searchString,int? transactorTypeFilter, int? pageIndex, int? pageSize)
         {
             LoadFilters();
 
             PageSize = (int)((pageSize == null || pageSize == 0) ? 20 : pageSize);
-            CurrentPageSize = PageSize;
+           // CurrentPageSize = PageSize;
             CurrentSort = sortOrder;
             NameSort = sortOrder == "Name" ? "name_desc" : "Name";
             DateSort = sortOrder == "Date" ? "date_desc" : "Date";
