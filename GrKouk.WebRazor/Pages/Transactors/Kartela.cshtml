@@ -7,6 +7,7 @@
 <h4>Καρτέλα  @Model.TransactorName</h4>
 
 <form class="form-inline" asp-page="./Kartela" method="get">
+    <input type="hidden" asp-for="TransactorId" />
     <input type="hidden" asp-for="TransactorName" />
     <input type="hidden" asp-for="TransactorTypeFilter" />
     <input type="hidden" asp-for="ParentPageIndex" />
@@ -28,9 +29,9 @@
                     Page:@Model.ListItems.CurrentPage of @Model.ListItems.TotalPages Total Items @Model.ListItems.TotalCount
                 </small>
             </div>
-           
+
         </div>
-     
+
 
     </div>
 </form>
@@ -123,6 +124,7 @@
                 <a asp-page="./Kartela"
                    asp-route-pageIndexKartela="1"
                    asp-route-PageSizeKartela="@Model.PageSizeKartela"
+                   asp-route-transactorId="@Model.TransactorId"
                    asp-route-transactorName="@Model.TransactorName"
                    asp-route-parentPageIndex="@Model.ParentPageIndex "
                    asp-route-transactorTypeFilter="@Model.TransactorTypeFilter"
@@ -136,6 +138,7 @@
                 <a asp-page="./Kartela"
                    asp-route-pageIndexKartela="@(Model.ListItems.CurrentPage - 1)"
                    asp-route-PageSizeKartela="@Model.PageSizeKartela"
+                   asp-route-transactorId="@Model.TransactorId"
                    asp-route-transactorName="@Model.TransactorName"
                    asp-route-parentPageIndex="@Model.ParentPageIndex "
                    asp-route-transactorTypeFilter="@Model.TransactorTypeFilter"
@@ -152,6 +155,7 @@
                 <a asp-page="./Kartela"
                    asp-route-pageIndexKartela="@(Model.ListItems.CurrentPage + 1)"
                    asp-route-PageSizeKartela="@Model.PageSizeKartela"
+                   asp-route-transactorId="@Model.TransactorId"
                    asp-route-transactorName="@Model.TransactorName"
                    asp-route-parentPageIndex="@Model.ParentPageIndex "
                    asp-route-transactorTypeFilter="@Model.TransactorTypeFilter"
@@ -165,6 +169,7 @@
                 <a asp-page="./Kartela"
                    asp-route-pageIndexKartela="@Model.ListItems.TotalPages"
                    asp-route-PageSizeKartela="@Model.PageSizeKartela"
+                   asp-route-transactorId="@Model.TransactorId"
                    asp-route-transactorName="@Model.TransactorName"
                    asp-route-parentPageIndex="@Model.ParentPageIndex "
                    asp-route-transactorTypeFilter="@Model.TransactorTypeFilter"

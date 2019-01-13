@@ -5,7 +5,7 @@
     ViewData["Title"] = "Transactors List";
 }
 
-<h2>Συναλλασόμενοι</h2>
+<h4>Συναλλασόμενοι</h4>
 
 <p>
     <small>
@@ -117,7 +117,7 @@
                         <a asp-page="./Kartela"  class="dropdown-item"
                            asp-route-transactorTypeFilter="@Model.CurrentTransactorTypeFilter"
                            asp-route-parentPageSize="@Model.PageSize"  asp-route-parentPageIndex="@Model.ListItems.CurrentPage "
-                            asp-route-id="@item.Id"  asp-route-transactorName="@item.Name" >Kartella</a>
+                            asp-route-transactorId="@item.Id"  asp-route-transactorName="@item.Name" >Kartella</a>
                         <a class="dropdown-item" role="button" href="#" data-toggle="modal" data-transactorId="@item.Id"
                            data-target="#transactorInfo">Open Modal</a>
                         <a class="dropdown-item" href="#">Something else here</a>
@@ -134,7 +134,6 @@
 }
 
 
-<form class="form-inline" method="get">
     <nav aria-label="Page navigation example">
         <ul class="pagination pagination-sm">
             <li class="page-item @prevDisabled">
@@ -191,7 +190,6 @@
         </ul>
     </nav>
 
-</form>
 
 
 <!-- Modal για καρτέλα ίσως?????? -->
