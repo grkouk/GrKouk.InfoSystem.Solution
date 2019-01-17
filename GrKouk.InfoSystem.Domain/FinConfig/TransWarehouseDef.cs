@@ -13,10 +13,27 @@ namespace GrKouk.InfoSystem.Domain.FinConfig
         public string Name { get; set; }
         [Display(Name = "Ενεργό")] public bool Active { get; set; }
 
-        [Display(Name = "Inventory Action")]
-        public InventoryActionEnum InventoryAction { get; set; }
-        [Display(Name = "Inventory Value Action")]
-        public InventoryValueActionEnum InventoryValueAction { get; set; }
+        [Display(Name = "Mat.IA")]
+        public InventoryActionEnum MaterialInventoryAction { get; set; }
+        [Display(Name = "Mat.IVA")]
+        public InventoryValueActionEnum MaterialInventoryValueAction { get; set; }
+        [Display(Name = "Ser.IA")]
+        public InventoryActionEnum ServiceInventoryAction { get; set; }
+        [Display(Name = "Ser.IVA")]
+        public InventoryValueActionEnum ServiceInventoryValueAction { get; set; }
+        [Display(Name = "Exp.IA")]
+        public InventoryActionEnum ExpenseInventoryAction { get; set; }
+        [Display(Name = "Exp.IVA")]
+        public InventoryValueActionEnum ExpenseInventoryValueAction { get; set; }
+        [Display(Name = "Inc.IA")]
+        public InventoryActionEnum IncomeInventoryAction { get; set; }
+        [Display(Name = "Inc.IVA")]
+        public InventoryValueActionEnum IncomeInventoryValueAction { get; set; }
+
+        [Display(Name = "Fixed As.IA")]
+        public InventoryActionEnum FixedAssetInventoryAction { get; set; }
+        [Display(Name = "Fixed As.IVA")]
+        public InventoryValueActionEnum FixedAssetInventoryValueAction { get; set; }
 
         [Display(Name = "ΠοσΕισαγωγών")]
         public int VolImportsTransId { get; set; }

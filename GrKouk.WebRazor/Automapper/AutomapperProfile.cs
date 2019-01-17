@@ -98,6 +98,7 @@ namespace GrKouk.WebRazor.Automapper
             CreateMap<TransactorTransCreateDto, BuyMaterialsDocModifyAjaxDto>().ReverseMap();
             CreateMap<TransactorTransListDto, KartelaLine>()
                 .ForMember(dest => dest.DocSeriesCode, opt => opt.MapFrom(src => src.TransTransactorDocSeriesCode));
+            CreateMap<MaterialSearchListDto, Material>();
         }
     }
 }

@@ -16,7 +16,8 @@
         MaterialNatureEnumMaterial=1,
         MaterialNatureEnumService=2,
         MaterialNatureEnumExpense=3,
-        MaterialNatureEnumFixedAsset =4
+        MaterialNatureEnumIncome = 4,
+        MaterialNatureEnumFixedAsset =5
     }
     public enum MaterialTypeEnum
     {

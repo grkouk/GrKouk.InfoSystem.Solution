@@ -4,11 +4,13 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using GrKouk.InfoSystem.Domain.FinConfig;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using GrKouk.InfoSystem.Domain.Shared;
 using GrKouk.InfoSystem.Dtos.WebDtos.BuyMaterialsDocs;
+using GrKouk.InfoSystem.Dtos.WebDtos.Materials;
 using GrKouk.InfoSystem.Dtos.WebDtos.SupplierTransactions;
 using GrKouk.InfoSystem.Dtos.WebDtos.TransactorTransactions;
 using GrKouk.WebApi.Data;
@@ -41,7 +43,36 @@ namespace GrKouk.WebRazor.Controllers
         public async Task<IActionResult> GetMaterials(string term)
         {
 
-            var materials = await _context.Materials.Where(p => p.Name.Contains(term) && p.MaterialNature==MaterialNatureEnum.MaterialNatureEnumMaterial)
+            var materials = await _context.Materials.Where(p => p.Name.Contains(term) )
+                .ProjectTo<MaterialSearchListDto>(_mapper.ConfigurationProvider)
+                .Select(p => new { label = p.Label, value = p.Id }).ToListAsync();
+
+            if (materials == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(materials);
+        }
+        [HttpGet("SearchForServices")]
+        public async Task<IActionResult> GetServices(string term)
+        {
+
+            var materials = await _context.Materials.Where(p => p.Name.Contains(term) && p.MaterialNature == MaterialNatureEnum.MaterialNatureEnumService)
+                .Select(p => new { label = p.Name, value = p.Id }).ToListAsync();
+
+            if (materials == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(materials);
+        }
+        [HttpGet("SearchForExpenses")]
+        public async Task<IActionResult> GetExpenses(string term)
+        {
+
+            var materials = await _context.Materials.Where(p => p.Name.Contains(term) && p.MaterialNature == MaterialNatureEnum.MaterialNatureEnumExpense)
                 .Select(p => new { label = p.Name, value = p.Id }).ToListAsync();
 
             if (materials == null)
@@ -130,7 +161,7 @@ namespace GrKouk.WebRazor.Controllers
             var transWarehouseDocTypeDef = transWarehouseDocSeriesDef.TransWarehouseDocTypeDef;
             await _context.Entry(transWarehouseDocTypeDef).Reference(t => t.TransWarehouseDef).LoadAsync();
             var transWarehouseDef = transWarehouseDocTypeDef.TransWarehouseDef;
-            var inventoryActionType = transWarehouseDef.InventoryAction;
+            var inventoryActionType = transWarehouseDef.MaterialInventoryAction;
             string transType="";
             switch (inventoryActionType)
             {
@@ -469,8 +500,38 @@ namespace GrKouk.WebRazor.Controllers
 
                         warehouseTrans.TransWarehouseDocSeriesId = warehouseSeriesId;
                         warehouseTrans.TransWarehouseDocTypeId = warehouseTypeId;
-                        warehouseTrans.InventoryAction = transWarehouseDef.InventoryAction;
-                        switch (transWarehouseDef.InventoryAction)
+
+                        switch (material.MaterialNature)
+                        {
+                            case MaterialNatureEnum.MaterialNatureEnumUndefined:
+                                throw new ArgumentOutOfRangeException();
+                                break;
+                            case MaterialNatureEnum.MaterialNatureEnumMaterial:
+                                warehouseTrans.InventoryAction = transWarehouseDef.MaterialInventoryAction;
+                                warehouseTrans.InventoryValueAction = transWarehouseDef.MaterialInventoryValueAction;
+
+                                break;
+                            case MaterialNatureEnum.MaterialNatureEnumService:
+                                warehouseTrans.InventoryAction = transWarehouseDef.ServiceInventoryAction;
+                                warehouseTrans.InventoryValueAction = transWarehouseDef.ServiceInventoryValueAction;
+                                break;
+                            case MaterialNatureEnum.MaterialNatureEnumExpense:
+                                warehouseTrans.InventoryAction = transWarehouseDef.ExpenseInventoryAction;
+                                warehouseTrans.InventoryValueAction = transWarehouseDef.ExpenseInventoryValueAction;
+                                break;
+                            case MaterialNatureEnum.MaterialNatureEnumIncome:
+                                warehouseTrans.InventoryAction = transWarehouseDef.IncomeInventoryAction;
+                                warehouseTrans.InventoryValueAction = transWarehouseDef.IncomeInventoryValueAction;
+                                break;
+                            case MaterialNatureEnum.MaterialNatureEnumFixedAsset:
+                                warehouseTrans.InventoryAction = transWarehouseDef.FixedAssetInventoryAction;
+                                warehouseTrans.InventoryValueAction = transWarehouseDef.FixedAssetInventoryValueAction;
+                                break;
+                            default:
+                                throw new ArgumentOutOfRangeException();
+                        }
+                        
+                        switch (warehouseTrans.InventoryAction)
                         {
                             case InventoryActionEnum.InventoryActionEnumNoChange:
                                 warehouseTrans.TransactionType =
@@ -518,9 +579,8 @@ namespace GrKouk.WebRazor.Controllers
                                 throw new ArgumentOutOfRangeException();
                         }
 
-                        warehouseTrans.InventoryValueAction = transWarehouseDef.InventoryValueAction;
 
-                        switch (transWarehouseDef.InventoryValueAction)
+                        switch (warehouseTrans.InventoryValueAction)
                         {
                             case InventoryValueActionEnum.InventoryValueActionEnumNoChange:
                                 warehouseTrans.TransNetAmount = 0 ;
@@ -888,8 +948,36 @@ namespace GrKouk.WebRazor.Controllers
 
                         warehouseTrans.TransWarehouseDocSeriesId = warehouseSeriesId;
                         warehouseTrans.TransWarehouseDocTypeId = warehouseTypeId;
-                        warehouseTrans.InventoryAction = transWarehouseDef.InventoryAction;
-                        switch (transWarehouseDef.InventoryAction)
+                        switch (material.MaterialNature)
+                        {
+                            case MaterialNatureEnum.MaterialNatureEnumUndefined:
+                                throw new ArgumentOutOfRangeException();
+                                break;
+                            case MaterialNatureEnum.MaterialNatureEnumMaterial:
+                                warehouseTrans.InventoryAction = transWarehouseDef.MaterialInventoryAction;
+                                warehouseTrans.InventoryValueAction = transWarehouseDef.MaterialInventoryValueAction;
+
+                                break;
+                            case MaterialNatureEnum.MaterialNatureEnumService:
+                                warehouseTrans.InventoryAction = transWarehouseDef.ServiceInventoryAction;
+                                warehouseTrans.InventoryValueAction = transWarehouseDef.ServiceInventoryValueAction;
+                                break;
+                            case MaterialNatureEnum.MaterialNatureEnumExpense:
+                                warehouseTrans.InventoryAction = transWarehouseDef.ExpenseInventoryAction;
+                                warehouseTrans.InventoryValueAction = transWarehouseDef.ExpenseInventoryValueAction;
+                                break;
+                            case MaterialNatureEnum.MaterialNatureEnumIncome:
+                                warehouseTrans.InventoryAction = transWarehouseDef.IncomeInventoryAction;
+                                warehouseTrans.InventoryValueAction = transWarehouseDef.IncomeInventoryValueAction;
+                                break;
+                            case MaterialNatureEnum.MaterialNatureEnumFixedAsset:
+                                warehouseTrans.InventoryAction = transWarehouseDef.FixedAssetInventoryAction;
+                                warehouseTrans.InventoryValueAction = transWarehouseDef.FixedAssetInventoryValueAction;
+                                break;
+                            default:
+                                throw new ArgumentOutOfRangeException();
+                        }
+                        switch (warehouseTrans.InventoryAction)
                         {
                             case InventoryActionEnum.InventoryActionEnumNoChange:
                                 warehouseTrans.TransactionType =
@@ -937,9 +1025,8 @@ namespace GrKouk.WebRazor.Controllers
                                 throw new ArgumentOutOfRangeException();
                         }
 
-                        warehouseTrans.InventoryValueAction = transWarehouseDef.InventoryValueAction;
 
-                        switch (transWarehouseDef.InventoryValueAction)
+                        switch (warehouseTrans.InventoryValueAction)
                         {
                             case InventoryValueActionEnum.InventoryValueActionEnumNoChange:
                                 warehouseTrans.TransNetAmount = 0;

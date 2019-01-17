@@ -21,7 +21,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc
         private readonly IToastNotification _toastNotification;
         public bool InitialLoad = true;
 
-        public EditModel(GrKouk.WebApi.Data.ApiDbContext context,IMapper mapper,IToastNotification toastNotification)
+        public EditModel(GrKouk.WebApi.Data.ApiDbContext context, IMapper mapper, IToastNotification toastNotification)
         {
             _context = context;
             _mapper = mapper;
@@ -46,7 +46,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc
 
                 .Include(b => b.Supplier)
                 .Include(b => b.BuyDocLines)
-                .ThenInclude(m=>m.Material)
+                .ThenInclude(m => m.Material)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             ItemVm = _mapper.Map<BuyMaterialsDocModifyDto>(buyMatDoc);
@@ -56,9 +56,12 @@ namespace GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc
                 return NotFound();
             }
 
+            //ItemVm.AmountNet = buyMatDoc.BuyDocLines.Sum(p => p.AmountNet);
+            //ItemVm.AmountFpa = buyMatDoc.BuyDocLines.Sum(p => p.AmountFpa);
+            //ItemVm.AmountDiscount = buyMatDoc.BuyDocLines.Sum(p => p.AmountDiscount);
 
-           LoadCombos();
-           return Page();
+            LoadCombos();
+            return Page();
         }
 
         private void LoadCombos()

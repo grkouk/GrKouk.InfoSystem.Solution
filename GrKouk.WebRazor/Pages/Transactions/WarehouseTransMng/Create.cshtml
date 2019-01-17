@@ -71,12 +71,7 @@
                 <select asp-for="ItemVm.CompanyId" class="form-control form-control-sm small" asp-items="ViewBag.CompanyId"></select>
             </div>
         </div>
-        <div class="form-row">
-            <div class="form-group col-md-3">
-                <label asp-for="ItemVm.TransactionType" class="small"></label>
-                <select asp-for="ItemVm.TransactionType" class="form-control form-control-sm small" asp-items="ViewBag.TransactionType" disabled></select>
-            </div>
-        </div>
+        
         <div class="form-row">
             <div class="form-group  col-md-3">
                 <label asp-for="ItemVm.Quontity1" class="small"></label>
@@ -332,9 +327,7 @@
             $material.change(() => {
                 materialChanged();
             });
-            $series.change(() => {
-                seriesChanged();
-            });
+           
             //#region Initial values
             if ($initialLoad.val() == 'True') {
                 $('#matLoading').attr('hidden', true);

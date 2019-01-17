@@ -84,8 +84,21 @@ namespace GrKouk.WebRazor.Pages.Configuration.WarehouseTransDef
                     Text = "Neg.Increase"
                 }
             };
-            ViewData["InventoryActions"] = new SelectList(inventoryActions, "Value", "Text");
-            ViewData["InventoryValueActions"] = new SelectList(inventoryValueActions, "Value", "Text");
+            ViewData["MaterialInventoryActions"] = new SelectList(inventoryActions, "Value", "Text");
+            ViewData["MaterialInventoryValueActions"] = new SelectList(inventoryValueActions, "Value", "Text");
+
+            ViewData["ServiceInventoryAction"] = new SelectList(inventoryActions, "Value", "Text");
+            ViewData["ServiceInventoryValueAction"] = new SelectList(inventoryValueActions, "Value", "Text");
+
+            ViewData["ExpenseInventoryAction"] = new SelectList(inventoryActions, "Value", "Text");
+            ViewData["ExpenseInventoryValueAction"] = new SelectList(inventoryValueActions, "Value", "Text");
+
+            ViewData["IncomeInventoryAction"] = new SelectList(inventoryActions, "Value", "Text");
+            ViewData["IncomeInventoryValueAction"] = new SelectList(inventoryValueActions, "Value", "Text");
+
+            ViewData["FixedAssetInventoryAction"] = new SelectList(inventoryActions, "Value", "Text");
+            ViewData["FixedAssetInventoryValueAction"] = new SelectList(inventoryValueActions, "Value", "Text");
+
             ViewData["AmtBuyTransId"] = new SelectList(fMovements, "Id", "Name", 3);
           
             ViewData["AmtInvoicedExportsTransId"] = new SelectList(fMovements, "Id", "Name", 3);

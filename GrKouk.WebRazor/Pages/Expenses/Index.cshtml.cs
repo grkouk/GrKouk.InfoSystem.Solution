@@ -63,16 +63,7 @@ namespace GrKouk.WebRazor.Pages.Expenses
                 searchString = CurrentFilter;
             }
             CurrentFilter = searchString;
-
-            //if (datePeriodFilter != null)
-            //{
-            //    pageIndex = 1;
-            //}
-            //else
-            //{
-            //    datePeriodFilter = CurrentDatePeriod;
-            //}
-
+            
             CurrentDatePeriod = datePeriodFilter;
 
             IQueryable<FinDiaryTransaction> expensesIq = from s in _context.FinDiaryTransactions

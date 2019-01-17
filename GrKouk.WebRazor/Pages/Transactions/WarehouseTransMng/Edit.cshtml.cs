@@ -119,8 +119,46 @@ namespace GrKouk.WebRazor.Pages.Transactions.WarehouseTransMng
 
             var transWarehouseDef = docTypeDef.TransWarehouseDef;
             transToAttach.TransWarehouseDocTypeId = docSeries.TransWarehouseDocTypeDefId;
-            transToAttach.InventoryAction = transWarehouseDef.InventoryAction;
-            switch (transWarehouseDef.InventoryAction)
+            var material = await _context.Materials.SingleOrDefaultAsync(p => p.Id == transToAttach.MaterialId);
+            if (material is null)
+            {
+                ModelState.AddModelError(string.Empty, "Δεν βρέθηκε το είδος");
+                LoadCombos();
+                return Page();
+            }
+
+            switch (material.MaterialNature)
+            {
+                case MaterialNatureEnum.MaterialNatureEnumUndefined:
+                    throw new ArgumentOutOfRangeException();
+                    break;
+                case MaterialNatureEnum.MaterialNatureEnumMaterial:
+                    transToAttach.InventoryAction = transWarehouseDef.MaterialInventoryAction;
+                    transToAttach.InventoryValueAction = transWarehouseDef.MaterialInventoryValueAction;
+
+                    break;
+                case MaterialNatureEnum.MaterialNatureEnumService:
+                    transToAttach.InventoryAction = transWarehouseDef.ServiceInventoryAction;
+                    transToAttach.InventoryValueAction = transWarehouseDef.ServiceInventoryValueAction;
+                    break;
+                case MaterialNatureEnum.MaterialNatureEnumExpense:
+                    transToAttach.InventoryAction = transWarehouseDef.ExpenseInventoryAction;
+                    transToAttach.InventoryValueAction = transWarehouseDef.ExpenseInventoryValueAction;
+                    break;
+                case MaterialNatureEnum.MaterialNatureEnumIncome:
+                    transToAttach.InventoryAction = transWarehouseDef.IncomeInventoryAction;
+                    transToAttach.InventoryValueAction = transWarehouseDef.IncomeInventoryValueAction;
+                    break;
+                case MaterialNatureEnum.MaterialNatureEnumFixedAsset:
+                    transToAttach.InventoryAction = transWarehouseDef.FixedAssetInventoryAction;
+                    transToAttach.InventoryValueAction = transWarehouseDef.FixedAssetInventoryValueAction;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+           
+            switch (transToAttach.InventoryAction)
             {
                 case InventoryActionEnum.InventoryActionEnumNoChange:
                     transToAttach.TransactionType =
@@ -159,10 +197,8 @@ namespace GrKouk.WebRazor.Pages.Transactions.WarehouseTransMng
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-
-            transToAttach.InventoryValueAction = transWarehouseDef.InventoryValueAction;
-
-            switch (transWarehouseDef.InventoryValueAction)
+            
+            switch (transToAttach.InventoryValueAction)
             {
                 case InventoryValueActionEnum.InventoryValueActionEnumNoChange:
                     transToAttach.TransNetAmount = 0;
