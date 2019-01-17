@@ -1,35 +1,41 @@
 ﻿@page
-@model GrKouk.WebRazor.Pages.Companies.IndexModel
+@model GrKouk.WebRazor.Pages.CommonEntities.FpaKategories.IndexModel
 
 @{
-    ViewData["Title"] = "Companies List";
+    ViewData["Title"] = "Index";
 }
 
-<h4>Companies List</h4>
+<h4>VAT Categories Index</h4>
 
 <p>
     <a asp-page="Create">Create New</a>
 </p>
-<table class="table table-bordered table-sm">
+<table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Company[0].Code)
+                @Html.DisplayNameFor(model => model.FpaDef[0].Code)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Company[0].Name)
+                @Html.DisplayNameFor(model => model.FpaDef[0].Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FpaDef[0].Rate)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.Company) {
+@foreach (var item in Model.FpaDef) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Code)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Rate)
             </td>
             <td>
                 <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
