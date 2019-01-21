@@ -1,0 +1,85 @@
+﻿@page
+@model GrKouk.WebRazor.Pages.MainEntities.Transactors.CreateModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h2>Create</h2>
+
+<h4>Transactor</h4>
+<hr />
+<div class="container">
+    <form method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-row ">
+            <div class="form-group col-md-2">
+                <label asp-for="Transactor.Code" class="control-label"></label>
+                <input asp-for="Transactor.Code" class="form-control form-control-sm" />
+                <span asp-validation-for="Transactor.Code" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-7">
+                <label asp-for="Transactor.Name" class="control-label"></label>
+                <input asp-for="Transactor.Name" class="form-control form-control-sm" />
+                <span asp-validation-for="Transactor.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-3">
+                <label asp-for="Transactor.TransactorTypeId" class="control-label"></label>
+                <select asp-for="Transactor.TransactorTypeId" class="form-control form-control-sm" asp-items="ViewBag.TransactorTypeId"></select>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label asp-for="Transactor.Address" class="control-label"></label>
+                <input asp-for="Transactor.Address" class="form-control form-control-sm" />
+                <span asp-validation-for="Transactor.Address" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-4">
+                <label asp-for="Transactor.City" class="control-label"></label>
+                <input asp-for="Transactor.City" class="form-control form-control-sm" />
+                <span asp-validation-for="Transactor.City" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-2">
+                <label asp-for="Transactor.Zip" class="control-label"></label>
+                <input asp-for="Transactor.Zip" class="form-control form-control-sm" />
+                <span asp-validation-for="Transactor.Zip" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-3">
+                <label asp-for="Transactor.PhoneWork" class="control-label"></label>
+                <input asp-for="Transactor.PhoneWork" class="form-control form-control-sm" />
+                <span asp-validation-for="Transactor.PhoneWork" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-3">
+                <label asp-for="Transactor.PhoneMobile" class="control-label"></label>
+                <input asp-for="Transactor.PhoneMobile" class="form-control form-control-sm" />
+                <span asp-validation-for="Transactor.PhoneMobile" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-3">
+                <label asp-for="Transactor.PhoneFax" class="control-label"></label>
+                <input asp-for="Transactor.PhoneFax" class="form-control form-control-sm" />
+                <span asp-validation-for="Transactor.PhoneFax" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-3">
+                <label asp-for="Transactor.EMail" class="control-label"></label>
+                <input asp-for="Transactor.EMail" class="form-control form-control-sm" />
+                <span asp-validation-for="Transactor.EMail" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary btn-sm" />
+            </div>
+        </div>
+    </form>
+</div>
+
+
+<div>
+    <a asp-page="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
