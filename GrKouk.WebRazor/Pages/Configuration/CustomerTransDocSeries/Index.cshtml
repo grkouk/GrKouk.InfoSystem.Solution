@@ -8,51 +8,53 @@
 <h4>Customer Trans Doc Series Index</h4>
 
 <p>
-    <a asp-page="Create">Create New</a>
+    <small>
+        <a asp-page="Create">Create New</a>
+    </small>
 </p>
-<table class="table">
-    <thead>
+<table class="table table-bordered table-sm">
+    <thead class="thead-light">
         <tr>
-            <th>
+            <th class="small">
                 @Html.DisplayNameFor(model => model.TransCustomerDocSeriesDef[0].Code)
             </th>
-            <th>
+            <th class="small">
                 @Html.DisplayNameFor(model => model.TransCustomerDocSeriesDef[0].Name)
             </th>
-            <th>
+            <th class="small">
                 @Html.DisplayNameFor(model => model.TransCustomerDocSeriesDef[0].Active)
             </th>
-            <th>
+            <th class="small"> 
                 @Html.DisplayNameFor(model => model.TransCustomerDocSeriesDef[0].TransCustomerDocTypeDef)
             </th>
-            <th>
+            <th class="small">
                 @Html.DisplayNameFor(model => model.TransCustomerDocSeriesDef[0].Company)
             </th>
-            <th></th>
+            <th class="small"></th>
         </tr>
     </thead>
     <tbody>
 @foreach (var item in Model.TransCustomerDocSeriesDef) {
         <tr>
-            <td>
+            <td class="small">
                 @Html.DisplayFor(modelItem => item.Code)
             </td>
-            <td>
+            <td class="small">
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
-            <td>
+            <td class="small">
                 @Html.DisplayFor(modelItem => item.Active)
             </td>
-            <td>
+            <td class="small">
                 @Html.DisplayFor(modelItem => item.TransCustomerDocTypeDef.Id)
             </td>
-            <td>
+            <td class="small">
                 @Html.DisplayFor(modelItem => item.Company.Code)
             </td>
-            <td>
-                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+            <td class="small">
+                <a asp-page="./Edit" asp-route-id="@item.Id"><i class="fas fa-edit"></i></a> |
+                <a asp-page="./Details" asp-route-id="@item.Id"><i class="fas fa-info-circle"></i></a> |
+                <a asp-page="./Delete" asp-route-id="@item.Id"><i class="fas fa-trash"></i></a>
             </td>
         </tr>
 }
