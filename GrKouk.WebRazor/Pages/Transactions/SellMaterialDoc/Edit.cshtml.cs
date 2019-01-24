@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using AutoMapper;
 using GrKouk.InfoSystem.Dtos.WebDtos.BuyMaterialsDocs;
+using GrKouk.InfoSystem.Dtos.WebDtos.SellDocuments;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -25,7 +26,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.SellMaterialDoc
         }
 
         [BindProperty]
-        public BuyMaterialsDocModifyDto ItemVm { get; set; }
+        public SellDocModifyDto ItemVm { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -33,28 +34,26 @@ namespace GrKouk.WebRazor.Pages.Transactions.SellMaterialDoc
             {
                 return NotFound();
             }
-            var buyMatDoc = await _context.BuyMaterialsDocuments
+            var sellMatDoc = await _context.SellDocuments
                 .Include(b => b.Company)
                 .Include(b => b.FiscalPeriod)
-                .Include(b => b.MaterialDocSeries)
-                .Include(b => b.MaterialDocType)
+                .Include(b => b.SellDocSeries)
+                .Include(b => b.SellDocType)
                 .Include(b => b.Section)
 
-                .Include(b => b.Supplier)
-                .Include(b => b.BuyDocLines)
+                .Include(b => b.Transactor)
+                .Include(b => b.SellDocLines)
                 .ThenInclude(m => m.Material)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
-            ItemVm = _mapper.Map<BuyMaterialsDocModifyDto>(buyMatDoc);
+            ItemVm = _mapper.Map<SellDocModifyDto>(sellMatDoc);
 
             if (ItemVm == null)
             {
                 return NotFound();
             }
 
-            //ItemVm.AmountNet = buyMatDoc.BuyDocLines.Sum(p => p.AmountNet);
-            //ItemVm.AmountFpa = buyMatDoc.BuyDocLines.Sum(p => p.AmountFpa);
-            //ItemVm.AmountDiscount = buyMatDoc.BuyDocLines.Sum(p => p.AmountDiscount);
+          
 
             LoadCombos();
             return Page();
@@ -62,17 +61,11 @@ namespace GrKouk.WebRazor.Pages.Transactions.SellMaterialDoc
 
         private void LoadCombos()
         {
-            var supplierList = _context.Transactors.Where(s => s.TransactorType.Code == "SYS.SUPPLIER").OrderBy(s => s.Name).AsNoTracking();
+            var transactorList = _context.Transactors.Where(s => s.TransactorType.Code == "SYS.CUSTOMER").OrderBy(s => s.Name).AsNoTracking();
             ViewData["CompanyId"] = new SelectList(_context.Companies.OrderBy(p => p.Code).AsNoTracking(), "Id", "Code");
-            ViewData["MaterialDocSeriesId"] = new SelectList(_context.BuyMaterialDocSeriesDefs.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
-            ViewData["SupplierId"] = new SelectList(supplierList, "Id", "Name");
-            //var supplierList = _context.Transactors.Where(s => s.TransactorType.Code == "SYS.SUPPLIER").OrderBy(s => s.Name).AsNoTracking();
-            //ViewData["CompanyId"] = new SelectList(_context.Companies, "Id", "Code");
-            //ViewData["FiscalPeriodId"] = new SelectList(_context.FiscalPeriods, "Id", "Id");
-            //ViewData["MaterialDocSeriesId"] = new SelectList(_context.BuyMaterialDocSeriesDefs, "Id", "Code");
-            //ViewData["MaterialDocTypeId"] = new SelectList(_context.BuyMaterialDocTypeDefs, "Id", "Code");
-            //ViewData["SectionId"] = new SelectList(_context.Sections, "Id", "Code");
-            //ViewData["SupplierId"] = new SelectList(supplierList, "Id", "Name");
+            ViewData["SellDocSeriesId"] = new SelectList(_context.SellDocSeriesDefs.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
+            ViewData["TransactorId"] = new SelectList(transactorList, "Id", "Name");
+            
         }
 
         public async Task<IActionResult> OnPostAsync()

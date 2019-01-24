@@ -16,6 +16,8 @@
     <Compile Remove="Migrations\20181104140516_Perigrafes.Designer.cs" />
     <Compile Remove="Migrations\20190110180531_transactorTransactions1.cs" />
     <Compile Remove="Migrations\20190110180531_transactorTransactions1.Designer.cs" />
+    <Compile Remove="Migrations\20190123060719_SellDocuments.cs" />
+    <Compile Remove="Migrations\20190123060719_SellDocuments.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

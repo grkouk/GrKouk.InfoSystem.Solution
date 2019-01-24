@@ -110,14 +110,16 @@
                     <a asp-page="./Edit" asp-route-id="@item.Id"><i class="fas fa-edit" style="color:slategray"></i></a> |
                     <a asp-page="./Details" asp-route-id="@item.Id"><i class="fas fa-info-circle" style="color: slategray"></i></a> |
                     <a asp-page="./Delete" asp-route-id="@item.Id"><i class="fas fa-trash" style="color:slategray"></i></a> |
-                    <a class="btn  btn-sm dropdown-toggle" role="button" id="dropdownMenuButton" data-toggle="dropdown"
+                    <a class=" dropdown-toggle" role="button" id="dropdownMenuButton" data-toggle="dropdown"
                        aria-haspopup="true" aria-expanded="false"><i class="fas fa-bars" style="color:slategray"></i></a>
                     <div class="dropdown-menu small" aria-labelledby="dropdownMenuButton">
                         <h6 class="dropdown-header">Available Actions</h6>
                         <a asp-page="./Kartela"  class="dropdown-item"
                            asp-route-transactorTypeFilter="@Model.CurrentTransactorTypeFilter"
-                           asp-route-parentPageSize="@Model.PageSize"  asp-route-parentPageIndex="@Model.ListItems.CurrentPage "
-                            asp-route-transactorId="@item.Id"  asp-route-transactorName="@item.Name" >Kartella</a>
+                           asp-route-parentPageSize="@Model.PageSize"  
+                           asp-route-parentPageIndex="@Model.ListItems.CurrentPage "
+                           asp-route-transactorId="@item.Id"  
+                           asp-route-transactorName="@item.Name" >Kartella</a>
                         <a class="dropdown-item" role="button" href="#" data-toggle="modal" data-transactorId="@item.Id"
                            data-target="#transactorInfo">Open Modal</a>
                         <a class="dropdown-item" href="#">Something else here</a>

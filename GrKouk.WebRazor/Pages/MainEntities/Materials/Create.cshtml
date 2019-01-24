@@ -71,19 +71,29 @@
             </div>
         </div>
         <div class="form-row">
-            <div class="form-group col-md-4">
+            <div class="form-group col-md-2">
                 <label asp-for="MaterialVm.FpaDefId" class="control-label small"></label>
                 <select asp-for="MaterialVm.FpaDefId" class ="form-control form-control-sm small" asp-items="ViewBag.FpaDefId"></select>
             </div>
-            <div class="form-group col-md-4">
+            <div class="form-group col-md-3">
                 <label asp-for="MaterialVm.BarCode" class="control-label small"></label>
                 <input asp-for="MaterialVm.BarCode" class="form-control form-control-sm small" />
                 <span asp-validation-for="MaterialVm.BarCode" class="text-danger small"></span>
             </div>
-            <div class="form-group col-md-4">
+            <div class="form-group col-md-3">
                 <label asp-for="MaterialVm.ManufacturerCode" class="control-label small"></label>
                 <input asp-for="MaterialVm.ManufacturerCode" class="form-control form-control-sm small" />
                 <span asp-validation-for="MaterialVm.ManufacturerCode" class="text-danger small"></span>
+            </div>
+            <div class="form-group col-md-2">
+                <label asp-for="MaterialVm.PriceNetto" class="control-label small"></label>
+                <input asp-for="MaterialVm.PriceNetto" class="form-control form-control-sm small" />
+                <span asp-validation-for="MaterialVm.PriceNetto" class="text-danger small"></span>
+            </div>
+            <div class="form-group col-md-2">
+                <label asp-for="MaterialVm.PriceBrutto" class="control-label small"></label>
+                <input asp-for="MaterialVm.PriceBrutto" class="form-control form-control-sm small" />
+                <span asp-validation-for="MaterialVm.PriceBrutto" class="text-danger small"></span>
             </div>
         </div>
         <div class="form-row">

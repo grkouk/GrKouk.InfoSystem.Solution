@@ -56,7 +56,10 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.Materials
         public MaterialNatureEnum MaterialNature { get; set; }
         [Display(Name = "Company")]
         public int CompanyId { get; set; }
-
+        [Display(Name = "Καθ.Τιμή")]
+        public decimal PriceNetto { get; set; }
+        [Display(Name = "Μικτή Τιμή")]
+        public decimal PriceBrutto { get; set; }
         [Timestamp]
         public byte[] Timestamp { get; set; }
 

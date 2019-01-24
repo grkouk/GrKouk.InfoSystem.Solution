@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using GrKouk.InfoSystem.Dtos.WebDtos.BuyMaterialsDocs;
+using GrKouk.InfoSystem.Dtos.WebDtos.SellDocuments;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -31,14 +31,15 @@ namespace GrKouk.WebRazor.Pages.Transactions.SellMaterialDoc
 
         private void LoadCombos()
         {
-            var supplierList = _context.Transactors.Where(s => s.TransactorType.Code == "SYS.SUPPLIER").OrderBy(s => s.Name).AsNoTracking();
-            ViewData["CompanyId"] = new SelectList(_context.Companies.OrderBy(p=>p.Code).AsNoTracking(), "Id", "Code");
-            ViewData["MaterialDocSeriesId"] = new SelectList(_context.BuyMaterialDocSeriesDefs.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
-            ViewData["SupplierId"] = new SelectList(supplierList, "Id", "Name");
+            var transactorList = _context.Transactors.Where(s => s.TransactorType.Code == "SYS.CUSTOMER").OrderBy(s => s.Name).AsNoTracking();
+            ViewData["CompanyId"] = new SelectList(_context.Companies.OrderBy(p => p.Code).AsNoTracking(), "Id", "Code");
+            ViewData["SellDocSeriesId"] = new SelectList(_context.SellDocSeriesDefs.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
+            ViewData["TransactorId"] = new SelectList(transactorList, "Id", "Name");
+
         }
 
         [BindProperty]
-        public BuyMaterialsDocCreateAjaxDto ItemVm { get; set; }
+        public SellDocCreateAjaxDto ItemVm { get; set; }
 
         public async Task<IActionResult> OnPostAsync()
         {

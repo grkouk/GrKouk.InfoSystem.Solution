@@ -10,6 +10,7 @@ using GrKouk.InfoSystem.Dtos.WebDtos;
 using GrKouk.InfoSystem.Dtos.WebDtos.BuyMaterialsDocs;
 using GrKouk.InfoSystem.Dtos.WebDtos.CustomerTransactions;
 using GrKouk.InfoSystem.Dtos.WebDtos.Materials;
+using GrKouk.InfoSystem.Dtos.WebDtos.SellDocuments;
 using GrKouk.InfoSystem.Dtos.WebDtos.SupplierTransactions;
 using GrKouk.InfoSystem.Dtos.WebDtos.TransactorTransactions;
 using GrKouk.InfoSystem.Dtos.WebDtos.WarehouseTransactions;
@@ -72,6 +73,7 @@ namespace GrKouk.WebRazor.Automapper
             CreateMap<BuyMaterialsDocument, BuyMaterialsDocModifyAjaxNoLinesDto>().ReverseMap();
             CreateMap<BuyMaterialsDocCreateAjaxNoLinesDto, BuyMaterialDocLineAjaxDto>().ReverseMap();
             CreateMap<BuyMaterialsDocument, BuyMaterialsDocListDto>().ReverseMap();
+
             CreateMap<SupplierTransaction, BuyMaterialsDocCreateAjaxDto>().ReverseMap();
             CreateMap<SupplierTransaction, BuyMaterialsDocModifyAjaxDto>().ReverseMap();
             CreateMap<SupplierTransactionCreateDto, BuyMaterialsDocModifyAjaxDto>().ReverseMap();
@@ -99,6 +101,16 @@ namespace GrKouk.WebRazor.Automapper
             CreateMap<TransactorTransListDto, KartelaLine>()
                 .ForMember(dest => dest.DocSeriesCode, opt => opt.MapFrom(src => src.TransTransactorDocSeriesCode));
             CreateMap<MaterialSearchListDto, Material>();
+
+            CreateMap<SellDocument, SellDocListDto>().ReverseMap();
+            CreateMap<SellDocument, SellDocCreateAjaxNoLinesDto>().ReverseMap();
+            CreateMap<SellDocument, SellDocModifyAjaxNoLinesDto>().ReverseMap();
+            CreateMap<SellDocument, SellDocLineAjaxDto>().ReverseMap();
+            CreateMap<SellDocument, SellDocListDto>().ReverseMap();
+
+            CreateMap<TransactorTransaction, SellDocCreateAjaxDto>().ReverseMap();
+            CreateMap<TransactorTransaction, SellDocModifyAjaxDto>().ReverseMap();
+            CreateMap<TransactorTransCreateDto, SellDocModifyAjaxDto>().ReverseMap();
         }
     }
 }

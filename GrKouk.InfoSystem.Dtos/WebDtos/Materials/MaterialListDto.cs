@@ -71,7 +71,10 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.Materials
             }
             
         }
-
+        [Display(Name = "Καθ.Τιμή")]
+        public decimal PriceNetto { get; set; }
+        [Display(Name = "Μικτή Τιμή")]
+        public decimal PriceBrutto { get; set; }
         public MaterialNatureEnum MaterialNature { get; set; }
         [Display(Name = "Φύση Είδους", Prompt = "Υλικό,Υπηρεσία,Παγιο,Δαπάνη")]
         public string MaterialNatureName {
