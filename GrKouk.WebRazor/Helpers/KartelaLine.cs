@@ -10,6 +10,7 @@ namespace GrKouk.WebRazor.Helpers
         public DateTime TransDate { get; set; }
 
         public string TransactorName { get; set; }
+        public string CompanyCode { get; set; }
         public string DocSeriesCode { get; set; }
        
         public decimal Debit { get; set; }
