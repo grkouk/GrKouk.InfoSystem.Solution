@@ -15,7 +15,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.SellMaterialDoc
         private readonly GrKouk.WebApi.Data.ApiDbContext _context;
         private readonly IMapper _mapper;
         private readonly IToastNotification _toastNotification;
-
+        public bool InitialLoad = true;
         public CreateModel(GrKouk.WebApi.Data.ApiDbContext context, IMapper mapper, IToastNotification toastNotification)
         {
             _context = context;

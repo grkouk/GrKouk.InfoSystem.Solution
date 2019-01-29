@@ -16,16 +16,17 @@
         <div class="form-row">
             <div class="form-group col-md-auto">
                 <label class="small">Company:</label>
-                <select  asp-for="CompanyFilter" class="form-control form-control-sm small"
+                <select asp-for="CompanyFilter" class="form-control form-control-sm small"
                         asp-items="ViewBag.CompanyFilter" onchange="this.form.submit()"></select>
-            
-            </div>
-            <div class="form-group col-md-auto">
-                <label class="small"> Transactor Type:</label>
-                <select name="TransactorTypeFilter" asp-for="CurrentTransactorTypeFilter" class="form-control form-control-sm small"
-                        asp-items="ViewBag.TransactorTypeId" onchange="this.form.submit()"></select>
 
             </div>
+            <div class="form-group col-md-auto">
+                <label class="small"> Material Nature:</label>
+                <select  asp-for="MaterialNatureFilter" class="form-control form-control-sm small"
+                        asp-items="ViewBag.MaterialNatureValues" onchange="this.form.submit()"></select>
+
+            </div>
+           
             <div class="form-group col-md-auto">
                 <label class="small"> Page Size:</label>
                 <select asp-for="PageSizeKartela" onchange="this.form.submit()" class="form-control form-control-sm small">
@@ -53,19 +54,28 @@
         <tr>
           
             <th class="small text-center">
-                @Html.DisplayNameFor(model => model.ListItems[0].TransactorName)
+                @Html.DisplayNameFor(model => model.ListItems[0].MaterialName)
             </th>
             <th class="small text-center">
                 @Html.DisplayNameFor(model => model.ListItems[0].CompanyCode)
             </th>
             <th class="small text-center">
-                @Html.DisplayNameFor(model => model.ListItems[0].Debit)
+                @Html.DisplayNameFor(model => model.ListItems[0].ImportVolume)
             </th>
             <th class="small text-center">
-                @Html.DisplayNameFor(model => model.ListItems[0].Credit)
+                @Html.DisplayNameFor(model => model.ListItems[0].ExportVolume)
             </th>
             <th class="small text-center">
-                @Html.DisplayNameFor(model => model.ListItems[0].RunningTotal)
+                @Html.DisplayNameFor(model => model.ListItems[0].RunningTotalVolume)
+            </th>
+            <th class="small text-center">
+                @Html.DisplayNameFor(model => model.ListItems[0].ImportValue)
+            </th>
+            <th class="small text-center">
+                @Html.DisplayNameFor(model => model.ListItems[0].ExportValue)
+            </th>
+            <th class="small text-center">
+                @Html.DisplayNameFor(model => model.ListItems[0].RunningTotalValue)
             </th>
 
         </tr>
@@ -73,26 +83,35 @@
     <tbody>
         @foreach (var item in Model.ListItems)
         {
-            <tr>
-              
-                <td class="small">
-                    @Html.DisplayFor(modelItem => item.TransactorName)
-                </td>
-                <td class="small">
-                    @Html.DisplayFor(modelItem => item.CompanyCode)
-                </td> 
-                <td class="small text-right">
-                    @Html.DisplayFor(modelItem => item.Debit)
-                </td>
-                <td class="small text-right">
-                    @Html.DisplayFor(modelItem => item.Credit)
-                </td>
-                <td class="small text-right">
-                    @Html.DisplayFor(modelItem => item.RunningTotal)
-                </td>
+        <tr>
+
+            <td class="small">
+                @Html.DisplayFor(modelItem => item.MaterialName)
+            </td>
+            <td class="small">
+                @Html.DisplayFor(modelItem => item.CompanyCode)
+            </td>
+            <td class="small text-right">
+                @Html.DisplayFor(modelItem => item.ImportVolume)
+            </td>
+            <td class="small text-right">
+                @Html.DisplayFor(modelItem => item.ExportVolume)
+            </td>
+            <td class="small text-right">
+                @Html.DisplayFor(modelItem => item.RunningTotalVolume)
+            </td>
+            <td class="small text-right">
+                @Html.DisplayFor(modelItem => item.ImportValue)
+            </td>
+            <td class="small text-right">
+                @Html.DisplayFor(modelItem => item.ExportValue)
+            </td>
+            <td class="small text-right">
+                @Html.DisplayFor(modelItem => item.RunningTotalValue)
+            </td>
 
 
-            </tr>
+        </tr>
 
         }
     <tr>
@@ -100,14 +119,23 @@
            
         </td>
         <td class="small font-weight-bold">
-           Σύνολα Σελίδας
+            Σύνολα Σελίδας
         </td>
-      
+       
         <td class="small text-right font-weight-bold">
-            @Html.DisplayFor(modelItem=>modelItem.sumDebit)
+            @Html.DisplayFor(modelItem => modelItem.sumImportsVolume)
         </td>
         <td class="small text-right font-weight-bold">
-            @Html.DisplayFor(modelItem => modelItem.sumCredit)
+            @Html.DisplayFor(modelItem=>modelItem.sumExportsVolume)
+        </td>
+       
+        <td class="small">
+        </td>
+        <td class="small text-right font-weight-bold">
+            @Html.DisplayFor(modelItem => modelItem.sumImportsValue)
+        </td>
+        <td class="small text-right font-weight-bold">
+            @Html.DisplayFor(modelItem=>modelItem.sumExportsValue)
         </td>
         <td class="small">
            
@@ -128,13 +156,13 @@
     <nav aria-label="Page navigation example">
         <ul class="pagination pagination-sm">
             <li class="page-item @prevDisabled">
-                <a asp-page="./Kartela"
+                <a asp-page="./Isozigio"
                    asp-route-pageIndexKartela="1"
                    asp-route-PageSizeKartela="@Model.PageSizeKartela"
                    asp-route-transactorId="@Model.TransactorId"
                    asp-route-transactorName="@Model.TransactorName"
                    asp-route-parentPageIndex="@Model.ParentPageIndex "
-                   asp-route-transactorTypeFilter="@Model.TransactorTypeFilter"
+                   asp-route-materialNatureFilter="@Model.MaterialNatureFilter"
                    asp-route-companyFilter="@Model.CompanyFilter"
                    asp-route-parentPageSize="@Model.ParentPageSize"
                    class="page-link" aria-label="First">
@@ -143,13 +171,13 @@
                 </a>
             </li>
             <li class="page-item @prevDisabled">
-                <a asp-page="./Kartela"
+                <a asp-page="./Isozigio"
                    asp-route-pageIndexKartela="@(Model.ListItems.CurrentPage - 1)"
                    asp-route-PageSizeKartela="@Model.PageSizeKartela"
                    asp-route-transactorId="@Model.TransactorId"
                    asp-route-transactorName="@Model.TransactorName"
                    asp-route-parentPageIndex="@Model.ParentPageIndex "
-                   asp-route-transactorTypeFilter="@Model.TransactorTypeFilter"
+                   asp-route-materialNatureFilter="@Model.MaterialNatureFilter"
                    asp-route-companyFilter="@Model.CompanyFilter"
                    asp-route-parentPageSize="@Model.ParentPageSize"
                    class="page-link" aria-label="Previous">
@@ -157,17 +185,15 @@
                     Previous
                 </a>
             </li>
-            @*<li class="page-item"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>*@
+         
             <li class="page-item @nextDisabled">
-                <a asp-page="./Kartela"
+                <a asp-page="./Isozigio"
                    asp-route-pageIndexKartela="@(Model.ListItems.CurrentPage + 1)"
                    asp-route-PageSizeKartela="@Model.PageSizeKartela"
                    asp-route-transactorId="@Model.TransactorId"
                    asp-route-transactorName="@Model.TransactorName"
                    asp-route-parentPageIndex="@Model.ParentPageIndex "
-                   asp-route-transactorTypeFilter="@Model.TransactorTypeFilter"
+                   asp-route-materialNatureFilter="@Model.MaterialNatureFilter"
                    asp-route-companyFilter="@Model.CompanyFilter"
                    asp-route-ParentPageSize="@Model.ParentPageSize"
                    class="page-link" aria-label="Next">
@@ -176,13 +202,13 @@
                 </a>
             </li>
             <li class="page-item  @nextDisabled">
-                <a asp-page="./Kartela"
+                <a asp-page="./Isozigio"
                    asp-route-pageIndexKartela="@Model.ListItems.TotalPages"
                    asp-route-PageSizeKartela="@Model.PageSizeKartela"
                    asp-route-transactorId="@Model.TransactorId"
                    asp-route-transactorName="@Model.TransactorName"
                    asp-route-parentPageIndex="@Model.ParentPageIndex "
-                   asp-route-transactorTypeFilter="@Model.TransactorTypeFilter"
+                   asp-route-materialNatureFilter="@Model.MaterialNatureFilter"
                    asp-route-companyFilter="@Model.CompanyFilter"
                    asp-route-ParentPageSize="@Model.ParentPageSize"
                    class="page-link" aria-label="First">
@@ -197,6 +223,6 @@
 <a asp-page="./Index"
   
    asp-route-pageIndex="@Model.ParentPageIndex "
-   asp-route-transactorTypeFilter="@Model.TransactorTypeFilter"
+   asp-route-materialNatureFilter="@Model.MaterialNatureFilter"
    asp-route-PageSize="@Model.ParentPageSize"
    class="small"> Back to List</a>

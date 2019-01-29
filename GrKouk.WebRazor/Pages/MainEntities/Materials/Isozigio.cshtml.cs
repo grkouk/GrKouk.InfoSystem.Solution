@@ -3,8 +3,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using GrKouk.InfoSystem.Domain.FinConfig;
 using GrKouk.InfoSystem.Domain.Shared;
-using GrKouk.InfoSystem.Dtos.WebDtos.TransactorTransactions;
+using GrKouk.InfoSystem.Dtos.WebDtos.WarehouseTransactions;
 using GrKouk.WebRazor.Helpers;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -22,33 +23,61 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Materials
             _context = context;
             _mapper = mapper;
         }
+        public decimal sumImportsVolume = 0;
+        public decimal sumExportsVolume = 0;
+        public decimal sumImportsValue = 0;
+        public decimal sumExportsValue = 0;
 
-        public decimal sumCredit = 0;
-        public decimal sumDebit = 0;
-
+       
         public int PageSizeKartela { get; set; }
         public string TransactorName { get; set; }
         public int TransactorId { get; set; }
 
         public int ParentPageSize { get; set; }
-       public int ParentPageIndex { get; set; }
-        public int TransactorTypeFilter { get; set; }
+        public int ParentPageIndex { get; set; }
+        public string MaterialNatureFilter { get; set; }
         public int CurrentTransactorTypeFilter { get; set; }
         public int CompanyFilter { get; set; }
         public string IsozigioName { get; set; }
 
-        public PagedList<KartelaLine> ListItems { get; set; }
-        public async Task OnGetAsync(int transactorId, int? pageIndexKartela, int? pageSizeKartela, string transactorName, int? transactorTypeFilter, int? companyFilter, int? parentPageIndex, int? parentPageSize)
+        public PagedList<WarehouseKartelaLine> ListItems { get; set; }
+        public async Task OnGetAsync(int transactorId, int? pageIndexKartela, int? pageSizeKartela, string transactorName, string materialNatureFilter, int? companyFilter, int? parentPageIndex, int? parentPageSize)
         {
             LoadFilters();
-            TransactorTypeFilter = (int)(transactorTypeFilter ?? 0);
-            CompanyFilter = (int) (companyFilter ?? 0);
+          
+            CompanyFilter = (int)(companyFilter ?? 0);
+            MaterialNatureFilter = materialNatureFilter;
+            MaterialNatureEnum natureFilterValue = MaterialNatureEnum.MaterialNatureEnumUndefined;
 
-            if (transactorTypeFilter == null)
+            switch (MaterialNatureFilter)
             {
-                transactorTypeFilter = 0;
+                case "MaterialNatureEnumUndefined":
+                    IsozigioName = "";
+                    natureFilterValue = MaterialNatureEnum.MaterialNatureEnumUndefined;
+                    break;
+                case "MaterialNatureEnumMaterial":
+                    IsozigioName = "Υλικών";
+                    natureFilterValue = MaterialNatureEnum.MaterialNatureEnumMaterial;
+                    break;
+                case "MaterialNatureEnumService":
+                    IsozigioName = "Υπηρεσιών";
+                    natureFilterValue = MaterialNatureEnum.MaterialNatureEnumService;
+                    break;
+                case "MaterialNatureEnumExpense":
+                    IsozigioName = "Δαπάνων";
+                    natureFilterValue = MaterialNatureEnum.MaterialNatureEnumExpense;
+                    break;
+                case "MaterialNatureEnumFixedAsset":
+                    IsozigioName = "Πάγια";
+                    natureFilterValue = MaterialNatureEnum.MaterialNatureEnumFixedAsset;
+                    break;
+                default:
+                    IsozigioName = "";
+                    natureFilterValue = MaterialNatureEnum.MaterialNatureEnumUndefined;
+                    break;
             }
-            CurrentTransactorTypeFilter = (int)(transactorTypeFilter ?? 0);
+           
+
             ParentPageSize = (int)(parentPageSize ?? 0);
             ParentPageIndex = (int)(parentPageIndex ?? 0);
             TransactorId = transactorId;
@@ -57,95 +86,76 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Materials
             PageSizeKartela = (int)((pageSizeKartela == null || pageSizeKartela == 0) ? 20 : pageSizeKartela);
 
 
-           
-            IQueryable<TransactorTransaction> transactionsList = _context.TransactorTransactions;
-            if (transactorTypeFilter > 0)
+
+            IQueryable<WarehouseTransaction> transactionsList = _context.WarehouseTransactions;
+            if (natureFilterValue != MaterialNatureEnum.MaterialNatureEnumUndefined)
             {
-                transactionsList = transactionsList.Where(p => p.Transactor.TransactorTypeId == transactorTypeFilter);
+                transactionsList = transactionsList.Where(p => p.Material.MaterialNature == natureFilterValue);
             }
             if (companyFilter > 0)
             {
                 transactionsList = transactionsList.Where(p => p.CompanyId == companyFilter);
             }
-            var dbTrans =transactionsList.ProjectTo<TransactorTransListDto>(_mapper.ConfigurationProvider);
+            var dbTrans = transactionsList.ProjectTo<WarehouseTransListDto>(_mapper.ConfigurationProvider);
 
             var dbTransactions = dbTrans.GroupBy(g => new
-                    {
-                        g.TransactorName, g.CompanyCode, g.CreditAmount, g.DebitAmount
-                    }
+            {
+                g.MaterialName,
+                g.CompanyCode,
+                g.ImportUnits,
+                g.ImportAmount,
+                g.ExportUnits,
+                g.ExportAmount
+            }
                 )
                 .Select(s => new
                 {
-                    TransactorName = s.Key.TransactorName,
+                    MaterialName = s.Key.MaterialName,
                     CompanyCode = s.Key.CompanyCode,
-                    DebitAmount = s.Sum(x => x.DebitAmount),
-                    CreditAmount = s.Sum(x => x.CreditAmount)
+                    ImportVolume = s.Sum(x => x.ImportUnits),
+                    ExportVolume = s.Sum(x => x.ExportUnits),
+                    ImportValue = s.Sum(x => x.ImportAmount),
+                    ExportValue = s.Sum(x => x.ExportAmount)
                 }).ToList();
 
-            var isozigioType = "FREE";
-            var transactorType = await _context.TransactorTypes.Where(c => c.Id  == transactorTypeFilter).FirstOrDefaultAsync();
-            IsozigioName = "";
-            if (transactorType!=null)
-            {
-                switch (transactorType.Code)
-                {
-                    case "SYS.DTRANSACTOR":
-                        IsozigioName = "Συναλλασόμενων Ημερολογίου";
-                        isozigioType = "SUPPLIER";
-                        break;
-                    case "SYS.CUSTOMER":
-                        IsozigioName = "Πελατών";
-                        isozigioType = "CUSTOMER";
-                        break;
-                    case "SYS.SUPPLIER":
-                        IsozigioName = "Προμηθευτών";
-                        isozigioType = "SUPPLIER";
-                        break;
-
-                }
-               
-            }
-            var listWithTotal = new List<KartelaLine>();
-
-            decimal runningTotal = 0;
+           
+            var listWithTotal = new List<WarehouseKartelaLine>();
+            decimal runningTotalVolume = 0;
+            decimal runningTotalValue = 0;
             foreach (var dbTransaction in dbTransactions)
             {
-                switch (isozigioType)
+
+                runningTotalVolume = dbTransaction.ImportVolume - dbTransaction.ExportVolume ;
+                runningTotalValue = dbTransaction.ImportValue - dbTransaction.ExportValue ;
+                listWithTotal.Add(new WarehouseKartelaLine
                 {
-                    case "SUPPLIER":
-                        runningTotal = dbTransaction.CreditAmount - dbTransaction.DebitAmount + runningTotal;
-                        break;
-                    case "CUSTOMER":
-                        runningTotal = dbTransaction.DebitAmount - dbTransaction.CreditAmount + runningTotal;
-                        break;
-                    default:
-                        runningTotal = dbTransaction.CreditAmount - dbTransaction.DebitAmount + runningTotal;
-                        break;
-                }
-               
-                listWithTotal.Add(new KartelaLine
-                {
-                   
-                    RunningTotal = runningTotal,
-                    TransactorName = dbTransaction.TransactorName,
-                    CompanyCode=dbTransaction.CompanyCode,
-                    Debit = dbTransaction.DebitAmount,
-                    Credit = dbTransaction.CreditAmount
+
+                    CompanyCode = dbTransaction.CompanyCode,
+                    RunningTotalVolume = runningTotalVolume,
+                    RunningTotalValue = runningTotalValue,
+                    MaterialName = dbTransaction.MaterialName,
+                    ImportVolume = dbTransaction.ImportVolume,
+                    ExportVolume = dbTransaction.ExportVolume,
+                    ImportValue = dbTransaction.ImportValue,
+                    ExportValue = dbTransaction.ExportValue
                 });
             }
 
             var outList = listWithTotal.AsQueryable();
-           
 
-            IQueryable<KartelaLine> fullListIq = from s in outList select s;
 
-            ListItems = PagedList<KartelaLine>.Create(
+            IQueryable<WarehouseKartelaLine> fullListIq = from s in outList select s;
+
+            ListItems = PagedList<WarehouseKartelaLine>.Create(
                 fullListIq, pageIndexKartela ?? 1, PageSizeKartela);
 
             foreach (var item in ListItems)
             {
-                sumCredit += item.Credit;
-                sumDebit += item.Debit;
+                sumImportsVolume += item.ImportVolume;
+                sumExportsVolume += item.ExportVolume;
+                sumImportsValue += item.ImportValue;
+                sumExportsValue += item.ExportValue;
+
             }
 
 
@@ -153,14 +163,17 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Materials
         }
         private void LoadFilters()
         {
-            var dbTransactorTypes = _context.TransactorTypes.OrderBy(p => p.Code).AsNoTracking();
-            List<SelectListItem> transactorTypes = new List<SelectListItem>();
-            transactorTypes.Add(new SelectListItem() { Value = 0.ToString(), Text = "{All Types}" });
-            foreach (var dbTransactorType in dbTransactorTypes)
+            List<SelectListItem> materialNatures = new List<SelectListItem>
             {
-                transactorTypes.Add(new SelectListItem() { Value = dbTransactorType.Id.ToString(), Text = dbTransactorType.Code });
-            }
-            ViewData["TransactorTypeId"] = new SelectList(transactorTypes, "Value", "Text");
+                new SelectListItem() {Value = "0", Text = "{All Natures}"},
+                new SelectListItem() {Value = MaterialNatureEnum.MaterialNatureEnumMaterial.ToString(), Text = "Υλικό"},
+                new SelectListItem() {Value = MaterialNatureEnum.MaterialNatureEnumService.ToString(), Text = "Υπηρεσία"},
+                new SelectListItem() {Value = MaterialNatureEnum.MaterialNatureEnumExpense.ToString(), Text = "Δαπάνη"},
+                new SelectListItem() {Value = MaterialNatureEnum.MaterialNatureEnumFixedAsset.ToString(), Text = "Πάγιο"}
+
+
+            };
+            ViewData["MaterialNatureValues"] = new SelectList(materialNatures, "Value", "Text");
 
             var dbCompanies = _context.Companies.OrderBy(p => p.Code).AsNoTracking();
             List<SelectListItem> companiesList = new List<SelectListItem>();

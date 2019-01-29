@@ -79,4 +79,10 @@
         FinActionsEnumNegativeDebit = 3,
         FinActionsEnumNegativeCredit = 4
     }
+
+    public enum PriceTypeEnum
+    {
+        PriceTypeEnumNetto=1,
+        PriceTypeEnumBrutto=2
+    }
 }

@@ -8,7 +8,7 @@ namespace GrKouk.WebRazor.Helpers
         [DataType(DataType.Date)]
 
         public DateTime TransDate { get; set; }
-
+        public string CompanyCode { get; set; }
         public string MaterialName { get; set; }
         public string DocSeriesCode { get; set; }
         public decimal ImportVolume { get; set; }

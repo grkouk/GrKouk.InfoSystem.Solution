@@ -39,7 +39,7 @@ namespace GrKouk.WebRazor.Pages.Configuration.SellDocTypeDefs
             {
                 return NotFound();
             }
-          LoadCompbos();
+            LoadCompbos();
             return Page();
         }
 
@@ -77,6 +77,14 @@ namespace GrKouk.WebRazor.Pages.Configuration.SellDocTypeDefs
         }
         private void LoadCompbos()
         {
+            List<SelectListItem> usedPriceTypeList = new List<SelectListItem>
+            {
+
+                new SelectListItem() {Value = PriceTypeEnum.PriceTypeEnumNetto.ToString(), Text = "Καθαρή Τιμή"},
+                new SelectListItem() {Value = PriceTypeEnum.PriceTypeEnumBrutto.ToString(), Text = "Μικτή Τιμή"}
+
+            };
+            ViewData["UsedPrice"] = new SelectList(usedPriceTypeList, "Value", "Text");
             ViewData["CompanyId"] = new SelectList(_context.Companies.OrderBy(p => p.Code).AsNoTracking(), "Id", "Code");
 
             ViewData["TransTransactorDefId"] = new SelectList(_context.TransTransactorDefs.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");

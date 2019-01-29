@@ -15,6 +15,7 @@ using GrKouk.InfoSystem.Dtos.WebDtos.SellDocuments;
 using GrKouk.InfoSystem.Dtos.WebDtos.SupplierTransactions;
 using GrKouk.InfoSystem.Dtos.WebDtos.TransactorTransactions;
 using GrKouk.WebApi.Data;
+using Microsoft.AspNetCore.Http;
 using static GrKouk.InfoSystem.Domain.FinConfig.FinancialTransactionTypeEnum;
 
 namespace GrKouk.WebRazor.Controllers
@@ -38,12 +39,17 @@ namespace GrKouk.WebRazor.Controllers
         {
             return _context.Materials;
         }
-
+        [HttpGet("SetCompanyInSession")]
+        public IActionResult CompanyInSession(string companyId)
+        {
+            HttpContext.Session.SetString ("CompanyId",companyId);
+            return Ok(new {});
+        }
       
         [HttpGet("SearchForMaterials")]
         public async Task<IActionResult> GetMaterials(string term)
         {
-
+            var sessionCompanyId = HttpContext.Session.GetString("CompanyId");
             var materials = await _context.Materials.Where(p => p.Name.Contains(term) )
                 .ProjectTo<MaterialSearchListDto>(_mapper.ConfigurationProvider)
                 .Select(p => new { label = p.Label, value = p.Id }).ToListAsync();
@@ -108,6 +114,9 @@ namespace GrKouk.WebRazor.Controllers
                     factorBuy = p.BuyUnitToMainRate,
                     fpaId = p.FpaDefId,
                     lastPrice = lastPrice,
+                    priceNetto=p.PriceNetto,
+                    priceBrutto=p.PriceBrutto,
+
                     fpaRate = p.FpaDef.Rate
                 }).FirstOrDefaultAsync();
 
@@ -141,6 +150,31 @@ namespace GrKouk.WebRazor.Controllers
             Debug.Print("******Inside GetFiscal period Returning period id " + fiscalPeriod.Id);
             return Ok(new {PeriodId = fiscalPeriod.Id});
         }
+
+        [HttpGet("SalesSeriesData")]
+        public async Task<IActionResult> GetSalesSeriesData(int seriesId)
+        {
+            Debug.Print("Inside GetSalesSeriesData " + seriesId.ToString());
+            var salesSeriesDef = await _context.SellDocSeriesDefs.SingleOrDefaultAsync(p =>p.Id==seriesId);
+            if (salesSeriesDef == null)
+            {
+                Debug.Print("Inside GetSalesSeriesData No Series found");
+                return NotFound(new
+                {
+                    error = "No Series Found"
+                });
+            }
+
+            await _context.Entry(salesSeriesDef)
+                .Reference(p => p.SellDocTypeDef)
+                .LoadAsync();
+            var salesTypeDef = salesSeriesDef.SellDocTypeDef;
+            var usedPrice = salesTypeDef.UsedPrice;
+
+            Debug.Print("Inside GetSalesSeriesData Returning usedPrice " + usedPrice.ToString());
+            return Ok(new { UsedPrice = usedPrice });
+        }
+
         [HttpGet("WarehouseTransType")]
         public async Task<IActionResult> GetWarehouseTransType(int seriesId)
         {
@@ -1079,6 +1113,9 @@ namespace GrKouk.WebRazor.Controllers
         public async Task<IActionResult> PostSalesDoc([FromBody] SellDocCreateAjaxDto data)
         {
             const string sectionCode = "SYS-SELL-COMBINED-SCN";
+
+            var sessionCompanyId = HttpContext.Session.GetString("CompanyId");
+
             bool noSupplierTrans = false;
             bool noWarehouseTrans = false;
             var transToAttachNoLines = _mapper.Map<SellDocCreateAjaxNoLinesDto>(data);

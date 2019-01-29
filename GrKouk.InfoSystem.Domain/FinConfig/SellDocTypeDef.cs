@@ -30,7 +30,7 @@ namespace GrKouk.InfoSystem.Domain.FinConfig
         [Display(Name = "Κίνηση Αποθήκης")]
         public int? TransWarehouseDefId { get; set; }
         public TransWarehouseDef TransWarehouseDef { get; set; }
-
+        public PriceTypeEnum UsedPrice { get; set; }
         public int CompanyId { get; set; }
         public virtual Company Company { get; set; }
     }

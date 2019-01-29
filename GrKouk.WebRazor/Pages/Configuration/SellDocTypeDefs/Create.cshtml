@@ -5,54 +5,67 @@
     ViewData["Title"] = "Create";
 }
 
-<h2>Create</h2>
-
-<h4>SellDocTypeDef</h4>
+<h4>Create SellDocTypeDef</h4>
 <hr />
-<div class="row">
-    <div class="col-md-4">
-        <form method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="SellDocTypeDef.Code" class="control-label"></label>
-                <input asp-for="SellDocTypeDef.Code" class="form-control" />
-                <span asp-validation-for="SellDocTypeDef.Code" class="text-danger"></span>
+
+<div class="container">
+    <form method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger small"></div>
+
+        <div class="form-row">
+            <div class="form-group col-md-2">
+                <label asp-for="SellDocTypeDef.Code" class="control-label small"></label>
+                <input asp-for="SellDocTypeDef.Code" class="form-control form-control-sm small" />
+                <span asp-validation-for="SellDocTypeDef.Code" class="text-danger small"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="SellDocTypeDef.Abbr" class="control-label"></label>
-                <input asp-for="SellDocTypeDef.Abbr" class="form-control" />
-                <span asp-validation-for="SellDocTypeDef.Abbr" class="text-danger"></span>
+            <div class="form-group col-md-2">
+                <label asp-for="SellDocTypeDef.Abbr" class="control-label small"></label>
+                <input asp-for="SellDocTypeDef.Abbr" class="form-control form-control-sm small" />
+                <span asp-validation-for="SellDocTypeDef.Abbr" class="text-danger small"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="SellDocTypeDef.Name" class="control-label"></label>
-                <input asp-for="SellDocTypeDef.Name" class="form-control" />
-                <span asp-validation-for="SellDocTypeDef.Name" class="text-danger"></span>
+            <div class="form-group col-md-5">
+                <label asp-for="SellDocTypeDef.Name" class="control-label small" ></label>
+                <input asp-for="SellDocTypeDef.Name" class="form-control form-control-sm small" />
+                <span asp-validation-for="SellDocTypeDef.Name" class="text-danger small"></span>
             </div>
-            <div class="form-group">
-                <div class="checkbox">
-                    <label>
-                        <input asp-for="SellDocTypeDef.Active" /> @Html.DisplayNameFor(model => model.SellDocTypeDef.Active))
-                    </label>
-                </div>
+           
+            <div class="form-group col-md-2 ">
+
+                <label asp-for="SellDocTypeDef.Active" class="small"></label>
+                <input asp-for="SellDocTypeDef.Active" class="form-check form-control-sm"/>
+
             </div>
-            <div class="form-group">
-                <label asp-for="SellDocTypeDef.TransTransactorDefId" class="control-label"></label>
-                <select asp-for="SellDocTypeDef.TransTransactorDefId" class ="form-control" asp-items="ViewBag.TransTransactorDefId"></select>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-3">
+                <label asp-for="SellDocTypeDef.TransTransactorDefId" class="control-label small"></label>
+                <select asp-for="SellDocTypeDef.TransTransactorDefId" class="form-control form-control-sm small" asp-items="ViewBag.TransTransactorDefId"></select>
             </div>
-            <div class="form-group">
-                <label asp-for="SellDocTypeDef.TransWarehouseDefId" class="control-label"></label>
-                <select asp-for="SellDocTypeDef.TransWarehouseDefId" class ="form-control" asp-items="ViewBag.TransWarehouseDefId"></select>
+            <div class="form-group col-md-3">
+                <label asp-for="SellDocTypeDef.TransWarehouseDefId" class="control-label small"></label>
+                <select asp-for="SellDocTypeDef.TransWarehouseDefId" class="form-control form-control-sm small" asp-items="ViewBag.TransWarehouseDefId"></select>
             </div>
-            <div class="form-group">
-                <label asp-for="SellDocTypeDef.CompanyId" class="control-label"></label>
-                <select asp-for="SellDocTypeDef.CompanyId" class ="form-control" asp-items="ViewBag.CompanyId"></select>
+            <div class="form-group col-md-2">
+                <label asp-for="SellDocTypeDef.UsedPrice" class="control-label small"></label>
+                <select asp-for="SellDocTypeDef.UsedPrice" class="form-control form-control-sm small" asp-items="ViewBag.UsedPrice"></select>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-default" />
+
+            <div class="form-group col-md-2">
+                <label asp-for="SellDocTypeDef.CompanyId" class="control-label small"></label>
+                <select asp-for="SellDocTypeDef.CompanyId" class="form-control form-control-sm small" asp-items="ViewBag.CompanyId"></select>
+                <span asp-validation-for="SellDocTypeDef.CompanyId" class="text-danger small"></span>
             </div>
-        </form>
-    </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary btn-sm" />
+            </div>
+        </div>
+    </form>
 </div>
+
+
 
 <div>
     <a asp-page="Index">Back to List</a>

@@ -6,12 +6,30 @@
 }
 
 <h4>Materials List</h4>
+<div class="container navbar-dark">
+    <ul class="nav justify-content-end small">
+        <li class="nav-item">
+            <a asp-page="Create" class="nav-link"
+               asp-route-sortOrder="@Model.CurrentSort"
+               asp-route-pageIndex="@(Model.ListItems.CurrentPage)"
+               asp-route-currentFilter="@Model.CurrentFilter"
+               asp-route-PageSize="@Model.PageSize">Create New</a>
+        </li>
+        <li class="nav-item">
+            <a asp-page="./Isozigio" class="nav-link"
+               asp-route-materialNatureFilter="@Model.CurrentMaterialNature"
+               asp-route-parentPageSize="@Model.PageSize"
+               asp-route-parentPageIndex="@Model.ListItems.CurrentPage ">Ισοζύγιο</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#">Link</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+        </li>
+    </ul>
+</div>
 
-<p>
-    <small>
-        <a asp-page="Create">Create New</a>
-    </small>
-</p>
 
 <form class="form-inline" asp-page="./Index" method="get">
     <div class="container">
@@ -61,6 +79,7 @@
 <table class="table table-bordered table-sm">
     <thead class="thead-light">
         <tr>
+            @*<th><input type="checkbox" /> </th>*@
             <th class="small">
                 @Html.DisplayNameFor(model => model.ListItems[0].Id)
             </th>
@@ -100,6 +119,7 @@
         @foreach (var item in Model.ListItems)
         {
             <tr>
+               @* <td><input type="checkbox" /> </td>*@
                 <td class="small">
                     @Html.DisplayFor(modelItem => item.Id)
                 </td>
@@ -127,19 +147,19 @@
                     @Html.DisplayFor(modelItem => item.Active)
                 </td>
                 <td class="small">
-                    <a asp-page="./Edit" asp-route-id="@item.Id"><i class="fas fa-edit" style="color:slategray"></i></a> |
+                    <a asp-page="./Edit" asp-route-id="@item.Id"><i class="fas fa-edit" style="color: slategray"></i></a> |
                     <a asp-page="./Details" asp-route-id="@item.Id"><i class="fas fa-info-circle" style="color: slategray"></i></a> |
-                    <a asp-page="./Delete" asp-route-id="@item.Id"><i class="fas fa-trash" style="color:slategray"></i></a> |
+                    <a asp-page="./Delete" asp-route-id="@item.Id"><i class="fas fa-trash" style="color: slategray"></i></a> |
                     <a class=" dropdown-toggle" role="button" id="dropdownMenuButton" data-toggle="dropdown"
-                       aria-haspopup="true" aria-expanded="false"><i class="fas fa-bars" style="color:slategray"></i></a>
+                       aria-haspopup="true" aria-expanded="false"><i class="fas fa-bars" style="color: slategray"></i></a>
                     <div class="dropdown-menu small" aria-labelledby="dropdownMenuButton">
                         <h6 class="dropdown-header">Available Actions</h6>
-                        <a asp-page="./Kartela"  class="dropdown-item"
+                        <a asp-page="./Kartela" class="dropdown-item"
                            asp-route-materialNatureFilter="@Model.CurrentMaterialNature"
-                           asp-route-parentPageSize="@Model.PageSize"  
+                           asp-route-parentPageSize="@Model.PageSize"
                            asp-route-parentPageIndex="@Model.ListItems.CurrentPage "
-                           asp-route-transactorId="@item.Id"  
-                           asp-route-transactorName="@item.Name" >Kartella</a>
+                           asp-route-transactorId="@item.Id"
+                           asp-route-transactorName="@item.Name">Kartella</a>
                         <a class="dropdown-item" role="button" href="#" data-toggle="modal" data-transactorId="@item.Id"
                            data-target="#transactorInfo">Open Modal</a>
                         <a class="dropdown-item" href="#">Something else here</a>
@@ -210,3 +230,15 @@
         </li>
     </ul>
 </nav>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            console.log("Inside Document ready");
+
+            //const checkAll = () => {
+
+            //};
+        });
+    </script>
+}
