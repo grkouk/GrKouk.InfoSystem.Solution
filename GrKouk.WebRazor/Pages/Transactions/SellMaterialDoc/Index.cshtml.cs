@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using GrKouk.InfoSystem.Domain.Shared;
-using GrKouk.InfoSystem.Dtos.WebDtos.BuyMaterialsDocs;
 using GrKouk.InfoSystem.Dtos.WebDtos.SellDocuments;
 using GrKouk.WebRazor.Helpers;
 using Microsoft.AspNetCore.Mvc.RazorPages;

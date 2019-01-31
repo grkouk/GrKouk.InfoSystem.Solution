@@ -1,5 +1,5 @@
 ﻿@page
-@model GrKouk.WebRazor.Pages.Configuration.IndexModel
+@model GrKouk.WebRazor.Pages.Configuration.BuyDocTypeDefinition.IndexModel
 
 @{
     ViewData["Title"] = "Buy Doc Type Definitions Index";
@@ -28,7 +28,7 @@
                 @Html.DisplayNameFor(model => model.BuyDocTypeDefs[0].Active)
             </th>
             <th class="small">
-                @Html.DisplayNameFor(model => model.BuyDocTypeDefs[0].TransSupplierDef)
+                @Html.DisplayNameFor(model => model.BuyDocTypeDefs[0].TransTransactorDef)
             </th>
             <th class="small">
                 @Html.DisplayNameFor(model => model.BuyDocTypeDefs[0].TransWarehouseDef)
@@ -54,8 +54,8 @@
             <td class="small">
                 @Html.DisplayFor(modelItem => item.Active)
             </td>
-            <td class="small">
-                @Html.DisplayFor(modelItem => item.TransSupplierDef.Id)
+            <td class="small">  
+                @Html.DisplayFor(modelItem => item.TransTransactorDef.Id)
             </td>
             <td class="small">
                 @Html.DisplayFor(modelItem => item.TransWarehouseDef.Id)

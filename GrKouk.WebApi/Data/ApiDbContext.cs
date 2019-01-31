@@ -10,7 +10,17 @@ namespace GrKouk.WebApi.Data
         public ApiDbContext(DbContextOptions<ApiDbContext> options) : base(options)
         {
         }
+        //#region Old Entities
+        // public DbSet<TransSupplierDocTypeDef> TransSupplierDocTypeDefs { get; set; }
+        // public DbSet<TransSupplierDocSeriesDef> TransSupplierDocSeriesDefs { get; set; }
+        // public DbSet<TransSupplierDef> TransSupplierDefs { get; set; }
 
+        //  public DbSet<TransCustomerDocTypeDef> TransCustomerDocTypeDefs { get; set; }
+        // public DbSet<TransCustomerDocSeriesDef> TransCustomerDocSeriesDefs { get; set; }
+        // public DbSet<TransCustomerDef> TransCustomerDefs { get; set; }
+        // public DbSet<SupplierTransaction> SupplierTransactions { get; set; }
+        // public DbSet<CustomerTransaction> CustomerTransactions { get; set; }
+        //#endregion
         public DbSet<Company> Companies { get; set; }
         public DbSet<Transactor> Transactors { get; set; }
         public DbSet<FinDiaryTransaction> FinDiaryTransactions { get; set; }
@@ -27,23 +37,17 @@ namespace GrKouk.WebApi.Data
         public DbSet<TransWarehouseDef> TransWarehouseDefs { get; set; }
         public DbSet<TransWarehouseDocTypeDef> TransWarehouseDocTypeDefs { get; set; }
         public DbSet<TransWarehouseDocSeriesDef> TransWarehouseDocSeriesDefs { get; set; }
-        public DbSet<TransSupplierDocTypeDef> TransSupplierDocTypeDefs { get; set; }
-        public DbSet<TransSupplierDocSeriesDef> TransSupplierDocSeriesDefs { get; set; }
-        public DbSet<TransSupplierDef> TransSupplierDefs { get; set; }
-
-        public DbSet<TransCustomerDocTypeDef> TransCustomerDocTypeDefs { get; set; }
-        public DbSet<TransCustomerDocSeriesDef> TransCustomerDocSeriesDefs { get; set; }
-        public DbSet<TransCustomerDef> TransCustomerDefs { get; set; }
+      
         public DbSet<MeasureUnit> MeasureUnits { get; set; }
         public DbSet<MaterialCategory> MaterialCategories { get; set; }
         public DbSet<Material> Materials { get; set; }
-        public DbSet<SupplierTransaction> SupplierTransactions { get; set; }
+     
         public DbSet<WarehouseTransaction> WarehouseTransactions { get; set; }
-        public DbSet<CustomerTransaction> CustomerTransactions { get; set; }
-        public DbSet<BuyMaterialDocTypeDef> BuyMaterialDocTypeDefs { get; set; }
-        public DbSet<BuyMaterialDocSeriesDef> BuyMaterialDocSeriesDefs { get; set; }
-        public DbSet<BuyMaterialsDocLine> BuyMaterialsDocLines { get; set; }
-        public DbSet<BuyMaterialsDocument> BuyMaterialsDocuments { get; set; }
+      
+        public DbSet<BuyDocTypeDef> BuyDocTypeDefs { get; set; }
+        public DbSet<BuyDocSeriesDef> BuyDocSeriesDefs { get; set; }
+        public DbSet<BuyDocLine> BuyDocLines { get; set; }
+        public DbSet<BuyDocument> BuyDocuments { get; set; }
         public DbSet<TransExpenseDef> TransExpenseDefs { get; set; }
         public DbSet<TransactorTransaction> TransactorTransactions { get; set; }
         public DbSet<TransTransactorDef> TransTransactorDefs { get; set; }
@@ -53,11 +57,12 @@ namespace GrKouk.WebApi.Data
         public DbSet<SellDocSeriesDef> SellDocSeriesDefs { get; set; }
         public DbSet<SellDocLine> SellDocLines { get; set; }
         public DbSet<SellDocument> SellDocuments { get; set; }
+        public DbSet<MaterialCode> MaterialCodes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            #region Part 1
+          
             modelBuilder.Entity<FinDiaryTransaction>().HasIndex(c => c.TransactionDate);
 
             modelBuilder.Entity<FinDiaryTransaction>()
@@ -101,11 +106,6 @@ namespace GrKouk.WebApi.Data
                 .HasIndex(c => c.Code)
                 .IsUnique();
 
-
-           
-
-          
-
             modelBuilder.Entity<TransWarehouseDef>()
                    .HasOne(bd => bd.VolInvoicedExportsTrans)
                    .WithMany()
@@ -115,8 +115,6 @@ namespace GrKouk.WebApi.Data
                    .HasOne(bd => bd.VolInvoicedImportsTrans)
                    .WithMany()
                    .OnDelete(DeleteBehavior.Restrict);
-
-          
 
             modelBuilder.Entity<TransWarehouseDef>()
                    .HasOne(bd => bd.AmtInvoicedExportsTrans)
@@ -170,51 +168,7 @@ namespace GrKouk.WebApi.Data
                 .HasIndex(c => c.Code)
                 .IsUnique();
 
-            //----------------
-            modelBuilder.Entity<TransSupplierDocSeriesDef>(entity =>
-            {
-                entity.HasIndex(c => c.Code)
-                    .IsUnique();
-
-                entity.HasOne(bd => bd.TransSupplierDocTypeDef)
-                    .WithMany()
-                    .OnDelete(DeleteBehavior.Restrict);
-            });
-
-            modelBuilder.Entity<TransSupplierDocTypeDef>(entity =>
-            {
-                entity.HasIndex(c => c.Code).IsUnique();
-
-                entity.HasOne(bd => bd.TransSupplierDef)
-                      .WithMany()
-                      .OnDelete(DeleteBehavior.Restrict);
-            });
-
-            #endregion
-            modelBuilder.Entity<TransSupplierDef>(entity =>
-            {
-              
-
-                entity.HasOne(bd => bd.TurnOverTrans)
-                    .WithMany()
-                    .OnDelete(DeleteBehavior.Restrict);
-                
-                entity.HasIndex(c => c.DefaultDocSeriesId);
-                entity.HasIndex(c => c.Code)
-                    .IsUnique();
-            });
-
-            //-----------------------
-            //------------------------
-            modelBuilder.Entity<TransCustomerDocSeriesDef>(entity =>
-            {
-                entity.HasIndex(c => c.Code)
-                    .IsUnique();
-
-                entity.HasOne(bd => bd.TransCustomerDocTypeDef)
-                    .WithMany()
-                    .OnDelete(DeleteBehavior.Restrict);
-            });
+           
             modelBuilder.Entity<Section>(entity =>
             {
                 entity.HasIndex(c => c.Code)
@@ -225,27 +179,6 @@ namespace GrKouk.WebApi.Data
                 entity.HasIndex(c => c.Code)
                     .IsUnique();
             });
-
-            modelBuilder.Entity<TransCustomerDocTypeDef>(entity =>
-            {
-                entity.HasIndex(c => c.Code).IsUnique();
-
-                entity.HasOne(bd => bd.TransCustomerDef)
-                    .WithMany()
-                    .OnDelete(DeleteBehavior.Restrict);
-            });
-
-
-            modelBuilder.Entity<TransCustomerDef>(entity =>
-            {
-                entity.HasOne(bd => bd.TurnOverTrans)
-                    .WithMany()
-                    .OnDelete(DeleteBehavior.Restrict);
-               
-                entity.HasIndex(c => c.Code)
-                    .IsUnique();
-            });
-            //--------------------
 
             modelBuilder.Entity<MeasureUnit>(entity =>
             {
@@ -276,30 +209,7 @@ namespace GrKouk.WebApi.Data
 
             });
 
-            modelBuilder.Entity<SupplierTransaction>(entity =>
-            {
-                entity.HasIndex(p => p.CreatorId);
-                entity.HasIndex(p => p.TransDate);
-                entity.HasOne(p => p.Company)
-                    .WithMany()
-                    .OnDelete(DeleteBehavior.Restrict);
-                entity.HasOne(p => p.FiscalPeriod)
-                    .WithMany()
-                    .OnDelete(DeleteBehavior.Restrict);
-                entity.HasOne(p => p.Section)
-                    .WithMany()
-                    .OnDelete(DeleteBehavior.Restrict);
-                entity.HasOne(p => p.TransSupplierDocSeries)
-                    .WithMany()
-                    .OnDelete(DeleteBehavior.Restrict);
-                entity.HasOne(p => p.TransSupplierDocType)
-                    .WithMany()
-                    .OnDelete(DeleteBehavior.Restrict);
-                entity.HasOne(p => p.Supplier)
-                    .WithMany()
-                    .OnDelete(DeleteBehavior.Restrict);
-               
-            });
+           
             modelBuilder.Entity<WarehouseTransaction>(entity =>
             {
                 entity.HasIndex(p => p.CreatorId);
@@ -324,30 +234,7 @@ namespace GrKouk.WebApi.Data
                     .OnDelete(DeleteBehavior.Restrict);
                
             });
-            modelBuilder.Entity<CustomerTransaction>(entity =>
-            {
-                entity.HasIndex(p => p.CreatorId);
-                entity.HasIndex(p => p.TransDate);
-                entity.HasOne(p => p.Company)
-                    .WithMany()
-                    .OnDelete(DeleteBehavior.Restrict);
-                entity.HasOne(p => p.FiscalPeriod)
-                    .WithMany()
-                    .OnDelete(DeleteBehavior.Restrict);
-                entity.HasOne(p => p.Section)
-                    .WithMany()
-                    .OnDelete(DeleteBehavior.Restrict);
-                entity.HasOne(p => p.TransCustomerDocSeries)
-                    .WithMany()
-                    .OnDelete(DeleteBehavior.Restrict);
-                entity.HasOne(p => p.TransCustomerDocType)
-                    .WithMany()
-                    .OnDelete(DeleteBehavior.Restrict);
-                entity.HasOne(p => p.Customer)
-                    .WithMany()
-                    .OnDelete(DeleteBehavior.Restrict);
-                
-            });
+          
             modelBuilder.Entity<TransactorTransaction>(entity =>
             {
                 entity.HasIndex(p => p.CreatorId);
@@ -383,13 +270,11 @@ namespace GrKouk.WebApi.Data
                     .IsUnique();
             });
 
-            modelBuilder.Entity<BuyMaterialDocTypeDef>(entity =>
+            modelBuilder.Entity<BuyDocTypeDef>(entity =>
             {
                 entity.HasIndex(p => p.Code).IsUnique();
                
-                entity.HasOne(p => p.TransSupplierDef)
-                .WithMany()
-                .OnDelete(DeleteBehavior.Restrict);
+               
                 entity.HasOne(p => p.TransTransactorDef)
                     .WithMany()
                     .OnDelete(DeleteBehavior.Restrict);
@@ -400,18 +285,18 @@ namespace GrKouk.WebApi.Data
                     .WithMany()
                     .OnDelete(DeleteBehavior.Restrict);
             });
-            modelBuilder.Entity<BuyMaterialDocSeriesDef>(entity =>
+            modelBuilder.Entity<BuyDocSeriesDef>(entity =>
             {
                 entity.HasIndex(p => p.Code).IsUnique();
                
-                entity.HasOne(p => p.BuyMaterialDocTypeDef)
+                entity.HasOne(p => p.BuyDocTypeDef)
                 .WithMany()
                 .OnDelete(DeleteBehavior.Restrict);
                 entity.HasOne(p => p.Company)
                     .WithMany()
                     .OnDelete(DeleteBehavior.Restrict);
             });
-            modelBuilder.Entity<BuyMaterialsDocLine>(entity =>
+            modelBuilder.Entity<BuyDocLine>(entity =>
             {
                 entity.HasOne(p => p.Material)
                 .WithMany()
@@ -421,12 +306,10 @@ namespace GrKouk.WebApi.Data
                     .OnDelete(DeleteBehavior.Restrict);
             });
 
-            modelBuilder.Entity<BuyMaterialsDocument>(entity =>
+            modelBuilder.Entity<BuyDocument>(entity =>
             {
                 entity.HasIndex(p => p.TransDate);
-               
-
-                entity.HasOne(p => p.Supplier)
+                entity.HasOne(p => p.Transactor)
                 .WithMany()
                 .OnDelete(DeleteBehavior.Restrict);
                 entity.HasOne(p => p.Section)
@@ -505,7 +388,6 @@ namespace GrKouk.WebApi.Data
             {
                 entity.HasIndex(p => p.TransDate);
 
-
                 entity.HasOne(p => p.Transactor)
                     .WithMany()
                     .OnDelete(DeleteBehavior.Restrict);
@@ -519,8 +401,17 @@ namespace GrKouk.WebApi.Data
                 entity.HasOne(p => p.Company)
                     .WithMany()
                     .OnDelete(DeleteBehavior.Restrict);
-
             });
+
+            modelBuilder.Entity<MaterialCode>(entity =>
+            {
+                entity.HasIndex(p => p.Code);
+
+                entity.HasOne(p => p.Material)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
         }
     }
 }

@@ -71,14 +71,14 @@
             </th>
 
             <th class="small">
-                @Html.DisplayNameFor(model => model.ListItems[0].MaterialDocSeriesCode)
+                @Html.DisplayNameFor(model => model.ListItems[0].BuyDocSeriesCode)
             </th>
             <th class="small">
                 <a asp-page="./Index" asp-route-sortOrder="@Model.NameSort"
                    asp-route-searchFilter="@Model.CurrentFilter"
                    asp-route-datePeriodFilter="@Model.CurrentDatePeriod"
                    asp-route-PageSize="@Model.PageSize">
-                    @Html.DisplayNameFor(model => model.ListItems[0].SupplierName)
+                    @Html.DisplayNameFor(model => model.ListItems[0].TransactorName)
                 </a>
                 <i class="@Model.NameSortIcon"></i>
             </th>
@@ -103,10 +103,10 @@
                     @Html.DisplayFor(modelItem => item.TransDate)
                 </td>
                 <td class="small">
-                    @Html.DisplayFor(modelItem => item.MaterialDocSeriesCode)
+                    @Html.DisplayFor(modelItem => item.BuyDocSeriesCode)
                 </td>
                 <td class="small">
-                    @Html.DisplayFor(modelItem => item.SupplierName)
+                    @Html.DisplayFor(modelItem => item.TransactorName)
                 </td>
                 <td class="small">
                     @Html.DisplayFor(modelItem => item.TransRefCode)

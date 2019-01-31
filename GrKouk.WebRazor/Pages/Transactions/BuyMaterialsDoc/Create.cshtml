@@ -30,8 +30,8 @@
                     <span asp-validation-for="ItemVm.TransDate" class="text-danger small"></span>
                 </div>
                 <div class="form-group col-md-7">
-                    <label asp-for="ItemVm.MaterialDocSeriesId" class="control-label small"></label>
-                    <select asp-for="ItemVm.MaterialDocSeriesId" class="form-control form-control-sm small" asp-items="ViewBag.MaterialDocSeriesId"></select>
+                    <label asp-for="ItemVm.BuyDocSeriesId" class="control-label small"></label>
+                    <select asp-for="ItemVm.BuyDocSeriesId" class="form-control form-control-sm small" asp-items="ViewBag.BuyDocSeriesId"></select>
                 </div>
                 <div class="form-group col-md-3">
                     <label asp-for="ItemVm.TransRefCode" class="control-label small"></label>
@@ -42,8 +42,8 @@
             </div>
             <div class="form-row">
                 <div class="form-group col-md-8">
-                    <label asp-for="ItemVm.SupplierId" class="control-label small"></label>
-                    <select asp-for="ItemVm.SupplierId" class="form-control form-control-sm small" asp-items="ViewBag.SupplierId"></select>
+                    <label asp-for="ItemVm.TransactorId" class="control-label small"></label>
+                    <select asp-for="ItemVm.TransactorId" class="form-control form-control-sm small" asp-items="ViewBag.TransactorId"></select>
                 </div>
                 <div class="form-group col-md-4">
                     <label asp-for="ItemVm.CompanyId" class="control-label" small></label>
@@ -629,9 +629,9 @@
                 var data = JSON.stringify({
                     transDate: $("#ItemVm_TransDate").val(),
                     transRefCode: $("#ItemVm_TransRefCode").val(),
-                    supplierId: $("#ItemVm_SupplierId").val(),
+                    transactorId: $("#ItemVm_TransactorId").val(),
                     companyId: $("#ItemVm_CompanyId").val(),
-                    materialDocSeriesId: $("#ItemVm_MaterialDocSeriesId").val(),
+                   buyDocSeriesId: $("#ItemVm_BuyDocSeriesId").val(),
                     Etiology: $("#ItemVm_Etiology").val(),
                     amountFpa: $("#ItemVm_AmountFpa").attr('data-actualValue'),
                     amountNet: $("#ItemVm_AmountNet").attr('data-actualValue'),

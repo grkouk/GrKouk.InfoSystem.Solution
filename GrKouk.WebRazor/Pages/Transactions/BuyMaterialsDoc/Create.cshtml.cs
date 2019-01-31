@@ -1,10 +1,10 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using GrKouk.InfoSystem.Dtos.WebDtos.BuyDocuments;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using GrKouk.InfoSystem.Dtos.WebDtos.BuyMaterialsDocs;
 using Microsoft.EntityFrameworkCore;
 using NToastNotify;
 
@@ -33,12 +33,12 @@ namespace GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc
         {
             var supplierList = _context.Transactors.Where(s => s.TransactorType.Code == "SYS.SUPPLIER").OrderBy(s => s.Name).AsNoTracking();
             ViewData["CompanyId"] = new SelectList(_context.Companies.OrderBy(p=>p.Code).AsNoTracking(), "Id", "Code");
-            ViewData["MaterialDocSeriesId"] = new SelectList(_context.BuyMaterialDocSeriesDefs.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
-            ViewData["SupplierId"] = new SelectList(supplierList, "Id", "Name");
+            ViewData["BuyDocSeriesId"] = new SelectList(_context.BuyDocSeriesDefs.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
+            ViewData["TransactorId"] = new SelectList(supplierList, "Id", "Name");
         }
 
         [BindProperty]
-        public BuyMaterialsDocCreateAjaxDto ItemVm { get; set; }
+        public BuyDocCreateAjaxDto ItemVm { get; set; }
 
         public async Task<IActionResult> OnPostAsync()
         {
@@ -47,8 +47,8 @@ namespace GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc
                 return Page();
             }
 
-            //var itemToAttach = _mapper.Map<BuyMaterialsDocument>(ItemVm);
-            //_context.BuyMaterialsDocuments.Add(itemToAttach);
+            //var itemToAttach = _mapper.Map<BuyDocument>(ItemVm);
+            //_context.BuyDocuments.Add(itemToAttach);
             //await _context.SaveChangesAsync();
 
             return RedirectToPage("./Index");

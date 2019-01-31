@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using GrKouk.InfoSystem.Domain.Shared;
-using GrKouk.InfoSystem.Dtos.WebDtos.SupplierTransactions;
 using GrKouk.InfoSystem.Dtos.WebDtos.TransactorTransactions;
 using GrKouk.WebApi.Data;
 using NToastNotify;

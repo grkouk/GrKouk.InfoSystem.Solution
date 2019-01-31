@@ -20,7 +20,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc
         }
 
         [BindProperty]
-        public BuyMaterialsDocument BuyMaterialsDocument { get; set; }
+        public BuyDocument BuyDocument { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -29,15 +29,15 @@ namespace GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc
                 return NotFound();
             }
 
-            BuyMaterialsDocument = await _context.BuyMaterialsDocuments
+            BuyDocument = await _context.BuyDocuments
                 .Include(b => b.Company)
                 .Include(b => b.FiscalPeriod)
-                .Include(b => b.MaterialDocSeries)
-                .Include(b => b.MaterialDocType)
+                .Include(b => b.BuyDocSeries)
+                .Include(b => b.BuyDocType)
                 .Include(b => b.Section)
-                .Include(b => b.Supplier).FirstOrDefaultAsync(m => m.Id == id);
+                .Include(b => b.Transactor).FirstOrDefaultAsync(m => m.Id == id);
 
-            if (BuyMaterialsDocument == null)
+            if (BuyDocument == null)
             {
                 return NotFound();
             }
@@ -65,16 +65,16 @@ namespace GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc
             }
 
             #endregion
-            BuyMaterialsDocument = await _context.BuyMaterialsDocuments.FindAsync(id);
+            BuyDocument = await _context.BuyDocuments.FindAsync(id);
 
-            if (BuyMaterialsDocument != null)
+            if (BuyDocument != null)
             {
-                _context.BuyMaterialsDocLines.RemoveRange(_context.BuyMaterialsDocLines.Where(p => p.BuyDocumentId == id));
-                _context.SupplierTransactions.RemoveRange(_context.SupplierTransactions.Where(p => p.SectionId == section.Id && p.CreatorId == id));
+                _context.BuyDocLines.RemoveRange(_context.BuyDocLines.Where(p => p.BuyDocumentId == id));
+              //  _context.SupplierTransactions.RemoveRange(_context.SupplierTransactions.Where(p => p.SectionId == section.Id && p.CreatorId == id));
                 _context.TransactorTransactions.RemoveRange(_context.TransactorTransactions.Where(p => p.SectionId == section.Id && p.CreatorId == id));
                 _context.WarehouseTransactions.RemoveRange(_context.WarehouseTransactions.Where(p => p.SectionId == section.Id && p.CreatorId == id));
 
-                _context.BuyMaterialsDocuments.Remove(BuyMaterialsDocument);
+                _context.BuyDocuments.Remove(BuyDocument);
 
                 await _context.SaveChangesAsync();
             }

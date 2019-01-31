@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using GrKouk.InfoSystem.Domain.FinConfig;
-using GrKouk.WebApi.Data;
 
-namespace GrKouk.WebRazor.Pages.Configuration
+namespace GrKouk.WebRazor.Pages.Configuration.BuyDocTypeDefinition
 {
     public class DetailsModel : PageModel
     {
@@ -19,7 +14,7 @@ namespace GrKouk.WebRazor.Pages.Configuration
             _context = context;
         }
 
-        public InfoSystem.Domain.FinConfig.BuyMaterialDocTypeDef BuyMaterialDocTypeDef { get; set; }
+        public InfoSystem.Domain.FinConfig.BuyDocTypeDef BuyDocTypeDef { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -28,12 +23,12 @@ namespace GrKouk.WebRazor.Pages.Configuration
                 return NotFound();
             }
 
-            BuyMaterialDocTypeDef = await _context.BuyMaterialDocTypeDefs
+            BuyDocTypeDef = await _context.BuyDocTypeDefs
                 .Include(b => b.Company)
-                .Include(b => b.TransSupplierDef)
+                .Include(b => b.TransTransactorDef)
                 .Include(b => b.TransWarehouseDef).FirstOrDefaultAsync(m => m.Id == id);
 
-            if (BuyMaterialDocTypeDef == null)
+            if (BuyDocTypeDef == null)
             {
                 return NotFound();
             }

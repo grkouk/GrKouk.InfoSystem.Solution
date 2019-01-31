@@ -19,7 +19,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc
             _context = context;
         }
 
-        public BuyMaterialsDocument BuyMaterialsDocument { get; set; }
+        public BuyDocument BuyDocument { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -28,15 +28,15 @@ namespace GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc
                 return NotFound();
             }
 
-            BuyMaterialsDocument = await _context.BuyMaterialsDocuments
+            BuyDocument = await _context.BuyDocuments
                 .Include(b => b.Company)
                 .Include(b => b.FiscalPeriod)
-                .Include(b => b.MaterialDocSeries)
-                .Include(b => b.MaterialDocType)
+                .Include(b => b.BuyDocSeries)
+                .Include(b => b.BuyDocType)
                 .Include(b => b.Section)
-                .Include(b => b.Supplier).FirstOrDefaultAsync(m => m.Id == id);
+                .Include(b => b.Transactor).FirstOrDefaultAsync(m => m.Id == id);
 
-            if (BuyMaterialsDocument == null)
+            if (BuyDocument == null)
             {
                 return NotFound();
             }

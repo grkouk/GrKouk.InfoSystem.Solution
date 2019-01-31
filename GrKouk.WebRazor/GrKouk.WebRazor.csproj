@@ -7,6 +7,7 @@
     <Company>GrKouk</Company>
     <Description>GrKouk Information System</Description>
     <Copyright>George Koukoudis</Copyright>
+    <Configurations>Debug;Release;DebugWeb</Configurations>
   </PropertyGroup>
 
   <ItemGroup>

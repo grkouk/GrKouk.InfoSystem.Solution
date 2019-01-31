@@ -9,10 +9,9 @@ using GrKouk.InfoSystem.Domain.FinConfig;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using GrKouk.InfoSystem.Domain.Shared;
-using GrKouk.InfoSystem.Dtos.WebDtos.BuyMaterialsDocs;
+using GrKouk.InfoSystem.Dtos.WebDtos.BuyDocuments;
 using GrKouk.InfoSystem.Dtos.WebDtos.Materials;
 using GrKouk.InfoSystem.Dtos.WebDtos.SellDocuments;
-using GrKouk.InfoSystem.Dtos.WebDtos.SupplierTransactions;
 using GrKouk.InfoSystem.Dtos.WebDtos.TransactorTransactions;
 using GrKouk.WebApi.Data;
 using Microsoft.AspNetCore.Http;
@@ -222,13 +221,13 @@ namespace GrKouk.WebRazor.Controllers
             return Ok(new { TransType = transType });
         }
         [HttpPost("MaterialBuyDoc")]
-        public async Task<IActionResult> PostMaterialBuyDoc([FromBody] BuyMaterialsDocCreateAjaxDto data)
+        public async Task<IActionResult> PostMaterialBuyDoc([FromBody] BuyDocCreateAjaxDto data)
         {
             const string sectionCode = "SYS-BUY-MATERIALS-SCN";
             bool noSupplierTrans = false;
             bool noWarehouseTrans = false;
-            var transToAttachNoLines = _mapper.Map<BuyMaterialsDocCreateAjaxNoLinesDto>(data);
-            var transToAttach = _mapper.Map<BuyMaterialsDocument>(transToAttachNoLines);
+            var transToAttachNoLines = _mapper.Map<BuyDocCreateAjaxNoLinesDto>(data);
+            var transToAttach = _mapper.Map<BuyDocument>(transToAttachNoLines);
             var dateOfTrans = data.TransDate;
             using (var transaction = _context.Database.BeginTransaction())
             {
@@ -262,7 +261,7 @@ namespace GrKouk.WebRazor.Controllers
                 }
                 #endregion
                 var docSeries = await
-                    _context.BuyMaterialDocSeriesDefs.SingleOrDefaultAsync(m => m.Id == data.MaterialDocSeriesId);
+                    _context.BuyDocSeriesDefs.SingleOrDefaultAsync(m => m.Id == data.BuyDocSeriesId);
 
                 if (docSeries is null)
                 {
@@ -274,11 +273,11 @@ namespace GrKouk.WebRazor.Controllers
                     });
                 }
 
-                await _context.Entry(docSeries).Reference(t => t.BuyMaterialDocTypeDef).LoadAsync();
-                var docTypeDef = docSeries.BuyMaterialDocTypeDef;
-                await _context.Entry(docTypeDef)
-                      .Reference(t => t.TransSupplierDef)
-                      .LoadAsync();
+                await _context.Entry(docSeries).Reference(t => t.BuyDocTypeDef).LoadAsync();
+                var docTypeDef = docSeries.BuyDocTypeDef;
+                //await _context.Entry(docTypeDef)
+                //      .Reference(t => t.TransSupplierDef)
+                //      .LoadAsync();
                 await _context.Entry(docTypeDef)
                     .Reference(t => t.TransTransactorDef)
                     .LoadAsync();
@@ -286,14 +285,14 @@ namespace GrKouk.WebRazor.Controllers
                 await _context.Entry(docTypeDef).Reference(t => t.TransWarehouseDef)
                     .LoadAsync();
 
-                var transSupplierDef = docTypeDef.TransSupplierDef;
+                //var transSupplierDef = docTypeDef.TransSupplierDef;
                 var transTransactorDef = docTypeDef.TransTransactorDef;
                 var transWarehouseDef = docTypeDef.TransWarehouseDef;
 
                 transToAttach.SectionId = section.Id;
                 transToAttach.FiscalPeriodId = fiscalPeriod.Id;
-                transToAttach.MaterialDocTypeId = docSeries.BuyMaterialDocTypeDefId;
-                _context.BuyMaterialsDocuments.Add(transToAttach);
+                transToAttach.BuyDocTypeId = docSeries.BuyDocTypeDefId;
+                _context.BuyDocuments.Add(transToAttach);
 
                 try
                 {
@@ -308,71 +307,71 @@ namespace GrKouk.WebRazor.Controllers
                 }
                 var docId = _context.Entry(transToAttach).Entity.Id;
 
-                if (transSupplierDef.DefaultDocSeriesId > 0)
-                {
-                   var  transSupDefaultSeries = await
-                        _context.TransSupplierDocSeriesDefs.FirstOrDefaultAsync(p =>
-                            p.Id == transSupplierDef.DefaultDocSeriesId);
-                    if (transSupDefaultSeries == null)
-                    {
-                        transaction.Rollback();
-                        ModelState.AddModelError(string.Empty, "Default series for supplier transaction not found");
-                        return NotFound(new
-                        {
-                            error = "Default series for supplier transaction not found"
-                        });
-                    }
-                    var spSupplierTransaction = _mapper.Map<SupplierTransaction>(data);
-                    spSupplierTransaction.SectionId = section.Id;
-                    spSupplierTransaction.TransSupplierDocTypeId = transSupDefaultSeries.TransSupplierDocTypeDefId;
-                    spSupplierTransaction.TransSupplierDocSeriesId = transSupDefaultSeries.Id;
-                    spSupplierTransaction.FiscalPeriodId = fiscalPeriod.Id;
-                    spSupplierTransaction.CreatorId = docId;
+                //if (transSupplierDef.DefaultDocSeriesId > 0)
+                //{
+                //   var  transSupDefaultSeries = await
+                //        _context.TransSupplierDocSeriesDefs.FirstOrDefaultAsync(p =>
+                //            p.Id == transSupplierDef.DefaultDocSeriesId);
+                //    if (transSupDefaultSeries == null)
+                //    {
+                //        transaction.Rollback();
+                //        ModelState.AddModelError(string.Empty, "Default series for supplier transaction not found");
+                //        return NotFound(new
+                //        {
+                //            error = "Default series for supplier transaction not found"
+                //        });
+                //    }
+                //    var spSupplierTransaction = _mapper.Map<SupplierTransaction>(data);
+                //    spSupplierTransaction.SectionId = section.Id;
+                //    spSupplierTransaction.TransSupplierDocTypeId = transSupDefaultSeries.TransSupplierDocTypeDefId;
+                //    spSupplierTransaction.TransSupplierDocSeriesId = transSupDefaultSeries.Id;
+                //    spSupplierTransaction.FiscalPeriodId = fiscalPeriod.Id;
+                //    spSupplierTransaction.CreatorId = docId;
 
-                    switch (transSupplierDef.FinancialAction)
-                    {
-                        case InfoSystem.Domain.FinConfig.FinActionsEnum.FinActionsEnumNoChange:
-                            spSupplierTransaction.FinancialAction = FinActionsEnum.FinActionsEnumNoChange;
-                            spSupplierTransaction.TransactionType = FinancialTransactionTypeIgnore;
-                            break;
-                        case InfoSystem.Domain.FinConfig.FinActionsEnum.FinActionsEnumDebit:
-                            spSupplierTransaction.FinancialAction = FinActionsEnum.FinActionsEnumDebit;
-                            spSupplierTransaction.TransactionType = FinancialTransactionTypeDebit;
-                            break;
-                        case InfoSystem.Domain.FinConfig.FinActionsEnum.FinActionsEnumCredit:
-                            spSupplierTransaction.FinancialAction = FinActionsEnum.FinActionsEnumCredit;
-                            spSupplierTransaction.TransactionType = FinancialTransactionTypeCredit;
-                            break;
-                        case InfoSystem.Domain.FinConfig.FinActionsEnum.FinActionsEnumNegativeDebit:
-                            spSupplierTransaction.FinancialAction = FinActionsEnum.FinActionsEnumNegativeDebit;
-                            spSupplierTransaction.TransactionType = FinancialTransactionTypeDebit;
-                            spSupplierTransaction.AmountNet = spSupplierTransaction.AmountNet * -1;
-                            spSupplierTransaction.AmountFpa = spSupplierTransaction.AmountFpa * -1;
-                            spSupplierTransaction.AmountDiscount = spSupplierTransaction.AmountDiscount * -1;
-                            break;
-                        case InfoSystem.Domain.FinConfig.FinActionsEnum.FinActionsEnumNegativeCredit:
-                            spSupplierTransaction.FinancialAction = FinActionsEnum.FinActionsEnumNegativeCredit;
-                            spSupplierTransaction.TransactionType = FinancialTransactionTypeCredit;
-                            spSupplierTransaction.AmountNet = spSupplierTransaction.AmountNet * -1;
-                            spSupplierTransaction.AmountFpa = spSupplierTransaction.AmountFpa * -1;
-                            spSupplierTransaction.AmountDiscount = spSupplierTransaction.AmountDiscount * -1;
-                            break;
-                        default:
-                            break;
-                    }
-                    _context.SupplierTransactions.Add(spSupplierTransaction);
-                    try
-                    {
-                        await _context.SaveChangesAsync();
+                //    switch (transSupplierDef.FinancialAction)
+                //    {
+                //        case InfoSystem.Domain.FinConfig.FinActionsEnum.FinActionsEnumNoChange:
+                //            spSupplierTransaction.FinancialAction = FinActionsEnum.FinActionsEnumNoChange;
+                //            spSupplierTransaction.TransactionType = FinancialTransactionTypeIgnore;
+                //            break;
+                //        case InfoSystem.Domain.FinConfig.FinActionsEnum.FinActionsEnumDebit:
+                //            spSupplierTransaction.FinancialAction = FinActionsEnum.FinActionsEnumDebit;
+                //            spSupplierTransaction.TransactionType = FinancialTransactionTypeDebit;
+                //            break;
+                //        case InfoSystem.Domain.FinConfig.FinActionsEnum.FinActionsEnumCredit:
+                //            spSupplierTransaction.FinancialAction = FinActionsEnum.FinActionsEnumCredit;
+                //            spSupplierTransaction.TransactionType = FinancialTransactionTypeCredit;
+                //            break;
+                //        case InfoSystem.Domain.FinConfig.FinActionsEnum.FinActionsEnumNegativeDebit:
+                //            spSupplierTransaction.FinancialAction = FinActionsEnum.FinActionsEnumNegativeDebit;
+                //            spSupplierTransaction.TransactionType = FinancialTransactionTypeDebit;
+                //            spSupplierTransaction.AmountNet = spSupplierTransaction.AmountNet * -1;
+                //            spSupplierTransaction.AmountFpa = spSupplierTransaction.AmountFpa * -1;
+                //            spSupplierTransaction.AmountDiscount = spSupplierTransaction.AmountDiscount * -1;
+                //            break;
+                //        case InfoSystem.Domain.FinConfig.FinActionsEnum.FinActionsEnumNegativeCredit:
+                //            spSupplierTransaction.FinancialAction = FinActionsEnum.FinActionsEnumNegativeCredit;
+                //            spSupplierTransaction.TransactionType = FinancialTransactionTypeCredit;
+                //            spSupplierTransaction.AmountNet = spSupplierTransaction.AmountNet * -1;
+                //            spSupplierTransaction.AmountFpa = spSupplierTransaction.AmountFpa * -1;
+                //            spSupplierTransaction.AmountDiscount = spSupplierTransaction.AmountDiscount * -1;
+                //            break;
+                //        default:
+                //            break;
+                //    }
+                //    _context.SupplierTransactions.Add(spSupplierTransaction);
+                //    try
+                //    {
+                //        await _context.SaveChangesAsync();
 
-                    }
-                    catch (Exception e)
-                    {
-                        Console.WriteLine(e);
-                        transaction.Rollback();
-                        throw;
-                    }
-                }
+                //    }
+                //    catch (Exception e)
+                //    {
+                //        Console.WriteLine(e);
+                //        transaction.Rollback();
+                //        throw;
+                //    }
+                //}
                 if (transTransactorDef.DefaultDocSeriesId > 0)
                 {
                     var transTransactorDefaultSeries = await
@@ -388,7 +387,7 @@ namespace GrKouk.WebRazor.Controllers
                         });
                     }
                     var sTransactorTransaction = _mapper.Map<TransactorTransaction>(data);
-                    sTransactorTransaction.TransactorId = data.SupplierId;
+                    sTransactorTransaction.TransactorId = data.TransactorId;
                     sTransactorTransaction.SectionId = section.Id;
                     sTransactorTransaction.TransTransactorDocTypeId = transTransactorDefaultSeries.TransTransactorDocTypeDefId;
                     sTransactorTransaction.TransTransactorDocSeriesId = transTransactorDefaultSeries.Id;
@@ -484,7 +483,7 @@ namespace GrKouk.WebRazor.Controllers
                         });
                     }
                     #region MaterialLine
-                    var buyMaterialLine = new BuyMaterialsDocLine();
+                    var buyMaterialLine = new BuyDocLine();
                     decimal unitPrice = dataBuyDocLine.Price;
                     decimal units = (decimal)dataBuyDocLine.Q1;
                     decimal fpaRate = (decimal)dataBuyDocLine.FpaRate;
@@ -670,13 +669,13 @@ namespace GrKouk.WebRazor.Controllers
         }
 
         [HttpPut("MaterialBuyDocUpdate")]
-        public async Task<IActionResult> PutMaterialBuyDoc([FromBody] BuyMaterialsDocModifyAjaxDto data)
+        public async Task<IActionResult> PutMaterialBuyDoc([FromBody] BuyDocModifyAjaxDto data)
         {
             const string sectionCode = "SYS-BUY-MATERIALS-SCN";
             bool noWarehouseTrans;
           
-            var transToAttachNoLines = _mapper.Map<BuyMaterialsDocModifyAjaxNoLinesDto>(data);
-            var transToAttach = _mapper.Map<BuyMaterialsDocument>(transToAttachNoLines);
+            var transToAttachNoLines = _mapper.Map<BuyDocModifyAjaxNoLinesDto>(data);
+            var transToAttach = _mapper.Map<BuyDocument>(transToAttachNoLines);
             var dateOfTrans = data.TransDate;
             using (var transaction = _context.Database.BeginTransaction())
             {
@@ -695,9 +694,9 @@ namespace GrKouk.WebRazor.Controllers
                 }
 
                 #endregion
-                _context.BuyMaterialsDocLines.RemoveRange(_context.BuyMaterialsDocLines.Where(p=>p.BuyDocumentId==data.Id));
+                _context.BuyDocLines.RemoveRange(_context.BuyDocLines.Where(p=>p.BuyDocumentId==data.Id));
                 _context.TransactorTransactions.RemoveRange(_context.TransactorTransactions.Where(p => p.SectionId == section.Id && p.CreatorId == data.Id));
-                _context.SupplierTransactions.RemoveRange(_context.SupplierTransactions.Where(p=>p.SectionId==section.Id && p.CreatorId==data.Id));
+                //_context.SupplierTransactions.RemoveRange(_context.SupplierTransactions.Where(p=>p.SectionId==section.Id && p.CreatorId==data.Id));
                 _context.WarehouseTransactions.RemoveRange(_context.WarehouseTransactions.Where(p => p.SectionId == section.Id && p.CreatorId == data.Id));
                 #region Fiscal Period
 
@@ -714,7 +713,7 @@ namespace GrKouk.WebRazor.Controllers
                 }
                 #endregion
                 var docSeries = await
-                    _context.BuyMaterialDocSeriesDefs.SingleOrDefaultAsync(m => m.Id == data.MaterialDocSeriesId);
+                    _context.BuyDocSeriesDefs.SingleOrDefaultAsync(m => m.Id == data.BuyDocSeriesId);
 
                 if (docSeries is null)
                 {
@@ -726,11 +725,11 @@ namespace GrKouk.WebRazor.Controllers
                     });
                 }
 
-                await _context.Entry(docSeries).Reference(t => t.BuyMaterialDocTypeDef).LoadAsync();
-                var docTypeDef = docSeries.BuyMaterialDocTypeDef;
-                await _context.Entry(docTypeDef)
-                      .Reference(t => t.TransSupplierDef)
-                      .LoadAsync();
+                await _context.Entry(docSeries).Reference(t => t.BuyDocTypeDef).LoadAsync();
+                var docTypeDef = docSeries.BuyDocTypeDef;
+                //await _context.Entry(docTypeDef)
+                //      .Reference(t => t.TransSupplierDef)
+                //      .LoadAsync();
                 await _context.Entry(docTypeDef).Reference(t => t.TransTransactorDef)
                     .LoadAsync();
                 await _context.Entry(docTypeDef).Reference(t => t.TransWarehouseDef)
@@ -738,12 +737,12 @@ namespace GrKouk.WebRazor.Controllers
 
                
                 var transTransactorDef = docTypeDef.TransTransactorDef;
-                var transSupplierDef = docTypeDef.TransSupplierDef;
+                //var transSupplierDef = docTypeDef.TransSupplierDef;
                 var transWarehouseDef = docTypeDef.TransWarehouseDef;
 
                 transToAttach.SectionId = section.Id;
                 transToAttach.FiscalPeriodId = fiscalPeriod.Id;
-                transToAttach.MaterialDocTypeId = docSeries.BuyMaterialDocTypeDefId;
+                transToAttach.BuyDocTypeId = docSeries.BuyDocTypeDefId;
 
                 _context.Entry(transToAttach).State = EntityState.Modified;
                 var docId = transToAttach.Id;
@@ -766,7 +765,7 @@ namespace GrKouk.WebRazor.Controllers
                     //Ετσι δεν μεταφέρει το Id απο το data
                     var sTransactorTransaction = _mapper.Map<TransactorTransaction>(spTransactorCreateDto);
 
-                    sTransactorTransaction.TransactorId = data.SupplierId;
+                    sTransactorTransaction.TransactorId = data.TransactorId;
                     sTransactorTransaction.SectionId = section.Id;
                     sTransactorTransaction.TransTransactorDocTypeId = transTransactorDefaultSeries.TransTransactorDocTypeDefId;
                     sTransactorTransaction.TransTransactorDocSeriesId = transTransactorDefaultSeries.Id;
@@ -812,74 +811,7 @@ namespace GrKouk.WebRazor.Controllers
                    
                 }
                 //--------------------------------------
-                if (transSupplierDef.DefaultDocSeriesId > 0)
-                {
-                    var transSupDefaultSeries = await
-                         _context.TransSupplierDocSeriesDefs.FirstOrDefaultAsync(p =>
-                             p.Id == transSupplierDef.DefaultDocSeriesId);
-                    if (transSupDefaultSeries == null)
-                    {
-                        transaction.Rollback();
-                        ModelState.AddModelError(string.Empty, "Default series for supplier transaction not found");
-                        return NotFound(new
-                        {
-                            error = "Default series for supplier transaction not found"
-                        });
-                    }
-                    var spSupplierCreateDto = _mapper.Map<SupplierTransactionCreateDto>(data);
-                    //Ετσι δεν μεταφέρει το Id απο το data
-                    var spSupplierTransaction = _mapper.Map<SupplierTransaction>(spSupplierCreateDto);
-                   
-                    spSupplierTransaction.SectionId = section.Id;
-                    spSupplierTransaction.TransSupplierDocTypeId = transSupDefaultSeries.TransSupplierDocTypeDefId;
-                    spSupplierTransaction.TransSupplierDocSeriesId = transSupDefaultSeries.Id;
-                    spSupplierTransaction.FiscalPeriodId = fiscalPeriod.Id;
-                    spSupplierTransaction.CreatorId = docId;
-
-                    switch (transSupplierDef.FinancialAction)
-                    {
-                        case InfoSystem.Domain.FinConfig.FinActionsEnum.FinActionsEnumNoChange:
-                            spSupplierTransaction.FinancialAction = FinActionsEnum.FinActionsEnumNoChange;
-                            spSupplierTransaction.TransactionType = FinancialTransactionTypeIgnore;
-                            break;
-                        case InfoSystem.Domain.FinConfig.FinActionsEnum.FinActionsEnumDebit:
-                            spSupplierTransaction.FinancialAction = FinActionsEnum.FinActionsEnumDebit;
-                            spSupplierTransaction.TransactionType = FinancialTransactionTypeDebit;
-                            break;
-                        case InfoSystem.Domain.FinConfig.FinActionsEnum.FinActionsEnumCredit:
-                            spSupplierTransaction.FinancialAction = FinActionsEnum.FinActionsEnumCredit;
-                            spSupplierTransaction.TransactionType = FinancialTransactionTypeCredit;
-                            break;
-                        case InfoSystem.Domain.FinConfig.FinActionsEnum.FinActionsEnumNegativeDebit:
-                            spSupplierTransaction.FinancialAction = FinActionsEnum.FinActionsEnumNegativeDebit;
-                            spSupplierTransaction.TransactionType = FinancialTransactionTypeDebit;
-                            spSupplierTransaction.AmountNet = spSupplierTransaction.AmountNet * -1;
-                            spSupplierTransaction.AmountFpa = spSupplierTransaction.AmountFpa * -1;
-                            spSupplierTransaction.AmountDiscount = spSupplierTransaction.AmountDiscount * -1;
-                            break;
-                        case InfoSystem.Domain.FinConfig.FinActionsEnum.FinActionsEnumNegativeCredit:
-                            spSupplierTransaction.FinancialAction = FinActionsEnum.FinActionsEnumNegativeCredit;
-                            spSupplierTransaction.TransactionType = FinancialTransactionTypeCredit;
-                            spSupplierTransaction.AmountNet = spSupplierTransaction.AmountNet * -1;
-                            spSupplierTransaction.AmountFpa = spSupplierTransaction.AmountFpa * -1;
-                            spSupplierTransaction.AmountDiscount = spSupplierTransaction.AmountDiscount * -1;
-                            break;
-                        default:
-                            break;
-                    }
-                    _context.SupplierTransactions.Add(spSupplierTransaction);
-                    //try
-                    //{
-                    //    await _context.SaveChangesAsync();
-
-                    //}
-                    //catch (Exception e)
-                    //{
-                    //    Console.WriteLine(e);
-                    //    transaction.Rollback();
-                    //    throw;
-                    //}
-                }
+               
                 //-------------------------------------
 
                 int warehouseSeriesId = 0;
@@ -922,7 +854,7 @@ namespace GrKouk.WebRazor.Controllers
                         });
                     }
                     #region MaterialLine
-                    var buyMaterialLine = new BuyMaterialsDocLine();
+                    var buyMaterialLine = new BuyDocLine();
                     decimal unitPrice = dataBuyDocLine.Price;
                     decimal units = (decimal)dataBuyDocLine.Q1;
                     decimal fpaRate = (decimal)dataBuyDocLine.FpaRate;

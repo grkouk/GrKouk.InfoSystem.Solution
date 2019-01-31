@@ -1,5 +1,5 @@
 ﻿@page
-@model GrKouk.WebRazor.Pages.Configuration.EditModel
+@model GrKouk.WebRazor.Pages.Configuration.BuyDocTypeDefinition.EditModel
 
 @{
     ViewData["Title"] = "Edit";
@@ -11,50 +11,50 @@
 <div class="container">
     <form method="post">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <input type="hidden" asp-for="BuyMaterialDocTypeDef.Id" />
+        <input type="hidden" asp-for="BuyDocTypeDef.Id" />
         <div class="form-row">
             <div class="form-group col-md-2">
-                <label asp-for="BuyMaterialDocTypeDef.Code" class="control-label"></label>
-                <input asp-for="BuyMaterialDocTypeDef.Code" class="form-control form-control-sm" />
-                <span asp-validation-for="BuyMaterialDocTypeDef.Code" class="text-danger"></span>
+                <label asp-for="BuyDocTypeDef.Code" class="control-label small"></label>
+                <input asp-for="BuyDocTypeDef.Code" class="form-control form-control-sm" />
+                <span asp-validation-for="BuyDocTypeDef.Code" class="text-danger small"></span>
             </div>
             <div class="form-group col-md-2">
-                <label asp-for="BuyMaterialDocTypeDef.Abbr" class="control-label"></label>
-                <input asp-for="BuyMaterialDocTypeDef.Abbr" class="form-control form-control-sm" />
-                <span asp-validation-for="BuyMaterialDocTypeDef.Abbr" class="text-danger"></span>
+                <label asp-for="BuyDocTypeDef.Abbr" class="control-label small"></label>
+                <input asp-for="BuyDocTypeDef.Abbr" class="form-control form-control-sm" />
+                <span asp-validation-for="BuyDocTypeDef.Abbr" class="text-danger small"></span>
             </div>
             <div class="form-group col-md-6">
-                <label asp-for="BuyMaterialDocTypeDef.Name" class="control-label"></label>
-                <input asp-for="BuyMaterialDocTypeDef.Name" class="form-control form-control-sm" />
-                <span asp-validation-for="BuyMaterialDocTypeDef.Name" class="text-danger"></span>
+                <label asp-for="BuyDocTypeDef.Name" class="control-label small"></label>
+                <input asp-for="BuyDocTypeDef.Name" class="form-control form-control-sm" />
+                <span asp-validation-for="BuyDocTypeDef.Name" class="text-danger small"></span>
             </div>
             <div class="form-group col-md-2 ">
 
-                <label asp-for="BuyMaterialDocTypeDef.Active"></label>
-                <input asp-for="BuyMaterialDocTypeDef.Active" class="form-check form-control-sm" />
+                <label asp-for="BuyDocTypeDef.Active" class="small"></label>
+                <input asp-for="BuyDocTypeDef.Active" class="form-check form-control-sm" />
 
             </div>
         </div>
         <div class="form-row">
+           
             <div class="form-group col-md-3">
-                <label asp-for="BuyMaterialDocTypeDef.TransSupplierDefId" class="control-label"></label>
-                <select asp-for="BuyMaterialDocTypeDef.TransSupplierDefId" class="form-control form-control-sm" asp-items="ViewBag.TransSupplierDefId"></select>
-                <span asp-validation-for="BuyMaterialDocTypeDef.TransSupplierDefId" class="text-danger"></span>
+                <label asp-for="BuyDocTypeDef.TransTransactorDefId" class="control-label small"></label>
+                <select asp-for="BuyDocTypeDef.TransTransactorDefId" class="form-control form-control-sm" asp-items="ViewBag.TransTransactorDefId"></select>
+                <span asp-validation-for="BuyDocTypeDef.TransTransactorDefId" class="text-danger small"></span>
             </div>
             <div class="form-group col-md-3">
-                <label asp-for="BuyMaterialDocTypeDef.TransTransactorDefId" class="control-label"></label>
-                <select asp-for="BuyMaterialDocTypeDef.TransTransactorDefId" class="form-control form-control-sm" asp-items="ViewBag.TransTransactorDefId"></select>
-                <span asp-validation-for="BuyMaterialDocTypeDef.TransTransactorDefId" class="text-danger"></span>
+                <label asp-for="BuyDocTypeDef.TransWarehouseDefId" class="control-label small"></label>
+                <select asp-for="BuyDocTypeDef.TransWarehouseDefId" class="form-control form-control-sm" asp-items="ViewBag.TransWarehouseDefId"></select>
+                <span asp-validation-for="BuyDocTypeDef.TransWarehouseDefId" class="text-danger small"></span>
             </div>
-            <div class="form-group col-md-3">
-                <label asp-for="BuyMaterialDocTypeDef.TransWarehouseDefId" class="control-label"></label>
-                <select asp-for="BuyMaterialDocTypeDef.TransWarehouseDefId" class="form-control form-control-sm" asp-items="ViewBag.TransWarehouseDefId"></select>
-                <span asp-validation-for="BuyMaterialDocTypeDef.TransWarehouseDefId" class="text-danger"></span>
+            <div class="form-group col-md-2">
+                <label asp-for="BuyDocTypeDef.UsedPrice" class="control-label small"></label>
+                <select asp-for="BuyDocTypeDef.UsedPrice" class="form-control form-control-sm small" asp-items="ViewBag.UsedPrice"></select>
             </div>
-            <div class="form-group col-md-3">
-                <label asp-for="BuyMaterialDocTypeDef.CompanyId" class="control-label"></label>
-                <select asp-for="BuyMaterialDocTypeDef.CompanyId" class="form-control form-control-sm" asp-items="ViewBag.CompanyId"></select>
-                <span asp-validation-for="BuyMaterialDocTypeDef.CompanyId" class="text-danger"></span>
+            <div class="form-group col-md-2">
+                <label asp-for="BuyDocTypeDef.CompanyId" class="control-label small"></label>
+                <select asp-for="BuyDocTypeDef.CompanyId" class="form-control form-control-sm" asp-items="ViewBag.CompanyId"></select>
+                <span asp-validation-for="BuyDocTypeDef.CompanyId" class="text-danger small"></span>
             </div>
         </div>
 

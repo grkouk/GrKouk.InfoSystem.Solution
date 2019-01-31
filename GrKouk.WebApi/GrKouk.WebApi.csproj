@@ -7,6 +7,7 @@
     <Description>GrKouk Information System Web API</Description>
     <Copyright>George Koukoudis</Copyright>
     <Version>1.0.2</Version>
+    <Configurations>Debug;Release;DebugWeb</Configurations>
   </PropertyGroup>
 
   <ItemGroup>

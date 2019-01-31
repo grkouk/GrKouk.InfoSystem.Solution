@@ -5,9 +5,15 @@
     <Version>1.0.2</Version>
     <Authors>George Koukoudis</Authors>
     <Copyright>George Koukoudis</Copyright>
+    <Configurations>Debug;Release;DebugWeb</Configurations>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DebugType>pdbonly</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugWeb|AnyCPU'">
     <DebugType>pdbonly</DebugType>
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>

@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using GrKouk.InfoSystem.Dtos.WebDtos.BuyMaterialsDocs;
 using GrKouk.InfoSystem.Dtos.WebDtos.SellDocuments;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -98,7 +97,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.SellMaterialDoc
 
         private bool BuyMaterialsDocumentExists(int id)
         {
-            return _context.BuyMaterialsDocuments.Any(e => e.Id == id);
+            return _context.BuyDocuments.Any(e => e.Id == id);
         }
     }
 }

@@ -85,4 +85,18 @@
         PriceTypeEnumNetto=1,
         PriceTypeEnumBrutto=2
     }
+
+    public enum MaterialCodeTypeEnum
+    {
+        CodeTypeEnumCode=1,
+        CodeTypeEnumBarcode=2,
+        CodeTypeEnumSupplierCode=3
+    }
+
+    public enum MaterialCodeUsedUnitEnum
+    {
+        CodeUsedUnitEnumMain=1,
+        CodeUsedUnitEnumSecondary=2,
+        CodeUsedUnitEnumBuy=3
+    }
 }

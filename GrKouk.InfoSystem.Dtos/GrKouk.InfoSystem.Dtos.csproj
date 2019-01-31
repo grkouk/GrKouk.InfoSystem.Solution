@@ -5,6 +5,7 @@
     <Version>1.0.1</Version>
     <Authors>George Koukoudis</Authors>
     <Copyright>George Koukoudis</Copyright>
+    <Configurations>Debug;Release;DebugWeb</Configurations>
   </PropertyGroup>
 
   <ItemGroup>
