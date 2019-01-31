@@ -22,7 +22,10 @@
                asp-route-parentPageIndex="@Model.ListItems.CurrentPage ">Ισοζύγιο</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="#">Link</a>
+            <a asp-page="/MainEntities/MaterialCodes/index" class="nav-link"
+               asp-route-materialNatureFilter="@Model.CurrentMaterialNature"
+               asp-route-parentPageSize="@Model.PageSize"
+               asp-route-parentPageIndex="@Model.ListItems.CurrentPage ">Material Codes</a>
         </li>
         <li class="nav-item">
             <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>

@@ -44,7 +44,68 @@ namespace GrKouk.WebRazor.Controllers
             HttpContext.Session.SetString ("CompanyId",companyId);
             return Ok(new {});
         }
-      
+
+        [HttpGet("SeekBarcode")]
+        public async Task<IActionResult> GetMaterialFromBarcode(string barcode)
+        {
+            //var sessionCompanyId = HttpContext.Session.GetString("CompanyId");
+            var materials = await _context.MaterialCodes
+                .Include(p => p.Material)
+                .ThenInclude(p=>p.FpaDef)
+                .Where(p => p.Code == barcode && p.CodeType == MaterialCodeTypeEnum.CodeTypeEnumBarcode)
+                .ToListAsync();
+
+                //.ProjectTo<MaterialSearchListDto>(_mapper.ConfigurationProvider)
+                //.Select(p => new { label = p.Label, value = p.Id }).ToListAsync();
+
+            if (materials == null)
+            {
+                return NotFound();
+            }
+
+            if (materials.Count>1)
+            {
+                return NotFound();
+            }
+
+            var material = materials[0].Material;
+            var usedUnit = materials[0].CodeUsedUnit;
+            double unitFactor;
+
+            switch (usedUnit)
+            {
+                case MaterialCodeUsedUnitEnum.CodeUsedUnitEnumMain:
+                    unitFactor = 1;
+                    break;
+                case MaterialCodeUsedUnitEnum.CodeUsedUnitEnumSecondary:
+                    unitFactor = material.SecondaryUnitToMainRate;
+                    break;
+                case MaterialCodeUsedUnitEnum.CodeUsedUnitEnumBuy:
+                    unitFactor = material.BuyUnitToMainRate;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            var lastPr = await _context.WarehouseTransactions.Where(m => m.Id == material.Id)
+                .Select(k => new
+                {
+                    LastPrice = k.UnitPrice
+                }).FirstOrDefaultAsync();
+
+            var lastPrice = lastPr?.LastPrice ?? 0;
+
+            return Ok(new
+            {
+                Name=material.Name,
+                fpaId = material.FpaDefId,
+                lastPrice = lastPrice,
+                fpaRate = material.FpaDef.Rate,
+                Id =material.Id,
+                Factor=unitFactor
+
+            });
+        }
         [HttpGet("SearchForMaterials")]
         public async Task<IActionResult> GetMaterials(string term)
         {
@@ -92,7 +153,7 @@ namespace GrKouk.WebRazor.Controllers
         public async Task<IActionResult> GetMaterialData(int materialId)
         {
             //TODO: Να βρίσκει τιμές μόνο για κινήσεις αγοράς ισως LasrPriceImport LastPriceExport???
-            var lastPr = await _context.WarehouseTransactions.Where(m => m.Id == materialId)
+            var lastPr = await _context.WarehouseTransactions.OrderByDescending(p=>p.TransDate).Where(m => m.MaterialId == materialId)
                 .Select(k => new
                 {
                     LastPrice = k.UnitPrice
@@ -173,7 +234,29 @@ namespace GrKouk.WebRazor.Controllers
             Debug.Print("Inside GetSalesSeriesData Returning usedPrice " + usedPrice.ToString());
             return Ok(new { UsedPrice = usedPrice });
         }
+        [HttpGet("BuySeriesData")]
+        public async Task<IActionResult> GetBuySeriesData(int seriesId)
+        {
+            Debug.Print("Inside GetBuySeriesData " + seriesId.ToString());
+            var buySeriesDef = await _context.BuyDocSeriesDefs.SingleOrDefaultAsync(p => p.Id == seriesId);
+            if (buySeriesDef == null)
+            {
+                Debug.Print("Inside GetBuySeriesData No Series found");
+                return NotFound(new
+                {
+                    error = "No Series Found"
+                });
+            }
 
+            await _context.Entry(buySeriesDef)
+                .Reference(p => p.BuyDocTypeDef)
+                .LoadAsync();
+            var buyTypeDef = buySeriesDef.BuyDocTypeDef;
+            var usedPrice = buyTypeDef.UsedPrice;
+
+            Debug.Print("Inside GetBuySeriesData Returning usedPrice " + usedPrice.ToString());
+            return Ok(new { UsedPrice = usedPrice });
+        }
         [HttpGet("WarehouseTransType")]
         public async Task<IActionResult> GetWarehouseTransType(int seriesId)
         {

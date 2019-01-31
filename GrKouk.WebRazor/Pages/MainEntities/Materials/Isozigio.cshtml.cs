@@ -100,12 +100,9 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Materials
 
             var dbTransactions = dbTrans.GroupBy(g => new
             {
-                g.MaterialName,
                 g.CompanyCode,
-                g.ImportUnits,
-                g.ImportAmount,
-                g.ExportUnits,
-                g.ExportAmount
+                g.MaterialName,
+             
             }
                 )
                 .Select(s => new

@@ -1,0 +1,61 @@
+﻿@page
+@model GrKouk.WebRazor.Pages.MainEntities.MaterialCodes.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.MaterialCode[0].Material)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.MaterialCode[0].CodeType)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.MaterialCode[0].Code)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.MaterialCode[0].TransactorId)
+        </th>
+
+        <th>
+            @Html.DisplayNameFor(model => model.MaterialCode[0].CodeUsedUnit)
+        </th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.MaterialCode) {
+    <tr>
+          <td>
+                @Html.DisplayFor(modelItem => item.Material.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CodeType)
+            </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Code)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.TransactorId)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CodeUsedUnit)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new {materialId = item.MaterialId, codeType = item.CodeType, code = item.Code}) |
+            @Html.ActionLink("Details", "Details", new {materialId = item.MaterialId, codeType = item.CodeType, code = item.Code}) |
+            @Html.ActionLink("Delete", "Delete", new {materialId = item.MaterialId, codeType = item.CodeType, code = item.Code})
+        </td>
+    </tr>
+}
+    </tbody>
+</table>

@@ -696,7 +696,6 @@
                         $lineEditing.val(lineEdit);
                         $materialId.val(materialId);
                         $lookUp.val(materialName);
-                       // $price.val(price);
                         $q1.val(q1);
                         $q2.val(q2);
                         $vatPercent.val(fpaRate);
@@ -754,8 +753,7 @@
                 var linesArr = [];
                 linesArr.length = 0;
 
-                $.each($("#detailsTable tbody tr"),
-                    function() {
+                $.each($("#detailsTable tbody tr"),function() {
                         linesArr.push({
                             // materialId: $(this).find('td:eq(0)').html(),
                             materialId: $(this).find('td:eq(1)').attr('data-materialId'),

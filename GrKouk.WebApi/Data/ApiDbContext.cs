@@ -405,6 +405,10 @@ namespace GrKouk.WebApi.Data
 
             modelBuilder.Entity<MaterialCode>(entity =>
             {
+                entity.HasKey(p => new
+                {
+                    p.CodeType, p.MaterialId, p.Code
+                });
                 entity.HasIndex(p => p.Code);
 
                 entity.HasOne(p => p.Material)

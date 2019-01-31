@@ -1,0 +1,59 @@
+﻿@page
+@model GrKouk.WebRazor.Pages.MainEntities.MaterialCodes.CreateModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h4>New Material Code</h4>
+<hr />
+<div class="container">
+    <form method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="form-row">
+            <div class="form-group col-sm-4">
+                <label asp-for="MaterialCode.MaterialId" class="control-label small"></label>
+                <select asp-for="MaterialCode.MaterialId" class="form-control form-control-sm" asp-items="ViewBag.MaterialId"></select>
+            </div>
+            <div class="form-group col-sm-2">
+                <label asp-for="MaterialCode.CodeType" class="control-label small"></label>
+                <select asp-for="MaterialCode.CodeType" class="form-control form-control-sm" asp-items="ViewBag.CodeType"></select>
+                <span asp-validation-for="MaterialCode.CodeType" class="text-danger small"></span>
+            </div>
+            <div class="form-group col-sm-2">
+                <label asp-for="MaterialCode.Code" class="control-label small"></label>
+                <input asp-for="MaterialCode.Code" class="form-control form-control-sm" />
+                <span asp-validation-for="MaterialCode.Code" class="text-danger small"></span>
+            </div>
+        </div>
+
+
+        <div class="form-row">
+            <div class="form-group col-sm-2">
+                <label asp-for="MaterialCode.TransactorId" class="control-label small"></label>
+                <input asp-for="MaterialCode.TransactorId" class="form-control form-control-sm" />
+                <span asp-validation-for="MaterialCode.TransactorId" class="text-danger small"></span>
+            </div>
+            <div class="form-group col-sm-2">
+                <label asp-for="MaterialCode.CodeUsedUnit" class="control-label small"></label>
+                <select asp-for="MaterialCode.CodeUsedUnit" class="form-control form-control-sm" asp-items="ViewBag.CodeUsedUnit"></select>
+                <span asp-validation-for="MaterialCode.CodeUsedUnit" class="text-danger small"></span>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary btn-sm" />
+            </div>
+        </div>
+    </form>
+</div>
+
+<div>
+    <a asp-page="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
