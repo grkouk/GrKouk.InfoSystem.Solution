@@ -52,8 +52,10 @@ namespace GrKouk.WebRazor.Controllers
         {
             //var sessionCompanyId = HttpContext.Session.GetString("CompanyId");
             var materials = await _context.MaterialCodes
-                .Include(p => p.Material)
-                .ThenInclude(p=>p.FpaDef)
+                .Include(p => p.Material).ThenInclude(p=>p.FpaDef)
+                .Include(p => p.Material).ThenInclude(p => p.MainMeasureUnit)
+                .Include(p => p.Material).ThenInclude(p => p.SecondaryMeasureUnit)
+                .Include(p => p.Material).ThenInclude(p => p.BuyMeasureUnit)
                 .Where(p => p.Code == barcode && p.CodeType == MaterialCodeTypeEnum.CodeTypeEnumBarcode)
                 .ToListAsync();
 
@@ -71,6 +73,7 @@ namespace GrKouk.WebRazor.Controllers
             }
 
             var material = materials[0].Material;
+            
             var usedUnit = materials[0].CodeUsedUnit;
             double unitFactor;
             string unitToUse;
@@ -108,7 +111,15 @@ namespace GrKouk.WebRazor.Controllers
                 lastPrice = lastPrice,
                 fpaRate = material.FpaDef.Rate,
                 unitToUse=unitToUse,
-                Factor=unitFactor
+                Factor=unitFactor,
+                mainUnitId = material.MainMeasureUnitId,
+                secUnitId = material.SecondaryMeasureUnitId,
+                buyUnitId = material.BuyMeasureUnitId,
+                mainUnitCode = material.MainMeasureUnit.Code,
+                secUnitCode = material.SecondaryMeasureUnit.Code,
+                buyUnitCode = material.BuyMeasureUnit.Code,
+                factorSeq = material.SecondaryUnitToMainRate,
+                factorBuy = material.BuyUnitToMainRate,
 
             });
         }

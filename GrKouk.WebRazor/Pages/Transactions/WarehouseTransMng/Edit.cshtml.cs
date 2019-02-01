@@ -45,8 +45,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.WarehouseTransMng
             var transToEdit = await _context.WarehouseTransactions
                 .Include(w => w.Company)
                 .Include(w => w.FiscalPeriod)
-                .Include(w => w.Material).ThenInclude(m=>m.MainMeasureUnit)
-                .Include(w => w.Material).ThenInclude(m => m.SecondaryMeasureUnit)
+                .Include(w => w.Material)
                 .Include(w => w.Section)
                 .Include(w => w.TransWarehouseDocSeries)
                 .Include(w => w.TransWarehouseDocType).FirstOrDefaultAsync(m => m.Id == id);
@@ -65,8 +64,11 @@ namespace GrKouk.WebRazor.Pages.Transactions.WarehouseTransMng
             NotUpdatable = transToEdit.SectionId != section.Id;
 
             ItemVm = _mapper.Map<WarehouseTransModifyDto>(transToEdit);
-            ItemVm.PrimaryUnitCode = transToEdit.Material.MainMeasureUnit.Code;
-            ItemVm.SecondaryUnitCode = transToEdit.Material.SecondaryMeasureUnit.Code;
+            var mainUnit = await _context.MeasureUnits.SingleOrDefaultAsync(p => p.Id == transToEdit.PrimaryUnitId);
+            var secUnit = await _context.MeasureUnits.SingleOrDefaultAsync(p => p.Id == transToEdit.SecondaryUnitId);
+            ItemVm.PrimaryUnitCode = mainUnit==null ? "UNK" : mainUnit.Code;
+            ItemVm.SecondaryUnitCode = secUnit == null ? "UNK" : secUnit.Code;
+           
             LoadCombos();
            return Page();
         }
