@@ -53,14 +53,11 @@ namespace GrKouk.WebRazor.Pages.Transactions.SellMaterialDoc
             var section = await _context.Sections.SingleOrDefaultAsync(s => s.SystemName == sectionCode);
             if (section == null)
             {
-               
-               
                 return NotFound(new
                 {
                     error = "Could not locate section "
                 });
             }
-
             #endregion
             SaleDocument = await _context.SellDocuments.FindAsync(id);
 

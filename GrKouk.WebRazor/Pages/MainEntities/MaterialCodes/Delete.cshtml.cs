@@ -23,15 +23,22 @@ namespace GrKouk.WebRazor.Pages.MainEntities.MaterialCodes
         [BindProperty]
         public MaterialCode MaterialCode { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(MaterialCodeTypeEnum id)
+        public async Task<IActionResult> OnGetAsync(MaterialCodeTypeEnum codeType, int materialId, string code )
         {
-            if (id == null)
+            if (codeType == null)
             {
                 return NotFound();
             }
-
+            if (materialId == null)
+            {
+                return NotFound();
+            }
+            if (code == null)
+            {
+                return NotFound();
+            }
             MaterialCode = await _context.MaterialCodes
-                .Include(m => m.Material).FirstOrDefaultAsync(m => m.CodeType == id);
+                .Include(m => m.Material).FirstOrDefaultAsync(m => m.CodeType == codeType && m.MaterialId==materialId && m.Code==code);
 
             if (MaterialCode == null)
             {
@@ -40,14 +47,22 @@ namespace GrKouk.WebRazor.Pages.MainEntities.MaterialCodes
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync(MaterialCodeTypeEnum id)
+        public async Task<IActionResult> OnPostAsync(MaterialCodeTypeEnum codeType, int materialId, string code)
         {
-            if (id == null)
+            if (codeType == null)
+            {
+                return NotFound();
+            }
+            if (materialId == null)
+            {
+                return NotFound();
+            }
+            if (code == null)
             {
                 return NotFound();
             }
 
-            MaterialCode = await _context.MaterialCodes.FindAsync(id);
+            MaterialCode = await _context.MaterialCodes.FindAsync( codeType, materialId , code);
 
             if (MaterialCode != null)
             {

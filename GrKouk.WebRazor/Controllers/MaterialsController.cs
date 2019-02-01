@@ -73,17 +73,20 @@ namespace GrKouk.WebRazor.Controllers
             var material = materials[0].Material;
             var usedUnit = materials[0].CodeUsedUnit;
             double unitFactor;
-
+            string unitToUse;
             switch (usedUnit)
             {
                 case MaterialCodeUsedUnitEnum.CodeUsedUnitEnumMain:
                     unitFactor = 1;
+                    unitToUse = "MAIN";
                     break;
                 case MaterialCodeUsedUnitEnum.CodeUsedUnitEnumSecondary:
                     unitFactor = material.SecondaryUnitToMainRate;
+                    unitToUse = "SEC";
                     break;
                 case MaterialCodeUsedUnitEnum.CodeUsedUnitEnumBuy:
                     unitFactor = material.BuyUnitToMainRate;
+                    unitToUse = "BUY";
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -99,11 +102,12 @@ namespace GrKouk.WebRazor.Controllers
 
             return Ok(new
             {
-                Name=material.Name,
+                Id = material.Id,
+                Name =material.Name,
                 fpaId = material.FpaDefId,
                 lastPrice = lastPrice,
                 fpaRate = material.FpaDef.Rate,
-                Id =material.Id,
+                unitToUse=unitToUse,
                 Factor=unitFactor
 
             });

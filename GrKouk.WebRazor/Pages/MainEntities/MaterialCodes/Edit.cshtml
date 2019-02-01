@@ -12,13 +12,13 @@
 <div class="row">
     <div class="col-md-4">
         <form method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div asp-validation-summary="ModelOnly" class="text-danger small"></div>
             <input type="hidden" asp-for="MaterialCode.CodeType" />
             <input type="hidden" asp-for="MaterialCode.Code" />
             <div class="form-group">
-                <label asp-for="MaterialCode.TransactorId" class="control-label"></label>
-                <input asp-for="MaterialCode.TransactorId" class="form-control" />
-                <span asp-validation-for="MaterialCode.TransactorId" class="text-danger"></span>
+                <label asp-for="MaterialCode.TransactorId" class="control-label small"></label>
+                <input asp-for="MaterialCode.TransactorId" class="form-control form-control-sm" />
+                <span asp-validation-for="MaterialCode.TransactorId" class="text-danger small"></span>
             </div>
             <input type="hidden" asp-for="MaterialCode.MaterialId" />
             <div class="form-group">

@@ -32,6 +32,7 @@
             <input type="hidden" id="MaterialsCounter" />
             <input type="hidden" id="SeriesUsedPrice" />
             <input type="hidden" id="LineEditing" />
+            <input type="hidden" id="LookupValueValid" />
             <div class="form-row">
                 <div class="form-group col-md-2">
                     <label asp-for="ItemVm.TransDate" class="control-label small "></label>
@@ -61,7 +62,7 @@
             </div>
 
             <div class="form-row">
-               
+
                 <div class="form-group col-sm-1">
                     <label class="control-label small">Seek Type</label>
                     <select asp-for="SeekType" class="form-control form-control-sm " style="font-size: 0.7rem" asp-items="ViewBag.SeekType"></select>
@@ -79,7 +80,6 @@
                     <div class="invalid-feedback">
                         Please enter a valid Q1.
                     </div>
-                    @*<span class="text-danger invalid-feedback small">Invalid Q1</span>*@
                 </div>
                 <div class="form-group col-sm-2">
                     <label class="small" id="q2Label">Q2</label>
@@ -92,8 +92,8 @@
                     <span class="text-danger small"></span>
                 </div>
                 <div class="form-group col-md-1">
-                    <label class="small" >Price Net</label>
-                    <input class="form-control form-control-sm " style="font-size: 0.7rem" type="number" placeholder="Price Net" id="PriceNet" tabindex="-1" readonly/>
+                    <label class="small">Price Net</label>
+                    <input class="form-control form-control-sm " style="font-size: 0.7rem" type="number" placeholder="Price Net" id="PriceNet" tabindex="-1" readonly />
                     <span class="text-danger small"></span>
                 </div>
                 <div class="form-group col-sm-1">
@@ -127,8 +127,8 @@
                             <th class="small text-center" style="width: 10%">Disc</th>
                             <th class="small text-center" style="width: 10%">Vat</th>
                             <th class="small text-center" style="width: 10%">Gross</th>
-                            <th class="small" style="width: 5%"></th>
-                            <th class="small" style="width: 5%"></th>
+                            <th class="small" style="width: 1%"></th>
+                            <th class="small" style="width: 1%"></th>
 
                         </tr>
                     </thead>
@@ -175,7 +175,7 @@
 </div>
 
 <div>
-    <a asp-page="Index">Back to List</a>
+    <a class="small" asp-page="Index">Back to List</a>
 </div>
 
 @section Scripts {
@@ -231,6 +231,8 @@
             var $companyId = $('#ItemVm_CompanyId');
             var $price = $("#Price");
             var $priceNet = $("#PriceNet");
+            var $lookupValueValid = $("#LookupValueValid");
+            var $materialFpaId = $('#MaterialFpaId');
             //#endregion
 
             //#region Initial values
@@ -267,7 +269,7 @@
                     break;
                 }
             };
-             var lineUpdatePrice = (linePrice, lineFpaRate) => {
+            var lineUpdatePrice = (linePrice, lineFpaRate) => {
                 var priceNetValue = parseFloat( linePrice);
                 var fpaValue = parseFloat(lineFpaRate);
                 var priceValue = 0;
@@ -301,9 +303,9 @@
                     dataType: 'json',
                     type: 'GET',
                     url: "/api/Materials/SetCompanyInSession?companyId="+$companyId.val(),
-                   
+
                     success: function(result) {
-                      
+
                     },
                     error: function(e) {
 
@@ -342,6 +344,57 @@
                         }
                     );
             };
+            var q1Changed = () => {
+                $q2.val($q1.val() / $factor.val());
+            };
+            var q2Changed = () => {
+                $q1.val($q2.val() * $factor.val());
+            };
+            var setupUnitToUse = (e) => {
+                switch (e) {
+                    case 'MAIN':
+                        $q1.prop('disabled', false);
+                        $q2.prop('disabled' , true);
+                        break;
+                    case 'SEC':
+                        $q1.prop('disabled', true);
+                        $q2.prop('disabled' , false);
+                        break;
+                    case 'BUY':
+                        $q1.prop('disabled', true);
+                        $q2.prop('disabled' , false);
+                        break;
+
+                    default:
+                        $q1.prop('disabled', false);
+                        $q2.prop('disabled', false);
+                        break;
+                }
+            };
+            var initValUnitToUse = (e) => {
+                switch (e) {
+                    case 'MAIN':
+                        $q1.val(1);
+                        q1Changed();
+                        $q1.focus();
+                        break;
+                    case 'SEC':
+                        $q2.val(1);
+                        q2Changed();
+                        $q2.focus();    
+                        break;
+                    case 'BUY':
+                        $q2.val(1);
+                        q2Changed();
+                        $q2.focus();    
+                        break;
+
+                    default:
+                        $q1.val(1);
+                        q1Changed();
+                        break;
+                }
+            };
 
             var seekBarcode = () => {
                 return $.ajax({
@@ -349,9 +402,9 @@
                     dataType: 'json',
                     type: 'GET',
                     url: "/api/Materials/SeekBarcode?barcode="+$lookUp.val(),
-                    
+
                     success: function(result) {
-                       
+
                         var r = result;
                         console.log(r);
                         var mName = r.name;
@@ -360,16 +413,22 @@
                         var rate = r.fpaRate;
                         var lastPrice = r.lastPrice;
                         var fpaId = r.fpaId;
+                        var unitToUse = r.unitToUse;
+                        setupUnitToUse(unitToUse);
 
                         $materialId.val(mId);
                         $factor.val(mFactor);
                         $vatPercent.val(rate);
-                        $('#MaterialFpaId').val(fpaId);
+                        $discount.val(0);
+                        $materialFpaId.val(fpaId);
                         $price.val(lastPrice);
+                        $priceNet.val(lastPrice);
                         $lookUp.val(mName);
+                        initValUnitToUse(unitToUse);
+                        $lookupValueValid.val('OK');
                     },
                     error: function(e) {
-
+                        $lookupValueValid.val('ERROR');
                         //toastr.error("Error", "Error");
                     }
                 });
@@ -403,7 +462,7 @@
                 $amountSum.val(formatterCurrency.format(sumGross));
                 $amountSum.attr('data-actualValue', sumGross);
             };
-            var autoCompleteDef = {
+            var autoCompleteNameDef = {
                  source: '/api/materials/SearchForMaterials',
                 minLength: 2,
                 maxShowItems:10,
@@ -443,36 +502,45 @@
                                 $secUnitId.val(myJson.buyUnitId);
                                 $factor.val(myJson.factorBuy);
                                 $discount.val('0');
+                                $lookupValueValid.val('OK');
+                            }
+                            else {
+                                $lookupValueValid.val('ERROR');
                             }
 
                         })
-                        .catch(error => console.log(error));
+                        .catch((error) => {
+                            $lookupValueValid.val('ERROR');
+                            console.log(error);
+                        });
                     return false;
-                }
+                 }
 
             };
 
             var setSeekType = () => {
                 $lookUp.off('change');
                 try {
-                    $lookUp.autocomplete("destroy");    
+                    $lookUp.autocomplete("destroy");
                 } catch (e) {
                     console.log('Error in autocomplete destroy.');
-                } 
-                
+                }
+
                 var sType = $seekType.val();
                 switch (sType) {
-                case 'NAME':
-                    $lookUp.autocomplete(autoCompleteDef);
-                    break;
-                case 'CODE':
-                    break;
-                case 'BARCODE':
+                    case 'NAME':
+                        $q1.prop('disabled', false);
+                        $q2.prop('disabled' , false);
+                        $lookUp.autocomplete(autoCompleteNameDef);
+                        break;
+                    case 'CODE':
+                        break;
+                    case 'BARCODE':
                         $lookUp.change(() => {
                             seekBarcode();
-                        });
-                    break;
-                default:
+                         });
+                        break;
+                    default:
                 }
             };
             $seekType.change(() => {
@@ -491,26 +559,30 @@
             $transDocSeriesId.change(() => {
                 seriesChanged();
             });
-            $('#Q1').change(() => {
-                console.log("Q1 change event ->" + $q1.val());
-
-                $q2.val($q1.val() / $factor.val());
-
-            });
-
-            $('#Q2').change(() => {
-                console.log("Q2 change event ->" + $q2.val());
-                $q1.val($q2.val() * $factor.val());
-
-            });
-            //$('.ui-autocomplete-input').css('fontSize', '8px');
            
+            $q1.change(() => {
+                console.log("Q1 change event ->" + $q1.val());
+                q1Changed();
+            });
+
+            $q2.change(() => {
+                console.log("Q2 change event ->" + $q2.val());
+                q2Changed();
+
+            });
 
             $('#addToList').click((e) => {
                 e.preventDefault();
+                if ($lookupValueValid.val() != 'OK') {
+                    toastr.error('Lookup value not correct');
+                    return;
+                }
                 if ($.trim($lookUp.val()) == "" ||
                     $.trim($price.val()) == "" ||
-                    $.trim($q1.val()) == "") return;
+                    $.trim($q1.val()) == "") {
+                    toastr.error('Line not correct');
+                    return;
+                }
                 var productName = $lookUp.val();
                 var price = $priceNet.val();
                 var quantity1 = $q1.val();
@@ -604,7 +676,8 @@
                         '</td></tr>';
                     detailsTableBody.append(productItem);
                     //#endregion
-                } else {
+                }
+                else {
                     console.log("Inside lineEdit Modifying Line");
                     //Μεταβολή γραμμής πίνακα
                     var $tbl = $('#detailsTable');
@@ -660,7 +733,7 @@
                 clearItem();
                 $lookUp.focus();
                 updateCounter();
-
+               
             });
 
             //After Add A New Order In The List, Clear Clean The Form For Add More Order.
@@ -672,52 +745,54 @@
                 $discount.val('');
                 $vatPercent.val('');
                 $priceNet.val('');
+                $q1.prop('disabled', false);
+                $q2.prop('disabled', false);
             }
 
             $(document).on('click','a.deleteItem',function(e) {
-                    e.preventDefault();
-                    var $self = $(this);
-                    if ($(this).attr('data-itemId') == "0") {
-                       
-                        $(this).parents('tr').css("background-color", "#ff6347").fadeOut(800,
-                            function() {
-                                $(this).remove();
-                            });
-                        updateCounter();
-                    }
-                });
+                e.preventDefault();
+                var $self = $(this);
+                if ($(this).attr('data-itemId') == "0") {
+
+                    $(this).parents('tr').css("background-color", "#ff6347").fadeOut(800,
+                        function() {
+                            $(this).remove();
+                        });
+                    updateCounter();
+                }
+            });
             //--------------------
             $(document).on('click','a.modifyItem',function(e) {
-                    e.preventDefault();
-                    var $self = $(this);
-                    if ($(this).attr('data-itemId') == "0") {
-                       
-                        var lineEdit = $(this).parents('tr').find('td:eq(0)').text();
-                        var materialId = $(this).parents('tr').find('td:eq(1)').attr('data-materialId');
-                        var materialName = $(this).parents('tr').find('td:eq(1)').text();
-                        var mainUnitId = $(this).parents('tr').find('td:eq(1)').attr('data-mainUnitId');
-                        var secUnitId = $(this).parents('tr').find('td:eq(1)').attr('data-secUnitId');
-                        var factor = $(this).parents('tr').find('td:eq(1)').attr('data-factor');
-                        var q1 = $(this).parents('tr').find('td:eq(2)').attr('data-actualValue');
-                        var q2 = $(this).parents('tr').find('td:eq(3)').attr('data-actualValue');
-                        var price = $(this).parents('tr').find('td:eq(4)').attr('data-actualValue');
-                        var discountRate = $(this).parents('tr').find('td:eq(5)').attr('data-actualValue');
-                        var fpaRate = $(this).parents('tr').find('td:eq(6)').attr('data-actualValue');
+                e.preventDefault();
+                var $self = $(this);
+                if ($(this).attr('data-itemId') == "0") {
 
-                        $lineEditing.val(lineEdit);
-                        $materialId.val(materialId);
-                        $lookUp.val(materialName);
-                        //$price.val(price);
-                        $q1.val(q1);
-                        $q2.val(q2);
-                        $vatPercent.val(fpaRate);
-                        $discount.val(discountRate);
-                        $mainUnitId.val(mainUnitId);
-                        $secUnitId.val(secUnitId);
-                        $factor.val(factor);
-                        lineUpdatePrice(price,fpaRate);
-                    }
-                });
+                    var lineEdit = $(this).parents('tr').find('td:eq(0)').text();
+                    var materialId = $(this).parents('tr').find('td:eq(1)').attr('data-materialId');
+                    var materialName = $(this).parents('tr').find('td:eq(1)').text();
+                    var mainUnitId = $(this).parents('tr').find('td:eq(1)').attr('data-mainUnitId');
+                    var secUnitId = $(this).parents('tr').find('td:eq(1)').attr('data-secUnitId');
+                    var factor = $(this).parents('tr').find('td:eq(1)').attr('data-factor');
+                    var q1 = $(this).parents('tr').find('td:eq(2)').attr('data-actualValue');
+                    var q2 = $(this).parents('tr').find('td:eq(3)').attr('data-actualValue');
+                    var price = $(this).parents('tr').find('td:eq(4)').attr('data-actualValue');
+                    var discountRate = $(this).parents('tr').find('td:eq(5)').attr('data-actualValue');
+                    var fpaRate = $(this).parents('tr').find('td:eq(6)').attr('data-actualValue');
+
+                    $lineEditing.val(lineEdit);
+                    $materialId.val(materialId);
+                    $lookUp.val(materialName);
+                    //$price.val(price);
+                    $q1.val(q1);
+                    $q2.val(q2);
+                    $vatPercent.val(fpaRate);
+                    $discount.val(discountRate);
+                    $mainUnitId.val(mainUnitId);
+                    $secUnitId.val(secUnitId);
+                    $factor.val(factor);
+                    lineUpdatePrice(price,fpaRate);
+                }
+            });
 
 
             function saveData(data) {
@@ -766,22 +841,22 @@
                 linesArr.length = 0;
 
                 $.each($("#detailsTable tbody tr"),function() {
-                        linesArr.push({
-                            // materialId: $(this).find('td:eq(0)').html(),
-                            materialId: $(this).find('td:eq(1)').attr('data-materialId'),
-                            mainUnitId: $(this).find('td:eq(1)').attr('data-mainUnitId'),
-                            secUnitId: $(this).find('td:eq(1)').attr('data-secUnitId'),
-                            factor: $(this).find('td:eq(1)').attr('data-factor'),
-                            q1: $(this).find('td:eq(2)').attr('data-actualValue'),
-                            q2: $(this).find('td:eq(3)').attr('data-actualValue'),
-                            price: $(this).find('td:eq(4)').attr('data-actualValue'),
-                            discount: $(this).find('td:eq(5)').attr('data-actualValue'),
-                            discountRate: $(this).find('td:eq(5)').attr('data-actualValue'),
-                            fpaRate: $(this).find('td:eq(6)').attr('data-actualValue'),
-                            vatPercent: $(this).find('td:eq(6)').attr('data-actualValue')
+                    linesArr.push({
+                        // materialId: $(this).find('td:eq(0)').html(),
+                        materialId: $(this).find('td:eq(1)').attr('data-materialId'),
+                        mainUnitId: $(this).find('td:eq(1)').attr('data-mainUnitId'),
+                        secUnitId: $(this).find('td:eq(1)').attr('data-secUnitId'),
+                        factor: $(this).find('td:eq(1)').attr('data-factor'),
+                        q1: $(this).find('td:eq(2)').attr('data-actualValue'),
+                        q2: $(this).find('td:eq(3)').attr('data-actualValue'),
+                        price: $(this).find('td:eq(4)').attr('data-actualValue'),
+                        discount: $(this).find('td:eq(5)').attr('data-actualValue'),
+                        discountRate: $(this).find('td:eq(5)').attr('data-actualValue'),
+                        fpaRate: $(this).find('td:eq(6)').attr('data-actualValue'),
+                        vatPercent: $(this).find('td:eq(6)').attr('data-actualValue')
 
-                        });
                     });
+                });
 
                 var data = JSON.stringify({
                     transDate: $("#ItemVm_TransDate").val(),

@@ -10,50 +10,68 @@
 <p>
     <a asp-page="Create">Create New</a>
 </p>
-<table class="table">
-    <thead>
+<table class="table table-bordered table-sm">
+    <thead class="thead-light">
     <tr>
-        <th>
+        <th class="small">
             @Html.DisplayNameFor(model => model.MaterialCode[0].Material)
         </th>
-        <th>
+        <th class="small">
             @Html.DisplayNameFor(model => model.MaterialCode[0].CodeType)
         </th>
-        <th>
+        <th class="small">
             @Html.DisplayNameFor(model => model.MaterialCode[0].Code)
         </th>
-        <th>
+        <th class="small">
             @Html.DisplayNameFor(model => model.MaterialCode[0].TransactorId)
         </th>
 
-        <th>
+        <th class="small">
             @Html.DisplayNameFor(model => model.MaterialCode[0].CodeUsedUnit)
         </th>
-        <th></th>
+        <th class="small"></th>
     </tr>
     </thead>
     <tbody>
 @foreach (var item in Model.MaterialCode) {
     <tr>
-          <td>
+          <td class="small">
                 @Html.DisplayFor(modelItem => item.Material.Name)
             </td>
-            <td>
+            <td class="small">
                 @Html.DisplayFor(modelItem => item.CodeType)
             </td>
-        <td>
+        <td class="small">
             @Html.DisplayFor(modelItem => item.Code)
         </td>
-        <td>
+        <td class="small">
             @Html.DisplayFor(modelItem => item.TransactorId)
         </td>
-        <td>
+        <td class="small">
             @Html.DisplayFor(modelItem => item.CodeUsedUnit)
         </td>
         <td>
-            @Html.ActionLink("Edit", "Edit", new {materialId = item.MaterialId, codeType = item.CodeType, code = item.Code}) |
+            @*<a asp-page="./Edit"
+               asp-route-materialid="@item.MaterialId"
+               asp-route-codetype="@item.CodeType"
+               asp-route-code="@item.Code">
+                <i class="fas fa-edit" style="color: slategray"></i>
+            </a> |*@
+            <a asp-page="./Details"
+               asp-route-materialid="@item.MaterialId"
+               asp-route-codetype="@item.CodeType"
+               asp-route-code="@item.Code">
+                <i class="fas fa-info-circle" style="color: slategray"></i>
+            </a> |
+            <a asp-page="./Delete"
+               asp-route-materialid="@item.MaterialId"
+               asp-route-codetype="@item.CodeType"
+               asp-route-code="@item.Code">
+                <i class="fas fa-trash" style="color: slategray"></i>
+            </a> 
+            @*@Html.ActionLink("Edit", "Edit", new {materialId = item.MaterialId, codeType = item.CodeType, code = item.Code}) |
             @Html.ActionLink("Details", "Details", new {materialId = item.MaterialId, codeType = item.CodeType, code = item.Code}) |
-            @Html.ActionLink("Delete", "Delete", new {materialId = item.MaterialId, codeType = item.CodeType, code = item.Code})
+            @Html.ActionLink("Delete", "Delete", new {materialId = item.MaterialId, codeType = item.CodeType, code = item.Code})*@
         </td>
     </tr>
 }

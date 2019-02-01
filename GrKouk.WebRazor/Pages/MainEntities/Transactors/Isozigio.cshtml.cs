@@ -26,7 +26,7 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Transactors
 
         public decimal sumCredit = 0;
         public decimal sumDebit = 0;
-
+        public decimal sumDifferense = 0;
         public int PageSizeKartela { get; set; }
         public string TransactorName { get; set; }
         public int TransactorId { get; set; }
@@ -72,7 +72,7 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Transactors
 
             var dbTransactions = dbTrans.GroupBy(g => new
                     {
-                        g.TransactorName, g.CompanyCode, g.CreditAmount, g.DebitAmount
+                        g.CompanyCode, g.TransactorName
                     }
                 )
                 .Select(s => new
@@ -114,13 +114,13 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Transactors
                 switch (isozigioType)
                 {
                     case "SUPPLIER":
-                        runningTotal = dbTransaction.CreditAmount - dbTransaction.DebitAmount + runningTotal;
+                        runningTotal = dbTransaction.CreditAmount - dbTransaction.DebitAmount ;
                         break;
                     case "CUSTOMER":
-                        runningTotal = dbTransaction.DebitAmount - dbTransaction.CreditAmount + runningTotal;
+                        runningTotal = dbTransaction.DebitAmount - dbTransaction.CreditAmount ;
                         break;
                     default:
-                        runningTotal = dbTransaction.CreditAmount - dbTransaction.DebitAmount + runningTotal;
+                        runningTotal = dbTransaction.CreditAmount - dbTransaction.DebitAmount ;
                         break;
                 }
                
@@ -148,7 +148,18 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Transactors
                 sumCredit += item.Credit;
                 sumDebit += item.Debit;
             }
-
+            switch (isozigioType)
+            {
+                case "SUPPLIER":
+                    sumDifferense = sumCredit - sumDebit;
+                    break;
+                case "CUSTOMER":
+                    sumDifferense = sumDebit - sumCredit;
+                    break;
+                default:
+                    sumDifferense = sumCredit - sumDebit;
+                    break;
+            }
 
 
         }
