@@ -1,4 +1,5 @@
 ﻿@page
+@using GrKouk.InfoSystem.Domain.FinConfig
 @model GrKouk.WebRazor.Pages.MainEntities.Diaries.EditModel
 
 @{
@@ -6,7 +7,8 @@
 }
 @section MyCss
     {
-    <link rel="stylesheet" href="~/css/bootstrap-multiselect.css" />
+    @*<link rel="stylesheet" href="~/css/bootstrap-multiselect.css" />*@
+    <link rel="stylesheet" href="~/lib/bootstrap-select/css/bootstrap-select.min.css" />
 }
 <h4>Edit DiaryDef</h4>
 <hr />
@@ -14,6 +16,7 @@
     <form method="post">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <input type="hidden" asp-for="ItemVm.Id" />
+        <input type="hidden" asp-for="ItemVm.SelectedDocTypes" />
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label asp-for="ItemVm.Name" class="control-label small"></label>
@@ -26,14 +29,18 @@
                 <span asp-validation-for="ItemVm.DiaryType" class="text-danger small"></span>
             </div>
         </div>
-        <div class="form-row">
-            <div class=" form-group col-md-7">
-                <label class="control-label small">Document Types to Include </label>
-                <select class="form-control form-control-sm" id="DocTypes" name="multiselect[]" multiple="multiple">
+      
 
-                </select>
+            <div class="form-row">
+                <div class=" form-group col-md-3">
+                    <label class="control-label small">Document Types to Include </label>
+                    <select class="selectpicker form-control " id="DocTypes" multiple
+                            data-actions-box="true" data-selected-text-format="count > 1"
+                            data-liveSearch="true">
+                      
+                    </select>
+                </div>
             </div>
-        </div>
         <div class="form-row">
             <div class="form-group">
                 <input type="submit" value="Update" class="btn btn-primary btn-sm" />
@@ -48,7 +55,8 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-    <script src="~/lib/Bootstrap-multiselect/bootstrap-multiselect.js"></script>
+    @*<script src="~/lib/Bootstrap-multiselect/bootstrap-multiselect.js"></script>*@
+    <script src="~/lib/bootstrap-select/js/bootstrap-select.min.js"></script>
     <script>
         $(document).ready(function () {
 
@@ -56,58 +64,72 @@
             //#region variables
             var $diaryType = $('#ItemVm_DiaryType');
             var $docTypes = $('#DocTypes');
-
+            var $selectedDocTypes = $('#ItemVm_SelectedDocTypes');
             //#endregion
             var buyDocTypeList = @Html.Raw(Json.Serialize(ViewBag.BuyDocTypeListJs));
             var sellDocTypeList = @Html.Raw(Json.Serialize(ViewBag.SellDocTypeListJs));
 
             console.log(buyDocTypeList);
-            $docTypes.multiselect({
-                templates: {
-                    li: '<li ><a class="dropdown-item"><label class="m-0 pl-2 pr-0"></label></a></li>',
-                    ul: ' <ul style=" height:200px; overflow-y:scroll;" class="multiselect-container dropdown-menu p-1 m-0" overflow-y:scroll"></ul>',
-                    button: '<button type="button" style=" text-align:left;" class="multiselect dropdown-toggle" data-toggle="dropdown" data-flip="false"><span class="multiselect-selected-text"></span> <b class="caret"></b></button>',
-                    filter: '<li class="multiselect-item filter" ><div class="input-group m-0"><input class="form-control multiselect-search" type="text"></div></li>',
-                    filterClearBtn: '<span class="input-group-btn"><button class="btn multiselect-clear-filter" type="button"><i class="fas fa-minus-circle"></i></button></span>'
-                },
-                buttonContainer: '<div class="dropdown" />',
-                buttonClass: 'btn btn-outline-secondary',
-                includeSelectAllOption: true,
-                onChange: function(element,checked) {
-                    console.log($('#DocTypes').val());
-                    var sel = $('#DocTypes option:selected');
-                    var selected = [];
-                    $(sel).each(function(index, item) {
-                        selected.push([$(this).val()]);
-                    });
-                    console.log('selected=' + selected);
-                    var sDocs = selected.toString();
-                    console.log('sDocs=' + sDocs);
-                    $('#ItemVm_SelectedDocTypes').val(sDocs);
-                }
-            });
+
             var diaryTypeChanged = () => {
                 var selectedDocType = $diaryType.val();
 
                 switch (selectedDocType) {
-                    case 'DiaryTypeEnumBuys':
-                        $docTypes.multiselect('dataprovider', buyDocTypeList);
-                        break;
-                    case 'DiaryTypeEnumSales':
-                        $docTypes.multiselect('dataprovider', sellDocTypeList);
-                        break;
-                    case 'DiaryTypeEnumExpenses':
-                        $docTypes.multiselect('dataprovider', buyDocTypeList);
-                        break;
-                    default:
-                        break;
+                case 'DiaryTypeEnumBuys':
+                    // $docTypes.multiselect('dataprovider', buyDocTypeList);
+                    $docTypes.empty();
+                    $.each(buyDocTypeList, function(index, item) {
+                        $docTypes.append($('<option></option>').attr('value', item.value).text(item.label));
+                    });
+                    $docTypes.selectpicker('refresh');
+                    break;
+                case 'DiaryTypeEnumSales':
+                    // $docTypes.multiselect('dataprovider', sellDocTypeList);
+                    $docTypes.empty();
+                    $.each(sellDocTypeList, function(index, item) {
+                        $docTypes.append($('<option></option>').attr('value', item.value).text(item.label));
+                    });
+                    $docTypes.selectpicker('refresh');
+                    break;
+                case 'DiaryTypeEnumExpenses':
+                    $docTypes.empty();
+                    $.each(buyDocTypeList, function(index, item) {
+                        $docTypes.append($('<option></option>').attr('value', item.value).text(item.label));
+                    });
+                    $docTypes.selectpicker('refresh');
+                    break;
+                default:
+                    break;
                 }
             };
             $diaryType.change(() => {
                 diaryTypeChanged();
             });
+            $('.selectpicker').selectpicker( );
 
-            //diaryTypeChanged();
+            var updateDocType = () => {
+                var typeList = $selectedDocTypes.val();
+                var typeListArr = typeList.split(',');
+                console.log('typeList=' + typeList);
+               $docTypes.selectpicker('val', typeListArr);
+            };
+
+            $docTypes.on('changed.bs.select', function (e, clickedIndex, isSelected, previousValue) {
+                // do something...
+                var sel = $('#DocTypes option:selected');
+                var selected = [];
+                $(sel).each(function(index, item) {
+                    selected.push([$(this).val()]);
+                });
+                console.log('selected=' + selected);
+                var sDocs = selected.toString();
+                console.log('sDocs=' + sDocs);
+
+                $selectedDocTypes.val(sDocs);
+            });
+            diaryTypeChanged();
+            updateDocType();
+
         });
     </script>
 }

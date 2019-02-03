@@ -127,12 +127,15 @@
                     case 'DiaryTypeEnumExpenses':
                         //$docTypes.multiselect('dataprovider', buyDocTypeList);
                         $docTypes.empty();
+                        $.each(buyDocTypeList, function(index, item) {
+                            $docTypes.append($('<option></option>').attr('value', item.value).text(item.label));
+                        });
                         $docTypes.selectpicker('refresh');
                         break;
                     default:
                         break;
                 }
-                };
+            };
 
             $diaryType.change(() => {
                 diaryTypeChanged();
