@@ -9,6 +9,7 @@ using GrKouk.InfoSystem.Dtos;
 using GrKouk.InfoSystem.Dtos.WebDtos;
 using GrKouk.InfoSystem.Dtos.WebDtos.BuyDocuments;
 using GrKouk.InfoSystem.Dtos.WebDtos.CustomerTransactions;
+using GrKouk.InfoSystem.Dtos.WebDtos.Diaries;
 using GrKouk.InfoSystem.Dtos.WebDtos.Materials;
 using GrKouk.InfoSystem.Dtos.WebDtos.SellDocuments;
 using GrKouk.InfoSystem.Dtos.WebDtos.TransactorTransactions;
@@ -55,15 +56,6 @@ namespace GrKouk.WebRazor.Automapper
             CreateMap<TransWarehouseDef, TransWarehouseDefListDto>()
                 .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.Company.Name));
 
-            //CreateMap<SupplierTransaction, SupplierTransactionCreateDto>()
-            //    .ReverseMap();
-            //CreateMap<SupplierTransaction, SupplierTransactionModifyDto>()
-            //    .ReverseMap();
-
-            //CreateMap<SupplierTransaction, SupplierTransactionListDto>()
-            //    .ForMember(dest=>dest.TransSupplierSeriesCode,opt=>opt.MapFrom(src=>src.TransSupplierDocSeries.Code))
-            //    .ForMember(dest => dest.TransSupplierSeriesName, opt => opt.MapFrom(src => src.TransSupplierDocSeries.Name));
-
             CreateMap<Material, MaterialListDto>();
                 //.ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.Company.Name));
             CreateMap<Material, MaterialCreateDto>().ReverseMap();
@@ -73,19 +65,9 @@ namespace GrKouk.WebRazor.Automapper
             CreateMap<BuyDocCreateAjaxNoLinesDto, BuyDocLineAjaxDto>().ReverseMap();
             CreateMap<BuyDocument, BuyDocListDto>().ReverseMap();
 
-            //CreateMap<SupplierTransaction, BuyDocCreateAjaxDto>().ReverseMap();
-            //CreateMap<SupplierTransaction, BuyDocModifyAjaxDto>().ReverseMap();
-            //CreateMap<SupplierTransactionCreateDto, BuyDocModifyAjaxDto>().ReverseMap();
             CreateMap<WarehouseTransaction, WarehouseTransListDto>();
             CreateMap<WarehouseTransaction, WarehouseTransCreateDto>().ReverseMap();
             CreateMap<WarehouseTransaction, WarehouseTransModifyDto>().ReverseMap();
-            //CreateMap<CustomerTransaction, CustomerTransactionCreateDto>()
-            //    .ReverseMap();
-            //CreateMap<CustomerTransaction, CustomerTransactionModifyDto>()
-            //    .ReverseMap();
-            //CreateMap<CustomerTransaction, CustomerTransactionListDto>()
-            //    .ForMember(dest => dest.TransCustomerSeriesCode, opt => opt.MapFrom(src => src.TransCustomerDocSeries.Code))
-            //    .ForMember(dest => dest.TransCustomerSeriesName, opt => opt.MapFrom(src => src.TransCustomerDocSeries.Name));
             CreateMap<TransactorTransaction, TransactorTransCreateDto>()
                 .ReverseMap();
             CreateMap<TransactorTransaction, TransactorTransModifyDto>()
@@ -93,7 +75,6 @@ namespace GrKouk.WebRazor.Automapper
             CreateMap<TransactorTransaction, TransactorTransListDto>()
                 .ForMember(dest => dest.TransTransactorDocSeriesCode, opt => opt.MapFrom(src => src.TransTransactorDocSeries.Code))
                 .ForMember(dest => dest.TransTransactorDocSeriesName, opt => opt.MapFrom(src => src.TransTransactorDocSeries.Name));
-            //CreateMap<WarehouseTransaction, BuyDocCreateAjaxDto>().ReverseMap();
             CreateMap<TransactorTransaction, BuyDocCreateAjaxDto>().ReverseMap();
             CreateMap<TransactorTransaction, BuyDocModifyAjaxDto>().ReverseMap();
             CreateMap<TransactorTransCreateDto, BuyDocModifyAjaxDto>().ReverseMap();
@@ -110,6 +91,7 @@ namespace GrKouk.WebRazor.Automapper
             CreateMap<TransactorTransaction, SellDocCreateAjaxDto>().ReverseMap();
             CreateMap<TransactorTransaction, SellDocModifyAjaxDto>().ReverseMap();
             CreateMap<TransactorTransCreateDto, SellDocModifyAjaxDto>().ReverseMap();
+            CreateMap<DiaryDto, DiaryDef>().ReverseMap();
         }
     }
 }

@@ -18,6 +18,7 @@
 
         <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
     </environment>
+    @RenderSection("MyCss", required: false)
 </head>
 <body>
     <nav class="navbar fixed-top navbar-expand-md navbar-dark bg-dark">
@@ -61,6 +62,7 @@
                             Configuration
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                            <a class="dropdown-item" asp-page="/mainentities/Diaries/index">Diaries</a>
                             <a class="dropdown-item" asp-page="/commonentities/MeasureUnits/index">Measure Units</a>
                             <a class="dropdown-item" asp-page="/commonentities/fpakategories/index">VAT Categories</a>
                             <a class="dropdown-item" asp-page="/commonentities/MaterialCategories/index">Meterial Categories</a>

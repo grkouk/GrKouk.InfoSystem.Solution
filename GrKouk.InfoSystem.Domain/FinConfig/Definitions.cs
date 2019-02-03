@@ -99,4 +99,11 @@
         CodeUsedUnitEnumSecondary=2,
         CodeUsedUnitEnumBuy=3
     }
+
+    public enum DiaryTypeEnum
+    {
+        DiaryTypeEnumSales=1,
+        DiaryTypeEnumBuys=2,
+        DiaryTypeEnumExpenses=3
+    }
 }

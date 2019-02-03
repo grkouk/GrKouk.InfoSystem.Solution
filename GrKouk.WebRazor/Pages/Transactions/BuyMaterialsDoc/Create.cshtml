@@ -62,7 +62,6 @@
             </div>
 
             <div class="form-row">
-
                 <div class="form-group col-sm-1">
                     <label class="control-label small">Seek Type</label>
                     <select asp-for="SeekType" class="form-control form-control-sm " style="font-size: 0.7rem" asp-items="ViewBag.SeekType"></select>
@@ -758,8 +757,9 @@
                     $(this).parents('tr').css("background-color", "#ff6347").fadeOut(800,
                         function() {
                             $(this).remove();
+                            updateCounter();
                         });
-                    updateCounter();
+                    
                 }
             });
             //--------------------

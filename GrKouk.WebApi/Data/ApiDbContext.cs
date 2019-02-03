@@ -58,6 +58,7 @@ namespace GrKouk.WebApi.Data
         public DbSet<SellDocLine> SellDocLines { get; set; }
         public DbSet<SellDocument> SellDocuments { get; set; }
         public DbSet<MaterialCode> MaterialCodes { get; set; }
+        public DbSet<DiaryDef> DiaryDefs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
