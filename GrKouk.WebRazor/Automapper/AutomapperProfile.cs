@@ -93,6 +93,12 @@ namespace GrKouk.WebRazor.Automapper
             CreateMap<TransactorTransCreateDto, SellDocModifyAjaxDto>().ReverseMap();
             CreateMap<DiaryDto, DiaryDef>().ReverseMap();
             CreateMap<DiaryModifyDto, DiaryDef>().ReverseMap();
+            CreateMap<BuyDocTypeDef, DiaryDocTypeItem>()
+                .ForMember(dest => dest.Value, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Name));
+            CreateMap<SellDocTypeDef, DiaryDocTypeItem>()
+                .ForMember(dest => dest.Value, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Name));
         }
     }
 }

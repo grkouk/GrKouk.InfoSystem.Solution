@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using GrKouk.InfoSystem.Domain.Shared;
+using GrKouk.InfoSystem.Dtos.WebDtos.Diaries;
 using GrKouk.WebApi.Data;
 
 namespace GrKouk.WebRazor.Pages.MainEntities.Diaries
@@ -86,20 +87,20 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Diaries
                 new SelectListItem() {Value = DiaryTypeEnum.DiaryTypeEnumExpenses.ToString(), Text = "Ημερολόγιο Εξόδων"}
             };
             var BuyDocTypeListJs = _context.BuyDocTypeDefs.OrderBy(p => p.Name)
-                .Select(p => new
+                .Select(p => new DiaryDocTypeItem()
                 {
-                    label = p.Name,
-                    title = p.Name,
-                    value = p.Id
-                }).ToArray();
+
+                    Title = p.Name,
+                    Value = p.Id
+                }).ToList();
+
 
             var SellDocTypeListJs = _context.SellDocTypeDefs.OrderBy(p => p.Name)
-                .Select(p => new
+                .Select(p => new DiaryDocTypeItem()
                 {
-                    label = p.Name,
-                    title = p.Name,
-                    value = p.Id
-                }).ToArray();
+                    Title = p.Name,
+                    Value = p.Id
+                }).ToList();
 
             ViewData["diaryTypes"] = new SelectList(diaryTypes, "Value", "Text");
             //ViewData["BuyDocTypeList"] = new SelectList(_context.BuyDocTypeDefs.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
