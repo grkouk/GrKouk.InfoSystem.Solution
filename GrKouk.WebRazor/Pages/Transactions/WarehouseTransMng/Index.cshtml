@@ -6,59 +6,83 @@
 }
 
 <h4>Warehouse Transactions</h4>
+<div class="container ">
+    <ul class="nav small justify-content-end ">
+        <li class="nav-item">
+            <a asp-page="Create" class="nav-link"
+               asp-route-sortOrder="@Model.CurrentSort"
+               asp-route-pageIndex="@(Model.ListItems.CurrentPage)"
+               asp-route-currentFilter="@Model.CurrentFilter"
+               asp-route-PageSize="@Model.PageSize">Create New</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="collapse" href="#filterCollapse" role="button"
+               aria-expanded="false" aria-controls="filterCollapse">
+                Filters
+            </a>
 
-<p>
-    <a class="small" asp-page="Create">Create New</a>
-</p>
+        </li>
 
+        <li class="nav-item">
+            <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+        </li>
+    </ul>
+</div>
+@{
+    var filtersShow = Model.FiltersVisible ? "show" : "";
+}
 
-<form class="form-inline" asp-page="./Index" method="get">
-    <div class="container">
-        <div class="form-row">
+<div class="collapse @filtersShow" id="filterCollapse">
+    <form class="form-inline" asp-page="./Index" method="get">
+        <input type="hidden" asp-for="@Model.FiltersVisible" id="filtersVisible"  />
+        <div class="container">
+            <div class="form-row">
 
-            <div class="form-group col-md-auto">
-                <label class="small"> Search:</label>
-                <input class="form-control form-control-sm small" type="text" name="SearchString" value="@Model.CurrentFilter" />
-                <input type="submit" value="Search" class="btn btn-light btn-sm" />
-            </div>
-            <div class="form-group col-md-auto">
-                <a class="small" asp-page="./Index"
-                   asp-route-sortOrder="@Model.CurrentSort"
-                   asp-route-pageIndex="@(Model.ListItems.CurrentPage)"
-                   asp-route-currentFilter="@Model.CurrentFilter"
-                   asp-route-companyFilter="@Model.CompanyFilter"
-                   asp-route-datePeriodFilter="@Model.CurrentDatePeriod"
-                   asp-route-PageSize="@Model.PageSize">Back to full List</a>
-            </div>
-            <div class="form-group col-md-auto">
-                <label class="small"> Period:</label>
-                <select name="DatePeriodFilter" asp-for="CurrentDatePeriod" class="form-control form-control-sm small" asp-items="ViewBag.DataFilterValues"
-                        onchange="this.form.submit()"></select>
-            </div>
-            <div class="form-group col-md-auto">
-                <label class="small">Company:</label>
-                <select  asp-for="CompanyFilter" class="form-control form-control-sm small"
-                         asp-items="ViewBag.CompanyFilter" onchange="this.form.submit()"></select>
-            
-            </div>
-            <div class="form-group col-md-auto">
-                <label class="small"> Page Size:</label>
-                <select asp-for="PageSize" onchange="this.form.submit()" class="form-control form-control-sm small">
-                    <option value="3">3</option>
-                    <option value="5">5</option>
-                    <option value="10">10</option>
-                    <option value="20">20</option>
-                    <option value="100">100</option>
-                </select>
-            </div>
-            <div class="form-group col-md-auto">
-                <small>
-                    Page:@Model.ListItems.CurrentPage of @Model.ListItems.TotalPages Total Items @Model.ListItems.TotalCount
-                </small>
+                <div class="form-group col-md-auto">
+                    <label class="small"> Search:</label>
+                    <input class="form-control form-control-sm small" type="text" name="SearchString" value="@Model.CurrentFilter"/>
+                    <input type="submit" value="Search" class="btn btn-light btn-sm"/>
+                </div>
+                <div class="form-group col-md-auto">
+                    <a class="small" asp-page="./Index"
+                       asp-route-sortOrder="@Model.CurrentSort"
+                       asp-route-pageIndex="@(Model.ListItems.CurrentPage)"
+                       asp-route-currentFilter="@Model.CurrentFilter"
+                       asp-route-companyFilter="@Model.CompanyFilter"
+                       asp-route-filtersVisible="@Model.FiltersVisible"
+                       asp-route-datePeriodFilter="@Model.CurrentDatePeriod"
+                       asp-route-PageSize="@Model.PageSize">Back to full List</a>
+                </div>
+                <div class="form-group col-md-auto">
+                    <label class="small"> Period:</label>
+                    <select name="DatePeriodFilter" asp-for="CurrentDatePeriod" class="form-control form-control-sm small" asp-items="ViewBag.DataFilterValues"
+                            onchange="this.form.submit()"></select>
+                </div>
+                <div class="form-group col-md-auto">
+                    <label class="small">Company:</label>
+                    <select asp-for="CompanyFilter" class="form-control form-control-sm small"
+                            asp-items="ViewBag.CompanyFilter" onchange="this.form.submit()"></select>
+
+                </div>
+                <div class="form-group col-md-auto">
+                    <label class="small"> Page Size:</label>
+                    <select asp-for="PageSize" onchange="this.form.submit()" class="form-control form-control-sm small">
+                        <option value="3">3</option>
+                        <option value="5">5</option>
+                        <option value="10">10</option>
+                        <option value="20">20</option>
+                        <option value="100">100</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-auto">
+                    <small>
+                        Page:@Model.ListItems.CurrentPage of @Model.ListItems.TotalPages Total Items @Model.ListItems.TotalCount
+                    </small>
+                </div>
             </div>
         </div>
-    </div>
-</form>
+    </form>
+</div>
 <br />
 <table class="table table-bordered table-sm">
     <thead class="thead-light">
@@ -68,6 +92,7 @@
                    asp-route-searchFilter="@Model.CurrentFilter"
                    asp-route-companyFilter="@Model.CompanyFilter"
                    asp-route-datePeriodFilter="@Model.CurrentDatePeriod"
+                   asp-route-filtersVisible="@Model.FiltersVisible"
                    asp-route-PageSize="@Model.PageSize">
                     @Html.DisplayNameFor(model => model.ListItems[0].TransDate)
 
@@ -79,6 +104,7 @@
                    asp-route-searchFilter="@Model.CurrentFilter"
                    asp-route-companyFilter="@Model.CompanyFilter"
                    asp-route-datePeriodFilter="@Model.CurrentDatePeriod"
+                   asp-route-filtersVisible="@Model.FiltersVisible"
                    asp-route-PageSize="@Model.PageSize">
                     @Html.DisplayNameFor(model => model.ListItems[0].MaterialName)
                 </a>
@@ -163,7 +189,7 @@
 
             <td class="small"></td>
             <td class="small"></td>
-           
+
             <td class="small font-weight-bold">
                 Σύνολα Σελίδας
             </td>
@@ -201,6 +227,7 @@
                asp-route-searchFilter="@Model.CurrentFilter"
                asp-route-companyFilter="@Model.CompanyFilter"
                asp-route-datePeriodFilter="@Model.CurrentDatePeriod"
+               asp-route-filtersVisible="@Model.FiltersVisible"
                asp-route-PageSize="@Model.PageSize"
                class="page-link" aria-label="First">
                 @*<span aria-hidden="true">;</span>*@
@@ -214,13 +241,14 @@
                asp-route-searchFilter="@Model.CurrentFilter"
                asp-route-companyFilter="@Model.CompanyFilter"
                asp-route-datePeriodFilter="@Model.CurrentDatePeriod"
+               asp-route-filtersVisible="@Model.FiltersVisible"
                asp-route-PageSize="@Model.PageSize"
                class="page-link" aria-label="Previous">
                 @*<span aria-hidden="true">&laquo;</span>*@
                 Previous
             </a>
         </li>
-       
+
         <li class="page-item @nextDisabled">
             <a asp-page="./Index"
                asp-route-sortOrder="@Model.CurrentSort"
@@ -228,6 +256,7 @@
                asp-route-searchFilter="@Model.CurrentFilter"
                asp-route-companyFilter="@Model.CompanyFilter"
                asp-route-datePeriodFilter="@Model.CurrentDatePeriod"
+               asp-route-filtersVisible="@Model.FiltersVisible"
                asp-route-PageSize="@Model.PageSize"
                class="page-link" aria-label="Next">
                 @*<span aria-hidden="true">&raquo;</span>*@
@@ -241,6 +270,7 @@
                asp-route-searchFilter="@Model.CurrentFilter"
                asp-route-companyFilter="@Model.CompanyFilter"
                asp-route-datePeriodFilter="@Model.CurrentDatePeriod"
+               asp-route-filtersVisible="@Model.FiltersVisible"
                asp-route-PageSize="@Model.PageSize"
                class="page-link" aria-label="First">
                 @*<span aria-hidden="true">;</span>*@
@@ -250,3 +280,79 @@
     </ul>
 </nav>
 
+@section Scripts
+    {
+    <script>
+        $(document).ready(function () {
+            //#region variables
+            var $filtersVisible = $('#filtersVisible');
+            var $filterCollapse = $('#filterCollapse');
+            var $alist = $('a[href*="&filtersVisible"]');
+            //#endregion
+
+            $filterCollapse.on('hidden.bs.collapse', function () {
+                console.log('Filters Hidden');
+                //var alist = $('a[href*="&filtersVisible"]');
+                $.each($alist,
+                    function (key, value) {
+                        var href = value.href;
+                        var aParams = href.substring(0, href.length).split('&');
+                        var retStr = [];
+                        $.each(aParams, function (key, value) {
+                            var vPair = value.split('=');
+                            if (vPair[0] === 'filtersVisible') {
+                                var s = 'filtersVisible' + '=False';
+                                retStr.push(s);
+                            } else {
+                                retStr.push(value);
+                            }
+                        });
+                        console.log('href=' + href);
+                        console.log('aParams=' + aParams);
+                        console.log('retStr=' + retStr);
+                        var newHref = retStr.join('&');
+                        console.log('new Href=' + newHref);
+                        value.href = newHref;
+
+
+                    });
+
+                $filtersVisible.val(false);
+            });
+
+            $filterCollapse.on('shown.bs.collapse', function () {
+                console.log('Filters Shown');
+                // var alist = $('a[href*="&filtersVisible"]');
+                $.each($alist,
+                    function (key, value) {
+                        var href = value.href;
+                        var aParams = href.substring(0, href.length).split('&');
+                        var retStr = [];
+                        $.each(aParams, function (key, value) {
+                            var vPair = value.split('=');
+                            if (vPair[0] === 'filtersVisible') {
+                                var s = 'filtersVisible' + '=True';
+                                retStr.push(s);
+                            } else {
+                                retStr.push(value);
+                            }
+                        });
+                        console.log('href=' + href);
+                        console.log('aParams=' + aParams);
+                        console.log('retStr=' + retStr);
+                        var newHref = retStr.join('&');
+                        console.log('new Href=' + newHref);
+                        value.href = newHref;
+
+
+                    });
+                $filtersVisible.val(true);
+            });
+            //var fv = $filtersVisible.val();
+            //if (fv =='true') {
+            //    console.log("Initial load is true setting initial values");
+            //    $filterCollapse.collapse('show');
+            //}
+        });
+    </script>
+}
