@@ -9,6 +9,7 @@ using GrKouk.InfoSystem.Domain.Shared;
 using GrKouk.InfoSystem.Dtos.WebDtos.BuyDocuments;
 using GrKouk.WebRazor.Helpers;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using NToastNotify;
 
 namespace GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc
@@ -26,6 +27,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc
         public string CurrentFilter { get; set; }
         public string CurrentDatePeriod { get; set; }
         public string CurrentSort { get; set; }
+        public int CompanyFilter { get; set; }
         public int PageSize { get; set; }
         public int CurrentPageSize { get; set; }
         public int TotalPages { get; set; }
@@ -40,9 +42,10 @@ namespace GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc
 
        
         public PagedList<BuyDocListDto> ListItems { get; set; }
-        public async Task OnGetAsync(string sortOrder, string searchString, string datePeriodFilter, int? pageIndex, int? pageSize)
+        public async Task OnGetAsync(string sortOrder, string searchString, string datePeriodFilter, int? companyFilter, int? pageIndex, int? pageSize)
         {
             LoadFilters();
+            CompanyFilter = (int)(companyFilter ?? 0);
             PageSize = (int)((pageSize == null || pageSize == 0) ? 20 : pageSize);
             CurrentPageSize = PageSize;
             CurrentSort = sortOrder;
@@ -60,6 +63,10 @@ namespace GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc
             CurrentFilter = searchString;
             CurrentDatePeriod = datePeriodFilter;
             IQueryable<BuyDocument> fullListIq = _context.BuyDocuments;
+            if (companyFilter > 0)
+            {
+                fullListIq = fullListIq.Where(p => p.CompanyId == companyFilter);
+            }
             DateTime fromDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
             DateTime toDate = DateTime.Now;
             switch (datePeriodFilter)
@@ -137,10 +144,15 @@ namespace GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc
                 new SelectListItem() {Value = "CURYEAR", Text = "Τρέχων Ετος"}
 
             };
-
-
-
             ViewData["DataFilterValues"] = new SelectList(datePeriods, "Value", "Text");
+            var dbCompanies = _context.Companies.OrderBy(p => p.Code).AsNoTracking();
+            List<SelectListItem> companiesList = new List<SelectListItem>();
+            companiesList.Add(new SelectListItem() { Value = 0.ToString(), Text = "{All Companies}" });
+            foreach (var company in dbCompanies)
+            {
+                companiesList.Add(new SelectListItem() { Value = company.Id.ToString(), Text = company.Code });
+            }
+            ViewData["CompanyFilter"] = new SelectList(companiesList, "Value", "Text");
         }
     }
 }

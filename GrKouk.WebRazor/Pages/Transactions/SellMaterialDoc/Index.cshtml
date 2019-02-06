@@ -1,4 +1,5 @@
 ﻿@page
+@using System.Collections.Specialized
 @model GrKouk.WebRazor.Pages.Transactions.SellMaterialDoc.IndexModel
 
 @{
@@ -6,55 +7,81 @@
 }
 
 <h4>Λίστα Παραστατικών Πώλησης</h4>
+<div class="container ">
+    <ul class="nav small justify-content-end ">
+        <li class="nav-item">
+            <a asp-page="Create" class="nav-link"
+               asp-route-sortOrder="@Model.CurrentSort"
+               asp-route-pageIndex="@(Model.ListItems.CurrentPage)"
+               asp-route-currentFilter="@Model.CurrentFilter"
+               asp-route-PageSize="@Model.PageSize">Create New</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="collapse" href="#filterCollapse" role="button"
+               aria-expanded="false" aria-controls="filterCollapse">
+                Filters
+            </a>
+           
+        </li>
+     
+        <li class="nav-item">
+            <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+        </li>
+    </ul>
+</div>
 
-<p>
-    <small>
-        <a class="small" asp-page="Create" asp-route-sortOrder="@Model.CurrentSort"
-           asp-route-pageIndex="@(Model.ListItems.CurrentPage)"
-           asp-route-searchFilter="@Model.CurrentFilter"
-           asp-route-PageSize="@Model.PageSize">Create New</a>
-    </small>
-</p>
-<form class="form-inline" asp-page="./Index" method="get">
-    <div class="container">
-        <div class="form-row">
 
-            <div class="form-group col-md-auto">
-                <label class="small"> Search:</label>
-                <input class="form-control form-control-sm small" type="text" name="SearchString" value="@Model.CurrentFilter" />
-                <input type="submit" value="Search" class="btn btn-light btn-sm" />
-            </div>
-            <div class="form-group col-md-auto">
-                <a class="small" asp-page="./Index"
-                   asp-route-sortOrder="@Model.CurrentSort"
-                   asp-route-pageIndex="@(Model.ListItems.CurrentPage)"
-                   asp-route-currentFilter="@Model.CurrentFilter"
-                   asp-route-datePeriodFilter="CURMONTH"
-                   asp-route-PageSize="@Model.PageSize">Back to full List</a>
-            </div>
-            <div class="form-group col-md-auto">
-                <label class="small"> Period:</label>
-                <select name="DatePeriodFilter" asp-for="CurrentDatePeriod" class="form-control form-control-sm small" asp-items="ViewBag.DataFilterValues"
-                        onchange="this.form.submit()"></select>
-            </div>
-            <div class="form-group col-md-auto">
-                <label class="small"> Page Size:</label>
-                <select asp-for="PageSize" onchange="this.form.submit()" class="form-control form-control-sm small">
-                    <option value="3">3</option>
-                    <option value="5">5</option>
-                    <option value="10">10</option>
-                    <option value="20">20</option>
-                    <option value="100">100</option>
-                </select>
-            </div>
-            <div class="form-group col-md-auto">
-                <small>
-                    Page:@Model.ListItems.CurrentPage of @Model.ListItems.TotalPages Total Items @Model.ListItems.TotalCount
-                </small>
+<div class="collapse " id="filterCollapse">
+    <form class="form-inline" asp-page="./Index" method="get">
+        <input type="hidden" asp-for="@Model.FiltersVisible" id="filtersVisible"  />
+        <div class="container">
+            <div class="form-row">
+
+                <div class="form-group col-md-auto">
+                    <label class="small"> Search:</label>
+                    <input class="form-control form-control-sm small" type="text" name="SearchString" value="@Model.CurrentFilter"/>
+                    <input type="submit" value="Search" class="btn btn-light btn-sm"/>
+                </div>
+                <div class="form-group col-md-auto">
+                    <a class="small" asp-page="./Index"
+                       asp-route-sortOrder="@Model.CurrentSort"
+                       asp-route-pageIndex="@(Model.ListItems.CurrentPage)"
+                       asp-route-currentFilter="@Model.CurrentFilter"
+                       asp-route-companyFilter="@Model.CompanyFilter"
+                       asp-route-filtersVisible="@Model.FiltersVisible"
+                       asp-route-datePeriodFilter="@Model.CurrentDatePeriod"
+                       asp-route-PageSize="@Model.PageSize">Back to full List</a>
+                </div>
+                <div class="form-group col-md-auto">
+                    <label class="small"> Period:</label>
+                    <select name="DatePeriodFilter" asp-for="CurrentDatePeriod" class="form-control form-control-sm small" asp-items="ViewBag.DataFilterValues"
+                            onchange="this.form.submit()"></select>
+                </div>
+                <div class="form-group col-md-auto">
+                    <label class="small">Company:</label>
+                    <select asp-for="CompanyFilter" class="form-control form-control-sm small"
+                            asp-items="ViewBag.CompanyFilter" onchange="this.form.submit()"></select>
+
+                </div>
+                <div class="form-group col-md-auto">
+                    <label class="small"> Page Size:</label>
+                    <select asp-for="PageSize" onchange="this.form.submit()" class="form-control form-control-sm small">
+                        <option value="3">3</option>
+                        <option value="5">5</option>
+                        <option value="10">10</option>
+                        <option value="20">20</option>
+                        <option value="100">100</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-auto">
+                    <small>
+                        Page:@Model.ListItems.CurrentPage of @Model.ListItems.TotalPages Total Items @Model.ListItems.TotalCount
+                    </small>
+                </div>
             </div>
         </div>
-    </div>
-</form>
+    </form>
+</div>
 <br />
 <table class="table table-bordered table-sm">
     <thead class="thead-light">
@@ -63,7 +90,9 @@
                 <a asp-page="./Index"
                    asp-route-sortOrder="@Model.DateSort"
                    asp-route-searchFilter="@Model.CurrentFilter"
+                   asp-route-companyFilter="@Model.CompanyFilter"
                    asp-route-datePeriodFilter="@Model.CurrentDatePeriod"
+                   asp-route-filtersVisible="@Model.FiltersVisible"
                    asp-route-PageSize="@Model.PageSize">
                     @Html.DisplayNameFor(model => model.ListItems[0].TransDate)
                 </a>
@@ -72,6 +101,8 @@
             <th class="small">
                 <a asp-page="./Index" asp-route-sortOrder="@Model.NameSort"
                    asp-route-searchFilter="@Model.CurrentFilter"
+                   asp-route-companyFilter="@Model.CompanyFilter"
+                   asp-route-filtersVisible="@Model.FiltersVisible"
                    asp-route-datePeriodFilter="@Model.CurrentDatePeriod"
                    asp-route-PageSize="@Model.PageSize">
                     @Html.DisplayNameFor(model => model.ListItems[0].TransactorName)
@@ -146,8 +177,6 @@
     var nextDisabled = !Model.ListItems.HasNext ? "disabled" : "";
 }
 
-
-
 <nav aria-label="Page navigation example">
     <ul class="pagination pagination-sm">
         <li class="page-item @prevDisabled">
@@ -155,7 +184,9 @@
                asp-route-sortOrder="@Model.CurrentSort"
                asp-route-pageIndex="1"
                asp-route-searchFilter="@Model.CurrentFilter"
+               asp-route-companyFilter="@Model.CompanyFilter"
                asp-route-datePeriodFilter="@Model.CurrentDatePeriod"
+               asp-route-filtersVisible="@Model.FiltersVisible"
                asp-route-PageSize="@Model.PageSize"
                class="page-link" aria-label="First">
                 @*<span aria-hidden="true">;</span>*@
@@ -167,22 +198,24 @@
                asp-route-sortOrder="@Model.CurrentSort"
                asp-route-pageIndex="@(Model.ListItems.CurrentPage - 1)"
                asp-route-searchFilter="@Model.CurrentFilter"
+               asp-route-companyFilter="@Model.CompanyFilter"
                asp-route-datePeriodFilter="@Model.CurrentDatePeriod"
+               asp-route-filtersVisible="@Model.FiltersVisible"
                asp-route-PageSize="@Model.PageSize"
                class="page-link" aria-label="Previous">
                 @*<span aria-hidden="true">&laquo;</span>*@
                 Previous
             </a>
         </li>
-        @*<li class="page-item"><a class="page-link" href="#">1</a></li>
-            <li class="page-item"><a class="page-link" href="#">2</a></li>
-            <li class="page-item"><a class="page-link" href="#">3</a></li>*@
+       
         <li class="page-item @nextDisabled">
             <a asp-page="./Index"
                asp-route-sortOrder="@Model.CurrentSort"
                asp-route-pageIndex="@(Model.ListItems.CurrentPage + 1)"
                asp-route-searchFilter="@Model.CurrentFilter"
+               asp-route-companyFilter="@Model.CompanyFilter"
                asp-route-datePeriodFilter="@Model.CurrentDatePeriod"
+               asp-route-filtersVisible="@Model.FiltersVisible"
                asp-route-PageSize="@Model.PageSize"
                class="page-link" aria-label="Next">
                 @*<span aria-hidden="true">&raquo;</span>*@
@@ -194,7 +227,9 @@
                asp-route-sortOrder="@Model.CurrentSort"
                asp-route-pageIndex="@Model.ListItems.TotalPages"
                asp-route-searchFilter="@Model.CurrentFilter"
+               asp-route-companyFilter="@Model.CompanyFilter"
                asp-route-datePeriodFilter="@Model.CurrentDatePeriod"
+               asp-route-filtersVisible="@Model.FiltersVisible"
                asp-route-PageSize="@Model.PageSize"
                class="page-link" aria-label="First">
                 @*<span aria-hidden="true">;</span>*@
@@ -203,3 +238,29 @@
         </li>
     </ul>
 </nav>
+@section Scripts
+{
+    <script>
+        $(document).ready(function () {
+            //#region variables
+            var $filtersVisible = $('#filtersVisible');
+            var $filterCollapse = $('#filterCollapse');
+            //#endregion
+
+            $filterCollapse.on('hidden.bs.collapse', function() {
+                console.log('Filters Hidden');
+                $filtersVisible.val(false);
+            });
+
+            $filterCollapse.on('shown.bs.collapse',function() {
+                    console.log('Filters Shown');
+                    $filtersVisible.val(true);
+            });
+            var fv = $filtersVisible.val();
+            if (fv =='true') {
+                console.log("Initial load is true setting initial values");
+                $filterCollapse.collapse('show');
+            }
+        });
+    </script>
+}

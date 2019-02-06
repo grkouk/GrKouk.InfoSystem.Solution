@@ -9,6 +9,7 @@ using GrKouk.InfoSystem.Dtos.WebDtos.SellDocuments;
 using GrKouk.WebRazor.Helpers;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using NToastNotify;
 
 namespace GrKouk.WebRazor.Pages.Transactions.SellMaterialDoc
@@ -26,11 +27,13 @@ namespace GrKouk.WebRazor.Pages.Transactions.SellMaterialDoc
         public string CurrentFilter { get; set; }
         public string CurrentDatePeriod { get; set; }
         public string CurrentSort { get; set; }
+        public int CompanyFilter { get; set; }
         public int PageSize { get; set; }
         public int CurrentPageSize { get; set; }
         public int TotalPages { get; set; }
         public int TotalCount { get; set; }
         public decimal SumTotalAmount { get; set; }
+        public bool FiltersVisible { get; set; } = false;
 
         public IndexModel(GrKouk.WebApi.Data.ApiDbContext context,IMapper mapper, IToastNotification toastNotification)
         {
@@ -41,9 +44,13 @@ namespace GrKouk.WebRazor.Pages.Transactions.SellMaterialDoc
 
        
         public PagedList<SellDocListDto> ListItems { get; set; }
-        public async Task OnGetAsync(string sortOrder, string searchString, string datePeriodFilter, int? pageIndex, int? pageSize)
+        public async Task OnGetAsync(string sortOrder, string searchString, string datePeriodFilter, int? companyFilter
+            ,bool filtersVisible, int? pageIndex, int? pageSize)
         {
             LoadFilters();
+            FiltersVisible = filtersVisible;
+
+            CompanyFilter = (int)(companyFilter ?? 0);
             PageSize = (int)((pageSize == null || pageSize == 0) ? 20 : pageSize);
             CurrentPageSize = PageSize;
             CurrentSort = sortOrder;
@@ -61,6 +68,10 @@ namespace GrKouk.WebRazor.Pages.Transactions.SellMaterialDoc
             CurrentFilter = searchString;
             CurrentDatePeriod = datePeriodFilter;
             IQueryable<SellDocument> fullListIq = _context.SellDocuments;
+            if (companyFilter > 0)
+            {
+                fullListIq = fullListIq.Where(p => p.CompanyId == companyFilter);
+            }
             DateTime fromDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
             DateTime toDate = DateTime.Now;
             switch (datePeriodFilter)
@@ -139,10 +150,16 @@ namespace GrKouk.WebRazor.Pages.Transactions.SellMaterialDoc
                 new SelectListItem() {Value = "CURYEAR", Text = "Τρέχων Ετος"}
 
             };
-
-
-
             ViewData["DataFilterValues"] = new SelectList(datePeriods, "Value", "Text");
+
+            var dbCompanies = _context.Companies.OrderBy(p => p.Code).AsNoTracking();
+            List<SelectListItem> companiesList = new List<SelectListItem>();
+            companiesList.Add(new SelectListItem() { Value = 0.ToString(), Text = "{All Companies}" });
+            foreach (var company in dbCompanies)
+            {
+                companiesList.Add(new SelectListItem() { Value = company.Id.ToString(), Text = company.Code });
+            }
+            ViewData["CompanyFilter"] = new SelectList(companiesList, "Value", "Text");
         }
     }
 }

@@ -26,13 +26,20 @@
                    asp-route-sortOrder="@Model.CurrentSort"
                    asp-route-pageIndex="@(Model.ListItems.CurrentPage)"
                    asp-route-currentFilter="@Model.CurrentFilter"
-                   asp-route-datePeriodFilter="CURMONTH"
+                   asp-route-companyFilter="@Model.CompanyFilter"
+                   asp-route-datePeriodFilter="@Model.CurrentDatePeriod"
                    asp-route-PageSize="@Model.PageSize">Back to full List</a>
             </div>
             <div class="form-group col-md-auto">
                 <label class="small"> Period:</label>
                 <select name="DatePeriodFilter" asp-for="CurrentDatePeriod" class="form-control form-control-sm small" asp-items="ViewBag.DataFilterValues"
                         onchange="this.form.submit()"></select>
+            </div>
+            <div class="form-group col-md-auto">
+                <label class="small">Company:</label>
+                <select  asp-for="CompanyFilter" class="form-control form-control-sm small"
+                         asp-items="ViewBag.CompanyFilter" onchange="this.form.submit()"></select>
+            
             </div>
             <div class="form-group col-md-auto">
                 <label class="small"> Page Size:</label>
@@ -59,6 +66,7 @@
             <th class="small text-center">
                 <a asp-page="./Index" asp-route-sortOrder="@Model.DateSort"
                    asp-route-searchFilter="@Model.CurrentFilter"
+                   asp-route-companyFilter="@Model.CompanyFilter"
                    asp-route-datePeriodFilter="@Model.CurrentDatePeriod"
                    asp-route-PageSize="@Model.PageSize">
                     @Html.DisplayNameFor(model => model.ListItems[0].TransDate)
@@ -69,6 +77,7 @@
             <th class="small">
                 <a asp-page="./Index" asp-route-sortOrder="@Model.NameSort"
                    asp-route-searchFilter="@Model.CurrentFilter"
+                   asp-route-companyFilter="@Model.CompanyFilter"
                    asp-route-datePeriodFilter="@Model.CurrentDatePeriod"
                    asp-route-PageSize="@Model.PageSize">
                     @Html.DisplayNameFor(model => model.ListItems[0].MaterialName)
@@ -190,6 +199,7 @@
                asp-route-sortOrder="@Model.CurrentSort"
                asp-route-pageIndex="1"
                asp-route-searchFilter="@Model.CurrentFilter"
+               asp-route-companyFilter="@Model.CompanyFilter"
                asp-route-datePeriodFilter="@Model.CurrentDatePeriod"
                asp-route-PageSize="@Model.PageSize"
                class="page-link" aria-label="First">
@@ -202,6 +212,7 @@
                asp-route-sortOrder="@Model.CurrentSort"
                asp-route-pageIndex="@(Model.ListItems.CurrentPage - 1)"
                asp-route-searchFilter="@Model.CurrentFilter"
+               asp-route-companyFilter="@Model.CompanyFilter"
                asp-route-datePeriodFilter="@Model.CurrentDatePeriod"
                asp-route-PageSize="@Model.PageSize"
                class="page-link" aria-label="Previous">
@@ -209,14 +220,13 @@
                 Previous
             </a>
         </li>
-        @*<li class="page-item"><a class="page-link" href="#">1</a></li>
-            <li class="page-item"><a class="page-link" href="#">2</a></li>
-            <li class="page-item"><a class="page-link" href="#">3</a></li>*@
+       
         <li class="page-item @nextDisabled">
             <a asp-page="./Index"
                asp-route-sortOrder="@Model.CurrentSort"
                asp-route-pageIndex="@(Model.ListItems.CurrentPage + 1)"
                asp-route-searchFilter="@Model.CurrentFilter"
+               asp-route-companyFilter="@Model.CompanyFilter"
                asp-route-datePeriodFilter="@Model.CurrentDatePeriod"
                asp-route-PageSize="@Model.PageSize"
                class="page-link" aria-label="Next">
@@ -229,6 +239,7 @@
                asp-route-sortOrder="@Model.CurrentSort"
                asp-route-pageIndex="@Model.ListItems.TotalPages"
                asp-route-searchFilter="@Model.CurrentFilter"
+               asp-route-companyFilter="@Model.CompanyFilter"
                asp-route-datePeriodFilter="@Model.CurrentDatePeriod"
                asp-route-PageSize="@Model.PageSize"
                class="page-link" aria-label="First">
