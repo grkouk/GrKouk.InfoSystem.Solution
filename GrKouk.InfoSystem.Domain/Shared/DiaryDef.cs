@@ -15,5 +15,10 @@ namespace GrKouk.InfoSystem.Domain.Shared
         //public string Definition { get; set; }
         [MaxLength(200)]
         public string SelectedDocTypes { get; set; }
+        [MaxLength(200)]
+        public string SelectedMatNatures { get; set; }
+        [MaxLength(200)]
+        public string SelectedTransTypes { get; set; }
+
     }
 }

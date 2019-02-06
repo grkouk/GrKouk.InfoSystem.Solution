@@ -64,12 +64,18 @@ namespace GrKouk.WebRazor.Controllers
 
             if (materials == null)
             {
-                return NotFound();
+                return NotFound( new
+                {
+                    Error="Material Not Found"
+                });
             }
 
             if (materials.Count>1)
             {
-                return NotFound();
+                return NotFound(new
+                {
+                    Error = "More than one material found"
+                });
             }
 
             var material = materials[0].Material;
@@ -333,7 +339,7 @@ namespace GrKouk.WebRazor.Controllers
             {
 
                 #region Section Management
-
+               
                 var section = await _context.Sections.SingleOrDefaultAsync(s => s.SystemName == sectionCode);
                 if (section == null)
                 {
@@ -407,71 +413,7 @@ namespace GrKouk.WebRazor.Controllers
                 }
                 var docId = _context.Entry(transToAttach).Entity.Id;
 
-                //if (transSupplierDef.DefaultDocSeriesId > 0)
-                //{
-                //   var  transSupDefaultSeries = await
-                //        _context.TransSupplierDocSeriesDefs.FirstOrDefaultAsync(p =>
-                //            p.Id == transSupplierDef.DefaultDocSeriesId);
-                //    if (transSupDefaultSeries == null)
-                //    {
-                //        transaction.Rollback();
-                //        ModelState.AddModelError(string.Empty, "Default series for supplier transaction not found");
-                //        return NotFound(new
-                //        {
-                //            error = "Default series for supplier transaction not found"
-                //        });
-                //    }
-                //    var spSupplierTransaction = _mapper.Map<SupplierTransaction>(data);
-                //    spSupplierTransaction.SectionId = section.Id;
-                //    spSupplierTransaction.TransSupplierDocTypeId = transSupDefaultSeries.TransSupplierDocTypeDefId;
-                //    spSupplierTransaction.TransSupplierDocSeriesId = transSupDefaultSeries.Id;
-                //    spSupplierTransaction.FiscalPeriodId = fiscalPeriod.Id;
-                //    spSupplierTransaction.CreatorId = docId;
-
-                //    switch (transSupplierDef.FinancialAction)
-                //    {
-                //        case InfoSystem.Domain.FinConfig.FinActionsEnum.FinActionsEnumNoChange:
-                //            spSupplierTransaction.FinancialAction = FinActionsEnum.FinActionsEnumNoChange;
-                //            spSupplierTransaction.TransactionType = FinancialTransactionTypeIgnore;
-                //            break;
-                //        case InfoSystem.Domain.FinConfig.FinActionsEnum.FinActionsEnumDebit:
-                //            spSupplierTransaction.FinancialAction = FinActionsEnum.FinActionsEnumDebit;
-                //            spSupplierTransaction.TransactionType = FinancialTransactionTypeDebit;
-                //            break;
-                //        case InfoSystem.Domain.FinConfig.FinActionsEnum.FinActionsEnumCredit:
-                //            spSupplierTransaction.FinancialAction = FinActionsEnum.FinActionsEnumCredit;
-                //            spSupplierTransaction.TransactionType = FinancialTransactionTypeCredit;
-                //            break;
-                //        case InfoSystem.Domain.FinConfig.FinActionsEnum.FinActionsEnumNegativeDebit:
-                //            spSupplierTransaction.FinancialAction = FinActionsEnum.FinActionsEnumNegativeDebit;
-                //            spSupplierTransaction.TransactionType = FinancialTransactionTypeDebit;
-                //            spSupplierTransaction.AmountNet = spSupplierTransaction.AmountNet * -1;
-                //            spSupplierTransaction.AmountFpa = spSupplierTransaction.AmountFpa * -1;
-                //            spSupplierTransaction.AmountDiscount = spSupplierTransaction.AmountDiscount * -1;
-                //            break;
-                //        case InfoSystem.Domain.FinConfig.FinActionsEnum.FinActionsEnumNegativeCredit:
-                //            spSupplierTransaction.FinancialAction = FinActionsEnum.FinActionsEnumNegativeCredit;
-                //            spSupplierTransaction.TransactionType = FinancialTransactionTypeCredit;
-                //            spSupplierTransaction.AmountNet = spSupplierTransaction.AmountNet * -1;
-                //            spSupplierTransaction.AmountFpa = spSupplierTransaction.AmountFpa * -1;
-                //            spSupplierTransaction.AmountDiscount = spSupplierTransaction.AmountDiscount * -1;
-                //            break;
-                //        default:
-                //            break;
-                //    }
-                //    _context.SupplierTransactions.Add(spSupplierTransaction);
-                //    try
-                //    {
-                //        await _context.SaveChangesAsync();
-
-                //    }
-                //    catch (Exception e)
-                //    {
-                //        Console.WriteLine(e);
-                //        transaction.Rollback();
-                //        throw;
-                //    }
-                //}
+               
                 if (transTransactorDef.DefaultDocSeriesId > 0)
                 {
                     var transTransactorDefaultSeries = await

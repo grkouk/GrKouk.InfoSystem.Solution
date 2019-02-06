@@ -1,4 +1,6 @@
-﻿namespace GrKouk.InfoSystem.Domain.FinConfig
+﻿using System.ComponentModel;
+
+namespace GrKouk.InfoSystem.Domain.FinConfig
 {
     public enum DiaryTransactionsKindEnum
     {
@@ -12,12 +14,18 @@
     /// </summary>
     public enum MaterialNatureEnum
     {
-        MaterialNatureEnumUndefined=0,
-        MaterialNatureEnumMaterial=1,
-        MaterialNatureEnumService=2,
-        MaterialNatureEnumExpense=3,
+        [Description("Χωρίς Προσδιορισμό")]
+        MaterialNatureEnumUndefined = 0,
+        [Description("Υλικό")]
+        MaterialNatureEnumMaterial = 1,
+        [Description("Υπηρεσία")]
+        MaterialNatureEnumService = 2,
+        [Description("Δαπάνη")]
+        MaterialNatureEnumExpense = 3,
+        [Description("Εσοδο")]
         MaterialNatureEnumIncome = 4,
-        MaterialNatureEnumFixedAsset =5
+        [Description("Πάγιο")]
+        MaterialNatureEnumFixedAsset = 5
     }
     public enum MaterialTypeEnum
     {
@@ -35,7 +43,7 @@
     /// </summary>
     public enum FinancialTransactionTypeEnum
     {
-        FinancialTransactionTypeIgnore=0,
+        FinancialTransactionTypeIgnore = 0,
         FinancialTransactionTypeDebit = 1,
         FinancialTransactionTypeCredit = 2
     }
@@ -48,7 +56,7 @@
     /// </summary>
     public enum WarehouseTransactionTypeEnum
     {
-        WarehouseTransactionTypeIgnore=0,
+        WarehouseTransactionTypeIgnore = 0,
         WarehouseTransactionTypeImport = 1,
         WarehouseTransactionTypeExport = 2
     }
@@ -82,28 +90,37 @@
 
     public enum PriceTypeEnum
     {
-        PriceTypeEnumNetto=1,
-        PriceTypeEnumBrutto=2
+        PriceTypeEnumNetto = 1,
+        PriceTypeEnumBrutto = 2
     }
 
     public enum MaterialCodeTypeEnum
     {
-        CodeTypeEnumCode=1,
-        CodeTypeEnumBarcode=2,
-        CodeTypeEnumSupplierCode=3
+        CodeTypeEnumCode = 1,
+        CodeTypeEnumBarcode = 2,
+        CodeTypeEnumSupplierCode = 3
     }
 
     public enum MaterialCodeUsedUnitEnum
     {
-        CodeUsedUnitEnumMain=1,
-        CodeUsedUnitEnumSecondary=2,
-        CodeUsedUnitEnumBuy=3
+        CodeUsedUnitEnumMain = 1,
+        CodeUsedUnitEnumSecondary = 2,
+        CodeUsedUnitEnumBuy = 3
     }
 
     public enum DiaryTypeEnum
     {
-        DiaryTypeEnumSales=1,
-        DiaryTypeEnumBuys=2,
-        DiaryTypeEnumExpenses=3
+        [Description("Πωλήσεις")]
+        DiaryTypeEnumSales = 1,
+        [Description("Αγορές")]
+        DiaryTypeEnumBuys = 2,
+        [Description("Δαπάνες")]
+        DiaryTypeEnumExpenses = 3,
+        [Description("Εσοδα")]
+        DiaryTypeEnumIncome = 4,
+        [Description("Κινήσεις Αποθήκης")]
+        DiaryTypeEnumWarehouse = 5,
+        [Description("Κινήσεις Συναλλασσόμενων")]
+        DiaryTypeEnumTransactors = 6
     }
 }

@@ -429,7 +429,7 @@
                     },
                     error: function(e) {
                         $lookupValueValid.val('ERROR');
-                        //toastr.error("Error", "Error");
+                        toastr.error(e.toString(), "Error");
                     }
                 });
             };
@@ -811,9 +811,10 @@
                         toastr.success("Success", "Success");
                         //location.reload();
                     },
-                    error: function(e) {
-
-                        toastr.error("Error", "Error");
+                    error: function (e) {
+                        
+                        var r = e.responseJSON.error;
+                        toastr.error(r, "saveData");
                     }
                 });
             }
@@ -882,6 +883,7 @@
                     .fail(function(err) {
                         console.log(err);
                         $('#thisForm').prop("disabled", false);
+                        //toastr.error(e.toString(), "when SaveData");
                     });
             });
             //-------------

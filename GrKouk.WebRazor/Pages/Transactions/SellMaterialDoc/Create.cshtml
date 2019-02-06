@@ -846,8 +846,9 @@
                         //location.reload();
                     },
                     error: function(e) {
+                        var r = e.responseJSON.error;
+                        toastr.error(r, "saveData");
 
-                        toastr.error("Error", "Error");
                     }
                 });
             }
