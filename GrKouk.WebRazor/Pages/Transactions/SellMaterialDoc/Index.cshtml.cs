@@ -30,6 +30,8 @@ namespace GrKouk.WebRazor.Pages.Transactions.SellMaterialDoc
         public int CurrentPageSize { get; set; }
         public int TotalPages { get; set; }
         public int TotalCount { get; set; }
+        public decimal SumTotalAmount { get; set; }
+
         public IndexModel(GrKouk.WebApi.Data.ApiDbContext context,IMapper mapper, IToastNotification toastNotification)
         {
             _context = context;
@@ -123,7 +125,8 @@ namespace GrKouk.WebRazor.Pages.Transactions.SellMaterialDoc
             var t = fullListIq.ProjectTo<SellDocListDto>(_mapper.ConfigurationProvider);
 
             ListItems = await PagedList<SellDocListDto>.CreateAsync(t, pageIndex ?? 1, PageSize);
-           
+            SumTotalAmount = ListItems.Sum(p => p.TotalAmount);
+
         }
         private void LoadFilters()
         {

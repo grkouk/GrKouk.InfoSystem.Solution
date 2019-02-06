@@ -13,7 +13,7 @@
     <input type="hidden" asp-for="ParentPageSize" />
     <div class="container">
         <div class="form-row">
-           
+
             <div class="form-group col-md-auto">
                 <label class="small"> Search:</label>
                 <input class="form-control form-control-sm small" type="text" name="SearchString" value="@Model.CurrentFilter" />
@@ -23,9 +23,14 @@
                 <a class="small" asp-page="./RunDiary"
                    asp-route-sortOrder="@Model.CurrentSort"
                    asp-route-pageIndex="@(Model.ListItems.CurrentPage)"
+                   asp-route-transactorTypeFilter="@Model.TransactorTypeFilter"
+                   asp-route-parentPageIndex="@Model.ParentPageIndex "
+                   asp-route-parentPageSize="@Model.ParentPageSize"
                    asp-route-currentFilter="@Model.CurrentFilter"
                    asp-route-datePeriodFilter="@Model.CurrentDatePeriod"
-                   asp-route-PageSize="@Model.ListItems.PageSize">Back to full List</a>
+                   asp-route-PageSizeKartela="@Model.ListItems.PageSize"
+                   asp-route-companyFilter="@Model.CompanyFilter"
+                   asp-route-diaryId="@Model.DiaryId">Back to full List</a>
             </div>
             <div class="form-group col-md-auto">
                 <label class="small"> Period:</label>
@@ -41,13 +46,9 @@
             <div class="form-row">
                 <div class="form-group col-md-auto">
                     <label class="small"> Page Size:</label>
-                    <select asp-for="PageSizeKartela" onchange="this.form.submit()" class="form-control form-control-sm small">
-                        <option value="3">3</option>
-                        <option value="5">5</option>
-                        <option value="10">10</option>
-                        <option value="20">20</option>
-                        <option value="100">100</option>
-                    </select>
+                    <select asp-for="PageSizeKartela" onchange="this.form.submit()"
+                            asp-items="ViewBag.PageFilterSize"
+                            class="form-control form-control-sm small"></select>
                 </div>
                 <div class="form-group col-md-auto">
                     <small>
@@ -56,46 +57,51 @@
                 </div>
             </div>
         </div>
-
-
     </div>
 </form>
-
 <br />
 <table class="table table-bordered table-sm">
     <thead class="thead-light">
         <tr>
             <th class="small text-center">
                 <a asp-page="./RunDiary" asp-route-sortOrder="@Model.DateSort"
+                   asp-route-PageSizeKartela="@Model.PageSizeKartela"
+                   asp-route-transactorTypeFilter="@Model.TransactorTypeFilter"
+                   asp-route-companyFilter="@Model.CompanyFilter"
+                   asp-route-parentPageIndex="@Model.ParentPageIndex "
+                   asp-route-parentPageSize="@Model.ParentPageSize"
                    asp-route-searchFilter="@Model.CurrentFilter"
-                   asp-route-datePeriodFilter="@Model.CurrentDatePeriod"
-                   asp-route-PageSize="@Model.PageSizeKartela">
+                   asp-route-diaryId="@Model.DiaryId"
+                   asp-route-datePeriodFilter="@Model.CurrentDatePeriod">
                     @Html.DisplayNameFor(model => model.ListItems[0].TransDate)
 
                 </a>
                 <i class="@Model.DateSortIcon"></i>
             </th>
-
-            <th class="small">
-                @Html.DisplayNameFor(model => model.ListItems[0].TransTransactorDocSeriesCode)
-            </th>
-            @*<th class="small">
-                @Html.DisplayNameFor(model => model.ListItems[0].SectionCode)
-            </th>*@
-            <th class="small">
-                @Html.DisplayNameFor(model => model.ListItems[0].TransRefCode)
-            </th>
-
             <th class="small">
                 <a asp-page="./RunDiary" asp-route-sortOrder="@Model.NameSort"
+                   asp-route-PageSizeKartela="@Model.PageSizeKartela"
+                   asp-route-parentPageIndex="@Model.ParentPageIndex "
+                   asp-route-transactorTypeFilter="@Model.TransactorTypeFilter"
+                   asp-route-companyFilter="@Model.CompanyFilter"
+                   asp-route-parentPageSize="@Model.ParentPageSize"
                    asp-route-searchFilter="@Model.CurrentFilter"
                    asp-route-datePeriodFilter="@Model.CurrentDatePeriod"
-                   asp-route-PageSize="@Model.PageSizeKartela">
+                   asp-route-diaryId="@Model.DiaryId">
                     @Html.DisplayNameFor(model => model.ListItems[0].TransactorName)
                 </a>
 
                 <i class="@Model.NameSortIcon"></i>
             </th>
+            <th class="small">
+                @Html.DisplayNameFor(model => model.ListItems[0].TransTransactorDocSeriesCode)
+            </th>
+          
+            <th class="small">
+                @Html.DisplayNameFor(model => model.ListItems[0].TransRefCode)
+            </th>
+
+           
 
             <th class="small">
                 @Html.DisplayNameFor(model => model.ListItems[0].DebitAmount)
@@ -108,42 +114,58 @@
                 @Html.DisplayNameFor(model => model.ListItems[0].CompanyCode)
             </th>
 
-            <th></th>
+           
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model.ListItems)
         {
-        <tr>
-            <td class="text-right small">
-                @Html.DisplayFor(modelItem => item.TransDate)
-            </td>
-            <td class="small">
-                @Html.DisplayFor(modelItem => item.TransTransactorDocSeriesCode)
-            </td>
-            @*<td class="small">
-                @Html.DisplayFor(modelItem => item.SectionCode)
-            </td>*@
-            <td class="small">
-                @Html.DisplayFor(modelItem => item.TransRefCode)
-            </td>
-            <td class="small">
-                @Html.DisplayFor(modelItem => item.TransactorName)
-            </td>
-            <td class="text-right small">
-                @Html.DisplayFor(modelItem => item.DebitAmount)
-            </td>
-            <td class="text-right small">
-                @Html.DisplayFor(modelItem => item.CreditAmount)
-            </td>
+            <tr>
+                <td class="text-right small">
+                    @Html.DisplayFor(modelItem => item.TransDate)
+                </td>
+                <td class="small">
+                    @Html.DisplayFor(modelItem => item.TransactorName)
+                </td>
+                <td class="small">
+                    @Html.DisplayFor(modelItem => item.TransTransactorDocSeriesCode)
+                </td>
+              
+                <td class="small">
+                    @Html.DisplayFor(modelItem => item.TransRefCode)
+                </td>
+               
+                <td class="text-right small">
+                    @Html.DisplayFor(modelItem => item.DebitAmount)
+                </td>
+                <td class="text-right small">
+                    @Html.DisplayFor(modelItem => item.CreditAmount)
+                </td>
 
-            <td class="small">
-                @Html.DisplayFor(modelItem => item.CompanyCode)
-            </td>
+                <td class="small">
+                    @Html.DisplayFor(modelItem => item.CompanyCode)
+                </td>
+            </tr>
 
-           
-        </tr>
+
         }
+            <tr class="table-info" >
+                <td class="small"></td>
+                <td class="small"></td>
+                <td class="small font-weight-bold">
+                    Σύνολα Σελίδας
+                </td>
+              
+                <td class="small"></td>
+                <td class="small text-right font-weight-bold">
+                    @Html.DisplayFor(modelItem => modelItem.sumDebit)
+                </td>
+                <td class="small text-right font-weight-bold">
+                    @Html.DisplayFor(modelItem => modelItem.sumCredit)
+                </td>
+                <td class="small"></td>
+               
+            </tr>
     </tbody>
 </table>
 
@@ -161,12 +183,12 @@
             <a asp-page="./rundiary"
                asp-route-pageIndexKartela="1"
                asp-route-PageSizeKartela="@Model.PageSizeKartela"
-               asp-route-transactorId="@Model.TransactorId"
-               asp-route-transactorName="@Model.TransactorName"
+               asp-route-sortOrder="@Model.CurrentSort"
                asp-route-parentPageIndex="@Model.ParentPageIndex "
                asp-route-transactorTypeFilter="@Model.TransactorTypeFilter"
                asp-route-companyFilter="@Model.CompanyFilter"
                asp-route-parentPageSize="@Model.ParentPageSize"
+               asp-route-diaryId="@Model.DiaryId"
                class="page-link" aria-label="First">
                 @*<span aria-hidden="true">;</span>*@
                 First
@@ -176,12 +198,12 @@
             <a asp-page="./rundiary"
                asp-route-pageIndexKartela="@(Model.ListItems.CurrentPage - 1)"
                asp-route-PageSizeKartela="@Model.PageSizeKartela"
-               asp-route-transactorId="@Model.TransactorId"
-               asp-route-transactorName="@Model.TransactorName"
+               asp-route-sortOrder="@Model.CurrentSort"
                asp-route-parentPageIndex="@Model.ParentPageIndex "
                asp-route-transactorTypeFilter="@Model.TransactorTypeFilter"
                asp-route-companyFilter="@Model.CompanyFilter"
                asp-route-parentPageSize="@Model.ParentPageSize"
+               asp-route-diaryId="@Model.DiaryId"
                class="page-link" aria-label="Previous">
                 @*<span aria-hidden="true">&laquo;</span>*@
                 Previous
@@ -192,12 +214,12 @@
             <a asp-page="./rundiary"
                asp-route-pageIndexKartela="@(Model.ListItems.CurrentPage + 1)"
                asp-route-PageSizeKartela="@Model.PageSizeKartela"
-               asp-route-transactorId="@Model.TransactorId"
-               asp-route-transactorName="@Model.TransactorName"
+               asp-route-sortOrder="@Model.CurrentSort"
                asp-route-parentPageIndex="@Model.ParentPageIndex "
                asp-route-transactorTypeFilter="@Model.TransactorTypeFilter"
                asp-route-companyFilter="@Model.CompanyFilter"
                asp-route-ParentPageSize="@Model.ParentPageSize"
+               asp-route-diaryId="@Model.DiaryId"
                class="page-link" aria-label="Next">
                 @*<span aria-hidden="true">&raquo;</span>*@
                 Next
@@ -207,12 +229,12 @@
             <a asp-page="./rundiary"
                asp-route-pageIndexKartela="@Model.ListItems.TotalPages"
                asp-route-PageSizeKartela="@Model.PageSizeKartela"
-               asp-route-transactorId="@Model.TransactorId"
-               asp-route-transactorName="@Model.TransactorName"
+               asp-route-sortOrder="@Model.CurrentSort"
                asp-route-parentPageIndex="@Model.ParentPageIndex "
                asp-route-transactorTypeFilter="@Model.TransactorTypeFilter"
                asp-route-companyFilter="@Model.CompanyFilter"
                asp-route-ParentPageSize="@Model.ParentPageSize"
+               asp-route-diaryId="@Model.DiaryId"
                class="page-link" aria-label="First">
                 @*<span aria-hidden="true">;</span>*@
                 Last

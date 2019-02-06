@@ -8,7 +8,7 @@
 <h4>Transactor Transactions Index</h4>
 
 <p>
-        <a class="small" asp-page="Create">Create New</a>
+    <a class="small" asp-page="Create">Create New</a>
 </p>
 <form class="form-inline" asp-page="./Index" method="get">
     <div class="container">
@@ -44,20 +44,21 @@
             </div>
             <div class="form-group col-md-auto">
                 <small>
-      
-                    Page:@Model.ListItems.CurrentPage of @Model.ListItems.TotalPages Total Items @Model.ListItems.TotalCount </small>
+
+                    Page:@Model.ListItems.CurrentPage of @Model.ListItems.TotalPages Total Items @Model.ListItems.TotalCount
+                </small>
             </div>
-           
+
         </div>
     </div>
 </form>
 
 
-<br/>
+<br />
 <table class="table table-bordered table-sm">
     <thead class="thead-light">
         <tr>
-           <th class="small text-center">
+            <th class="small text-center">
                 <a asp-page="./Index" asp-route-sortOrder="@Model.DateSort"
                    asp-route-searchFilter="@Model.CurrentFilter"
                    asp-route-datePeriodFilter="@Model.CurrentDatePeriod"
@@ -67,18 +68,7 @@
                 </a>
                 <i class="@Model.DateSortIcon"></i>
             </th>
-
-           <th class="small">
-                @Html.DisplayNameFor(model => model.ListItems[0].TransTransactorDocSeriesCode)
-            </th>
-           <th class="small">
-                @Html.DisplayNameFor(model => model.ListItems[0].SectionCode)
-            </th>
-           <th class="small">
-                @Html.DisplayNameFor(model => model.ListItems[0].TransRefCode)
-            </th>
-
-           <th class="small">
+            <th class="small">
                 <a asp-page="./Index" asp-route-sortOrder="@Model.NameSort"
                    asp-route-searchFilter="@Model.CurrentFilter"
                    asp-route-datePeriodFilter="@Model.CurrentDatePeriod"
@@ -88,15 +78,26 @@
 
                 <i class="@Model.NameSortIcon"></i>
             </th>
+            <th class="small">
+                @Html.DisplayNameFor(model => model.ListItems[0].TransTransactorDocSeriesCode)
+            </th>
+            <th class="small">
+                @Html.DisplayNameFor(model => model.ListItems[0].SectionCode)
+            </th>
+            <th class="small">
+                @Html.DisplayNameFor(model => model.ListItems[0].TransRefCode)
+            </th>
 
-           <th class="small">
+           
+
+            <th class="small">
                 @Html.DisplayNameFor(model => model.ListItems[0].DebitAmount)
             </th>
-           <th class="small">
+            <th class="small">
                 @Html.DisplayNameFor(model => model.ListItems[0].CreditAmount)
             </th>
 
-           <th class="small">
+            <th class="small">
                 @Html.DisplayNameFor(model => model.ListItems[0].CompanyCode)
             </th>
 
@@ -110,18 +111,19 @@
                 <td class="text-right small">
                     @Html.DisplayFor(modelItem => item.TransDate)
                 </td>
-              <td class="small">
-                    @Html.DisplayFor(modelItem => item.TransTransactorDocSeriesCode)
-                </td>
-              <td class="small">
-                    @Html.DisplayFor(modelItem => item.SectionCode)
-                </td>
-              <td class="small">
-                    @Html.DisplayFor(modelItem => item.TransRefCode)
-                </td>
-              <td class="small">
+                <td class="small">
                     @Html.DisplayFor(modelItem => item.TransactorName)
                 </td>
+                <td class="small">
+                    @Html.DisplayFor(modelItem => item.TransTransactorDocSeriesCode)
+                </td>
+                <td class="small">
+                    @Html.DisplayFor(modelItem => item.SectionCode)
+                </td>
+                <td class="small">
+                    @Html.DisplayFor(modelItem => item.TransRefCode)
+                </td>
+              
                 <td class="text-right small">
                     @Html.DisplayFor(modelItem => item.DebitAmount)
                 </td>
@@ -129,17 +131,34 @@
                     @Html.DisplayFor(modelItem => item.CreditAmount)
                 </td>
 
-              <td class="small">
+                <td class="small">
                     @Html.DisplayFor(modelItem => item.CompanyCode)
                 </td>
 
-              <td class="small">
+                <td class="small">
                     <a asp-page="./Edit" asp-route-id="@item.Id"><i class="fas fa-edit"></i></a> |
                     <a asp-page="./Details" asp-route-id="@item.Id"><i class="fas fa-info-circle"></i></a> |
                     <a asp-page="./Delete" asp-route-id="@item.Id"><i class="fas fa-trash"></i></a>
                 </td>
             </tr>
         }
+        <tr class="table-info">
+            <td class="small"></td>
+            <td class="small"></td>
+            <td class="small"></td>
+            <td class="small font-weight-bold">
+                Σύνολα Σελίδας
+            </td>
+            <td class="small"></td>
+            <td class="small text-right font-weight-bold">
+                @Html.DisplayFor(modelItem => modelItem.sumDebit)
+            </td>
+            <td class="small text-right font-weight-bold">
+                @Html.DisplayFor(modelItem => modelItem.sumCredit)
+            </td>
+            <td class="small"></td>
+            <td class="small"></td>
+        </tr>
     </tbody>
 </table>
 
@@ -149,60 +168,60 @@
 }
 
 
-    <nav aria-label="Page navigation example">
-        <ul class="pagination pagination-sm">
-            <li class="page-item @prevDisabled">
-                <a asp-page="./Index"
-                   asp-route-sortOrder="@Model.CurrentSort"
-                   asp-route-pageIndex="1"
-                   asp-route-searchFilter="@Model.CurrentFilter"
-                   asp-route-datePeriodFilter="@Model.CurrentDatePeriod"
-                   asp-route-PageSize="@Model.PageSize"
-                   class="page-link" aria-label="First">
-                    @*<span aria-hidden="true">;</span>*@
-                    First
-                </a>
-            </li>
-            <li class="page-item @prevDisabled">
-                <a asp-page="./Index"
-                   asp-route-sortOrder="@Model.CurrentSort"
-                   asp-route-pageIndex="@(Model.ListItems.CurrentPage - 1)"
-                   asp-route-searchFilter="@Model.CurrentFilter"
-                   asp-route-datePeriodFilter="@Model.CurrentDatePeriod"
-                   asp-route-PageSize="@Model.PageSize"
-                   class="page-link" aria-label="Previous">
-                    @*<span aria-hidden="true">&laquo;</span>*@
-                    Previous
-                </a>
-            </li>
-            @*<li class="page-item"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>*@
-            <li class="page-item @nextDisabled">
-                <a asp-page="./Index"
-                   asp-route-sortOrder="@Model.CurrentSort"
-                   asp-route-pageIndex="@(Model.ListItems.CurrentPage + 1)"
-                   asp-route-searchFilter="@Model.CurrentFilter"
-                   asp-route-datePeriodFilter="@Model.CurrentDatePeriod"
-                   asp-route-PageSize="@Model.PageSize"
-                   class="page-link" aria-label="Next">
-                    @*<span aria-hidden="true">&raquo;</span>*@
-                    Next
-                </a>
-            </li>
-            <li class="page-item  @nextDisabled">
-                <a asp-page="./Index"
-                   asp-route-sortOrder="@Model.CurrentSort"
-                   asp-route-pageIndex="@Model.ListItems.TotalPages"
-                   asp-route-searchFilter="@Model.CurrentFilter"
-                   asp-route-datePeriodFilter="@Model.CurrentDatePeriod"
-                   asp-route-PageSize="@Model.PageSize"
-                   class="page-link" aria-label="First">
-                    @*<span aria-hidden="true">;</span>*@
-                    Last
-                </a>
-            </li>
-        </ul>
-    </nav>
+<nav aria-label="Page navigation example">
+    <ul class="pagination pagination-sm">
+        <li class="page-item @prevDisabled">
+            <a asp-page="./Index"
+               asp-route-sortOrder="@Model.CurrentSort"
+               asp-route-pageIndex="1"
+               asp-route-searchFilter="@Model.CurrentFilter"
+               asp-route-datePeriodFilter="@Model.CurrentDatePeriod"
+               asp-route-PageSize="@Model.PageSize"
+               class="page-link" aria-label="First">
+                @*<span aria-hidden="true">;</span>*@
+                First
+            </a>
+        </li>
+        <li class="page-item @prevDisabled">
+            <a asp-page="./Index"
+               asp-route-sortOrder="@Model.CurrentSort"
+               asp-route-pageIndex="@(Model.ListItems.CurrentPage - 1)"
+               asp-route-searchFilter="@Model.CurrentFilter"
+               asp-route-datePeriodFilter="@Model.CurrentDatePeriod"
+               asp-route-PageSize="@Model.PageSize"
+               class="page-link" aria-label="Previous">
+                @*<span aria-hidden="true">&laquo;</span>*@
+                Previous
+            </a>
+        </li>
+        @*<li class="page-item"><a class="page-link" href="#">1</a></li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>*@
+        <li class="page-item @nextDisabled">
+            <a asp-page="./Index"
+               asp-route-sortOrder="@Model.CurrentSort"
+               asp-route-pageIndex="@(Model.ListItems.CurrentPage + 1)"
+               asp-route-searchFilter="@Model.CurrentFilter"
+               asp-route-datePeriodFilter="@Model.CurrentDatePeriod"
+               asp-route-PageSize="@Model.PageSize"
+               class="page-link" aria-label="Next">
+                @*<span aria-hidden="true">&raquo;</span>*@
+                Next
+            </a>
+        </li>
+        <li class="page-item  @nextDisabled">
+            <a asp-page="./Index"
+               asp-route-sortOrder="@Model.CurrentSort"
+               asp-route-pageIndex="@Model.ListItems.TotalPages"
+               asp-route-searchFilter="@Model.CurrentFilter"
+               asp-route-datePeriodFilter="@Model.CurrentDatePeriod"
+               asp-route-PageSize="@Model.PageSize"
+               class="page-link" aria-label="First">
+                @*<span aria-hidden="true">;</span>*@
+                Last
+            </a>
+        </li>
+    </ul>
+</nav>
 
 

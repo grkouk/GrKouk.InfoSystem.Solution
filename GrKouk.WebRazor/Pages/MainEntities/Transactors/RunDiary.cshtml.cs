@@ -43,7 +43,8 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Transactors
         public string CurrentSort { get; set; }
         public string CurrentDatePeriod { get; set; }
         public int DiaryId { get; set; }
-
+        public decimal sumCredit = 0;
+        public decimal sumDebit = 0;
         public async Task<IActionResult> OnGetAsync(int? diaryId, string sortOrder, string searchString, string datePeriodFilter
             , int? pageIndexKartela, int? pageSizeKartela,int? transactorTypeFilter, int? companyFilter, int? parentPageIndex, int? parentPageSize)
         {
@@ -51,12 +52,15 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Transactors
             {
                 return NotFound();
             }
+
+            
             var diaryDef = await _context.DiaryDefs.FindAsync(diaryId);
             if (diaryDef == null)
             {
                 return NotFound();
             }
             LoadFilters();
+            DiaryId = (int)(diaryId ?? 0);
             CompanyFilter = (int)(companyFilter ?? 0);
             ParentPageSize = (int)(parentPageSize ?? 0);
             ParentPageIndex = (int)(parentPageIndex ?? 0);
@@ -136,6 +140,9 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Transactors
             var t = fullListIq.ProjectTo<TransactorTransListDto>(_mapper.ConfigurationProvider);
             ListItems = await PagedList<TransactorTransListDto>.CreateAsync(
                 t, pageIndexKartela ?? 1, PageSizeKartela);
+
+            sumCredit = ListItems.Sum(p => p.CreditAmount);
+            sumDebit = ListItems.Sum(p => p.DebitAmount);
             return Page();
         }
 
@@ -144,6 +151,9 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Transactors
            
             var datePeriods = DateFilter.GetDateFiltersSelectList();
             ViewData["DataFilterValues"] = new SelectList(datePeriods, "Value", "Text");
+
+            var pageFilterSize = PageFilter.GetPageSizeFiltersSelectList();
+            ViewData["PageFilterSize"] = new SelectList(pageFilterSize, "Value", "Text");
 
             var dbCompanies = _context.Companies.OrderBy(p => p.Code).AsNoTracking();
             List<SelectListItem> companiesList = new List<SelectListItem>();

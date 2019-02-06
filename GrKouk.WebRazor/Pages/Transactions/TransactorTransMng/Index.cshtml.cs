@@ -34,7 +34,8 @@ namespace GrKouk.WebRazor.Pages.Transactions.TransactorTransMng
         public int TotalPages { get; set; }
         public int TotalCount { get; set; }
         public PagedList<TransactorTransListDto> ListItems { get; set; }
-
+        public decimal sumCredit = 0;
+        public decimal sumDebit = 0;
 
         public async Task OnGetAsync(string sortOrder, string searchString, string datePeriodFilter, int? pageIndex, int? pageSize)
         {
@@ -122,7 +123,8 @@ namespace GrKouk.WebRazor.Pages.Transactions.TransactorTransMng
             var t = fullListIq.ProjectTo<TransactorTransListDto>(_mapper.ConfigurationProvider);
             ListItems = await PagedList<TransactorTransListDto>.CreateAsync(
                 t, pageIndex ?? 1, PageSize);
-
+            sumDebit = ListItems.Sum(p => p.DebitAmount);
+            sumCredit = ListItems.Sum(p => p.CreditAmount);
         }
         private void LoadFilters()
         {

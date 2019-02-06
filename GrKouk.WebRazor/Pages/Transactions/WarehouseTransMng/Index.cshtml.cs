@@ -37,6 +37,11 @@ namespace GrKouk.WebRazor.Pages.Transactions.WarehouseTransMng
         public int CurrentPageSize { get; set; }
         public int TotalPages { get; set; }
         public int TotalCount { get; set; }
+        public decimal SumImportVolume = 0;
+        public decimal SumExportVolume = 0;
+        public decimal SumImportValue = 0;
+        public decimal SumExportValue = 0;
+
         public PagedList<WarehouseTransListDto> ListItems { get; set; }
         public async Task OnGetAsync(string sortOrder, string searchString, string datePeriodFilter, int? pageIndex, int? pageSize)
         {
@@ -123,6 +128,10 @@ namespace GrKouk.WebRazor.Pages.Transactions.WarehouseTransMng
             var t = fullListIq.ProjectTo<WarehouseTransListDto>(_mapper.ConfigurationProvider);
             ListItems = await PagedList<WarehouseTransListDto>.CreateAsync(
                 t, pageIndex ?? 1, PageSize);
+            SumImportVolume = ListItems.Sum(p => p.ImportUnits);
+            SumImportValue = ListItems.Sum(p => p.ImportAmount);
+            SumExportVolume = ListItems.Sum(p => p.ExportUnits);
+            SumExportValue = ListItems.Sum(p => p.ExportAmount);
         }
         private void LoadFilters()
         {
