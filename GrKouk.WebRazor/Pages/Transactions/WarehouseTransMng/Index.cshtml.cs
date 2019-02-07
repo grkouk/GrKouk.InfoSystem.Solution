@@ -39,6 +39,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.WarehouseTransMng
         public int TotalPages { get; set; }
         public int CompanyFilter { get; set; }
         public bool FiltersVisible { get; set; } = false;
+        public bool RowSelectorsVisible { get; set; } = false;
         public int TotalCount { get; set; }
         public decimal SumImportVolume = 0;
         public decimal SumExportVolume = 0;
@@ -47,10 +48,11 @@ namespace GrKouk.WebRazor.Pages.Transactions.WarehouseTransMng
 
         public PagedList<WarehouseTransListDto> ListItems { get; set; }
         public async Task OnGetAsync(string sortOrder, string searchString, int? companyFilter, string datePeriodFilter
-            , bool filtersVisible, int? pageIndex, int? pageSize)
+            , bool filtersVisible, bool rowSelectorsVisible, int? pageIndex, int? pageSize)
         {
             LoadFilters();
             FiltersVisible = filtersVisible;
+            RowSelectorsVisible = rowSelectorsVisible;
             PageSize = (int)((pageSize == null || pageSize == 0) ? 20 : pageSize);
             CurrentPageSize = PageSize;
             CompanyFilter = (int)(companyFilter ?? 0);

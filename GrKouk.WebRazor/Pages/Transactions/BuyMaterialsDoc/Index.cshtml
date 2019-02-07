@@ -9,6 +9,13 @@
     <link rel="stylesheet" href="~/css/custom-checkbox.css" />
 }
 <h4>Λίστα Αγορές Υλικών</h4>
+@{
+    var filtersShow = Model.FiltersVisible ? "show" : "";
+    var filtersShowText = Model.FiltersVisible ? "Hide Filters" : "Show Filters";
+    var RowSelectorsHidden = Model.RowSelectorsVisible ? "" : "hidden";
+    var SelectosToggleText=Model.RowSelectorsVisible ? "Hide Row Selectors" : "Show Row Selectors";
+}
+
 <div class="container ">
     <ul class="nav small justify-content-end ">
         <li class="nav-item">
@@ -21,31 +28,23 @@
         <li class="nav-item">
             <a class="nav-link" data-toggle="collapse" href="#filterCollapse" role="button" id="filtersToggle"
                aria-expanded="false" aria-controls="filterCollapse">
-               Show Filters
+                @filtersShowText
             </a>
-
         </li>
-
         <li class="nav-item">
-
-            <a class="nav-link" data-toggle="collapse" href="#" id="rowSelectorsToggle" role="button"
-              >
-                Show Row Selectors
+            <a class="nav-link" data-toggle="collapse" href="#" id="rowSelectorsToggle" role="button">
+                @SelectosToggleText
             </a>
-
             @*<a class="nav-link disabled" href="#" tabindex="-1" >Selectors</a>*@
-
         </li>
     </ul>
 </div>
 
-@{
-    var filtersShow = Model.FiltersVisible ? "show" : "";
-}
 
 <div class="collapse @filtersShow" id="filterCollapse">
     <form class="form-inline" asp-page="./Index" method="get">
         <input type="hidden" asp-for="@Model.FiltersVisible" id="filtersVisible" />
+        <input type="hidden" asp-for="@Model.RowSelectorsVisible" id="rowSelectorsVisible" />
         <div class="container">
             <div class="form-row">
 
@@ -61,6 +60,7 @@
                        asp-route-currentFilter="@Model.CurrentFilter"
                        asp-route-companyFilter="@Model.CompanyFilter"
                        asp-route-filtersVisible="@Model.FiltersVisible"
+                       asp-route-rowselectorsVisible="@Model.RowSelectorsVisible"
                        asp-route-datePeriodFilter="@Model.CurrentDatePeriod"
                        asp-route-PageSize="@Model.PageSize">Back to full List</a>
                 </div>
@@ -93,7 +93,7 @@
 <table class="table table-bordered table-sm m-0">
     <thead class="thead-light">
         <tr>
-            <th name="checkAllRows">
+            <th name="selectAllRowsColumn" @RowSelectorsHidden>
                 <label class="custom-control custom-checkbox">
                     <input type="checkbox" class="custom-control-input" name="checkAllRows">
                     <span class="custom-control-indicator"></span>
@@ -105,6 +105,7 @@
                    asp-route-searchFilter="@Model.CurrentFilter"
                    asp-route-companyFilter="@Model.CompanyFilter"
                    asp-route-filtersVisible="@Model.FiltersVisible"
+                   asp-route-rowselectorsVisible="@Model.RowSelectorsVisible"
                    asp-route-datePeriodFilter="@Model.CurrentDatePeriod"
                    asp-route-PageSize="@Model.PageSize">
                     @Html.DisplayNameFor(model => model.ListItems[0].TransDate)
@@ -116,6 +117,7 @@
                    asp-route-searchFilter="@Model.CurrentFilter"
                    asp-route-companyFilter="@Model.CompanyFilter"
                    asp-route-filtersVisible="@Model.FiltersVisible"
+                   asp-route-rowselectorsVisible="@Model.RowSelectorsVisible"
                    asp-route-datePeriodFilter="@Model.CurrentDatePeriod"
                    asp-route-PageSize="@Model.PageSize">
                     @Html.DisplayNameFor(model => model.ListItems[0].TransactorName)
@@ -141,7 +143,7 @@
         @foreach (var item in Model.ListItems)
         {
             <tr>
-                <td>
+                <td name="selectRowColumn" @RowSelectorsHidden>
                     <label class="custom-control custom-checkbox">
                         <input type="checkbox" class="custom-control-input" name="checkTableRow">
                         <span class="custom-control-indicator"></span>
@@ -174,20 +176,21 @@
                 </td>
             </tr>
         }
-        <tr class="table-info">
-            <td class="small"></td>
-            <td class="small"></td>
-            <td class="small"></td>
-            <td class="small font-weight-bold">
-                Σύνολα Σελίδας
-            </td>
-            <td class="small"></td>
-            <td class="small text-right font-weight-bold">
-                @Html.DisplayFor(modelItem => modelItem.SumTotalAmount)
-            </td>
-            <td class="small"></td>
-            <td class="small"></td>
-        </tr>
+    <tr class="table-info">
+        <td class="small" name="selectRowColumn" @RowSelectorsHidden></td>
+        <td class="small"></td>
+        <td class="small"></td>
+        <td class="small"></td>
+        <td class="small font-weight-bold">
+            Σύνολα Σελίδας
+        </td>
+        <td class="small"></td>
+        <td class="small text-right font-weight-bold">
+            @Html.DisplayFor(modelItem => modelItem.SumTotalAmount)
+        </td>
+        <td class="small"></td>
+        <td class="small"></td>
+    </tr>
     </tbody>
 </table>
 @{
@@ -204,6 +207,7 @@
                asp-route-companyFilter="@Model.CompanyFilter"
                asp-route-datePeriodFilter="@Model.CurrentDatePeriod"
                asp-route-filtersVisible="@Model.FiltersVisible"
+               asp-route-rowselectorsVisible="@Model.RowSelectorsVisible"
                asp-route-PageSize="@Model.PageSize"
                class="page-link" aria-label="First">
                 @*<span aria-hidden="true">;</span>*@
@@ -218,6 +222,7 @@
                asp-route-companyFilter="@Model.CompanyFilter"
                asp-route-datePeriodFilter="@Model.CurrentDatePeriod"
                asp-route-filtersVisible="@Model.FiltersVisible"
+               asp-route-rowselectorsVisible="@Model.RowSelectorsVisible"
                asp-route-PageSize="@Model.PageSize"
                class="page-link" aria-label="Previous">
                 @*<span aria-hidden="true">&laquo;</span>*@
@@ -232,6 +237,7 @@
                asp-route-companyFilter="@Model.CompanyFilter"
                asp-route-datePeriodFilter="@Model.CurrentDatePeriod"
                asp-route-filtersVisible="@Model.FiltersVisible"
+               asp-route-rowselectorsVisible="@Model.RowSelectorsVisible"
                asp-route-PageSize="@Model.PageSize"
                class="page-link" aria-label="Next">
                 @*<span aria-hidden="true">&raquo;</span>*@
@@ -246,6 +252,7 @@
                asp-route-companyFilter="@Model.CompanyFilter"
                asp-route-datePeriodFilter="@Model.CurrentDatePeriod"
                asp-route-filtersVisible="@Model.FiltersVisible"
+               asp-route-rowselectorsVisible="@Model.RowSelectorsVisible"
                asp-route-PageSize="@Model.PageSize"
                class="page-link" aria-label="First">
                 @*<span aria-hidden="true">;</span>*@
@@ -263,7 +270,11 @@
             var $filterCollapse = $('#filterCollapse');
             var $alist = $('a[href*="&filtersVisible"]');
             var $checkAllRows = $('input[name=checkAllRows]');
-            var $filtersToggle=$('#filtersToggle');
+            var $filtersToggle = $('#filtersToggle');
+            var $rowSelectorsToggle = $('#rowSelectorsToggle');
+            var $rowSelectorsVisible = $('#rowSelectorsVisible');
+            var $selectAllSelector = $('th[name=selectAllRowsColumn]');
+            var $selectSingleSelectors = $('td[name=selectRowColumn]');
             //#endregion
 
             $filterCollapse.on('hidden.bs.collapse', function () {
@@ -295,49 +306,59 @@
                     });
 
                 $filtersVisible.val(false);
-                
+
             });
 
             $filterCollapse.on('shown.bs.collapse', function () {
                 console.log('Filters Shown');
                 $filtersToggle.text('Hide Filters');
                 // var alist = $('a[href*="&filtersVisible"]');
-                $.each($alist,
-                    function (key, value) {
-                        var href = value.href;
-                        var aParams = href.substring(0, href.length).split('&');
-                        var retStr = [];
-                        $.each(aParams, function (key, value) {
-                            var vPair = value.split('=');
-                            if (vPair[0] === 'filtersVisible') {
-                                var s = 'filtersVisible' + '=True';
-                                retStr.push(s);
-                            } else {
-                                retStr.push(value);
-                            }
-                        });
-                        console.log('href=' + href);
-                        console.log('aParams=' + aParams);
-                        console.log('retStr=' + retStr);
-                        var newHref = retStr.join('&');
-                        console.log('new Href=' + newHref);
-                        value.href = newHref;
-
-
+                $.each($alist, function (key, value) {
+                    var href = value.href;
+                    var aParams = href.substring(0, href.length).split('&');
+                    var retStr = [];
+                    $.each(aParams, function (key, value) {
+                        var vPair = value.split('=');
+                        if (vPair[0] === 'filtersVisible') {
+                            var s = 'filtersVisible' + '=True';
+                            retStr.push(s);
+                        } else {
+                            retStr.push(value);
+                        }
                     });
+                    console.log('href=' + href);
+                    console.log('aParams=' + aParams);
+                    console.log('retStr=' + retStr);
+                    var newHref = retStr.join('&');
+                    console.log('new Href=' + newHref);
+                    value.href = newHref;
+                });
                 $filtersVisible.val(true);
-               
+
             });
-            //var fv = $filtersVisible.val();
-            //if (fv =='true') {
-            //    console.log("Initial load is true setting initial values");
-            //    $filterCollapse.collapse('show');
-            //}
-            $checkAllRows.on('change', function() {
+
+            $checkAllRows.on('change', function () {
                 var th = $(this).index();
                 var isChecked = $(this).prop('checked');
-               // alert('Column number is : ' + th + ' and text is : ' + $(this).prop('checked'));
+                // alert('Column number is : ' + th + ' and text is : ' + $(this).prop('checked'));
                 $('input[name=checkTableRow]').prop('checked', isChecked);
+            });
+            $rowSelectorsToggle.on('click', function () {
+                var selectorsVisible = $rowSelectorsVisible.val();
+                var newSelectorsVisible = (selectorsVisible == 'True' || selectorsVisible == 'true') ? 'False' : 'True';
+                if (newSelectorsVisible == 'True') {
+                    $selectAllSelector.removeAttr('hidden');
+                    $selectSingleSelectors.removeAttr('hidden');
+                    $selectAllSelector.show();
+                    $selectSingleSelectors.show();
+                    $rowSelectorsVisible.val(true);
+                    $rowSelectorsToggle.text('Hide Row Selectors');
+                } else {
+                    $selectAllSelector.hide();
+                    $selectSingleSelectors.hide();
+                    $rowSelectorsVisible.val(false);
+                    $rowSelectorsToggle.text('Show Row Selectors');
+                }
             });
         });
     </script>

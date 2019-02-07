@@ -34,6 +34,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc
         public int TotalCount { get; set; }
         public decimal SumTotalAmount { get; set; }
         public bool FiltersVisible { get; set; } = false;
+        public bool RowSelectorsVisible { get; set; } = false;
         public IndexModel(GrKouk.WebApi.Data.ApiDbContext context,IMapper mapper, IToastNotification toastNotification)
         {
             _context = context;
@@ -44,10 +45,11 @@ namespace GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc
        
         public PagedList<BuyDocListDto> ListItems { get; set; }
         public async Task OnGetAsync(string sortOrder, string searchString, string datePeriodFilter, int? companyFilter
-            , bool filtersVisible, int? pageIndex, int? pageSize)
+            , bool filtersVisible,bool rowSelectorsVisible, int? pageIndex, int? pageSize)
         {
             LoadFilters();
             FiltersVisible = filtersVisible;
+            RowSelectorsVisible = rowSelectorsVisible;
             CompanyFilter = (int)(companyFilter ?? 0);
             PageSize = (int)((pageSize == null || pageSize == 0) ? 20 : pageSize);
             CurrentPageSize = PageSize;

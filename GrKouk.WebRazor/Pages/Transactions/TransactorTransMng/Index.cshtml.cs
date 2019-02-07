@@ -36,15 +36,17 @@ namespace GrKouk.WebRazor.Pages.Transactions.TransactorTransMng
         public int TotalCount { get; set; }
         public int CompanyFilter { get; set; }
         public bool FiltersVisible { get; set; } = false;
+        public bool RowSelectorsVisible { get; set; } = false;
         public PagedList<TransactorTransListDto> ListItems { get; set; }
         public decimal sumCredit = 0;
         public decimal sumDebit = 0;
 
         public async Task OnGetAsync(string sortOrder, string searchString, string datePeriodFilter, int? companyFilter
-            , bool filtersVisible, int? pageIndex, int? pageSize)
+            , bool filtersVisible, bool rowSelectorsVisible, int? pageIndex, int? pageSize)
         {
             LoadFilters();
             FiltersVisible = filtersVisible;
+            RowSelectorsVisible = rowSelectorsVisible;
             PageSize = (int)((pageSize == null || pageSize == 0) ? 20 : pageSize);
             CompanyFilter = (int)(companyFilter ?? 0);
             CurrentPageSize = PageSize;
