@@ -4,7 +4,10 @@
 @{
     ViewData["Title"] = "Αγορές Υλικών";
 }
-
+@section MyCss
+    {
+    <link rel="stylesheet" href="~/css/custom-checkbox.css" />
+}
 <h4>Λίστα Αγορές Υλικών</h4>
 <div class="container ">
     <ul class="nav small justify-content-end ">
@@ -24,7 +27,7 @@
         </li>
 
         <li class="nav-item">
-            <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+            <a class="nav-link disabled" href="#" tabindex="-1" >Selectors</a>
         </li>
     </ul>
 </div>
@@ -67,10 +70,8 @@
                 </div>
                 <div class="form-group col-md-auto">
                     <label class="small"> Page Size:</label>
-                    <select asp-for="PageSize" onchange="this.form.submit()" class="form-control form-control-sm small" 
-                            asp-items="ViewBag.PageFilterSize">
-                       
-                    </select>
+                    <select asp-for="PageSize" onchange="this.form.submit()" class="form-control form-control-sm small"
+                            asp-items="ViewBag.PageFilterSize"></select>
                 </div>
                 <div class="form-group col-md-auto">
                     <small>
@@ -82,9 +83,15 @@
     </form>
 </div>
 <br />
-<table class="table table-bordered table-sm">
+<table class="table table-bordered table-sm m-0">
     <thead class="thead-light">
         <tr>
+            <th name="checkAllRows">
+                <label class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" name="checkAllRows">
+                    <span class="custom-control-indicator"></span>
+                </label>
+            </th>
             <th class="small text-center">
                 <a asp-page="./Index"
                    asp-route-sortOrder="@Model.DateSort"
@@ -126,35 +133,42 @@
     <tbody>
         @foreach (var item in Model.ListItems)
         {
-        <tr>
-            <td class="small">
-                @Html.DisplayFor(modelItem => item.TransDate)
-            </td>
-            <td class="small">
-                @Html.DisplayFor(modelItem => item.TransactorName)
-            </td>
-            <td class="small">
-                @Html.DisplayFor(modelItem => item.BuyDocSeriesCode)
-            </td>
+            <tr>
+                <td>
+                    <label class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" name="checkTableRow">
+                        <span class="custom-control-indicator"></span>
+                    </label>
+                </td>
+                <td class="small">
+                    @Html.DisplayFor(modelItem => item.TransDate)
+                </td>
+                <td class="small">
+                    @Html.DisplayFor(modelItem => item.TransactorName)
+                </td>
+                <td class="small">
+                    @Html.DisplayFor(modelItem => item.BuyDocSeriesCode)
+                </td>
 
-            <td class="small">
-                @Html.DisplayFor(modelItem => item.TransRefCode)
-            </td>
-            <td class="small text-right">
-                @Html.DisplayFor(modelItem => item.TotalAmount)
-            </td>
-            <td class="small">
-                @Html.DisplayFor(modelItem => item.CompanyCode)
-            </td>
+                <td class="small">
+                    @Html.DisplayFor(modelItem => item.TransRefCode)
+                </td>
+                <td class="small text-right">
+                    @Html.DisplayFor(modelItem => item.TotalAmount)
+                </td>
+                <td class="small">
+                    @Html.DisplayFor(modelItem => item.CompanyCode)
+                </td>
 
-            <td class="small">
-                <a asp-page="./Edit" asp-route-id="@item.Id"><i class="fas fa-edit"></i></a> |
-                <a asp-page="./Details" asp-route-id="@item.Id"><i class="fas fa-info-circle"></i></a> |
-                <a asp-page="./Delete" asp-route-id="@item.Id"><i class="fas fa-trash"></i></a>
-            </td>
-        </tr>
+                <td class="small">
+                    <a asp-page="./Edit" asp-route-id="@item.Id"><i class="fas fa-edit"></i></a> |
+                    <a asp-page="./Details" asp-route-id="@item.Id"><i class="fas fa-info-circle"></i></a> |
+                    <a asp-page="./Delete" asp-route-id="@item.Id"><i class="fas fa-trash"></i></a>
+                </td>
+            </tr>
         }
         <tr class="table-info">
+            <td class="small"></td>
             <td class="small"></td>
             <td class="small"></td>
             <td class="small font-weight-bold">
@@ -241,6 +255,7 @@
             var $filtersVisible = $('#filtersVisible');
             var $filterCollapse = $('#filterCollapse');
             var $alist = $('a[href*="&filtersVisible"]');
+            var $checkAllRows = $('input[name=checkAllRows]');
             //#endregion
 
             $filterCollapse.on('hidden.bs.collapse', function () {
@@ -306,6 +321,12 @@
             //    console.log("Initial load is true setting initial values");
             //    $filterCollapse.collapse('show');
             //}
+            $checkAllRows.on('change', function() {
+                var th = $(this).index();
+                var isChecked = $(this).prop('checked');
+               // alert('Column number is : ' + th + ' and text is : ' + $(this).prop('checked'));
+                $('input[name=checkTableRow]').prop('checked', isChecked);
+            });
         });
     </script>
 }
