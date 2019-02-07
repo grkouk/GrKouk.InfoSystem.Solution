@@ -8,6 +8,7 @@
     <Description>GrKouk Information System</Description>
     <Copyright>George Koukoudis</Copyright>
     <Configurations>Debug;Release;DebugWeb</Configurations>
+    <Version>1.2.0</Version>
   </PropertyGroup>
 
   <ItemGroup>

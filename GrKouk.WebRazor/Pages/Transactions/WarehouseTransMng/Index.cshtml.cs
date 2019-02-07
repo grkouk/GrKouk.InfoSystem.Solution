@@ -164,6 +164,9 @@ namespace GrKouk.WebRazor.Pages.Transactions.WarehouseTransMng
                 companiesList.Add(new SelectListItem() { Value = company.Id.ToString(), Text = company.Code });
             }
             ViewData["CompanyFilter"] = new SelectList(companiesList, "Value", "Text");
+
+            var pageFilterSize = PageFilter.GetPageSizeFiltersSelectList();
+            ViewData["PageFilterSize"] = new SelectList(pageFilterSize, "Value", "Text");
         }
     }
 }

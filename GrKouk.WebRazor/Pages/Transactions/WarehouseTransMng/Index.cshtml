@@ -66,12 +66,8 @@
                 </div>
                 <div class="form-group col-md-auto">
                     <label class="small"> Page Size:</label>
-                    <select asp-for="PageSize" onchange="this.form.submit()" class="form-control form-control-sm small">
-                        <option value="3">3</option>
-                        <option value="5">5</option>
-                        <option value="10">10</option>
-                        <option value="20">20</option>
-                        <option value="100">100</option>
+                    <select asp-for="PageSize" onchange="this.form.submit()" class="form-control form-control-sm small"  asp-items="ViewBag.PageFilterSize">
+                      
                     </select>
                 </div>
                 <div class="form-group col-md-auto">
