@@ -19,15 +19,22 @@
                asp-route-PageSize="@Model.PageSize">Create New</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" data-toggle="collapse" href="#filterCollapse" role="button"
+            <a class="nav-link" data-toggle="collapse" href="#filterCollapse" role="button" id="filtersToggle"
                aria-expanded="false" aria-controls="filterCollapse">
-                Filters
+               Show Filters
             </a>
 
         </li>
 
         <li class="nav-item">
-            <a class="nav-link disabled" href="#" tabindex="-1" >Selectors</a>
+
+            <a class="nav-link" data-toggle="collapse" href="#" id="rowSelectorsToggle" role="button"
+              >
+                Show Row Selectors
+            </a>
+
+            @*<a class="nav-link disabled" href="#" tabindex="-1" >Selectors</a>*@
+
         </li>
     </ul>
 </div>
@@ -256,10 +263,12 @@
             var $filterCollapse = $('#filterCollapse');
             var $alist = $('a[href*="&filtersVisible"]');
             var $checkAllRows = $('input[name=checkAllRows]');
+            var $filtersToggle=$('#filtersToggle');
             //#endregion
 
             $filterCollapse.on('hidden.bs.collapse', function () {
                 console.log('Filters Hidden');
+                $filtersToggle.text('Show Filters');
                 //var alist = $('a[href*="&filtersVisible"]');
                 $.each($alist,
                     function (key, value) {
@@ -286,10 +295,12 @@
                     });
 
                 $filtersVisible.val(false);
+                
             });
 
             $filterCollapse.on('shown.bs.collapse', function () {
                 console.log('Filters Shown');
+                $filtersToggle.text('Hide Filters');
                 // var alist = $('a[href*="&filtersVisible"]');
                 $.each($alist,
                     function (key, value) {
@@ -315,6 +326,7 @@
 
                     });
                 $filtersVisible.val(true);
+               
             });
             //var fv = $filtersVisible.val();
             //if (fv =='true') {

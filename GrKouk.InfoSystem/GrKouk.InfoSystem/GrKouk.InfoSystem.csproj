@@ -5,7 +5,7 @@
     <Version>1.0.2</Version>
     <Authors>George Koukoudis</Authors>
     <Copyright>George Koukoudis</Copyright>
-    <Configurations>Debug;Release;DebugWeb</Configurations>
+    <Configurations>Debug;Release;DebugWeb;RlsWeb</Configurations>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
