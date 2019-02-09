@@ -1,21 +1,15 @@
 ﻿@page
-@model GrKouk.WebRazor.Pages.Transactions.WarehouseTransMng.IndexModel
-
+@model GrKouk.WebRazor.Pages.Transactions.TransactorTransMng.Index2Model
 @{
-    ViewData["Title"] = "Warehouse Transactions";
+    ViewData["Title"] = "Index";
 }
 @section MyCss
     {
     <link rel="stylesheet" href="~/css/custom-checkbox.css" />
 }
-<h4>Warehouse Transactions</h4>
-@{
-    var filtersShow = Model.FiltersVisible ? "show" : "";
-    var filtersShowText = Model.FiltersVisible ? "Hide Filters" : "Show Filters";
-    var RowSelectorsHidden = Model.RowSelectorsVisible ? "" : "hidden";
-    var SelectedToggleText = Model.RowSelectorsVisible ? "Hide Row Selectors" : "Show Row Selectors";
-    var SelectedRowsMenuItem = Model.RowSelectorsVisible ? "" : "hidden ";
-}
+<h4>Transactor Transactions Index</h4>
+
+
 <div class="container ">
     <ul class="nav small justify-content-end ">
         <li class="nav-item">
@@ -28,22 +22,21 @@
         <li class="nav-item">
             <a class="nav-link" data-toggle="collapse" href="#filterCollapse" role="button" id="filtersToggle"
                aria-expanded="false" aria-controls="filterCollapse">
-                @filtersShowText
+                @Model.FiltersShowText
             </a>
 
         </li>
         <li class="nav-item">
-            <a class="nav-link" data-toggle="collapse" href="#" role="button" id="rowSelectorsToggle">
-                @SelectedToggleText
-
+            <a class="nav-link" data-toggle="collapse" href="#" id="rowSelectorsToggle" role="button">
+                @Model.SelectedToggleText
             </a>
             @*<a class="nav-link disabled" href="#" tabindex="-1" >Selectors</a>*@
         </li>
-        <li class="nav-item dropdown " @SelectedRowsMenuItem id="SelectedRowsActionsMenu">
+        <li class="nav-item dropdown " @Model.SelectedRowsMenuItem id="SelectedRowsActionsMenu">
             <a class="nav-link dropdown-toggle disabled" role="button" id="ddSelectedRowsActions" data-toggle="dropdown"
                aria-haspopup="true" aria-expanded="false">Actions</a>
             <div class="dropdown-menu small">
-                <a class="dropdown-item" href="#" id="deleteSelectedRows">Delete Selected</a>
+                <a class="dropdown-item" href="#">Action</a>
                 <a class="dropdown-item" href="#">Another action</a>
                 <a class="dropdown-item" href="#">Something else here</a>
                 <div class="dropdown-divider"></div>
@@ -54,9 +47,8 @@
     </ul>
 </div>
 
-
-<div class="collapse @filtersShow" id="filterCollapse">
-    <form class="form-inline" asp-page="./Index" method="get">
+<div class="collapse @Model.FiltersShow" id="filterCollapse">
+    <form class="form-inline" asp-page="./Index2" method="get">
         <input type="hidden" asp-for="@Model.FiltersVisible" id="filtersVisible" />
         <input type="hidden" asp-for="@Model.RowSelectorsVisible" id="rowSelectorsVisible" />
         <div class="container">
@@ -68,7 +60,7 @@
                     <input type="submit" value="Search" class="btn btn-light btn-sm" />
                 </div>
                 <div class="form-group col-md-auto">
-                    <a class="small" asp-page="./Index"
+                    <a class="small" asp-page="./Index2"
                        asp-route-sortOrder="@Model.CurrentSort"
                        asp-route-pageIndex="@(Model.ListItems.CurrentPage)"
                        asp-route-currentFilter="@Model.CurrentFilter"
@@ -95,156 +87,17 @@
                 </div>
                 <div class="form-group col-md-auto">
                     <small>
+
                         Page:@Model.ListItems.CurrentPage of @Model.ListItems.TotalPages Total Items @Model.ListItems.TotalCount
                     </small>
                 </div>
+
             </div>
         </div>
     </form>
 </div>
 <br />
-<table class="table table-bordered table-sm">
-    <thead class="thead-light">
-        <tr>
-            <th name="selectAllRowsColumn" @RowSelectorsHidden>
-                <label class="custom-control custom-checkbox">
-                    <input type="checkbox" class="custom-control-input" name="checkAllRows">
-                    <span class="custom-control-indicator"></span>
-                </label>
-            </th>
-            <th class="small text-center">
-                <a asp-page="./Index" asp-route-sortOrder="@Model.DateSort"
-                   asp-route-searchFilter="@Model.CurrentFilter"
-                   asp-route-companyFilter="@Model.CompanyFilter"
-                   asp-route-datePeriodFilter="@Model.CurrentDatePeriod"
-                   asp-route-filtersVisible="@Model.FiltersVisible"
-                   asp-route-rowselectorsVisible="@Model.RowSelectorsVisible"
-                   asp-route-PageSize="@Model.PageSize">
-                    @Html.DisplayNameFor(model => model.ListItems[0].TransDate)
-
-                </a>
-                <i class="@Model.DateSortIcon"></i>
-            </th>
-            <th class="small">
-                <a asp-page="./Index" asp-route-sortOrder="@Model.NameSort"
-                   asp-route-searchFilter="@Model.CurrentFilter"
-                   asp-route-companyFilter="@Model.CompanyFilter"
-                   asp-route-datePeriodFilter="@Model.CurrentDatePeriod"
-                   asp-route-filtersVisible="@Model.FiltersVisible"
-                   asp-route-rowselectorsVisible="@Model.RowSelectorsVisible"
-                   asp-route-PageSize="@Model.PageSize">
-                    @Html.DisplayNameFor(model => model.ListItems[0].MaterialName)
-                </a>
-
-                <i class="@Model.NameSortIcon"></i>
-            </th>
-            <th class="small">
-                @Html.DisplayNameFor(model => model.ListItems[0].TransWarehouseDocSeriesName)
-            </th>
-            @*<th class="small">
-                    @Html.DisplayNameFor(model => model.ListItems[0].SectionCode)
-                </th>*@
-            <th class="small">
-                @Html.DisplayNameFor(model => model.ListItems[0].TransRefCode)
-            </th>
-
-
-            <th class="small">
-                @Html.DisplayNameFor(model => model.ListItems[0].ImportUnits)
-            </th>
-            <th class="small">
-                @Html.DisplayNameFor(model => model.ListItems[0].ExportUnits)
-            </th>
-            <th class="small">
-                @Html.DisplayNameFor(model => model.ListItems[0].ImportAmount)
-            </th>
-            <th class="small">
-                @Html.DisplayNameFor(model => model.ListItems[0].ExportAmount)
-            </th>
-
-            <th class="small">
-                @Html.DisplayNameFor(model => model.ListItems[0].CompanyCode)
-            </th>
-
-            <th class="small"></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.ListItems)
-        {
-            <tr>
-                <td name="selectRowColumn" @RowSelectorsHidden>
-                    <label class="custom-control custom-checkbox">
-                        <input type="checkbox" class="custom-control-input" name="checkTableRow" data-itemId="@item.Id">
-                        <span class="custom-control-indicator"></span>
-                    </label>
-                </td>
-                <td class="text-right small">
-                    @Html.DisplayFor(modelItem => item.TransDate)
-                </td>
-                <td class="small">
-                    @Html.DisplayFor(modelItem => item.MaterialName)
-                </td>
-                <td class="small">
-                    @Html.DisplayFor(modelItem => item.TransWarehouseDocSeriesName)
-                </td>
-                @*<td class="small">
-                        @Html.DisplayFor(modelItem => item.SectionCode)
-                    </td>*@
-                <td class="small">
-                    @Html.DisplayFor(modelItem => item.TransRefCode)
-                </td>
-
-                <td class="text-right small">
-                    @Html.DisplayFor(modelItem => item.ImportUnits)
-                </td>
-                <td class="text-right small">
-                    @Html.DisplayFor(modelItem => item.ExportUnits)
-                </td>
-                <td class="text-right small">
-                    @Html.DisplayFor(modelItem => item.ImportAmount)
-                </td>
-                <td class="text-right small">
-                    @Html.DisplayFor(modelItem => item.ExportAmount)
-                </td>
-                <td class="small">
-                    @Html.DisplayFor(modelItem => item.CompanyCode)
-                </td>
-
-                <td class="small">
-                    <a asp-page="./Edit" asp-route-id="@item.Id"><i class="fas fa-edit"></i></a> |
-                    <a asp-page="./Details" asp-route-id="@item.Id"><i class="fas fa-info-circle"></i></a> |
-                    <a asp-page="./Delete" asp-route-id="@item.Id"><i class="fas fa-trash"></i></a>
-                </td>
-            </tr>
-        }
-        <tr class="table-info">
-            <td class="small" name="selectRowColumn" @RowSelectorsHidden></td>
-            <td class="small"></td>
-            <td class="small"></td>
-
-            <td class="small font-weight-bold">
-                Σύνολα Σελίδας
-            </td>
-            <td class="small"></td>
-            <td class="small text-right font-weight-bold">
-                @Html.DisplayFor(modelItem => modelItem.SumImportVolume)
-            </td>
-            <td class="small text-right font-weight-bold">
-                @Html.DisplayFor(modelItem => modelItem.SumExportVolume)
-            </td>
-            <td class="small text-right font-weight-bold">
-                @Html.DisplayFor(modelItem => modelItem.SumImportValue)
-            </td>
-            <td class="small text-right font-weight-bold">
-                @Html.DisplayFor(modelItem => modelItem.SumExportValue)
-            </td>
-            <td class="small"></td>
-            <td class="small"></td>
-        </tr>
-    </tbody>
-</table>
-
+@await Html.PartialAsync("_ItemsView", Model)
 @{
     var prevDisabled = !Model.ListItems.HasPrevious ? "disabled" : "";
     var nextDisabled = !Model.ListItems.HasNext ? "disabled" : "";
@@ -254,7 +107,7 @@
 <nav aria-label="Page navigation example">
     <ul class="pagination pagination-sm">
         <li class="page-item @prevDisabled">
-            <a asp-page="./Index"
+            <a asp-page="./Index2"
                asp-route-sortOrder="@Model.CurrentSort"
                asp-route-pageIndex="1"
                asp-route-searchFilter="@Model.CurrentFilter"
@@ -269,7 +122,7 @@
             </a>
         </li>
         <li class="page-item @prevDisabled">
-            <a asp-page="./Index"
+            <a asp-page="./Index2"
                asp-route-sortOrder="@Model.CurrentSort"
                asp-route-pageIndex="@(Model.ListItems.CurrentPage - 1)"
                asp-route-searchFilter="@Model.CurrentFilter"
@@ -285,7 +138,7 @@
         </li>
 
         <li class="page-item @nextDisabled">
-            <a asp-page="./Index"
+            <a asp-page="./Index2"
                asp-route-sortOrder="@Model.CurrentSort"
                asp-route-pageIndex="@(Model.ListItems.CurrentPage + 1)"
                asp-route-searchFilter="@Model.CurrentFilter"
@@ -300,7 +153,7 @@
             </a>
         </li>
         <li class="page-item  @nextDisabled">
-            <a asp-page="./Index"
+            <a asp-page="./Index2"
                asp-route-sortOrder="@Model.CurrentSort"
                asp-route-pageIndex="@Model.ListItems.TotalPages"
                asp-route-searchFilter="@Model.CurrentFilter"
@@ -317,19 +170,6 @@
     </ul>
 </nav>
 
-<!-- Modal -->
-<div class="modal fade" id="loadMe" tabindex="-1" role="dialog" aria-labelledby="loadMeLabel">
-    <div class="modal-dialog modal-sm" role="document">
-        <div class="modal-content">
-            <div class="modal-body text-center">
-                <div class="loader"></div>
-                <div>
-                    <p>Executing request. <br><br><small>Please wait...</small></p>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 @section Scripts
     {
     <script>
@@ -347,99 +187,7 @@
             var $selectedRowsActionsMenu = $('#SelectedRowsActionsMenu');
             var $selectedRowsActionsLink = $('#ddSelectedRowsActions');
             var $rowSelectors = $('input[name=checkTableRow]');
-            var $deleteSelectedRowsLink = $('#deleteSelectedRows');
             //#endregion
-             var deleteSelectedRows = () => {
-                var selectedRows = $rowSelectors.filter(':checked');
-                var idsToDelete = [];
-                $.each(selectedRows, function (key, value) {
-                    console.log(value);
-                    var id = parseInt(value.dataset.itemid);
-                    idsToDelete.push(id);
-                });
-                if (idsToDelete.length > 0) {
-                    var idsJs = JSON.stringify({
-                        ids: idsToDelete
-                    });
-                    var timeout;
-                    jQuery.ajaxSetup( {
-                        beforeSend:function ()
-                        {
-                            if (timeout) { clearTimeout(timeout); }
-                            timeout = setTimeout(function() {
-                                //$("#loadMe").stop(1,0).modal('hide').modal({
-                                //    backdrop: "static", //remove ability to close modal with click
-                                //    keyboard: false, //remove option to close with keyboard
-                                //    show: true //Display loader!
-                                //}); 
-                                $("#loadMe").modal({
-                                    backdrop: "static", //remove ability to close modal with click
-                                    keyboard: false, //remove option to close with keyboard
-                                    show: true //Display loader!
-                                }); 
-                            }, 1000);
-                        }, 
-                        complete:function ()
-                        {
-                            if (timeout) { clearTimeout(timeout); } 
-                            $("#loadMe").modal("hide");
-                            //$("#loadMe").stop(1, 0).modal("hide");
-                            setTimeout(function() {
-                                console.log('Checking for open modals');
-                                var isOpen = $('#loadMe').hasClass('show');
-                                if ( isOpen ) {
-                                    console.log('There is an open Modal');
-                                    $("#loadMe").modal("hide");
-                                } else {
-                                    console.log('No open modal');
-                                }
-                            }, 2000);
-                        }
-                    });
-                    $.ajax({
-                        contentType: 'application/json; charset=utf-8',
-
-                        dataType: 'json',
-                        type: 'POST',
-                        data: idsJs,
-                        url: "/api/GrkoukInfoApi/DeleteBuyDocumentsList",
-                        //#region Comment Out
-                        //beforeSend: function () {
-                        //    if (timeout) { clearTimeout(timeout); }
-                        //    console.log('ajax before send');
-                        //    timeout = setTimeout(function() {
-                        //        $("#loadMe").stop(1,0).modal('hide').modal({
-                        //            backdrop: "static", //remove ability to close modal with click
-                        //            keyboard: false, //remove option to close with keyboard
-                        //            show: true //Display loader!
-                        //        }); 
-                        //    }, 1000);
-                        //    //$("#loadMe").stop(1,0).modal('hide').delay(1000).modal({
-                        //    //    backdrop: "static", //remove ability to close modal with click
-                        //    //    keyboard: false, //remove option to close with keyboard
-                        //    //    show: true //Display loader!
-                        //    //});
-                        //},
-                        //#endregion
-                        success: function (result) {
-                            console.log(success);
-                        },
-                        //#region Comment Out
-                        //complete: function () {
-                        //    if (timeout) { clearTimeout(timeout); } 
-                        //    console.log('ajax complete');
-                        //    $("#loadMe").stop(1,0).modal("hide");
-                        //},
-                       // #endregion
-                        error: function (e) {
-                            console.log(e);
-                           
-                        }
-                    });
-                    
-                }
-
-            };
             var getSelectedRows = () => {
                 var selectedRows = $rowSelectors.filter(':checked');
                 console.log('Selected table rows=' + selectedRows);
@@ -463,9 +211,6 @@
                     $checkAllRows.prop('checked', false);
                 }
             };
-            $deleteSelectedRowsLink.on('click', () => {
-                deleteSelectedRows();
-            });
             $rowSelectors.on('change', function () {
                 handleSelectedRowsUi();
             });

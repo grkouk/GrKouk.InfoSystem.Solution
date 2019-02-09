@@ -4,21 +4,23 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using GrKouk.InfoSystem.Domain.Shared;
 using GrKouk.InfoSystem.Dtos.WebDtos.TransactorTransactions;
+using GrKouk.WebApi.Data;
 using GrKouk.WebRazor.Helpers;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace GrKouk.WebRazor.Pages.Transactions.TransactorTransMng
 {
-    public class IndexModel : PageModel
+    public class Index2Model : PageModel
     {
-        private readonly GrKouk.WebApi.Data.ApiDbContext _context;
+        private readonly ApiDbContext _context;
         private readonly IMapper _mapper;
-        
-        public IndexModel(GrKouk.WebApi.Data.ApiDbContext context,IMapper mapper)
+
+        public Index2Model(GrKouk.WebApi.Data.ApiDbContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
@@ -40,7 +42,11 @@ namespace GrKouk.WebRazor.Pages.Transactions.TransactorTransMng
         public PagedList<TransactorTransListDto> ListItems { get; set; }
         public decimal sumCredit = 0;
         public decimal sumDebit = 0;
-        
+        public string FiltersShow { get; set; }
+        public string FiltersShowText { get; set; }
+        public string RowSelectorsHidden { get; set; }
+        public string SelectedToggleText { get; set; }
+        public string SelectedRowsMenuItem { get; set; }
         public async Task OnGetAsync(string sortOrder, string searchString, string datePeriodFilter, int? companyFilter
             , bool filtersVisible, bool rowSelectorsVisible, int? pageIndex, int? pageSize)
         {
@@ -137,6 +143,14 @@ namespace GrKouk.WebRazor.Pages.Transactions.TransactorTransMng
                 t, pageIndex ?? 1, PageSize);
             sumDebit = ListItems.Sum(p => p.DebitAmount);
             sumCredit = ListItems.Sum(p => p.CreditAmount);
+
+             FiltersShow = FiltersVisible ? "show" : "";
+             FiltersShowText = FiltersVisible ? "Hide Filters" : "Show Filters";
+            RowSelectorsHidden = RowSelectorsVisible ? "" : "hidden";
+            SelectedToggleText = RowSelectorsVisible ? "Hide Row Selectors" : "Show Row Selectors";
+            SelectedRowsMenuItem = RowSelectorsVisible ? "" : "hidden ";
+
+
         }
         private void LoadFilters()
         {
@@ -163,5 +177,26 @@ namespace GrKouk.WebRazor.Pages.Transactions.TransactorTransMng
             var pageFilterSize = PageFilter.GetPageSizeFiltersSelectList();
             ViewData["PageFilterSize"] = new SelectList(pageFilterSize, "Value", "Text");
         }
+    }
+
+    public class PartialIndex
+    {
+        public string NameSort { get; set; }
+        public string NameSortIcon { get; set; }
+        public string DateSort { get; set; }
+        public string DateSortIcon { get; set; }
+        public string CurrentFilter { get; set; }
+        public string CurrentDatePeriod { get; set; }
+        public string CurrentSort { get; set; }
+        public int PageSize { get; set; }
+        public int CurrentPageSize { get; set; }
+        public int TotalPages { get; set; }
+        public int TotalCount { get; set; }
+        public int CompanyFilter { get; set; }
+        public bool FiltersVisible { get; set; } = false;
+        public bool RowSelectorsVisible { get; set; } = false;
+        public PagedList<TransactorTransListDto> ListItems { get; set; }
+        public decimal sumCredit = 0;
+        public decimal sumDebit = 0;
     }
 }
