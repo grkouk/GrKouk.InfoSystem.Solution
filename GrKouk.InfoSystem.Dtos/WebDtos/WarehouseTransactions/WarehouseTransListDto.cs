@@ -33,7 +33,10 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.WarehouseTransactions
 
         public InventoryActionEnum InventoryAction { get; set; }
         public InventoryValueActionEnum InventoryValueAction { get; set; }
-       
+        //Added 2019-------------
+        public InventoryActionEnum InvoicedVolumeAction { get; set; }
+        public InventoryValueActionEnum InvoicedValueAction { get; set; }
+        //----------------------
         public double Quontity1 { get; set; }
         public double Quontity2 { get; set; }
        
@@ -86,6 +89,46 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.WarehouseTransactions
                                        InventoryAction.Equals(InventoryActionEnum.InventoryActionEnumNegativeExport)
             ? TransQ1
             : 0);
+      
+        //-2019
+        [DisplayFormat(DataFormatString = "{0:C}")]
+        [Display(Name = "Invoiced Import Value")]
+        public decimal InvoicedImportAmount
+        {
+            get => (InvoicedValueAction.Equals(InventoryValueActionEnum.InventoryValueActionEnumIncrease) ||
+                    InvoicedValueAction.Equals(InventoryValueActionEnum.InventoryValueActionEnumNegativeIncrease)
+                ? TotalAmount
+                : 0);
+
+        }
+        [DisplayFormat(DataFormatString = "{0:C}")]
+        [Display(Name = "Invoiced Export Value")]
+        public decimal InvoicedExportAmount => (InvoicedValueAction.Equals(InventoryValueActionEnum.InventoryValueActionEnumDecrease) ||
+                                                InvoicedValueAction.Equals(InventoryValueActionEnum.InventoryValueActionEnumNegativeDecrease)
+            ? TotalAmount
+            : 0);
+
+
+
+        [DisplayFormat(DataFormatString = "{0:N2}")]
+        [Display(Name = "Invoiced Import Units")]
+        public decimal InvoicedImportUnits
+        {
+            get => (InvoicedVolumeAction.Equals(InventoryActionEnum.InventoryActionEnumImport) ||
+                    InvoicedVolumeAction.Equals(InventoryActionEnum.InventoryActionEnumNegativeImport)
+                ? TransQ1
+                : 0);
+
+        }
+        [DisplayFormat(DataFormatString = "{0:N2}")]
+        [Display(Name = "Invoiced Export Units")]
+        public decimal InvoicedExportUnits => (InvoicedVolumeAction.Equals(InventoryActionEnum.InventoryActionEnumExport) ||
+                                               InvoicedVolumeAction.Equals(InventoryActionEnum.InventoryActionEnumNegativeExport)
+            ? TransQ1
+            : 0);
+        //------
+
+
         public int CompanyId { get; set; }
         [Display(Name = "Company")]
         public string CompanyCode { get; set; }

@@ -19,7 +19,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc
         private readonly GrKouk.WebApi.Data.ApiDbContext _context;
         private readonly IMapper _mapper;
         private readonly IToastNotification _toastNotification;
-
+        #region Fields
         public string NameSort { get; set; }
         public string NameSortIcon { get; set; }
         public string DateSort { get; set; }
@@ -35,6 +35,8 @@ namespace GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc
         public decimal SumTotalAmount { get; set; }
         public bool FiltersVisible { get; set; } = false;
         public bool RowSelectorsVisible { get; set; } = false;
+        public string SectionCode { get; set; } = "SYS-BUY-MATERIALS-SCN";
+        #endregion
         public IndexModel(GrKouk.WebApi.Data.ApiDbContext context,IMapper mapper, IToastNotification toastNotification)
         {
             _context = context;

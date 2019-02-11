@@ -37,6 +37,10 @@ namespace GrKouk.InfoSystem.Domain.Shared
 
         public InventoryActionEnum InventoryAction { get; set; }
         public InventoryValueActionEnum InventoryValueAction { get; set; }
+        //Added 2019-------------
+        public InventoryActionEnum InvoicedVolumeAction { get; set; }
+        public InventoryValueActionEnum InvoicedValueAction { get; set; }
+        //----------------------
         /// <summary>
         /// Ανάλογα με το sectionid το πεδίο αυτό περιέχει το id του αντικειμένου που ορίζει το sectionID 
         /// </summary>

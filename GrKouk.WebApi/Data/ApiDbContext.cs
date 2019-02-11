@@ -107,45 +107,6 @@ namespace GrKouk.WebApi.Data
                 .HasIndex(c => c.Code)
                 .IsUnique();
 
-            modelBuilder.Entity<TransWarehouseDef>()
-                   .HasOne(bd => bd.VolInvoicedExportsTrans)
-                   .WithMany()
-                   .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<TransWarehouseDef>()
-                   .HasOne(bd => bd.VolInvoicedImportsTrans)
-                   .WithMany()
-                   .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<TransWarehouseDef>()
-                   .HasOne(bd => bd.AmtInvoicedExportsTrans)
-                   .WithMany()
-                   .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<TransWarehouseDef>()
-                   .HasOne(bd => bd.AmtInvoicedImportsTrans)
-                   .WithMany()
-                   .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<TransWarehouseDef>()
-                   .HasOne(bd => bd.VolBuyTrans)
-                   .WithMany()
-                   .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<TransWarehouseDef>()
-                   .HasOne(bd => bd.AmtBuyTrans)
-                   .WithMany()
-                   .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<TransWarehouseDef>()
-                   .HasOne(bd => bd.VolSellTrans)
-                   .WithMany()
-                   .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<TransWarehouseDef>()
-                   .HasOne(bd => bd.AmtSellTrans)
-                   .WithMany()
-                   .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<TransWarehouseDocTypeDef>()
                 .HasOne(bd => bd.TransWarehouseDef)

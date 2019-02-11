@@ -4,14 +4,16 @@ using GrKouk.WebApi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace GrKouk.WebApi.Migrations
 {
     [DbContext(typeof(ApiDbContext))]
-    partial class ApiDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190209192008_warehouseTransDefActions")]
+    partial class warehouseTransDefActions
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -352,6 +354,18 @@ namespace GrKouk.WebApi.Migrations
 
                     b.Property<bool>("Active");
 
+                    b.Property<int>("AmtBuyAction");
+
+                    b.Property<int>("AmtExportsAction");
+
+                    b.Property<int>("AmtImportsAction");
+
+                    b.Property<int>("AmtInvoicedExportsAction");
+
+                    b.Property<int>("AmtInvoicedImportsAction");
+
+                    b.Property<int>("AmtSellAction");
+
                     b.Property<string>("Code")
                         .HasMaxLength(15);
 
@@ -375,16 +389,24 @@ namespace GrKouk.WebApi.Migrations
 
                     b.Property<int>("MaterialInventoryValueAction");
 
-                    b.Property<int>("MaterialInvoicedValueAction");
-
-                    b.Property<int>("MaterialInvoicedVolumeAction");
-
                     b.Property<string>("Name")
                         .HasMaxLength(200);
 
                     b.Property<int>("ServiceInventoryAction");
 
                     b.Property<int>("ServiceInventoryValueAction");
+
+                    b.Property<int>("VolBuyAction");
+
+                    b.Property<int>("VolExportsAction");
+
+                    b.Property<int>("VolImportsAction");
+
+                    b.Property<int>("VolInvoicedExportsAction");
+
+                    b.Property<int>("VolInvoicedImportsAction");
+
+                    b.Property<int>("VolSellAction");
 
                     b.HasKey("Id");
 
@@ -1172,10 +1194,6 @@ namespace GrKouk.WebApi.Migrations
                     b.Property<int>("InventoryAction");
 
                     b.Property<int>("InventoryValueAction");
-
-                    b.Property<int>("InvoicedValueAction");
-
-                    b.Property<int>("InvoicedVolumeAction");
 
                     b.Property<int>("MaterialId");
 

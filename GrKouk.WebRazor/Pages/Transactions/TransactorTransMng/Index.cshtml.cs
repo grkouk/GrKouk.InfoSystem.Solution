@@ -23,6 +23,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.TransactorTransMng
             _context = context;
             _mapper = mapper;
         }
+        #region Fields
         public string NameSort { get; set; }
         public string NameSortIcon { get; set; }
         public string DateSort { get; set; }
@@ -37,10 +38,11 @@ namespace GrKouk.WebRazor.Pages.Transactions.TransactorTransMng
         public int CompanyFilter { get; set; }
         public bool FiltersVisible { get; set; } = false;
         public bool RowSelectorsVisible { get; set; } = false;
-        public PagedList<TransactorTransListDto> ListItems { get; set; }
+        public string SectionCode { get; set; } = "SYS-TRANSACTOR-TRANS";
+        #endregion
         public decimal sumCredit = 0;
         public decimal sumDebit = 0;
-        
+        public PagedList<TransactorTransListDto> ListItems { get; set; }
         public async Task OnGetAsync(string sortOrder, string searchString, string datePeriodFilter, int? companyFilter
             , bool filtersVisible, bool rowSelectorsVisible, int? pageIndex, int? pageSize)
         {

@@ -26,7 +26,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.WarehouseTransMng
             _mapper = mapper;
             _toastNotification = toastNotification;
         }
-
+        #region Fields
         public string NameSort { get; set; }
         public string NameSortIcon { get; set; }
         public string DateSort { get; set; }
@@ -41,6 +41,8 @@ namespace GrKouk.WebRazor.Pages.Transactions.WarehouseTransMng
         public bool FiltersVisible { get; set; } = false;
         public bool RowSelectorsVisible { get; set; } = false;
         public int TotalCount { get; set; }
+        public string SectionCode { get; set; } = "SYS-WAREHOUSE-TRANS";
+        #endregion
         public decimal SumImportVolume = 0;
         public decimal SumExportVolume = 0;
         public decimal SumImportValue = 0;

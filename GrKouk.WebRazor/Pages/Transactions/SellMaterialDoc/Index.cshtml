@@ -312,7 +312,7 @@
             var $rowSelectors = $('input[name=checkTableRow]');
             var $deleteSelectedRowsLink = $('#deleteSelectedRows');
             //#endregion
-             var deleteSelectedRows = () => {
+            var deleteSelectedRows = () => {
                 var selectedRows = $rowSelectors.filter(':checked');
                 var idsToDelete = [];
                 $.each(selectedRows, function (key, value) {
@@ -322,31 +322,36 @@
                 });
                 if (idsToDelete.length > 0) {
                     var idsJs = JSON.stringify({
-                        ids: idsToDelete
+                        section:'@Model.SectionCode',
+                                ids: idsToDelete
                     });
                     var timeout;
-                    jQuery.ajaxSetup( {
-                        beforeSend:function ()
-                        {
+                   
+                    $.ajax({
+                        contentType: 'application/json; charset=utf-8',
+
+                        dataType: 'json',
+                        type: 'POST',
+                        data: idsJs,
+                        url: "/api/GrkoukInfoApi/DeleteBuyDocumentsList",
+                        beforeSend: function () {
                             if (timeout) { clearTimeout(timeout); }
                             timeout = setTimeout(function() {
-                                //$("#loadMe").stop(1,0).modal('hide').modal({
-                                //    backdrop: "static", //remove ability to close modal with click
-                                //    keyboard: false, //remove option to close with keyboard
-                                //    show: true //Display loader!
-                                //}); 
+                               
                                 $("#loadMe").modal({
                                     backdrop: "static", //remove ability to close modal with click
                                     keyboard: false, //remove option to close with keyboard
                                     show: true //Display loader!
                                 }); 
                             }, 1000);
-                        }, 
-                        complete:function ()
-                        {
+                           
+                        },
+                        success: function (result) {
+                            console.log(success);
+                        },
+                        complete: function () {
                             if (timeout) { clearTimeout(timeout); } 
                             $("#loadMe").modal("hide");
-                            //$("#loadMe").stop(1, 0).modal("hide");
                             setTimeout(function() {
                                 console.log('Checking for open modals');
                                 var isOpen = $('#loadMe').hasClass('show');
@@ -357,43 +362,7 @@
                                     console.log('No open modal');
                                 }
                             }, 2000);
-                        }
-                    });
-                    $.ajax({
-                        contentType: 'application/json; charset=utf-8',
-
-                        dataType: 'json',
-                        type: 'POST',
-                        data: idsJs,
-                        url: "/api/GrkoukInfoApi/DeleteBuyDocumentsList",
-                        //#region Comment Out
-                        //beforeSend: function () {
-                        //    if (timeout) { clearTimeout(timeout); }
-                        //    console.log('ajax before send');
-                        //    timeout = setTimeout(function() {
-                        //        $("#loadMe").stop(1,0).modal('hide').modal({
-                        //            backdrop: "static", //remove ability to close modal with click
-                        //            keyboard: false, //remove option to close with keyboard
-                        //            show: true //Display loader!
-                        //        }); 
-                        //    }, 1000);
-                        //    //$("#loadMe").stop(1,0).modal('hide').delay(1000).modal({
-                        //    //    backdrop: "static", //remove ability to close modal with click
-                        //    //    keyboard: false, //remove option to close with keyboard
-                        //    //    show: true //Display loader!
-                        //    //});
-                        //},
-                        //#endregion
-                        success: function (result) {
-                            console.log(success);
                         },
-                        //#region Comment Out
-                        //complete: function () {
-                        //    if (timeout) { clearTimeout(timeout); } 
-                        //    console.log('ajax complete');
-                        //    $("#loadMe").stop(1,0).modal("hide");
-                        //},
-                       // #endregion
                         error: function (e) {
                             console.log(e);
                            
