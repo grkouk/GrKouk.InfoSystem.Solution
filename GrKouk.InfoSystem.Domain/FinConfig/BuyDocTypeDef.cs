@@ -1,8 +1,6 @@
 ﻿using GrKouk.InfoSystem.Domain.Shared;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
+using GrKouk.InfoSystem.Definitions;
 
 namespace GrKouk.InfoSystem.Domain.FinConfig
 {

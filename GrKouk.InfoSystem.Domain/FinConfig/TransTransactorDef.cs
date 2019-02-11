@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using GrKouk.InfoSystem.Definitions;
 using GrKouk.InfoSystem.Domain.Shared;
 
 namespace GrKouk.InfoSystem.Domain.FinConfig

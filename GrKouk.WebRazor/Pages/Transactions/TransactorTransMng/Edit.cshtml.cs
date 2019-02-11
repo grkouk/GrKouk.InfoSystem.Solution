@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using GrKouk.InfoSystem.Definitions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -113,27 +114,27 @@ namespace GrKouk.WebRazor.Pages.Transactions.TransactorTransMng
             spTransactionToAttach.FinancialAction = transTransactorDef.FinancialTransAction;
             switch (transTransactorDef.FinancialTransAction)
             {
-                case InfoSystem.Domain.FinConfig.FinActionsEnum.FinActionsEnumNoChange:
+                case FinActionsEnum.FinActionsEnumNoChange:
                     spTransactionToAttach.TransDiscountAmount = 0;
                     spTransactionToAttach.TransFpaAmount = 0;
                     spTransactionToAttach.TransNetAmount = 0;
                     break;
-                case InfoSystem.Domain.FinConfig.FinActionsEnum.FinActionsEnumDebit:
+                case FinActionsEnum.FinActionsEnumDebit:
                     spTransactionToAttach.TransDiscountAmount = spTransactionToAttach.AmountDiscount;
                     spTransactionToAttach.TransFpaAmount = spTransactionToAttach.AmountFpa;
                     spTransactionToAttach.TransNetAmount = spTransactionToAttach.AmountNet;
                     break;
-                case InfoSystem.Domain.FinConfig.FinActionsEnum.FinActionsEnumCredit:
+                case FinActionsEnum.FinActionsEnumCredit:
                     spTransactionToAttach.TransDiscountAmount = spTransactionToAttach.AmountDiscount;
                     spTransactionToAttach.TransFpaAmount = spTransactionToAttach.AmountFpa;
                     spTransactionToAttach.TransNetAmount = spTransactionToAttach.AmountNet;
                     break;
-                case InfoSystem.Domain.FinConfig.FinActionsEnum.FinActionsEnumNegativeDebit:
+                case FinActionsEnum.FinActionsEnumNegativeDebit:
                     spTransactionToAttach.TransNetAmount = spTransactionToAttach.AmountNet * -1;
                     spTransactionToAttach.TransFpaAmount = spTransactionToAttach.AmountFpa * -1;
                     spTransactionToAttach.TransDiscountAmount = spTransactionToAttach.AmountDiscount * -1;
                     break;
-                case InfoSystem.Domain.FinConfig.FinActionsEnum.FinActionsEnumNegativeCredit:
+                case FinActionsEnum.FinActionsEnumNegativeCredit:
                     spTransactionToAttach.TransNetAmount = spTransactionToAttach.AmountNet * -1;
                     spTransactionToAttach.TransFpaAmount = spTransactionToAttach.AmountFpa * -1;
                     spTransactionToAttach.TransDiscountAmount = spTransactionToAttach.AmountDiscount * -1;

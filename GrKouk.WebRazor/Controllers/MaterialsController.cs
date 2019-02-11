@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using GrKouk.InfoSystem.Definitions;
 using GrKouk.InfoSystem.Domain.FinConfig;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -16,7 +17,7 @@ using GrKouk.InfoSystem.Dtos.WebDtos.TransactorTransactions;
 using GrKouk.WebApi.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
-using static GrKouk.InfoSystem.Domain.FinConfig.FinancialTransactionTypeEnum;
+using static GrKouk.InfoSystem.Definitions.FinancialTransactionTypeEnum;
 
 namespace GrKouk.WebRazor.Controllers
 {
@@ -438,31 +439,31 @@ namespace GrKouk.WebRazor.Controllers
 
                     switch (transTransactorDef.FinancialTransAction)
                     {
-                        case InfoSystem.Domain.FinConfig.FinActionsEnum.FinActionsEnumNoChange:
+                        case InfoSystem.Definitions.FinActionsEnum.FinActionsEnumNoChange:
                             sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumNoChange;
                             sTransactorTransaction.TransDiscountAmount = 0;
                             sTransactorTransaction.TransFpaAmount = 0;
                             sTransactorTransaction.TransNetAmount = 0;
                             break;
-                        case InfoSystem.Domain.FinConfig.FinActionsEnum.FinActionsEnumDebit:
+                        case InfoSystem.Definitions.FinActionsEnum.FinActionsEnumDebit:
                             sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumDebit;
                             sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount;
                             sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa;
                             sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet;
                             break;
-                        case InfoSystem.Domain.FinConfig.FinActionsEnum.FinActionsEnumCredit:
+                        case InfoSystem.Definitions.FinActionsEnum.FinActionsEnumCredit:
                             sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumCredit;
                             sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount;
                             sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa;
                             sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet;
                             break;
-                        case InfoSystem.Domain.FinConfig.FinActionsEnum.FinActionsEnumNegativeDebit:
+                        case InfoSystem.Definitions.FinActionsEnum.FinActionsEnumNegativeDebit:
                             sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumNegativeDebit;
                             sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount*-1;
                             sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa*-1;
                             sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet*-1;
                             break;
-                        case InfoSystem.Domain.FinConfig.FinActionsEnum.FinActionsEnumNegativeCredit:
+                        case InfoSystem.Definitions.FinActionsEnum.FinActionsEnumNegativeCredit:
                             sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumNegativeCredit;
                             sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount * -1;
                             sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa * -1;
@@ -816,31 +817,31 @@ namespace GrKouk.WebRazor.Controllers
 
                     switch (transTransactorDef.FinancialTransAction)
                     {
-                        case InfoSystem.Domain.FinConfig.FinActionsEnum.FinActionsEnumNoChange:
+                        case InfoSystem.Definitions.FinActionsEnum.FinActionsEnumNoChange:
                             sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumNoChange;
                             sTransactorTransaction.TransDiscountAmount = 0;
                             sTransactorTransaction.TransFpaAmount = 0;
                             sTransactorTransaction.TransNetAmount = 0;
                             break;
-                        case InfoSystem.Domain.FinConfig.FinActionsEnum.FinActionsEnumDebit:
+                        case InfoSystem.Definitions.FinActionsEnum.FinActionsEnumDebit:
                             sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumDebit;
                             sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount;
                             sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa;
                             sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet;
                             break;
-                        case InfoSystem.Domain.FinConfig.FinActionsEnum.FinActionsEnumCredit:
+                        case InfoSystem.Definitions.FinActionsEnum.FinActionsEnumCredit:
                             sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumCredit;
                             sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount;
                             sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa;
                             sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet;
                             break;
-                        case InfoSystem.Domain.FinConfig.FinActionsEnum.FinActionsEnumNegativeDebit:
+                        case InfoSystem.Definitions.FinActionsEnum.FinActionsEnumNegativeDebit:
                             sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumNegativeDebit;
                             sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount * -1;
                             sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa * -1;
                             sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet * -1;
                             break;
-                        case InfoSystem.Domain.FinConfig.FinActionsEnum.FinActionsEnumNegativeCredit:
+                        case InfoSystem.Definitions.FinActionsEnum.FinActionsEnumNegativeCredit:
                             sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumNegativeCredit;
                             sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount * -1;
                             sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa * -1;
@@ -1195,31 +1196,31 @@ namespace GrKouk.WebRazor.Controllers
 
                     switch (transTransactorDef.FinancialTransAction)
                     {
-                        case InfoSystem.Domain.FinConfig.FinActionsEnum.FinActionsEnumNoChange:
+                        case InfoSystem.Definitions.FinActionsEnum.FinActionsEnumNoChange:
                             sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumNoChange;
                             sTransactorTransaction.TransDiscountAmount = 0;
                             sTransactorTransaction.TransFpaAmount = 0;
                             sTransactorTransaction.TransNetAmount = 0;
                             break;
-                        case InfoSystem.Domain.FinConfig.FinActionsEnum.FinActionsEnumDebit:
+                        case InfoSystem.Definitions.FinActionsEnum.FinActionsEnumDebit:
                             sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumDebit;
                             sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount;
                             sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa;
                             sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet;
                             break;
-                        case InfoSystem.Domain.FinConfig.FinActionsEnum.FinActionsEnumCredit:
+                        case InfoSystem.Definitions.FinActionsEnum.FinActionsEnumCredit:
                             sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumCredit;
                             sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount;
                             sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa;
                             sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet;
                             break;
-                        case InfoSystem.Domain.FinConfig.FinActionsEnum.FinActionsEnumNegativeDebit:
+                        case InfoSystem.Definitions.FinActionsEnum.FinActionsEnumNegativeDebit:
                             sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumNegativeDebit;
                             sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount * -1;
                             sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa * -1;
                             sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet * -1;
                             break;
-                        case InfoSystem.Domain.FinConfig.FinActionsEnum.FinActionsEnumNegativeCredit:
+                        case InfoSystem.Definitions.FinActionsEnum.FinActionsEnumNegativeCredit:
                             sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumNegativeCredit;
                             sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount * -1;
                             sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa * -1;
@@ -1572,31 +1573,31 @@ namespace GrKouk.WebRazor.Controllers
 
                     switch (transTransactorDef.FinancialTransAction)
                     {
-                        case InfoSystem.Domain.FinConfig.FinActionsEnum.FinActionsEnumNoChange:
+                        case InfoSystem.Definitions.FinActionsEnum.FinActionsEnumNoChange:
                             sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumNoChange;
                             sTransactorTransaction.TransDiscountAmount = 0;
                             sTransactorTransaction.TransFpaAmount = 0;
                             sTransactorTransaction.TransNetAmount = 0;
                             break;
-                        case InfoSystem.Domain.FinConfig.FinActionsEnum.FinActionsEnumDebit:
+                        case InfoSystem.Definitions.FinActionsEnum.FinActionsEnumDebit:
                             sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumDebit;
                             sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount;
                             sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa;
                             sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet;
                             break;
-                        case InfoSystem.Domain.FinConfig.FinActionsEnum.FinActionsEnumCredit:
+                        case InfoSystem.Definitions.FinActionsEnum.FinActionsEnumCredit:
                             sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumCredit;
                             sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount;
                             sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa;
                             sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet;
                             break;
-                        case InfoSystem.Domain.FinConfig.FinActionsEnum.FinActionsEnumNegativeDebit:
+                        case InfoSystem.Definitions.FinActionsEnum.FinActionsEnumNegativeDebit:
                             sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumNegativeDebit;
                             sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount * -1;
                             sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa * -1;
                             sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet * -1;
                             break;
-                        case InfoSystem.Domain.FinConfig.FinActionsEnum.FinActionsEnumNegativeCredit:
+                        case InfoSystem.Definitions.FinActionsEnum.FinActionsEnumNegativeCredit:
                             sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumNegativeCredit;
                             sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount * -1;
                             sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa * -1;

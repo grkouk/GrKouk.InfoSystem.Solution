@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
-using GrKouk.InfoSystem.Domain.FinConfig;
+using GrKouk.InfoSystem.Definitions;
 
 namespace GrKouk.InfoSystem.Dtos.WebDtos.WarehouseTransactions
 {

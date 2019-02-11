@@ -1,6 +1,7 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 
-namespace GrKouk.InfoSystem.Domain.FinConfig
+namespace GrKouk.InfoSystem.Definitions
 {
     public enum DiaryTransactionsKindEnum
     {
