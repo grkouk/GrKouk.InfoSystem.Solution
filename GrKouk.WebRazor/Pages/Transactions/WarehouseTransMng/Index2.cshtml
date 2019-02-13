@@ -1,15 +1,10 @@
 ﻿@page
-@model GrKouk.WebRazor.Pages.Transactions.WarehouseTransMng.IndexModel
-
-@{
-    ViewData["Title"] = "Warehouse Transactions";
-}
+@model GrKouk.WebRazor.Pages.Transactions.WarehouseTransMng.Index2Model
 @section MyCss
     {
     <link rel="stylesheet" href="~/css/custom-checkbox.css" />
 }
-<h4>Warehouse Transactions</h4>
-<a asp-page="./Index2">Test</a>
+<h4>Warehouse Transactions 2</h4>
 @{
     var filtersShow = Model.FiltersVisible ? "show" : "";
     var filtersShowText = Model.FiltersVisible ? "Hide Filters" : "Show Filters";
@@ -56,7 +51,7 @@
 
 
 <div class="collapse @filtersShow" id="filterCollapse">
-    <form class="form-inline" asp-page="./Index" method="get">
+    <form class="form-inline" asp-page="./Index2" method="get">
         <input type="hidden" asp-for="@Model.FiltersVisible" id="filtersVisible" />
         <input type="hidden" asp-for="@Model.RowSelectorsVisible" id="rowSelectorsVisible" />
         <div class="container">
@@ -68,7 +63,7 @@
                     <input type="submit" value="Search" class="btn btn-light btn-sm" />
                 </div>
                 <div class="form-group col-md-auto">
-                    <a class="small" asp-page="./Index"
+                    <a class="small" asp-page="./Index2"
                        asp-route-sortOrder="@Model.CurrentSort"
                        asp-route-pageIndex="@(Model.ListItems.CurrentPage)"
                        asp-route-currentFilter="@Model.CurrentFilter"
@@ -113,7 +108,7 @@
                 </label>
             </th>
             <th class="small text-center">
-                <a asp-page="./Index" asp-route-sortOrder="@Model.DateSort"
+                <a asp-page="./Index2" asp-route-sortOrder="@Model.DateSort"
                    asp-route-searchFilter="@Model.CurrentFilter"
                    asp-route-companyFilter="@Model.CompanyFilter"
                    asp-route-datePeriodFilter="@Model.CurrentDatePeriod"
@@ -126,7 +121,7 @@
                 <i class="@Model.DateSortIcon"></i>
             </th>
             <th class="small">
-                <a asp-page="./Index" asp-route-sortOrder="@Model.NameSort"
+                <a asp-page="./Index2" asp-route-sortOrder="@Model.NameSort"
                    asp-route-searchFilter="@Model.CurrentFilter"
                    asp-route-companyFilter="@Model.CompanyFilter"
                    asp-route-datePeriodFilter="@Model.CurrentDatePeriod"
@@ -150,16 +145,16 @@
 
 
             <th class="small">
-                @Html.DisplayNameFor(model => model.ListItems[0].ImportUnits)
+                @Html.DisplayNameFor(model => model.ListItems[0].InvoicedImportUnits)
             </th>
             <th class="small">
-                @Html.DisplayNameFor(model => model.ListItems[0].ExportUnits)
+                @Html.DisplayNameFor(model => model.ListItems[0].InvoicedExportUnits)
             </th>
             <th class="small">
-                @Html.DisplayNameFor(model => model.ListItems[0].ImportAmount)
+                @Html.DisplayNameFor(model => model.ListItems[0].InvoicedImportAmount)
             </th>
             <th class="small">
-                @Html.DisplayNameFor(model => model.ListItems[0].ExportAmount)
+                @Html.DisplayNameFor(model => model.ListItems[0].InvoicedExportAmount)
             </th>
 
             <th class="small">
@@ -188,22 +183,22 @@
                 <td class="small">
                     @Html.DisplayFor(modelItem => item.TransWarehouseDocSeriesName)
                 </td>
-               
+
                 <td class="small">
                     @Html.DisplayFor(modelItem => item.TransRefCode)
                 </td>
 
                 <td class="text-right small">
-                    @Html.DisplayFor(modelItem => item.ImportUnits)
+                    @Html.DisplayFor(modelItem => item.InvoicedImportUnits)
                 </td>
                 <td class="text-right small">
-                    @Html.DisplayFor(modelItem => item.ExportUnits)
+                    @Html.DisplayFor(modelItem => item.InvoicedExportUnits)
                 </td>
                 <td class="text-right small">
-                    @Html.DisplayFor(modelItem => item.ImportAmount)
+                    @Html.DisplayFor(modelItem => item.InvoicedImportAmount)
                 </td>
                 <td class="text-right small">
-                    @Html.DisplayFor(modelItem => item.ExportAmount)
+                    @Html.DisplayFor(modelItem => item.InvoicedExportAmount)
                 </td>
                 <td class="small">
                     @Html.DisplayFor(modelItem => item.CompanyCode)
@@ -252,7 +247,7 @@
 <nav aria-label="Page navigation example">
     <ul class="pagination pagination-sm">
         <li class="page-item @prevDisabled">
-            <a asp-page="./Index"
+            <a asp-page="./Index2"
                asp-route-sortOrder="@Model.CurrentSort"
                asp-route-pageIndex="1"
                asp-route-searchFilter="@Model.CurrentFilter"
@@ -266,7 +261,7 @@
             </a>
         </li>
         <li class="page-item @prevDisabled">
-            <a asp-page="./Index"
+            <a asp-page="./Index2"
                asp-route-sortOrder="@Model.CurrentSort"
                asp-route-pageIndex="@(Model.ListItems.CurrentPage - 1)"
                asp-route-searchFilter="@Model.CurrentFilter"
@@ -281,7 +276,7 @@
         </li>
 
         <li class="page-item @nextDisabled">
-            <a asp-page="./Index"
+            <a asp-page="./Index2"
                asp-route-sortOrder="@Model.CurrentSort"
                asp-route-pageIndex="@(Model.ListItems.CurrentPage + 1)"
                asp-route-searchFilter="@Model.CurrentFilter"
@@ -296,7 +291,7 @@
             </a>
         </li>
         <li class="page-item  @nextDisabled">
-            <a asp-page="./Index"
+            <a asp-page="./Index2"
                asp-route-sortOrder="@Model.CurrentSort"
                asp-route-pageIndex="@Model.ListItems.TotalPages"
                asp-route-searchFilter="@Model.CurrentFilter"
@@ -360,7 +355,7 @@
                         ids: idsToDelete
                     });
                     var timeout;
-                   
+
                     $.ajax({
                         contentType: 'application/json; charset=utf-8',
 
@@ -371,20 +366,20 @@
                         beforeSend: function () {
                             if (timeout) { clearTimeout(timeout); }
                             timeout = setTimeout(function() {
-                               
+
                                 $("#loadMe").modal({
                                     backdrop: "static", //remove ability to close modal with click
                                     keyboard: false, //remove option to close with keyboard
                                     show: true //Display loader!
-                                }); 
+                                });
                             }, 1000);
-                           
+
                         },
                         success: function (result) {
                             console.log(success);
                         },
                         complete: function () {
-                            if (timeout) { clearTimeout(timeout); } 
+                            if (timeout) { clearTimeout(timeout); }
                             $("#loadMe").modal("hide");
                             setTimeout(function() {
                                 console.log('Checking for open modals');
@@ -399,10 +394,10 @@
                         },
                         error: function (e) {
                             console.log(e);
-                           
+
                         }
                     });
-                    
+
                 }
 
             };

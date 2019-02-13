@@ -177,7 +177,8 @@ namespace GrKouk.WebRazor.Controllers
         public async Task<IActionResult> GetMaterialData(int materialId)
         {
             //TODO: Να βρίσκει τιμές μόνο για κινήσεις αγοράς ισως LasrPriceImport LastPriceExport???
-            var lastPr = await _context.WarehouseTransactions.OrderByDescending(p=>p.TransDate).Where(m => m.MaterialId == materialId)
+            var lastPr = await _context.WarehouseTransactions.OrderByDescending(p=>p.TransDate)
+                .Where(m => m.MaterialId == materialId)
                 .Select(k => new
                 {
                     LastPrice = k.UnitPrice
@@ -439,31 +440,31 @@ namespace GrKouk.WebRazor.Controllers
 
                     switch (transTransactorDef.FinancialTransAction)
                     {
-                        case InfoSystem.Definitions.FinActionsEnum.FinActionsEnumNoChange:
+                        case FinActionsEnum.FinActionsEnumNoChange:
                             sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumNoChange;
                             sTransactorTransaction.TransDiscountAmount = 0;
                             sTransactorTransaction.TransFpaAmount = 0;
                             sTransactorTransaction.TransNetAmount = 0;
                             break;
-                        case InfoSystem.Definitions.FinActionsEnum.FinActionsEnumDebit:
+                        case FinActionsEnum.FinActionsEnumDebit:
                             sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumDebit;
                             sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount;
                             sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa;
                             sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet;
                             break;
-                        case InfoSystem.Definitions.FinActionsEnum.FinActionsEnumCredit:
+                        case FinActionsEnum.FinActionsEnumCredit:
                             sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumCredit;
                             sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount;
                             sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa;
                             sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet;
                             break;
-                        case InfoSystem.Definitions.FinActionsEnum.FinActionsEnumNegativeDebit:
+                        case FinActionsEnum.FinActionsEnumNegativeDebit:
                             sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumNegativeDebit;
                             sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount*-1;
                             sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa*-1;
                             sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet*-1;
                             break;
-                        case InfoSystem.Definitions.FinActionsEnum.FinActionsEnumNegativeCredit:
+                        case FinActionsEnum.FinActionsEnumNegativeCredit:
                             sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumNegativeCredit;
                             sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount * -1;
                             sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa * -1;
@@ -586,23 +587,32 @@ namespace GrKouk.WebRazor.Controllers
                             case MaterialNatureEnum.MaterialNatureEnumMaterial:
                                 warehouseTrans.InventoryAction = transWarehouseDef.MaterialInventoryAction;
                                 warehouseTrans.InventoryValueAction = transWarehouseDef.MaterialInventoryValueAction;
-
+                                warehouseTrans.InvoicedVolumeAction = transWarehouseDef.MaterialInvoicedVolumeAction;
+                                warehouseTrans.InvoicedValueAction = transWarehouseDef.MaterialInvoicedValueAction;
                                 break;
                             case MaterialNatureEnum.MaterialNatureEnumService:
                                 warehouseTrans.InventoryAction = transWarehouseDef.ServiceInventoryAction;
                                 warehouseTrans.InventoryValueAction = transWarehouseDef.ServiceInventoryValueAction;
+                                warehouseTrans.InvoicedVolumeAction = 0;
+                                warehouseTrans.InvoicedValueAction = 0;
                                 break;
                             case MaterialNatureEnum.MaterialNatureEnumExpense:
                                 warehouseTrans.InventoryAction = transWarehouseDef.ExpenseInventoryAction;
                                 warehouseTrans.InventoryValueAction = transWarehouseDef.ExpenseInventoryValueAction;
+                                warehouseTrans.InvoicedVolumeAction = 0;
+                                warehouseTrans.InvoicedValueAction = 0;
                                 break;
                             case MaterialNatureEnum.MaterialNatureEnumIncome:
                                 warehouseTrans.InventoryAction = transWarehouseDef.IncomeInventoryAction;
                                 warehouseTrans.InventoryValueAction = transWarehouseDef.IncomeInventoryValueAction;
+                                warehouseTrans.InvoicedVolumeAction = 0;
+                                warehouseTrans.InvoicedValueAction = 0;
                                 break;
                             case MaterialNatureEnum.MaterialNatureEnumFixedAsset:
                                 warehouseTrans.InventoryAction = transWarehouseDef.FixedAssetInventoryAction;
                                 warehouseTrans.InventoryValueAction = transWarehouseDef.FixedAssetInventoryValueAction;
+                                warehouseTrans.InvoicedVolumeAction = 0;
+                                warehouseTrans.InvoicedValueAction = 0;
                                 break;
                             default:
                                 throw new ArgumentOutOfRangeException();
@@ -956,23 +966,32 @@ namespace GrKouk.WebRazor.Controllers
                             case MaterialNatureEnum.MaterialNatureEnumMaterial:
                                 warehouseTrans.InventoryAction = transWarehouseDef.MaterialInventoryAction;
                                 warehouseTrans.InventoryValueAction = transWarehouseDef.MaterialInventoryValueAction;
-
+                                warehouseTrans.InvoicedVolumeAction = transWarehouseDef.MaterialInvoicedVolumeAction;
+                                warehouseTrans.InvoicedValueAction = transWarehouseDef.MaterialInvoicedValueAction;
                                 break;
                             case MaterialNatureEnum.MaterialNatureEnumService:
                                 warehouseTrans.InventoryAction = transWarehouseDef.ServiceInventoryAction;
                                 warehouseTrans.InventoryValueAction = transWarehouseDef.ServiceInventoryValueAction;
+                                warehouseTrans.InvoicedVolumeAction = InventoryActionEnum.InventoryActionEnumNoChange;
+                                warehouseTrans.InvoicedValueAction = InventoryValueActionEnum.InventoryValueActionEnumNoChange;
                                 break;
                             case MaterialNatureEnum.MaterialNatureEnumExpense:
                                 warehouseTrans.InventoryAction = transWarehouseDef.ExpenseInventoryAction;
                                 warehouseTrans.InventoryValueAction = transWarehouseDef.ExpenseInventoryValueAction;
+                                warehouseTrans.InvoicedVolumeAction = InventoryActionEnum.InventoryActionEnumNoChange;
+                                warehouseTrans.InvoicedValueAction = InventoryValueActionEnum.InventoryValueActionEnumNoChange;
                                 break;
                             case MaterialNatureEnum.MaterialNatureEnumIncome:
                                 warehouseTrans.InventoryAction = transWarehouseDef.IncomeInventoryAction;
                                 warehouseTrans.InventoryValueAction = transWarehouseDef.IncomeInventoryValueAction;
+                                warehouseTrans.InvoicedVolumeAction = InventoryActionEnum.InventoryActionEnumNoChange;
+                                warehouseTrans.InvoicedValueAction = InventoryValueActionEnum.InventoryValueActionEnumNoChange;
                                 break;
                             case MaterialNatureEnum.MaterialNatureEnumFixedAsset:
                                 warehouseTrans.InventoryAction = transWarehouseDef.FixedAssetInventoryAction;
                                 warehouseTrans.InventoryValueAction = transWarehouseDef.FixedAssetInventoryValueAction;
+                                warehouseTrans.InvoicedVolumeAction = InventoryActionEnum.InventoryActionEnumNoChange;
+                                warehouseTrans.InvoicedValueAction = InventoryValueActionEnum.InventoryValueActionEnumNoChange;
                                 break;
                             default:
                                 throw new ArgumentOutOfRangeException();

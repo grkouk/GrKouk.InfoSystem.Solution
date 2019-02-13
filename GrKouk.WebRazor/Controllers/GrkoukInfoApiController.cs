@@ -32,7 +32,7 @@ namespace GrKouk.WebRazor.Controllers
         [HttpPost("DeleteBuyDocumentsList")]
         public async Task<IActionResult> DeleteBuyDocumentList([FromBody] IdList docIds)
         {
-            Thread.Sleep(1500);
+            //Thread.Sleep(1500);
             using (var transaction = _context.Database.BeginTransaction())
             {
                 foreach (var itemId in docIds.Ids)
