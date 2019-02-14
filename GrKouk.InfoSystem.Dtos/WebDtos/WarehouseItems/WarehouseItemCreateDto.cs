@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Text;
+﻿using System.ComponentModel.DataAnnotations;
 using GrKouk.InfoSystem.Definitions;
-using GrKouk.InfoSystem.Domain.FinConfig;
-using GrKouk.InfoSystem.Domain.Shared;
 
-namespace GrKouk.InfoSystem.Dtos.WebDtos.Materials
+namespace GrKouk.InfoSystem.Dtos.WebDtos.WarehouseItems
 {
-    public class MaterialCreateDto
+    public class WarehouseItemCreateDto
     {
         [MaxLength(20)]
         public string Code { get; set; }
@@ -56,7 +51,7 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.Materials
 
         public MaterialTypeEnum MaterialType { get; set; }
         [Display(Name = "Φύση Είδους", Prompt = "Υλικό,Υπηρεσία,Παγιο,Δαπάνη")]
-        public MaterialNatureEnum MaterialNature { get; set; }
+        public WarehouseItemNatureEnum WarehouseItemNature { get; set; }
         [Display(Name = "Καθ.Τιμή")]
         public decimal PriceNetto { get; set; }
         [Display(Name = "Μικτή Τιμή")]

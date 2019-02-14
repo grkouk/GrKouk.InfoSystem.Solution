@@ -5,7 +5,7 @@
     ViewData["Title"] = "Index";
 }
 
-<h4>List of Material Codes</h4>
+<h4>List of WarehouseItem Codes</h4>
 
 <p>
     <a class="small" asp-page="Create">Create New</a>
@@ -14,7 +14,7 @@
     <thead class="thead-light">
     <tr>
         <th class="small">
-            @Html.DisplayNameFor(model => model.MaterialCode[0].Material)
+            @Html.DisplayNameFor(model => model.MaterialCode[0].WarehouseItem)
         </th>
         <th class="small">
             @Html.DisplayNameFor(model => model.MaterialCode[0].CodeType)
@@ -36,7 +36,7 @@
 @foreach (var item in Model.MaterialCode) {
     <tr>
           <td class="small">
-                @Html.DisplayFor(modelItem => item.Material.Name)
+                @Html.DisplayFor(modelItem => item.WarehouseItem.Name)
             </td>
             <td class="small">
                 @Html.DisplayFor(modelItem => item.CodeType)
@@ -52,26 +52,26 @@
         </td>
         <td>
             @*<a asp-page="./Edit"
-               asp-route-materialid="@item.MaterialId"
+               asp-route-materialid="@item.WarehouseItemId"
                asp-route-codetype="@item.CodeType"
                asp-route-code="@item.Code">
                 <i class="fas fa-edit" style="color: slategray"></i>
             </a> |*@
             <a asp-page="./Details"
-               asp-route-materialid="@item.MaterialId"
+               asp-route-materialid="@item.WarehouseItemId"
                asp-route-codetype="@item.CodeType"
                asp-route-code="@item.Code">
                 <i class="fas fa-info-circle" style="color: slategray"></i>
             </a> |
             <a asp-page="./Delete"
-               asp-route-materialid="@item.MaterialId"
+               asp-route-materialid="@item.WarehouseItemId"
                asp-route-codetype="@item.CodeType"
                asp-route-code="@item.Code">
                 <i class="fas fa-trash" style="color: slategray"></i>
             </a> 
-            @*@Html.ActionLink("Edit", "Edit", new {materialId = item.MaterialId, codeType = item.CodeType, code = item.Code}) |
-            @Html.ActionLink("Details", "Details", new {materialId = item.MaterialId, codeType = item.CodeType, code = item.Code}) |
-            @Html.ActionLink("Delete", "Delete", new {materialId = item.MaterialId, codeType = item.CodeType, code = item.Code})*@
+            @*@Html.ActionLink("Edit", "Edit", new {materialId = item.WarehouseItemId, codeType = item.CodeType, code = item.Code}) |
+            @Html.ActionLink("Details", "Details", new {materialId = item.WarehouseItemId, codeType = item.CodeType, code = item.Code}) |
+            @Html.ActionLink("Delete", "Delete", new {materialId = item.WarehouseItemId, codeType = item.CodeType, code = item.Code})*@
         </td>
     </tr>
 }

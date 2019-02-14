@@ -4,7 +4,7 @@ using GrKouk.InfoSystem.Domain.FinConfig;
 
 namespace GrKouk.InfoSystem.Domain.Shared
 {
-    public class Material
+    public class WarehouseItem
     {
         public int Id { get; set; }
 
@@ -60,7 +60,7 @@ namespace GrKouk.InfoSystem.Domain.Shared
       
         public MaterialTypeEnum MaterialType { get; set; }
         [Display(Name = "Φύση Είδους", Prompt = "Υλικό,Υπηρεσία,Παγιο,Δαπάνη")]
-        public MaterialNatureEnum MaterialNature { get; set; }
+        public WarehouseItemNatureEnum WarehouseItemNature { get; set; }
         public int CompanyId { get; set; }
         public virtual Company Company { get; set; }
         public decimal PriceNetto { get; set; }

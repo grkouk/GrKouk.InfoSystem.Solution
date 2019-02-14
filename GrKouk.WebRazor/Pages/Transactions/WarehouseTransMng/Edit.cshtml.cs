@@ -46,7 +46,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.WarehouseTransMng
             var transToEdit = await _context.WarehouseTransactions
                 .Include(w => w.Company)
                 .Include(w => w.FiscalPeriod)
-                .Include(w => w.Material)
+                .Include(w => w.WarehouseItem)
                 .Include(w => w.Section)
                 .Include(w => w.TransWarehouseDocSeries)
                 .Include(w => w.TransWarehouseDocType).FirstOrDefaultAsync(m => m.Id == id);
@@ -84,7 +84,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.WarehouseTransMng
             };
             ViewData["CompanyId"] = new SelectList(_context.Companies.OrderBy(p => p.Code).AsNoTracking(), "Id", "Code");
             ViewData["FiscalPeriodId"] = new SelectList(_context.FiscalPeriods.OrderBy(p=>p.Name).AsNoTracking(), "Id", "Name");
-            ViewData["MaterialId"] = new SelectList(_context.Materials.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
+            ViewData["WarehouseItemId"] = new SelectList(_context.WarehouseItems.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
             //ViewData["SectionId"] = new SelectList(_context.Sections, "Id", "Code");
             ViewData["TransWarehouseDocSeriesId"] = new SelectList(_context.TransWarehouseDocSeriesDefs.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
             ViewData["TransactionType"] = new SelectList(warTransTypes, "Value", "Text");
@@ -122,7 +122,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.WarehouseTransMng
 
             var transWarehouseDef = docTypeDef.TransWarehouseDef;
             transToAttach.TransWarehouseDocTypeId = docSeries.TransWarehouseDocTypeDefId;
-            var material = await _context.Materials.SingleOrDefaultAsync(p => p.Id == transToAttach.MaterialId);
+            var material = await _context.WarehouseItems.SingleOrDefaultAsync(p => p.Id == transToAttach.WarehouseItemId);
             if (material is null)
             {
                 ModelState.AddModelError(string.Empty, "Δεν βρέθηκε το είδος");
@@ -130,29 +130,29 @@ namespace GrKouk.WebRazor.Pages.Transactions.WarehouseTransMng
                 return Page();
             }
 
-            switch (material.MaterialNature)
+            switch (material.WarehouseItemNature)
             {
-                case MaterialNatureEnum.MaterialNatureEnumUndefined:
+                case WarehouseItemNatureEnum.WarehouseItemNatureUndefined:
                     throw new ArgumentOutOfRangeException();
                     break;
-                case MaterialNatureEnum.MaterialNatureEnumMaterial:
+                case WarehouseItemNatureEnum.WarehouseItemNatureMaterial:
                     transToAttach.InventoryAction = transWarehouseDef.MaterialInventoryAction;
                     transToAttach.InventoryValueAction = transWarehouseDef.MaterialInventoryValueAction;
 
                     break;
-                case MaterialNatureEnum.MaterialNatureEnumService:
+                case WarehouseItemNatureEnum.WarehouseItemNatureService:
                     transToAttach.InventoryAction = transWarehouseDef.ServiceInventoryAction;
                     transToAttach.InventoryValueAction = transWarehouseDef.ServiceInventoryValueAction;
                     break;
-                case MaterialNatureEnum.MaterialNatureEnumExpense:
+                case WarehouseItemNatureEnum.WarehouseItemNatureExpense:
                     transToAttach.InventoryAction = transWarehouseDef.ExpenseInventoryAction;
                     transToAttach.InventoryValueAction = transWarehouseDef.ExpenseInventoryValueAction;
                     break;
-                case MaterialNatureEnum.MaterialNatureEnumIncome:
+                case WarehouseItemNatureEnum.WarehouseItemNatureIncome:
                     transToAttach.InventoryAction = transWarehouseDef.IncomeInventoryAction;
                     transToAttach.InventoryValueAction = transWarehouseDef.IncomeInventoryValueAction;
                     break;
-                case MaterialNatureEnum.MaterialNatureEnumFixedAsset:
+                case WarehouseItemNatureEnum.WarehouseItemNatureFixedAsset:
                     transToAttach.InventoryAction = transWarehouseDef.FixedAssetInventoryAction;
                     transToAttach.InventoryValueAction = transWarehouseDef.FixedAssetInventoryValueAction;
                     break;

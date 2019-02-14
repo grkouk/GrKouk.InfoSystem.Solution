@@ -94,8 +94,8 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Diaries
 
             #endregion
 
-            var materialNatureList = Enum.GetValues(typeof(MaterialNatureEnum))
-                .Cast<MaterialNatureEnum>()
+            var materialNatureList = Enum.GetValues(typeof(WarehouseItemNatureEnum))
+                .Cast<WarehouseItemNatureEnum>()
                 .Select(c => new UISelectTypeItem()
                 {
                     Value = c.ToString(),

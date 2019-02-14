@@ -141,7 +141,7 @@
                             foreach (var docLine in Model.ItemVm.BuyDocLines)
                             {
                                 lineCount++;
-                                var materialId = docLine.MaterialId;
+                                var materialId = docLine.WarehouseItemId;
                                 var q1 = docLine.Quontity1;
                                 var q1Str = $@"{q1:N2}";
                                 var q2 = docLine.Quontity2;
@@ -151,7 +151,7 @@
                                 var mainUnitId = docLine.PrimaryUnitId;
                                 var secUnitId = docLine.SecondaryUnitId;
                                 var factor = docLine.Factor;
-                                var materialName = docLine.MaterialName;
+                                var materialName = docLine.WarehouseItemName;
                                 var disRate = docLine.DiscountRate;
                                 var disAmount = docLine.DiscountRate;
                                 var vatAmount = docLine.AmountFpa;
@@ -439,7 +439,7 @@
                     contentType: 'application/json; charset=utf-8',
                     dataType: 'json',
                     type: 'GET',
-                    url: "/api/Materials/SeekBarcode?barcode="+$lookUp.val(),
+                    url: "/api/WarehouseItems/SeekBarcode?barcode="+$lookUp.val(),
 
                     success: function(result) {
 
@@ -509,7 +509,7 @@
                     $materialId.val(ui.item.value);
                     console.log(ui.item.value.toString());
                     this.value = ui.item.label;
-                    //Get Material data
+                    //Get WarehouseItem data
                     var uri = '@Configuration.GetSection("WebApiSettings")["WebApiLocal"]';
                     var finalUri = `${uri}/materials/materialdata?materialId=${ui.item.value}`;
 
@@ -835,7 +835,7 @@
 
                     dataType: 'json',
                     type: 'PUT',
-                    url: "/api/Materials/MaterialBuyDocUpdate",
+                    url: "/api/materials/WarehouseItemBuyDocUpdate",
                     data: data,
                     headers: {
                         'RequestVerificationToken': securityToken
@@ -868,7 +868,7 @@
                     function() {
                         linesArr.push({
                             // materialId: $(this).find('td:eq(0)').html(),
-                            materialId: $(this).find('td:eq(1)').attr('data-materialId'),
+                            warehouseItemId: $(this).find('td:eq(1)').attr('data-materialId'),
                             mainUnitId: $(this).find('td:eq(1)').attr('data-mainUnitId'),
                             secUnitId: $(this).find('td:eq(1)').attr('data-secUnitId'),
                             factor: $(this).find('td:eq(1)').attr('data-factor'),

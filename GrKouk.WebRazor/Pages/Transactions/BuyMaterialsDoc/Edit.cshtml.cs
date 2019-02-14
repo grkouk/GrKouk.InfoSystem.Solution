@@ -47,7 +47,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc
 
                 .Include(b => b.Transactor)
                 .Include(b => b.BuyDocLines)
-                .ThenInclude(m => m.Material)
+                .ThenInclude(m => m.WarehouseItem)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             ItemVm = _mapper.Map<BuyDocModifyDto>(buyMatDoc);

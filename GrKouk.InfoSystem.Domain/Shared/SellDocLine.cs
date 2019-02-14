@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GrKouk.InfoSystem.Domain.Shared
 {
@@ -10,8 +9,8 @@ namespace GrKouk.InfoSystem.Domain.Shared
         public int SellDocumentId { get; set; }
         public virtual SellDocument SellDocument { get; set; }
 
-        public int MaterialId { get; set; }
-        public virtual Material Material { get; set; }
+        public int WarehouseItemId { get; set; }
+        public virtual WarehouseItem WarehouseItem { get; set; }
 
 
 

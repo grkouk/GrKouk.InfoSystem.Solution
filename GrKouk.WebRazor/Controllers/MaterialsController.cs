@@ -6,18 +6,16 @@ using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using GrKouk.InfoSystem.Definitions;
-using GrKouk.InfoSystem.Domain.FinConfig;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using GrKouk.InfoSystem.Domain.Shared;
 using GrKouk.InfoSystem.Dtos.WebDtos.BuyDocuments;
-using GrKouk.InfoSystem.Dtos.WebDtos.Materials;
 using GrKouk.InfoSystem.Dtos.WebDtos.SellDocuments;
 using GrKouk.InfoSystem.Dtos.WebDtos.TransactorTransactions;
+using GrKouk.InfoSystem.Dtos.WebDtos.WarehouseItems;
 using GrKouk.WebApi.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
-using static GrKouk.InfoSystem.Definitions.FinancialTransactionTypeEnum;
 
 namespace GrKouk.WebRazor.Controllers
 {
@@ -35,11 +33,11 @@ namespace GrKouk.WebRazor.Controllers
             _mapper = mapper;
         }
 
-        // GET: api/Materials
+        // GET: api/WarehouseItems
         [HttpGet]
-        public IEnumerable<Material> GetMaterials()
+        public IEnumerable<WarehouseItem> GetMaterials()
         {
-            return _context.Materials;
+            return _context.WarehouseItems;
         }
         [HttpGet("SetCompanyInSession")]
         public IActionResult CompanyInSession(string companyId)
@@ -52,22 +50,22 @@ namespace GrKouk.WebRazor.Controllers
         public async Task<IActionResult> GetMaterialFromBarcode(string barcode)
         {
             //var sessionCompanyId = HttpContext.Session.GetString("CompanyId");
-            var materials = await _context.MaterialCodes
-                .Include(p => p.Material).ThenInclude(p=>p.FpaDef)
-                .Include(p => p.Material).ThenInclude(p => p.MainMeasureUnit)
-                .Include(p => p.Material).ThenInclude(p => p.SecondaryMeasureUnit)
-                .Include(p => p.Material).ThenInclude(p => p.BuyMeasureUnit)
-                .Where(p => p.Code == barcode && p.CodeType == MaterialCodeTypeEnum.CodeTypeEnumBarcode)
+            var materials = await _context.WarehouseItemsCodes
+                .Include(p => p.WarehouseItem).ThenInclude(p=>p.FpaDef)
+                .Include(p => p.WarehouseItem).ThenInclude(p => p.MainMeasureUnit)
+                .Include(p => p.WarehouseItem).ThenInclude(p => p.SecondaryMeasureUnit)
+                .Include(p => p.WarehouseItem).ThenInclude(p => p.BuyMeasureUnit)
+                .Where(p => p.Code == barcode && p.CodeType == WarehouseItemCodeTypeEnum.CodeTypeEnumBarcode)
                 .ToListAsync();
 
-                //.ProjectTo<MaterialSearchListDto>(_mapper.ConfigurationProvider)
+                //.ProjectTo<WarehouseItemSearchListDto>(_mapper.ConfigurationProvider)
                 //.Select(p => new { label = p.Label, value = p.Id }).ToListAsync();
 
             if (materials == null)
             {
                 return NotFound( new
                 {
-                    Error="Material Not Found"
+                    Error="WarehouseItem Not Found"
                 });
             }
 
@@ -79,22 +77,22 @@ namespace GrKouk.WebRazor.Controllers
                 });
             }
 
-            var material = materials[0].Material;
+            var material = materials[0].WarehouseItem;
             
             var usedUnit = materials[0].CodeUsedUnit;
             double unitFactor;
             string unitToUse;
             switch (usedUnit)
             {
-                case MaterialCodeUsedUnitEnum.CodeUsedUnitEnumMain:
+                case WarehouseItemCodeUsedUnitEnum.CodeUsedUnitEnumMain:
                     unitFactor = 1;
                     unitToUse = "MAIN";
                     break;
-                case MaterialCodeUsedUnitEnum.CodeUsedUnitEnumSecondary:
+                case WarehouseItemCodeUsedUnitEnum.CodeUsedUnitEnumSecondary:
                     unitFactor = material.SecondaryUnitToMainRate;
                     unitToUse = "SEC";
                     break;
-                case MaterialCodeUsedUnitEnum.CodeUsedUnitEnumBuy:
+                case WarehouseItemCodeUsedUnitEnum.CodeUsedUnitEnumBuy:
                     unitFactor = material.BuyUnitToMainRate;
                     unitToUse = "BUY";
                     break;
@@ -134,8 +132,8 @@ namespace GrKouk.WebRazor.Controllers
         public async Task<IActionResult> GetMaterials(string term)
         {
             var sessionCompanyId = HttpContext.Session.GetString("CompanyId");
-            var materials = await _context.Materials.Where(p => p.Name.Contains(term) )
-                .ProjectTo<MaterialSearchListDto>(_mapper.ConfigurationProvider)
+            var materials = await _context.WarehouseItems.Where(p => p.Name.Contains(term) )
+                .ProjectTo<WarehouseItemSearchListDto>(_mapper.ConfigurationProvider)
                 .Select(p => new { label = p.Label, value = p.Id }).ToListAsync();
 
             if (materials == null)
@@ -149,7 +147,7 @@ namespace GrKouk.WebRazor.Controllers
         public async Task<IActionResult> GetServices(string term)
         {
 
-            var materials = await _context.Materials.Where(p => p.Name.Contains(term) && p.MaterialNature == MaterialNatureEnum.MaterialNatureEnumService)
+            var materials = await _context.WarehouseItems.Where(p => p.Name.Contains(term) && p.WarehouseItemNature == WarehouseItemNatureEnum.WarehouseItemNatureService)
                 .Select(p => new { label = p.Name, value = p.Id }).ToListAsync();
 
             if (materials == null)
@@ -163,7 +161,7 @@ namespace GrKouk.WebRazor.Controllers
         public async Task<IActionResult> GetExpenses(string term)
         {
 
-            var materials = await _context.Materials.Where(p => p.Name.Contains(term) && p.MaterialNature == MaterialNatureEnum.MaterialNatureEnumExpense)
+            var materials = await _context.WarehouseItems.Where(p => p.Name.Contains(term) && p.WarehouseItemNature == WarehouseItemNatureEnum.WarehouseItemNatureExpense)
                 .Select(p => new { label = p.Name, value = p.Id }).ToListAsync();
 
             if (materials == null)
@@ -174,11 +172,11 @@ namespace GrKouk.WebRazor.Controllers
             return Ok(materials);
         }
         [HttpGet("materialdata")]
-        public async Task<IActionResult> GetMaterialData(int materialId)
+        public async Task<IActionResult> GetMaterialData(int warehouseItemId)
         {
             //TODO: Να βρίσκει τιμές μόνο για κινήσεις αγοράς ισως LasrPriceImport LastPriceExport???
             var lastPr = await _context.WarehouseTransactions.OrderByDescending(p=>p.TransDate)
-                .Where(m => m.MaterialId == materialId)
+                .Where(m => m.WarehouseItemId == warehouseItemId)
                 .Select(k => new
                 {
                     LastPrice = k.UnitPrice
@@ -186,7 +184,7 @@ namespace GrKouk.WebRazor.Controllers
 
             var lastPrice = lastPr?.LastPrice ?? 0;
 
-            var materialData = await _context.Materials.Where(p => p.Id == materialId && p.Active)
+            var materialData = await _context.WarehouseItems.Where(p => p.Id == warehouseItemId && p.Active)
                 .Select(p => new
                 {
                     mainUnitId = p.MainMeasureUnitId,
@@ -209,7 +207,7 @@ namespace GrKouk.WebRazor.Controllers
             {
                 return NotFound(new
                 {
-                    error = "Material not found "
+                    error = "WarehouseItem not found "
                 });
             }
             //Thread.Sleep(10000);
@@ -515,12 +513,12 @@ namespace GrKouk.WebRazor.Controllers
 
                 foreach (var dataBuyDocLine in data.BuyDocLines)
                 {
-                    var materialId = dataBuyDocLine.MaterialId;
-                    var material = await _context.Materials.SingleOrDefaultAsync(p => p.Id == materialId);
+                    var warehouseItemId = dataBuyDocLine.WarehouseItemId;
+                    var material = await _context.WarehouseItems.SingleOrDefaultAsync(p => p.Id == warehouseItemId);
                     if (material is null)
                     {
                         //Handle error
-                        ModelState.AddModelError(string.Empty, "Doc Line error null Material");
+                        ModelState.AddModelError(string.Empty, "Doc Line error null WarehouseItem");
                         return NotFound(new
                         {
                             error = "Could not locate material in Doc Line "
@@ -541,7 +539,7 @@ namespace GrKouk.WebRazor.Controllers
                     buyMaterialLine.AmountDiscount = lineDiscountAmount;
                     buyMaterialLine.DiscountRate = discountRate;
                     buyMaterialLine.FpaRate = fpaRate;
-                    buyMaterialLine.MaterialId = dataBuyDocLine.MaterialId;
+                    buyMaterialLine.WarehouseItemId = dataBuyDocLine.WarehouseItemId;
                     buyMaterialLine.Quontity1 = dataBuyDocLine.Q1;
                     buyMaterialLine.Quontity2 = dataBuyDocLine.Q2;
                     buyMaterialLine.PrimaryUnitId = dataBuyDocLine.MainUnitId;
@@ -567,7 +565,7 @@ namespace GrKouk.WebRazor.Controllers
                         warehouseTrans.Etiology = transToAttach.Etiology;
                         warehouseTrans.FiscalPeriodId = transToAttach.FiscalPeriodId;
 
-                        warehouseTrans.MaterialId = materialId;
+                        warehouseTrans.WarehouseItemId = warehouseItemId;
                         warehouseTrans.PrimaryUnitId = dataBuyDocLine.MainUnitId;
                         warehouseTrans.SecondaryUnitId = dataBuyDocLine.SecUnitId;
                         warehouseTrans.SectionId = section.Id;
@@ -579,36 +577,36 @@ namespace GrKouk.WebRazor.Controllers
                         warehouseTrans.TransWarehouseDocSeriesId = warehouseSeriesId;
                         warehouseTrans.TransWarehouseDocTypeId = warehouseTypeId;
 
-                        switch (material.MaterialNature)
+                        switch (material.WarehouseItemNature)
                         {
-                            case MaterialNatureEnum.MaterialNatureEnumUndefined:
+                            case WarehouseItemNatureEnum.WarehouseItemNatureUndefined:
                                 throw new ArgumentOutOfRangeException();
                                 break;
-                            case MaterialNatureEnum.MaterialNatureEnumMaterial:
+                            case WarehouseItemNatureEnum.WarehouseItemNatureMaterial:
                                 warehouseTrans.InventoryAction = transWarehouseDef.MaterialInventoryAction;
                                 warehouseTrans.InventoryValueAction = transWarehouseDef.MaterialInventoryValueAction;
                                 warehouseTrans.InvoicedVolumeAction = transWarehouseDef.MaterialInvoicedVolumeAction;
                                 warehouseTrans.InvoicedValueAction = transWarehouseDef.MaterialInvoicedValueAction;
                                 break;
-                            case MaterialNatureEnum.MaterialNatureEnumService:
+                            case WarehouseItemNatureEnum.WarehouseItemNatureService:
                                 warehouseTrans.InventoryAction = transWarehouseDef.ServiceInventoryAction;
                                 warehouseTrans.InventoryValueAction = transWarehouseDef.ServiceInventoryValueAction;
                                 warehouseTrans.InvoicedVolumeAction = 0;
                                 warehouseTrans.InvoicedValueAction = 0;
                                 break;
-                            case MaterialNatureEnum.MaterialNatureEnumExpense:
+                            case WarehouseItemNatureEnum.WarehouseItemNatureExpense:
                                 warehouseTrans.InventoryAction = transWarehouseDef.ExpenseInventoryAction;
                                 warehouseTrans.InventoryValueAction = transWarehouseDef.ExpenseInventoryValueAction;
                                 warehouseTrans.InvoicedVolumeAction = 0;
                                 warehouseTrans.InvoicedValueAction = 0;
                                 break;
-                            case MaterialNatureEnum.MaterialNatureEnumIncome:
+                            case WarehouseItemNatureEnum.WarehouseItemNatureIncome:
                                 warehouseTrans.InventoryAction = transWarehouseDef.IncomeInventoryAction;
                                 warehouseTrans.InventoryValueAction = transWarehouseDef.IncomeInventoryValueAction;
                                 warehouseTrans.InvoicedVolumeAction = 0;
                                 warehouseTrans.InvoicedValueAction = 0;
                                 break;
-                            case MaterialNatureEnum.MaterialNatureEnumFixedAsset:
+                            case WarehouseItemNatureEnum.WarehouseItemNatureFixedAsset:
                                 warehouseTrans.InventoryAction = transWarehouseDef.FixedAssetInventoryAction;
                                 warehouseTrans.InventoryValueAction = transWarehouseDef.FixedAssetInventoryValueAction;
                                 warehouseTrans.InvoicedVolumeAction = 0;
@@ -895,19 +893,19 @@ namespace GrKouk.WebRazor.Controllers
                 }
                 foreach (var dataBuyDocLine in data.BuyDocLines)
                 {
-                    var materialId = dataBuyDocLine.MaterialId;
-                    var material = await _context.Materials.SingleOrDefaultAsync(p => p.Id == materialId);
+                    var warehouseItemId = dataBuyDocLine.WarehouseItemId;
+                    var material = await _context.WarehouseItems.SingleOrDefaultAsync(p => p.Id == warehouseItemId);
                     if (material is null)
                     {
                         //Handle error
-                        ModelState.AddModelError(string.Empty, "Doc Line error null Material");
+                        ModelState.AddModelError(string.Empty, "Doc Line error null WarehouseItem");
                         return NotFound(new
                         {
                             error = "Could not locate material in Doc Line "
                         });
                     }
                     #region MaterialLine
-                    var buyMaterialLine = new BuyDocLine();
+                    var warehouseItemLine = new BuyDocLine();
                     decimal unitPrice = dataBuyDocLine.Price;
                     decimal units = (decimal)dataBuyDocLine.Q1;
                     decimal fpaRate = (decimal)dataBuyDocLine.FpaRate;
@@ -915,22 +913,22 @@ namespace GrKouk.WebRazor.Controllers
                     decimal lineNetAmount = unitPrice * units;
                     decimal lineDiscountAmount = lineNetAmount * discountRate;
                     decimal lineFpaAmount = (lineNetAmount - lineDiscountAmount) * fpaRate;
-                    buyMaterialLine.UnitPrice = unitPrice;
-                    buyMaterialLine.AmountFpa = lineFpaAmount;
-                    buyMaterialLine.AmountNet = lineNetAmount;
-                    buyMaterialLine.AmountDiscount = lineDiscountAmount;
-                    buyMaterialLine.DiscountRate = discountRate;
-                    buyMaterialLine.FpaRate = fpaRate;
-                    buyMaterialLine.MaterialId = dataBuyDocLine.MaterialId;
-                    buyMaterialLine.Quontity1 = dataBuyDocLine.Q1;
-                    buyMaterialLine.Quontity2 = dataBuyDocLine.Q2;
-                    buyMaterialLine.PrimaryUnitId = dataBuyDocLine.MainUnitId;
-                    buyMaterialLine.SecondaryUnitId = dataBuyDocLine.SecUnitId;
-                    buyMaterialLine.Factor = dataBuyDocLine.Factor;
-                    buyMaterialLine.BuyDocumentId = docId;
-                    buyMaterialLine.Etiology = transToAttach.Etiology;
+                    warehouseItemLine.UnitPrice = unitPrice;
+                    warehouseItemLine.AmountFpa = lineFpaAmount;
+                    warehouseItemLine.AmountNet = lineNetAmount;
+                    warehouseItemLine.AmountDiscount = lineDiscountAmount;
+                    warehouseItemLine.DiscountRate = discountRate;
+                    warehouseItemLine.FpaRate = fpaRate;
+                    warehouseItemLine.WarehouseItemId = dataBuyDocLine.WarehouseItemId;
+                    warehouseItemLine.Quontity1 = dataBuyDocLine.Q1;
+                    warehouseItemLine.Quontity2 = dataBuyDocLine.Q2;
+                    warehouseItemLine.PrimaryUnitId = dataBuyDocLine.MainUnitId;
+                    warehouseItemLine.SecondaryUnitId = dataBuyDocLine.SecUnitId;
+                    warehouseItemLine.Factor = dataBuyDocLine.Factor;
+                    warehouseItemLine.BuyDocumentId = docId;
+                    warehouseItemLine.Etiology = transToAttach.Etiology;
                     //_context.Entry(transToAttach).Entity
-                    transToAttach.BuyDocLines.Add(buyMaterialLine);
+                    transToAttach.BuyDocLines.Add(warehouseItemLine);
                     #endregion
 
                     if (!noWarehouseTrans)
@@ -947,7 +945,7 @@ namespace GrKouk.WebRazor.Controllers
                         warehouseTrans.Etiology = transToAttach.Etiology;
                         warehouseTrans.FiscalPeriodId = transToAttach.FiscalPeriodId;
 
-                        warehouseTrans.MaterialId = materialId;
+                        warehouseTrans.WarehouseItemId = warehouseItemId;
                         warehouseTrans.PrimaryUnitId = dataBuyDocLine.MainUnitId;
                         warehouseTrans.SecondaryUnitId = dataBuyDocLine.SecUnitId;
                         warehouseTrans.SectionId = section.Id;
@@ -958,36 +956,36 @@ namespace GrKouk.WebRazor.Controllers
 
                         warehouseTrans.TransWarehouseDocSeriesId = warehouseSeriesId;
                         warehouseTrans.TransWarehouseDocTypeId = warehouseTypeId;
-                        switch (material.MaterialNature)
+                        switch (material.WarehouseItemNature)
                         {
-                            case MaterialNatureEnum.MaterialNatureEnumUndefined:
+                            case WarehouseItemNatureEnum.WarehouseItemNatureUndefined:
                                 throw new ArgumentOutOfRangeException();
                                 break;
-                            case MaterialNatureEnum.MaterialNatureEnumMaterial:
+                            case WarehouseItemNatureEnum.WarehouseItemNatureMaterial:
                                 warehouseTrans.InventoryAction = transWarehouseDef.MaterialInventoryAction;
                                 warehouseTrans.InventoryValueAction = transWarehouseDef.MaterialInventoryValueAction;
                                 warehouseTrans.InvoicedVolumeAction = transWarehouseDef.MaterialInvoicedVolumeAction;
                                 warehouseTrans.InvoicedValueAction = transWarehouseDef.MaterialInvoicedValueAction;
                                 break;
-                            case MaterialNatureEnum.MaterialNatureEnumService:
+                            case WarehouseItemNatureEnum.WarehouseItemNatureService:
                                 warehouseTrans.InventoryAction = transWarehouseDef.ServiceInventoryAction;
                                 warehouseTrans.InventoryValueAction = transWarehouseDef.ServiceInventoryValueAction;
                                 warehouseTrans.InvoicedVolumeAction = InventoryActionEnum.InventoryActionEnumNoChange;
                                 warehouseTrans.InvoicedValueAction = InventoryValueActionEnum.InventoryValueActionEnumNoChange;
                                 break;
-                            case MaterialNatureEnum.MaterialNatureEnumExpense:
+                            case WarehouseItemNatureEnum.WarehouseItemNatureExpense:
                                 warehouseTrans.InventoryAction = transWarehouseDef.ExpenseInventoryAction;
                                 warehouseTrans.InventoryValueAction = transWarehouseDef.ExpenseInventoryValueAction;
                                 warehouseTrans.InvoicedVolumeAction = InventoryActionEnum.InventoryActionEnumNoChange;
                                 warehouseTrans.InvoicedValueAction = InventoryValueActionEnum.InventoryValueActionEnumNoChange;
                                 break;
-                            case MaterialNatureEnum.MaterialNatureEnumIncome:
+                            case WarehouseItemNatureEnum.WarehouseItemNatureIncome:
                                 warehouseTrans.InventoryAction = transWarehouseDef.IncomeInventoryAction;
                                 warehouseTrans.InventoryValueAction = transWarehouseDef.IncomeInventoryValueAction;
                                 warehouseTrans.InvoicedVolumeAction = InventoryActionEnum.InventoryActionEnumNoChange;
                                 warehouseTrans.InvoicedValueAction = InventoryValueActionEnum.InventoryValueActionEnumNoChange;
                                 break;
-                            case MaterialNatureEnum.MaterialNatureEnumFixedAsset:
+                            case WarehouseItemNatureEnum.WarehouseItemNatureFixedAsset:
                                 warehouseTrans.InventoryAction = transWarehouseDef.FixedAssetInventoryAction;
                                 warehouseTrans.InventoryValueAction = transWarehouseDef.FixedAssetInventoryValueAction;
                                 warehouseTrans.InvoicedVolumeAction = InventoryActionEnum.InventoryActionEnumNoChange;
@@ -1290,12 +1288,12 @@ namespace GrKouk.WebRazor.Controllers
 
                 foreach (var docLine in data.SellDocLines)
                 {
-                    var materialId = docLine.MaterialId;
-                    var material = await _context.Materials.SingleOrDefaultAsync(p => p.Id == materialId);
+                    var warehouseItemId = docLine.WarehouseItemId;
+                    var material = await _context.WarehouseItems.SingleOrDefaultAsync(p => p.Id == warehouseItemId);
                     if (material is null)
                     {
                         //Handle error
-                        ModelState.AddModelError(string.Empty, "Doc Line error null Material");
+                        ModelState.AddModelError(string.Empty, "Doc Line error null WarehouseItem");
                         return NotFound(new
                         {
                             error = "Could not locate material in Doc Line "
@@ -1316,7 +1314,7 @@ namespace GrKouk.WebRazor.Controllers
                     sellDocLine.AmountDiscount = lineDiscountAmount;
                     sellDocLine.DiscountRate = discountRate;
                     sellDocLine.FpaRate = fpaRate;
-                    sellDocLine.MaterialId = docLine.MaterialId;
+                    sellDocLine.WarehouseItemId = docLine.WarehouseItemId;
                     sellDocLine.Quontity1 = docLine.Q1;
                     sellDocLine.Quontity2 = docLine.Q2;
                     sellDocLine.PrimaryUnitId = docLine.MainUnitId;
@@ -1342,7 +1340,7 @@ namespace GrKouk.WebRazor.Controllers
                         warehouseTrans.Etiology = transToAttach.Etiology;
                         warehouseTrans.FiscalPeriodId = transToAttach.FiscalPeriodId;
 
-                        warehouseTrans.MaterialId = materialId;
+                        warehouseTrans.WarehouseItemId = warehouseItemId;
                         warehouseTrans.PrimaryUnitId = docLine.MainUnitId;
                         warehouseTrans.SecondaryUnitId = docLine.SecUnitId;
                         warehouseTrans.SectionId = section.Id;
@@ -1354,29 +1352,29 @@ namespace GrKouk.WebRazor.Controllers
                         warehouseTrans.TransWarehouseDocSeriesId = warehouseSeriesId;
                         warehouseTrans.TransWarehouseDocTypeId = warehouseTypeId;
 
-                        switch (material.MaterialNature)
+                        switch (material.WarehouseItemNature)
                         {
-                            case MaterialNatureEnum.MaterialNatureEnumUndefined:
+                            case WarehouseItemNatureEnum.WarehouseItemNatureUndefined:
                                 throw new ArgumentOutOfRangeException();
                                 break;
-                            case MaterialNatureEnum.MaterialNatureEnumMaterial:
+                            case WarehouseItemNatureEnum.WarehouseItemNatureMaterial:
                                 warehouseTrans.InventoryAction = transWarehouseDef.MaterialInventoryAction;
                                 warehouseTrans.InventoryValueAction = transWarehouseDef.MaterialInventoryValueAction;
 
                                 break;
-                            case MaterialNatureEnum.MaterialNatureEnumService:
+                            case WarehouseItemNatureEnum.WarehouseItemNatureService:
                                 warehouseTrans.InventoryAction = transWarehouseDef.ServiceInventoryAction;
                                 warehouseTrans.InventoryValueAction = transWarehouseDef.ServiceInventoryValueAction;
                                 break;
-                            case MaterialNatureEnum.MaterialNatureEnumExpense:
+                            case WarehouseItemNatureEnum.WarehouseItemNatureExpense:
                                 warehouseTrans.InventoryAction = transWarehouseDef.ExpenseInventoryAction;
                                 warehouseTrans.InventoryValueAction = transWarehouseDef.ExpenseInventoryValueAction;
                                 break;
-                            case MaterialNatureEnum.MaterialNatureEnumIncome:
+                            case WarehouseItemNatureEnum.WarehouseItemNatureIncome:
                                 warehouseTrans.InventoryAction = transWarehouseDef.IncomeInventoryAction;
                                 warehouseTrans.InventoryValueAction = transWarehouseDef.IncomeInventoryValueAction;
                                 break;
-                            case MaterialNatureEnum.MaterialNatureEnumFixedAsset:
+                            case WarehouseItemNatureEnum.WarehouseItemNatureFixedAsset:
                                 warehouseTrans.InventoryAction = transWarehouseDef.FixedAssetInventoryAction;
                                 warehouseTrans.InventoryValueAction = transWarehouseDef.FixedAssetInventoryValueAction;
                                 break;
@@ -1658,12 +1656,12 @@ namespace GrKouk.WebRazor.Controllers
                 }
                 foreach (var docLine in data.SellDocLines)
                 {
-                    var materialId = docLine.MaterialId;
-                    var material = await _context.Materials.SingleOrDefaultAsync(p => p.Id == materialId);
+                    var warehouseItemId = docLine.WarehouseItemId;
+                    var material = await _context.WarehouseItems.SingleOrDefaultAsync(p => p.Id == warehouseItemId);
                     if (material is null)
                     {
                         //Handle error
-                        ModelState.AddModelError(string.Empty, "Doc Line error null Material");
+                        ModelState.AddModelError(string.Empty, "Doc Line error null WarehouseItem");
                         return NotFound(new
                         {
                             error = "Could not locate material in Doc Line "
@@ -1684,7 +1682,7 @@ namespace GrKouk.WebRazor.Controllers
                     sellDocLine.AmountDiscount = lineDiscountAmount;
                     sellDocLine.DiscountRate = discountRate;
                     sellDocLine.FpaRate = fpaRate;
-                    sellDocLine.MaterialId = docLine.MaterialId;
+                    sellDocLine.WarehouseItemId = docLine.WarehouseItemId;
                     sellDocLine.Quontity1 = docLine.Q1;
                     sellDocLine.Quontity2 = docLine.Q2;
                     sellDocLine.PrimaryUnitId = docLine.MainUnitId;
@@ -1710,7 +1708,7 @@ namespace GrKouk.WebRazor.Controllers
                         warehouseTrans.Etiology = transToAttach.Etiology;
                         warehouseTrans.FiscalPeriodId = transToAttach.FiscalPeriodId;
 
-                        warehouseTrans.MaterialId = materialId;
+                        warehouseTrans.WarehouseItemId = warehouseItemId;
                         warehouseTrans.PrimaryUnitId = docLine.MainUnitId;
                         warehouseTrans.SecondaryUnitId = docLine.SecUnitId;
                         warehouseTrans.SectionId = section.Id;
@@ -1721,29 +1719,29 @@ namespace GrKouk.WebRazor.Controllers
 
                         warehouseTrans.TransWarehouseDocSeriesId = warehouseSeriesId;
                         warehouseTrans.TransWarehouseDocTypeId = warehouseTypeId;
-                        switch (material.MaterialNature)
+                        switch (material.WarehouseItemNature)
                         {
-                            case MaterialNatureEnum.MaterialNatureEnumUndefined:
+                            case WarehouseItemNatureEnum.WarehouseItemNatureUndefined:
                                 throw new ArgumentOutOfRangeException();
                                 break;
-                            case MaterialNatureEnum.MaterialNatureEnumMaterial:
+                            case WarehouseItemNatureEnum.WarehouseItemNatureMaterial:
                                 warehouseTrans.InventoryAction = transWarehouseDef.MaterialInventoryAction;
                                 warehouseTrans.InventoryValueAction = transWarehouseDef.MaterialInventoryValueAction;
 
                                 break;
-                            case MaterialNatureEnum.MaterialNatureEnumService:
+                            case WarehouseItemNatureEnum.WarehouseItemNatureService:
                                 warehouseTrans.InventoryAction = transWarehouseDef.ServiceInventoryAction;
                                 warehouseTrans.InventoryValueAction = transWarehouseDef.ServiceInventoryValueAction;
                                 break;
-                            case MaterialNatureEnum.MaterialNatureEnumExpense:
+                            case WarehouseItemNatureEnum.WarehouseItemNatureExpense:
                                 warehouseTrans.InventoryAction = transWarehouseDef.ExpenseInventoryAction;
                                 warehouseTrans.InventoryValueAction = transWarehouseDef.ExpenseInventoryValueAction;
                                 break;
-                            case MaterialNatureEnum.MaterialNatureEnumIncome:
+                            case WarehouseItemNatureEnum.WarehouseItemNatureIncome:
                                 warehouseTrans.InventoryAction = transWarehouseDef.IncomeInventoryAction;
                                 warehouseTrans.InventoryValueAction = transWarehouseDef.IncomeInventoryValueAction;
                                 break;
-                            case MaterialNatureEnum.MaterialNatureEnumFixedAsset:
+                            case WarehouseItemNatureEnum.WarehouseItemNatureFixedAsset:
                                 warehouseTrans.InventoryAction = transWarehouseDef.FixedAssetInventoryAction;
                                 warehouseTrans.InventoryValueAction = transWarehouseDef.FixedAssetInventoryValueAction;
                                 break;

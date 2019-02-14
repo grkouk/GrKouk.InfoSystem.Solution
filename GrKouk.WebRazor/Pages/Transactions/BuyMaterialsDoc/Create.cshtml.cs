@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using GrKouk.InfoSystem.Domain.FinConfig;
 using GrKouk.InfoSystem.Dtos.WebDtos.BuyDocuments;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -18,7 +17,10 @@ namespace GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc
         private readonly IMapper _mapper;
         private readonly IToastNotification _toastNotification;
         public string SeekType { get; set; }
+        public int RoutedCompanyId { get; set; }
+        public int RoutedSectionId { get; set; }
         public bool InitialLoad = true;
+
         public CreateModel(GrKouk.WebApi.Data.ApiDbContext context, IMapper mapper, IToastNotification toastNotification)
         {
             _context = context;
@@ -26,9 +28,12 @@ namespace GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc
             _toastNotification = toastNotification;
         }
 
-        public IActionResult OnGet()
+        public IActionResult OnGet(int? companyFilter,int? section)
         {
+            RoutedCompanyId = (companyFilter ?? 0);
+            RoutedSectionId = (section ?? 0);
             LoadCombos();
+           
             return Page();
         }
 

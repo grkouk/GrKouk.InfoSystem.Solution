@@ -10,9 +10,9 @@ using GrKouk.InfoSystem.Dtos.WebDtos;
 using GrKouk.InfoSystem.Dtos.WebDtos.BuyDocuments;
 using GrKouk.InfoSystem.Dtos.WebDtos.CustomerTransactions;
 using GrKouk.InfoSystem.Dtos.WebDtos.Diaries;
-using GrKouk.InfoSystem.Dtos.WebDtos.Materials;
 using GrKouk.InfoSystem.Dtos.WebDtos.SellDocuments;
 using GrKouk.InfoSystem.Dtos.WebDtos.TransactorTransactions;
+using GrKouk.InfoSystem.Dtos.WebDtos.WarehouseItems;
 using GrKouk.InfoSystem.Dtos.WebDtos.WarehouseTransactions;
 using GrKouk.WebRazor.Helpers;
 
@@ -56,10 +56,10 @@ namespace GrKouk.WebRazor.Automapper
             CreateMap<TransWarehouseDef, TransWarehouseDefListDto>()
                 .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.Company.Name));
 
-            CreateMap<Material, MaterialListDto>();
+            CreateMap<WarehouseItem, WarehouseItemListDto>();
                 //.ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.Company.Name));
-            CreateMap<Material, MaterialCreateDto>().ReverseMap();
-            CreateMap<Material, MaterialModifyDto>().ReverseMap();
+            CreateMap<WarehouseItem, WarehouseItemCreateDto>().ReverseMap();
+            CreateMap<WarehouseItem, WarehouseItemModifyDto>().ReverseMap();
             CreateMap<BuyDocument, BuyDocCreateAjaxNoLinesDto>().ReverseMap();
             CreateMap<BuyDocument, BuyDocModifyAjaxNoLinesDto>().ReverseMap();
             CreateMap<BuyDocCreateAjaxNoLinesDto, BuyDocLineAjaxDto>().ReverseMap();
@@ -80,7 +80,7 @@ namespace GrKouk.WebRazor.Automapper
             CreateMap<TransactorTransCreateDto, BuyDocModifyAjaxDto>().ReverseMap();
             CreateMap<TransactorTransListDto, KartelaLine>()
                 .ForMember(dest => dest.DocSeriesCode, opt => opt.MapFrom(src => src.TransTransactorDocSeriesCode));
-            CreateMap<MaterialSearchListDto, Material>();
+            CreateMap<WarehouseItemSearchListDto, WarehouseItem>();
 
             CreateMap<SellDocument, SellDocListDto>().ReverseMap();
             CreateMap<SellDocument, SellDocCreateAjaxNoLinesDto>().ReverseMap();

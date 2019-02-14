@@ -1,18 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using GrKouk.InfoSystem.Definitions;
-using GrKouk.InfoSystem.Domain.FinConfig;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using GrKouk.InfoSystem.Domain.Shared;
-using GrKouk.WebApi.Data;
 using Microsoft.EntityFrameworkCore;
 using GrKouk.InfoSystem.Dtos.WebDtos.WarehouseTransactions;
+using GrKouk.WebRazor.Helpers;
 using NToastNotify;
 
 namespace GrKouk.WebRazor.Pages.Transactions.WarehouseTransMng
@@ -44,15 +42,23 @@ namespace GrKouk.WebRazor.Pages.Transactions.WarehouseTransMng
         public WarehouseTransCreateDto ItemVm { get; set; }
         private void LoadCombos()
         {
-            List<SelectListItem> warTransTypes = new List<SelectListItem>
-            {
-                new SelectListItem() {Value = WarehouseTransactionTypeEnum.WarehouseTransactionTypeImport.ToString(), Text = "Import"},
-                new SelectListItem() {Value = WarehouseTransactionTypeEnum.WarehouseTransactionTypeExport.ToString(), Text = "Export"},
+            var warTransTypes = Enum.GetValues(typeof(WarehouseTransactionTypeEnum))
+                .Cast<WarehouseTransactionTypeEnum>()
+                .Select(c => new SelectListItem()
+                {
+                    Value = c.ToString(),
+                    Text = c.GetDescription()
+                }).ToList();
+
+            //List<SelectListItem> warTransTypes = new List<SelectListItem>
+            //{
+            //    new SelectListItem() {Value = WarehouseTransactionTypeEnum.WarehouseTransactionTypeImport.ToString(), Text = "Import"},
+            //    new SelectListItem() {Value = WarehouseTransactionTypeEnum.WarehouseTransactionTypeExport.ToString(), Text = "Export"},
                
-            };
+            //};
             ViewData["CompanyId"] = new SelectList(_context.Companies.OrderBy(p => p.Code).AsNoTracking(), "Id", "Code");
             ViewData["FiscalPeriodId"] = new SelectList(_context.FiscalPeriods.OrderBy(p=>p.Name).AsNoTracking(), "Id", "Name");
-            ViewData["MaterialId"] = new SelectList(_context.Materials.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
+            ViewData["WarehouseItemId"] = new SelectList(_context.WarehouseItems.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
             //ViewData["SectionId"] = new SelectList(_context.Sections, "Id", "Code");
             ViewData["TransWarehouseDocSeriesId"] = new SelectList(_context.TransWarehouseDocSeriesDefs.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
             ViewData["TransactionType"] = new SelectList(warTransTypes, "Value", "Text");
@@ -100,7 +106,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.WarehouseTransMng
             }
             transToAttach.SectionId = section.Id;
             transToAttach.TransWarehouseDocTypeId = docSeries.TransWarehouseDocTypeDefId;
-            var material = await _context.Materials.SingleOrDefaultAsync(p => p.Id == transToAttach.MaterialId);
+            var material = await _context.WarehouseItems.SingleOrDefaultAsync(p => p.Id == transToAttach.WarehouseItemId);
             if (material is null)
             {
                 ModelState.AddModelError(string.Empty, "Δεν βρέθηκε το είδος");
@@ -108,29 +114,29 @@ namespace GrKouk.WebRazor.Pages.Transactions.WarehouseTransMng
                 return Page();
             }
 
-            switch (material.MaterialNature)
+            switch (material.WarehouseItemNature)
             {
-                case MaterialNatureEnum.MaterialNatureEnumUndefined:
+                case WarehouseItemNatureEnum.WarehouseItemNatureUndefined:
                     throw new ArgumentOutOfRangeException();
                     break;
-                case MaterialNatureEnum.MaterialNatureEnumMaterial:
+                case WarehouseItemNatureEnum.WarehouseItemNatureMaterial:
                     transToAttach.InventoryAction = transWarehouseDef.MaterialInventoryAction;
                     transToAttach.InventoryValueAction = transWarehouseDef.MaterialInventoryValueAction;
 
                     break;
-                case MaterialNatureEnum.MaterialNatureEnumService:
+                case WarehouseItemNatureEnum.WarehouseItemNatureService:
                     transToAttach.InventoryAction = transWarehouseDef.ServiceInventoryAction;
                     transToAttach.InventoryValueAction = transWarehouseDef.ServiceInventoryValueAction;
                     break;
-                case MaterialNatureEnum.MaterialNatureEnumExpense:
+                case WarehouseItemNatureEnum.WarehouseItemNatureExpense:
                     transToAttach.InventoryAction = transWarehouseDef.ExpenseInventoryAction;
                     transToAttach.InventoryValueAction = transWarehouseDef.ExpenseInventoryValueAction;
                     break;
-                case MaterialNatureEnum.MaterialNatureEnumIncome:
+                case WarehouseItemNatureEnum.WarehouseItemNatureIncome:
                     transToAttach.InventoryAction = transWarehouseDef.IncomeInventoryAction;
                     transToAttach.InventoryValueAction = transWarehouseDef.IncomeInventoryValueAction;
                     break;
-                case MaterialNatureEnum.MaterialNatureEnumFixedAsset:
+                case WarehouseItemNatureEnum.WarehouseItemNatureFixedAsset:
                     transToAttach.InventoryAction = transWarehouseDef.FixedAssetInventoryAction;
                     transToAttach.InventoryValueAction = transWarehouseDef.FixedAssetInventoryValueAction;
                     break;

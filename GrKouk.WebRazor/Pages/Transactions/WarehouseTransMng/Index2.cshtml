@@ -128,7 +128,7 @@
                    asp-route-filtersVisible="@Model.FiltersVisible"
                    asp-route-rowselectorsVisible="@Model.RowSelectorsVisible"
                    asp-route-PageSize="@Model.PageSize">
-                    @Html.DisplayNameFor(model => model.ListItems[0].MaterialName)
+                    @Html.DisplayNameFor(model => model.ListItems[0].WarehouseItemName)
                 </a>
 
                 <i class="@Model.NameSortIcon"></i>
@@ -178,7 +178,7 @@
                     @Html.DisplayFor(modelItem => item.TransDate)
                 </td>
                 <td class="small">
-                    @Html.DisplayFor(modelItem => item.MaterialName)
+                    @Html.DisplayFor(modelItem => item.WarehouseItemName)
                 </td>
                 <td class="small">
                     @Html.DisplayFor(modelItem => item.TransWarehouseDocSeriesName)

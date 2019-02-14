@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using GrKouk.InfoSystem.Definitions;
-using GrKouk.InfoSystem.Domain.FinConfig;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using GrKouk.InfoSystem.Domain.Shared;
-using GrKouk.WebApi.Data;
 
 namespace GrKouk.WebRazor.Pages.MainEntities.MaterialCodes
 {
@@ -22,9 +17,9 @@ namespace GrKouk.WebRazor.Pages.MainEntities.MaterialCodes
         }
 
         [BindProperty]
-        public MaterialCode MaterialCode { get; set; }
+        public WarehouseItemCode WarehouseItemCode { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(MaterialCodeTypeEnum codeType, int materialId, string code )
+        public async Task<IActionResult> OnGetAsync(WarehouseItemCodeTypeEnum codeType, int materialId, string code )
         {
             if (codeType == null)
             {
@@ -38,17 +33,17 @@ namespace GrKouk.WebRazor.Pages.MainEntities.MaterialCodes
             {
                 return NotFound();
             }
-            MaterialCode = await _context.MaterialCodes
-                .Include(m => m.Material).FirstOrDefaultAsync(m => m.CodeType == codeType && m.MaterialId==materialId && m.Code==code);
+            WarehouseItemCode = await _context.WarehouseItemsCodes
+                .Include(m => m.WarehouseItem).FirstOrDefaultAsync(m => m.CodeType == codeType && m.WarehouseItemId==materialId && m.Code==code);
 
-            if (MaterialCode == null)
+            if (WarehouseItemCode == null)
             {
                 return NotFound();
             }
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync(MaterialCodeTypeEnum codeType, int materialId, string code)
+        public async Task<IActionResult> OnPostAsync(WarehouseItemCodeTypeEnum codeType, int materialId, string code)
         {
             if (codeType == null)
             {
@@ -63,11 +58,11 @@ namespace GrKouk.WebRazor.Pages.MainEntities.MaterialCodes
                 return NotFound();
             }
 
-            MaterialCode = await _context.MaterialCodes.FindAsync( codeType, materialId , code);
+            WarehouseItemCode = await _context.WarehouseItemsCodes.FindAsync( codeType, materialId , code);
 
-            if (MaterialCode != null)
+            if (WarehouseItemCode != null)
             {
-                _context.MaterialCodes.Remove(MaterialCode);
+                _context.WarehouseItemsCodes.Remove(WarehouseItemCode);
                 await _context.SaveChangesAsync();
             }
 

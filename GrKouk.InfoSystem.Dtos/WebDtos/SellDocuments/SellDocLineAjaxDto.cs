@@ -6,7 +6,7 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.SellDocuments
 {
     public class SellDocLineAjaxDto
     {
-        public int MaterialId { get; set; }
+        public int WarehouseItemId { get; set; }
         public double Q1 { get; set; }
         public double Q2 { get; set; }
         public decimal Price { get; set; }

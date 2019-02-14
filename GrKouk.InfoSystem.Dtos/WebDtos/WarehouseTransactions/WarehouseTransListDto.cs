@@ -23,9 +23,9 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.WarehouseTransactions
         [Display(Name = "Section")]
         public string SectionCode { get; set; }
 
-        public int MaterialId { get; set; }
-        [Display(Name = "Material")]
-        public string MaterialName { get; set; }
+        public int WarehouseItemId { get; set; }
+        [Display(Name = "WarehouseItem")]
+        public string WarehouseItemName { get; set; }
 
         public WarehouseTransactionTypeEnum TransactionType { get; set; }
 

@@ -23,23 +23,23 @@ namespace GrKouk.WebRazor.Pages.MainEntities.MaterialCodes
         }
 
         [BindProperty]
-        public MaterialCode MaterialCode { get; set; }
+        public WarehouseItemCode WarehouseItemCode { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(MaterialCodeTypeEnum id)
+        public async Task<IActionResult> OnGetAsync(WarehouseItemCodeTypeEnum id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            MaterialCode = await _context.MaterialCodes
-                .Include(m => m.Material).FirstOrDefaultAsync(m => m.CodeType == id);
+            WarehouseItemCode = await _context.WarehouseItemsCodes
+                .Include(m => m.WarehouseItem).FirstOrDefaultAsync(m => m.CodeType == id);
 
-            if (MaterialCode == null)
+            if (WarehouseItemCode == null)
             {
                 return NotFound();
             }
-           ViewData["MaterialId"] = new SelectList(_context.Materials, "Id", "Id");
+           ViewData["WarehouseItemId"] = new SelectList(_context.WarehouseItems, "Id", "Id");
             return Page();
         }
 
@@ -50,7 +50,7 @@ namespace GrKouk.WebRazor.Pages.MainEntities.MaterialCodes
                 return Page();
             }
 
-            _context.Attach(MaterialCode).State = EntityState.Modified;
+            _context.Attach(WarehouseItemCode).State = EntityState.Modified;
 
             try
             {
@@ -58,7 +58,7 @@ namespace GrKouk.WebRazor.Pages.MainEntities.MaterialCodes
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!MaterialCodeExists(MaterialCode.CodeType))
+                if (!MaterialCodeExists(WarehouseItemCode.CodeType))
                 {
                     return NotFound();
                 }
@@ -71,9 +71,9 @@ namespace GrKouk.WebRazor.Pages.MainEntities.MaterialCodes
             return RedirectToPage("./Index");
         }
 
-        private bool MaterialCodeExists(MaterialCodeTypeEnum id)
+        private bool MaterialCodeExists(WarehouseItemCodeTypeEnum id)
         {
-            return _context.MaterialCodes.Any(e => e.CodeType == id);
+            return _context.WarehouseItemsCodes.Any(e => e.CodeType == id);
         }
     }
 }

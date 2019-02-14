@@ -105,7 +105,7 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Diaries
 
             #endregion
 
-            var BuyDocTypeListJs = _context.BuyDocTypeDefs.OrderBy(p => p.Name)
+            var buyDocTypeListJs = _context.BuyDocTypeDefs.OrderBy(p => p.Name)
                 .Select(p => new DiaryDocTypeItem()
                 {
 
@@ -114,21 +114,21 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Diaries
                 }).ToList();
 
 
-            var SellDocTypeListJs = _context.SellDocTypeDefs.OrderBy(p => p.Name)
+            var sellDocTypeListJs = _context.SellDocTypeDefs.OrderBy(p => p.Name)
                 .Select(p => new DiaryDocTypeItem()
                 {
                     Title = p.Name,
                     Value = p.Id
                 }).ToList();
 
-            var TransactorDocTypeListJs = _context.TransTransactorDocTypeDefs.OrderBy(p => p.Name)
+            var transactorDocTypeListJs = _context.TransTransactorDocTypeDefs.OrderBy(p => p.Name)
                 .Select(p => new DiaryDocTypeItem()
                 {
                     Title = p.Name,
                     Value = p.Id
                 }).ToList();
 
-            var WarehouseDocTypeListJs = _context.TransWarehouseDocTypeDefs.OrderBy(p => p.Name)
+            var warehouseDocTypeListJs = _context.TransWarehouseDocTypeDefs.OrderBy(p => p.Name)
                 .Select(p => new DiaryDocTypeItem()
                 {
                     Title = p.Name,
@@ -144,8 +144,8 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Diaries
 
             #endregion
 
-            var materialNatureList = Enum.GetValues(typeof(MaterialNatureEnum))
-                .Cast<MaterialNatureEnum>()
+            var materialNatureList = Enum.GetValues(typeof(WarehouseItemNatureEnum))
+                .Cast<WarehouseItemNatureEnum>()
                 .Select(c => new UISelectTypeItem()
                 {
                     Value = c.ToString(),
@@ -163,11 +163,10 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Diaries
             ViewData["transactorTypes"] = new SelectList(transactorTypeList, "Value", "Title");
             ViewData["MaterialNatureTypes"] = new SelectList(materialNatureList, "Value", "Title");
 
-            //ViewData["BuyDocTypeList"] = new SelectList(_context.BuyDocTypeDefs.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
-            ViewData["BuyDocTypeListJs"] = BuyDocTypeListJs;
-            ViewData["SellDocTypeListJs"] = SellDocTypeListJs;
-            ViewData["TransactorDocTypeListJs"] = TransactorDocTypeListJs;
-            ViewData["WarehouseDocTypeListJs"] = WarehouseDocTypeListJs;
+            ViewData["BuyDocTypeListJs"] = buyDocTypeListJs;
+            ViewData["SellDocTypeListJs"] = sellDocTypeListJs;
+            ViewData["TransactorDocTypeListJs"] = transactorDocTypeListJs;
+            ViewData["WarehouseDocTypeListJs"] = warehouseDocTypeListJs;
 
             ViewData["MaterialNaturesList"] = materialNatureList;
             ViewData["TransactorTypeList"] = transactorTypeList;

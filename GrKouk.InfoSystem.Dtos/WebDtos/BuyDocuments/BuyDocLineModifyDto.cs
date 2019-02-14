@@ -8,8 +8,8 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.BuyDocuments
 
         public int BuyDocumentId { get; set; }
 
-        public int MaterialId { get; set; }
-        public string MaterialName { get; set; }
+        public int WarehouseItemId { get; set; }
+        public string WarehouseItemName { get; set; }
 
         public int PrimaryUnitId { get; set; }
         public int SecondaryUnitId { get; set; }

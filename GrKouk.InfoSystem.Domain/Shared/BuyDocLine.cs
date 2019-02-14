@@ -13,8 +13,8 @@ namespace GrKouk.InfoSystem.Domain.Shared
         public int BuyDocumentId { get; set; }
         public virtual BuyDocument BuyDocument { get; set; }
 
-        public int MaterialId { get; set; }
-        public virtual Material Material { get; set; }
+        public int WarehouseItemId { get; set; }
+        public virtual WarehouseItem WarehouseItem { get; set; }
 
        
 

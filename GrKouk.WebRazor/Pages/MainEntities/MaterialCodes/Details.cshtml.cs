@@ -21,19 +21,19 @@ namespace GrKouk.WebRazor.Pages.MainEntities.MaterialCodes
             _context = context;
         }
 
-        public MaterialCode MaterialCode { get; set; }
+        public WarehouseItemCode WarehouseItemCode { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(MaterialCodeTypeEnum id)
+        public async Task<IActionResult> OnGetAsync(WarehouseItemCodeTypeEnum id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            MaterialCode = await _context.MaterialCodes
-                .Include(m => m.Material).FirstOrDefaultAsync(m => m.CodeType == id);
+            WarehouseItemCode = await _context.WarehouseItemsCodes
+                .Include(m => m.WarehouseItem).FirstOrDefaultAsync(m => m.CodeType == id);
 
-            if (MaterialCode == null)
+            if (WarehouseItemCode == null)
             {
                 return NotFound();
             }

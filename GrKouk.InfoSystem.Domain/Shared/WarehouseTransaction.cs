@@ -25,8 +25,8 @@ namespace GrKouk.InfoSystem.Domain.Shared
         public int SectionId { get; set; }
         public virtual Section Section { get; set; }
 
-        public int MaterialId { get; set; }
-        public virtual Material Material { get; set; }
+        public int WarehouseItemId { get; set; }
+        public virtual WarehouseItem WarehouseItem { get; set; }
 
         public int FiscalPeriodId { get; set; }
         public virtual FiscalPeriod FiscalPeriod { get; set; }

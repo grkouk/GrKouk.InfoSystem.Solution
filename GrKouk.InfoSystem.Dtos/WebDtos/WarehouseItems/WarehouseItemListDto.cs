@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Text;
+﻿using System.ComponentModel.DataAnnotations;
 using GrKouk.InfoSystem.Definitions;
-using GrKouk.InfoSystem.Domain.FinConfig;
-using GrKouk.InfoSystem.Domain.Shared;
 
-namespace GrKouk.InfoSystem.Dtos.WebDtos.Materials
+namespace GrKouk.InfoSystem.Dtos.WebDtos.WarehouseItems
 {
-    public class MaterialListDto
+    public class WarehouseItemListDto
     {
         public int Id { get; set; }
 
@@ -76,27 +71,27 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.Materials
         public decimal PriceNetto { get; set; }
         [Display(Name = "Μικτή Τιμή")]
         public decimal PriceBrutto { get; set; }
-        public MaterialNatureEnum MaterialNature { get; set; }
+        public WarehouseItemNatureEnum WarehouseItemNature { get; set; }
         [Display(Name = "Φύση Είδους", Prompt = "Υλικό,Υπηρεσία,Παγιο,Δαπάνη")]
-        public string MaterialNatureName {
+        public string WarehouseItemNatureName {
             get
             {
                 string ret = "";
-                switch (MaterialNature)
+                switch (WarehouseItemNature)
                 {
-                    case MaterialNatureEnum.MaterialNatureEnumUndefined:
+                    case WarehouseItemNatureEnum.WarehouseItemNatureUndefined:
                         ret = "Απροσδιόριστο";
                         break;
-                    case MaterialNatureEnum.MaterialNatureEnumMaterial:
+                    case WarehouseItemNatureEnum.WarehouseItemNatureMaterial:
                         ret = "Υλικό";
                         break;
-                    case MaterialNatureEnum.MaterialNatureEnumService:
+                    case WarehouseItemNatureEnum.WarehouseItemNatureService:
                         ret = "Υπηρεσία";
                         break;
-                    case MaterialNatureEnum.MaterialNatureEnumExpense:
+                    case WarehouseItemNatureEnum.WarehouseItemNatureExpense:
                         ret = "Δαπάνη";
                         break;
-                    case MaterialNatureEnum.MaterialNatureEnumFixedAsset:
+                    case WarehouseItemNatureEnum.WarehouseItemNatureFixedAsset:
                         ret = "Πάγιο";
                         break;
                     default:

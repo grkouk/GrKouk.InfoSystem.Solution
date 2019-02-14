@@ -44,10 +44,10 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Materials
             PageSizeKartela = (int)((pageSizeKartela == null || pageSizeKartela == 0) ? 20 : pageSizeKartela);
 
             var dbTransactions = _mapper.Map<IEnumerable<WarehouseTransListDto>>(await _context.WarehouseTransactions
-                .Include(p => p.Material)
+                .Include(p => p.WarehouseItem)
                 .Include(p => p.TransWarehouseDocSeries)
                 .OrderBy(p => p.TransDate)
-                .Where(p=>p.MaterialId==TransactorId)
+                .Where(p=>p.WarehouseItemId==TransactorId)
                 .ToListAsync());
 
 
@@ -66,7 +66,7 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Materials
                     DocSeriesCode = dbTransaction.TransWarehouseDocSeriesCode,
                     RunningTotalVolume = runningTotalVolume,
                     RunningTotalValue = runningTotalValue,
-                    MaterialName = dbTransaction.MaterialName,
+                    MaterialName = dbTransaction.WarehouseItemName,
                     ImportVolume=dbTransaction.ImportUnits,
                     ExportVolume = dbTransaction.ExportUnits,
                     ImportValue = dbTransaction.ImportAmount,

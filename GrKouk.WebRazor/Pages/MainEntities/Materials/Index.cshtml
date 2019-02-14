@@ -2,10 +2,10 @@
 @model GrKouk.WebRazor.Pages.MainEntities.Materials.IndexModel
 
 @{
-    ViewData["Title"] = "Materials List";
+    ViewData["Title"] = "WarehouseItems List";
 }
 
-<h4>Materials List</h4>
+<h4>WarehouseItems List</h4>
 <div class="container navbar-dark">
     <ul class="nav justify-content-end small">
         <li class="nav-item">
@@ -25,7 +25,7 @@
             <a asp-page="/MainEntities/MaterialCodes/index" class="nav-link"
                asp-route-materialNatureFilter="@Model.CurrentMaterialNature"
                asp-route-parentPageSize="@Model.PageSize"
-               asp-route-parentPageIndex="@Model.ListItems.CurrentPage ">Material Codes</a>
+               asp-route-parentPageIndex="@Model.ListItems.CurrentPage ">WarehouseItem Codes</a>
         </li>
         <li class="nav-item">
             <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
@@ -52,8 +52,8 @@
                    asp-route-PageSize="@Model.PageSize">Back to full List</a>
             </div>
             <div class="form-group col-md-auto">
-                <label class="small"> Material Nature:</label>
-                <select name="MaterialNatureFilter" asp-for="CurrentMaterialNature" class="form-control form-control-sm small"
+                <label class="small"> WarehouseItem Nature:</label>
+                <select name="WarehouseItemNatureFilter" asp-for="CurrentMaterialNature" class="form-control form-control-sm small"
                         asp-items="ViewBag.MaterialNatureValues" onchange="this.form.submit()"></select>
 
             </div>
@@ -105,7 +105,7 @@
                 @Html.DisplayNameFor(model => model.ListItems[0].MaterialTypeName)
             </th>
             <th class="small">
-                @Html.DisplayNameFor(model => model.ListItems[0].MaterialNatureName)
+                @Html.DisplayNameFor(model => model.ListItems[0].WarehouseItemNatureName)
             </th>
             <th class="small">
                 @Html.DisplayNameFor(model => model.ListItems[0].FpaDefName)
@@ -140,7 +140,7 @@
                     @Html.DisplayFor(modelItem => item.MaterialTypeName)
                 </td>
                 <td class="small">
-                    @Html.DisplayFor(modelItem => item.MaterialNatureName)
+                    @Html.DisplayFor(modelItem => item.WarehouseItemNatureName)
                 </td>
                 <td class="small">
                     @Html.DisplayFor(modelItem => item.FpaDefName)

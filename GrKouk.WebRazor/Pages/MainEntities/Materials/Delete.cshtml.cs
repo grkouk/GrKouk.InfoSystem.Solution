@@ -16,7 +16,7 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Materials
         }
 
         [BindProperty]
-        public Material Material { get; set; }
+        public WarehouseItem WarehouseItem { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -25,7 +25,7 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Materials
                 return NotFound();
             }
 
-            Material = await _context.Materials
+            WarehouseItem = await _context.WarehouseItems
                 .Include(m => m.BuyMeasureUnit)
                 .Include(m => m.Company)
                 .Include(m => m.FpaDef)
@@ -33,7 +33,7 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Materials
                 .Include(m => m.MaterialCaterory)
                 .Include(m => m.SecondaryMeasureUnit).FirstOrDefaultAsync(m => m.Id == id);
 
-            if (Material == null)
+            if (WarehouseItem == null)
             {
                 return NotFound();
             }
@@ -47,11 +47,11 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Materials
                 return NotFound();
             }
 
-            Material = await _context.Materials.FindAsync(id);
+            WarehouseItem = await _context.WarehouseItems.FindAsync(id);
 
-            if (Material != null)
+            if (WarehouseItem != null)
             {
-                _context.Materials.Remove(Material);
+                _context.WarehouseItems.Remove(WarehouseItem);
                 await _context.SaveChangesAsync();
             }
 

@@ -1,11 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using GrKouk.InfoSystem.Definitions;
 using GrKouk.InfoSystem.Domain.FinConfig;
 using GrKouk.InfoSystem.Domain.Shared;
-using GrKouk.InfoSystem.Dtos.WebDtos.Materials;
+using GrKouk.InfoSystem.Dtos.WebDtos.WarehouseItems;
+using GrKouk.WebRazor.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -28,7 +30,7 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Materials
         }
 
         [BindProperty]
-        public MaterialModifyDto MaterialVm { get; set; }
+        public WarehouseItemModifyDto WarehouseItemVm { get; set; }
         public async Task<IActionResult> OnGetAsync(int? id)
         {
             if (id == null)
@@ -36,7 +38,7 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Materials
                 return NotFound();
             }
 
-           var  materialToModify = await _context.Materials
+           var  materialToModify = await _context.WarehouseItems
                 .Include(m => m.BuyMeasureUnit)
                 .Include(m => m.Company)
                 .Include(m => m.FpaDef)
@@ -49,7 +51,7 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Materials
                 return NotFound();
             }
 
-            MaterialVm = _mapper.Map<MaterialModifyDto>(materialToModify);
+            WarehouseItemVm = _mapper.Map<WarehouseItemModifyDto>(materialToModify);
            LoadCombos();
           // _toastNotification.AddInfoToastMessage("Welcome to edit page");
             return Page();
@@ -63,15 +65,23 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Materials
                 new SelectListItem() {Value = MaterialTypeEnum.MaterialTypeSet.ToString(), Text = "Set"},
                 new SelectListItem() {Value = MaterialTypeEnum.MaterialTypeComposed.ToString(), Text = "Συντιθέμενο"}
             };
-            List<SelectListItem> materialNatures = new List<SelectListItem>
-            {
-                new SelectListItem() {Value = MaterialNatureEnum.MaterialNatureEnumMaterial.ToString(), Text = "Υλικό"},
-                new SelectListItem() {Value = MaterialNatureEnum.MaterialNatureEnumService.ToString(), Text = "Υπηρεσία"},
-                new SelectListItem() {Value = MaterialNatureEnum.MaterialNatureEnumExpense.ToString(), Text = "Δαπάνη"},
-                new SelectListItem() {Value = MaterialNatureEnum.MaterialNatureEnumIncome.ToString(), Text = "Εσοδο"},
-                new SelectListItem() {Value = MaterialNatureEnum.MaterialNatureEnumUndefined.ToString(), Text = "Undefined"},
-                new SelectListItem() {Value = MaterialNatureEnum.MaterialNatureEnumFixedAsset.ToString(), Text = "Πάγιο"}
-            };
+            var materialNatures = Enum.GetValues(typeof(WarehouseItemNatureEnum))
+                .Cast<WarehouseItemNatureEnum>()
+                .Select(c => new SelectListItem()
+                {
+                    Value = c.ToString(),
+                    Text = c.GetDescription()
+                }).ToList();
+
+            //List<SelectListItem> materialNatures = new List<SelectListItem>
+            //{
+            //    new SelectListItem() {Value = WarehouseItemNatureEnum.WarehouseItemNatureMaterial.ToString(), Text = "Υλικό"},
+            //    new SelectListItem() {Value = WarehouseItemNatureEnum.WarehouseItemNatureService.ToString(), Text = "Υπηρεσία"},
+            //    new SelectListItem() {Value = WarehouseItemNatureEnum.WarehouseItemNatureExpense.ToString(), Text = "Δαπάνη"},
+            //    new SelectListItem() {Value = WarehouseItemNatureEnum.WarehouseItemNatureIncome.ToString(), Text = "Εσοδο"},
+            //    new SelectListItem() {Value = WarehouseItemNatureEnum.WarehouseItemNatureUndefined.ToString(), Text = "Undefined"},
+            //    new SelectListItem() {Value = WarehouseItemNatureEnum.WarehouseItemNatureFixedAsset.ToString(), Text = "Πάγιο"}
+            //};
             ViewData["BuyMeasureUnitId"] = new SelectList(_context.MeasureUnits.OrderBy(p => p.Code).AsNoTracking(), "Id", "Code");
             ViewData["CompanyId"] = new SelectList(_context.Companies.OrderBy(p => p.Code).AsNoTracking(), "Id", "Code");
             ViewData["FpaDefId"] = new SelectList(_context.FpaKategories.OrderBy(p => p.Code).AsNoTracking(), "Id", "Code");
@@ -89,20 +99,20 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Materials
                 return Page();
             }
 
-            var materialToAttach = _mapper.Map<Material>(MaterialVm);
+            var materialToAttach = _mapper.Map<WarehouseItem>(WarehouseItemVm);
 
             _context.Attach(materialToAttach).State = EntityState.Modified;
 
             try
             {
                 await _context.SaveChangesAsync();
-                _toastNotification.AddSuccessToastMessage("Material changes saved");
+                _toastNotification.AddSuccessToastMessage("WarehouseItem changes saved");
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!MaterialExists(MaterialVm.Id))
+                if (!MaterialExists(WarehouseItemVm.Id))
                 {
-                    _toastNotification.AddErrorToastMessage("Material was not found");
+                    _toastNotification.AddErrorToastMessage("WarehouseItem was not found");
                     return NotFound();
                 }
                 else
@@ -117,7 +127,7 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Materials
 
         private bool MaterialExists(int id)
         {
-            return _context.Materials.Any(e => e.Id == id);
+            return _context.WarehouseItems.Any(e => e.Id == id);
         }
     }
 }

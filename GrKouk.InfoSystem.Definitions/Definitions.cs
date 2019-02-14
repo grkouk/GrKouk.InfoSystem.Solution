@@ -13,25 +13,28 @@ namespace GrKouk.InfoSystem.Definitions
     /// Material Nature
     /// Υλικό, Υπηρεσία, Πάγιο, Δαπάνη
     /// </summary>
-    public enum MaterialNatureEnum
+    public enum WarehouseItemNatureEnum
     {
         [Description("Χωρίς Προσδιορισμό")]
-        MaterialNatureEnumUndefined = 0,
+        WarehouseItemNatureUndefined = 0,
         [Description("Υλικό")]
-        MaterialNatureEnumMaterial = 1,
+        WarehouseItemNatureMaterial = 1,
         [Description("Υπηρεσία")]
-        MaterialNatureEnumService = 2,
+        WarehouseItemNatureService = 2,
         [Description("Δαπάνη")]
-        MaterialNatureEnumExpense = 3,
+        WarehouseItemNatureExpense = 3,
         [Description("Εσοδο")]
-        MaterialNatureEnumIncome = 4,
+        WarehouseItemNatureIncome = 4,
         [Description("Πάγιο")]
-        MaterialNatureEnumFixedAsset = 5
+        WarehouseItemNatureFixedAsset = 5
     }
     public enum MaterialTypeEnum
     {
+        [Description("Κανονικο")]
         MaterialTypeNormal = 1,
+        [Description("Σετ")]
         MaterialTypeSet = 2,
+        [Description("Συντιθέμενο")]
         MaterialTypeComposed = 3
 
     }
@@ -113,7 +116,7 @@ namespace GrKouk.InfoSystem.Definitions
         PriceTypeEnumBrutto = 2
     }
 
-    public enum MaterialCodeTypeEnum
+    public enum WarehouseItemCodeTypeEnum
     {
         [Description("Κωδικό")]
         CodeTypeEnumCode = 1,
@@ -123,7 +126,7 @@ namespace GrKouk.InfoSystem.Definitions
         CodeTypeEnumSupplierCode = 3
     }
 
-    public enum MaterialCodeUsedUnitEnum
+    public enum WarehouseItemCodeUsedUnitEnum
     {
         [Description("Κύρια")]
         CodeUsedUnitEnumMain = 1,

@@ -1,10 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using GrKouk.InfoSystem.Definitions;
-using GrKouk.InfoSystem.Domain.FinConfig;
 
-namespace GrKouk.InfoSystem.Dtos.WebDtos.Materials
+namespace GrKouk.InfoSystem.Dtos.WebDtos.WarehouseItems
 {
-    public class MaterialModifyDto
+    public class WarehouseItemModifyDto
     {
         public int Id { get; set; }
 
@@ -54,7 +53,7 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.Materials
 
         public MaterialTypeEnum MaterialType { get; set; }
         [Display(Name = "Φύση Είδους", Prompt = "Υλικό,Υπηρεσία,Παγιο,Δαπάνη")]
-        public MaterialNatureEnum MaterialNature { get; set; }
+        public WarehouseItemNatureEnum WarehouseItemNature { get; set; }
         [Display(Name = "Company")]
         public int CompanyId { get; set; }
         [Display(Name = "Καθ.Τιμή")]

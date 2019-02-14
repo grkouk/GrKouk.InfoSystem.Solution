@@ -15,8 +15,8 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.WarehouseTransactions
         public int TransWarehouseDocSeriesId { get; set; }
         [Display(Name = "Ref")]
         public string TransRefCode { get; set; }
-        [Display(Name = "Material")]
-        public int MaterialId { get; set; }
+        [Display(Name = "WarehouseItem")]
+        public int WarehouseItemId { get; set; }
         [Display(Name = "Fiscal Period")]
         public int FiscalPeriodId { get; set; }
         public WarehouseTransactionTypeEnum TransactionType { get; set; }

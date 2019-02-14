@@ -25,7 +25,9 @@
                asp-route-sortOrder="@Model.CurrentSort"
                asp-route-pageIndex="@(Model.ListItems.CurrentPage)"
                asp-route-currentFilter="@Model.CurrentFilter"
-               asp-route-PageSize="@Model.PageSize">Create New</a>
+               asp-route-PageSize="@Model.PageSize"
+               asp-route-companyFilter="@Model.CompanyFilter"
+               >Create New</a>
         </li>
         <li class="nav-item">
             <a class="nav-link" data-toggle="collapse" href="#filterCollapse" role="button" id="filtersToggle"

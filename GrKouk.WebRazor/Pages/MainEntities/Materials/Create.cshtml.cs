@@ -6,7 +6,7 @@ using AutoMapper;
 using GrKouk.InfoSystem.Definitions;
 using GrKouk.InfoSystem.Domain.FinConfig;
 using GrKouk.InfoSystem.Domain.Shared;
-using GrKouk.InfoSystem.Dtos.WebDtos.Materials;
+using GrKouk.InfoSystem.Dtos.WebDtos.WarehouseItems;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -46,12 +46,12 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Materials
             List<SelectListItem> materialNatures = new List<SelectListItem>
             {
                
-                new SelectListItem() {Value = MaterialNatureEnum.MaterialNatureEnumMaterial.ToString(), Text = "Υλικό"},
-                new SelectListItem() {Value = MaterialNatureEnum.MaterialNatureEnumService.ToString(), Text = "Υπηρεσία"},
-                new SelectListItem() {Value = MaterialNatureEnum.MaterialNatureEnumExpense.ToString(), Text = "Δαπάνη"},
-                new SelectListItem() {Value = MaterialNatureEnum.MaterialNatureEnumIncome.ToString(), Text = "Εσοδο"},
-                new SelectListItem() {Value = MaterialNatureEnum.MaterialNatureEnumUndefined.ToString(), Text = "Undefined"},
-                new SelectListItem() {Value = MaterialNatureEnum.MaterialNatureEnumFixedAsset.ToString(), Text = "Πάγιο"}
+                new SelectListItem() {Value = WarehouseItemNatureEnum.WarehouseItemNatureMaterial.ToString(), Text = "Υλικό"},
+                new SelectListItem() {Value = WarehouseItemNatureEnum.WarehouseItemNatureService.ToString(), Text = "Υπηρεσία"},
+                new SelectListItem() {Value = WarehouseItemNatureEnum.WarehouseItemNatureExpense.ToString(), Text = "Δαπάνη"},
+                new SelectListItem() {Value = WarehouseItemNatureEnum.WarehouseItemNatureIncome.ToString(), Text = "Εσοδο"},
+                new SelectListItem() {Value = WarehouseItemNatureEnum.WarehouseItemNatureUndefined.ToString(), Text = "Undefined"},
+                new SelectListItem() {Value = WarehouseItemNatureEnum.WarehouseItemNatureFixedAsset.ToString(), Text = "Πάγιο"}
             };
             ViewData["BuyMeasureUnitId"] = new SelectList(_context.MeasureUnits.OrderBy(p => p.Code).AsNoTracking(), "Id", "Code");
             ViewData["CompanyId"] = new SelectList(_context.Companies.OrderBy(p => p.Code).AsNoTracking(), "Id", "Code");
@@ -64,7 +64,7 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Materials
         }
 
         [BindProperty]
-        public MaterialCreateDto MaterialVm { get; set; }
+        public WarehouseItemCreateDto WarehouseItemVm { get; set; }
 
         public async Task<IActionResult> OnPostAsync()
         {
@@ -72,12 +72,12 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Materials
             {
                 return Page();
             }
-            var materialToAttach = _mapper.Map<Material>(MaterialVm);
-            _context.Materials.Add(materialToAttach);
+            var materialToAttach = _mapper.Map<WarehouseItem>(WarehouseItemVm);
+            _context.WarehouseItems.Add(materialToAttach);
             try
             {
                 await _context.SaveChangesAsync();
-                _toastNotification.AddSuccessToastMessage("Material Created");
+                _toastNotification.AddSuccessToastMessage("WarehouseItem Created");
                 return RedirectToPage("./Index");
             }
             catch (Exception e)

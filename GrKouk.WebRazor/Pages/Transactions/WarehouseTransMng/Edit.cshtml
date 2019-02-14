@@ -61,9 +61,9 @@
             </div>
             <div class="form-row">
                 <div class="form-group col-md-6">
-                    <label asp-for="ItemVm.MaterialId" class="small " id="materialLabel"></label>
+                    <label asp-for="ItemVm.WarehouseItemId" class="small " id="materialLabel"></label>
                     <div class="input-group ">
-                        <select asp-for="ItemVm.MaterialId" class="form-control form-control-sm small " asp-items="ViewBag.MaterialId"></select>
+                        <select asp-for="ItemVm.WarehouseItemId" class="form-control form-control-sm small " asp-items="ViewBag.MaterialId"></select>
                         <div class="input-group-append">
                             <span class="form-control-sm small" id="matLoading" hidden><i class="fas fa-spinner fa-spin"></i></span>
                         </div>
@@ -216,11 +216,11 @@
                 $sumAmount.val(amountNet + amountFpa - amountDic);
             };
             var materialChanged = () => {
-                console.log("Material changed called");
+                console.log("WarehouseItem changed called");
                 var $spinner = $('#matLoading');
                 $spinner.attr('hidden', false);
                 var materialId = $material.val();
-                console.log("Material change event ->" + materialId);
+                console.log("WarehouseItem change event ->" + materialId);
 
                 var uri = '@Configuration.GetSection("WebApiSettings")["WebApiLocal"]';
                 var finalUri = `${uri}/materials/materialdata?materialId=${materialId}`;
@@ -244,7 +244,7 @@
                             $primaryUnitCode.text(` ${myJson.mainUnitCode}`);
                             $secondaryUnitCode.text(` ${myJson.secUnitCode}`);
                             $fpaRate.val(rate);
-                            //$('#MaterialFpaId').val(fpaId);
+                            //$('#WarehouseItemFpaId').val(fpaId);
                             $unitPrice.val(lastPrice);
                             $primUnitId.val(myJson.mainUnitId);
                             $secUnitId.val(myJson.secUnitId);

@@ -32,24 +32,24 @@ namespace GrKouk.WebRazor.Pages.MainEntities.MaterialCodes
         {
             List<SelectListItem> codeTypes = new List<SelectListItem>
             {
-                new SelectListItem() {Value = MaterialCodeTypeEnum.CodeTypeEnumCode.ToString(), Text = "Code"},
-                new SelectListItem() {Value = MaterialCodeTypeEnum.CodeTypeEnumBarcode.ToString(), Text = "Barcode"},
-                new SelectListItem() {Value = MaterialCodeTypeEnum.CodeTypeEnumSupplierCode.ToString(), Text = "Supplier Code"}
+                new SelectListItem() {Value = WarehouseItemCodeTypeEnum.CodeTypeEnumCode.ToString(), Text = "Code"},
+                new SelectListItem() {Value = WarehouseItemCodeTypeEnum.CodeTypeEnumBarcode.ToString(), Text = "Barcode"},
+                new SelectListItem() {Value = WarehouseItemCodeTypeEnum.CodeTypeEnumSupplierCode.ToString(), Text = "Supplier Code"}
             };
             ViewData["CodeType"] = new SelectList(codeTypes, "Value", "Text");
 
             List<SelectListItem> codeUsedUnits = new List<SelectListItem>
             {
-                new SelectListItem() {Value = MaterialCodeUsedUnitEnum.CodeUsedUnitEnumMain.ToString(), Text = "Main Unit"},
-                new SelectListItem() {Value = MaterialCodeUsedUnitEnum.CodeUsedUnitEnumBuy.ToString(), Text = "Buy Unit"},
-                new SelectListItem() {Value = MaterialCodeUsedUnitEnum.CodeUsedUnitEnumSecondary.ToString(), Text = "Secondary Unit"}
+                new SelectListItem() {Value = WarehouseItemCodeUsedUnitEnum.CodeUsedUnitEnumMain.ToString(), Text = "Main Unit"},
+                new SelectListItem() {Value = WarehouseItemCodeUsedUnitEnum.CodeUsedUnitEnumBuy.ToString(), Text = "Buy Unit"},
+                new SelectListItem() {Value = WarehouseItemCodeUsedUnitEnum.CodeUsedUnitEnumSecondary.ToString(), Text = "Secondary Unit"}
             };
             ViewData["CodeUsedUnit"] = new SelectList(codeUsedUnits, "Value", "Text");
 
-            ViewData["MaterialId"] = new SelectList(_context.Materials.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
+            ViewData["WarehouseItemId"] = new SelectList(_context.WarehouseItems.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
         }
         [BindProperty]
-        public MaterialCode MaterialCode { get; set; }
+        public WarehouseItemCode WarehouseItemCode { get; set; }
 
         public async Task<IActionResult> OnPostAsync()
         {
@@ -58,7 +58,7 @@ namespace GrKouk.WebRazor.Pages.MainEntities.MaterialCodes
                 return Page();
             }
 
-            _context.MaterialCodes.Add(MaterialCode);
+            _context.WarehouseItemsCodes.Add(WarehouseItemCode);
             await _context.SaveChangesAsync();
 
             return RedirectToPage("./Index");

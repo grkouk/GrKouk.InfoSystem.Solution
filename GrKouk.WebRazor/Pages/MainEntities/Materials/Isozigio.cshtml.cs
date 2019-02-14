@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using GrKouk.InfoSystem.Definitions;
-using GrKouk.InfoSystem.Domain.FinConfig;
 using GrKouk.InfoSystem.Domain.Shared;
 using GrKouk.InfoSystem.Dtos.WebDtos.WarehouseTransactions;
 using GrKouk.WebRazor.Helpers;
@@ -48,33 +48,33 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Materials
           
             CompanyFilter = (int)(companyFilter ?? 0);
             MaterialNatureFilter = materialNatureFilter;
-            MaterialNatureEnum natureFilterValue = MaterialNatureEnum.MaterialNatureEnumUndefined;
+            WarehouseItemNatureEnum natureFilterValue = WarehouseItemNatureEnum.WarehouseItemNatureUndefined;
 
             switch (MaterialNatureFilter)
             {
-                case "MaterialNatureEnumUndefined":
+                case "WarehouseItemNatureUndefined":
                     IsozigioName = "";
-                    natureFilterValue = MaterialNatureEnum.MaterialNatureEnumUndefined;
+                    natureFilterValue = WarehouseItemNatureEnum.WarehouseItemNatureUndefined;
                     break;
-                case "MaterialNatureEnumMaterial":
+                case "WarehouseItemNatureMaterial":
                     IsozigioName = "Υλικών";
-                    natureFilterValue = MaterialNatureEnum.MaterialNatureEnumMaterial;
+                    natureFilterValue = WarehouseItemNatureEnum.WarehouseItemNatureMaterial;
                     break;
-                case "MaterialNatureEnumService":
+                case "WarehouseItemNatureService":
                     IsozigioName = "Υπηρεσιών";
-                    natureFilterValue = MaterialNatureEnum.MaterialNatureEnumService;
+                    natureFilterValue = WarehouseItemNatureEnum.WarehouseItemNatureService;
                     break;
-                case "MaterialNatureEnumExpense":
+                case "WarehouseItemNatureExpense":
                     IsozigioName = "Δαπάνων";
-                    natureFilterValue = MaterialNatureEnum.MaterialNatureEnumExpense;
+                    natureFilterValue = WarehouseItemNatureEnum.WarehouseItemNatureExpense;
                     break;
-                case "MaterialNatureEnumFixedAsset":
+                case "WarehouseItemNatureFixedAsset":
                     IsozigioName = "Πάγια";
-                    natureFilterValue = MaterialNatureEnum.MaterialNatureEnumFixedAsset;
+                    natureFilterValue = WarehouseItemNatureEnum.WarehouseItemNatureFixedAsset;
                     break;
                 default:
                     IsozigioName = "";
-                    natureFilterValue = MaterialNatureEnum.MaterialNatureEnumUndefined;
+                    natureFilterValue = WarehouseItemNatureEnum.WarehouseItemNatureUndefined;
                     break;
             }
            
@@ -89,9 +89,9 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Materials
 
 
             IQueryable<WarehouseTransaction> transactionsList = _context.WarehouseTransactions;
-            if (natureFilterValue != MaterialNatureEnum.MaterialNatureEnumUndefined)
+            if (natureFilterValue != WarehouseItemNatureEnum.WarehouseItemNatureUndefined)
             {
-                transactionsList = transactionsList.Where(p => p.Material.MaterialNature == natureFilterValue);
+                transactionsList = transactionsList.Where(p => p.WarehouseItem.WarehouseItemNature == natureFilterValue);
             }
             if (companyFilter > 0)
             {
@@ -102,7 +102,7 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Materials
             var dbTransactions = dbTrans.GroupBy(g => new
             {
                 g.CompanyCode,
-                g.MaterialName,
+                MaterialName = g.WarehouseItemName,
              
             }
                 )
@@ -161,16 +161,22 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Materials
         }
         private void LoadFilters()
         {
-            List<SelectListItem> materialNatures = new List<SelectListItem>
-            {
-                new SelectListItem() {Value = "0", Text = "{All Natures}"},
-                new SelectListItem() {Value = MaterialNatureEnum.MaterialNatureEnumMaterial.ToString(), Text = "Υλικό"},
-                new SelectListItem() {Value = MaterialNatureEnum.MaterialNatureEnumService.ToString(), Text = "Υπηρεσία"},
-                new SelectListItem() {Value = MaterialNatureEnum.MaterialNatureEnumExpense.ToString(), Text = "Δαπάνη"},
-                new SelectListItem() {Value = MaterialNatureEnum.MaterialNatureEnumFixedAsset.ToString(), Text = "Πάγιο"}
+            var materialNatures = Enum.GetValues(typeof(WarehouseItemNatureEnum))
+                .Cast<WarehouseItemNatureEnum>()
+                .Select(c => new SelectListItem()
+                {
+                    Value = c.ToString(),
+                    Text = c.GetDescription()
+                }).ToList();
+            //List<SelectListItem> materialNatures = new List<SelectListItem>
+            //{
+            //    new SelectListItem() {Value = "0", Text = "{All Natures}"},
+            //    new SelectListItem() {Value = WarehouseItemNatureEnum.WarehouseItemNatureMaterial.ToString(), Text = "Υλικό"},
+            //    new SelectListItem() {Value = WarehouseItemNatureEnum.WarehouseItemNatureService.ToString(), Text = "Υπηρεσία"},
+            //    new SelectListItem() {Value = WarehouseItemNatureEnum.WarehouseItemNatureExpense.ToString(), Text = "Δαπάνη"},
+            //    new SelectListItem() {Value = WarehouseItemNatureEnum.WarehouseItemNatureFixedAsset.ToString(), Text = "Πάγιο"}
+            //};
 
-
-            };
             ViewData["MaterialNatureValues"] = new SelectList(materialNatures, "Value", "Text");
 
             var dbCompanies = _context.Companies.OrderBy(p => p.Code).AsNoTracking();

@@ -40,7 +40,7 @@ namespace GrKouk.WebApi.Data
       
         public DbSet<MeasureUnit> MeasureUnits { get; set; }
         public DbSet<MaterialCategory> MaterialCategories { get; set; }
-        public DbSet<Material> Materials { get; set; }
+        public DbSet<WarehouseItem> WarehouseItems { get; set; }
      
         public DbSet<WarehouseTransaction> WarehouseTransactions { get; set; }
       
@@ -57,7 +57,7 @@ namespace GrKouk.WebApi.Data
         public DbSet<SellDocSeriesDef> SellDocSeriesDefs { get; set; }
         public DbSet<SellDocLine> SellDocLines { get; set; }
         public DbSet<SellDocument> SellDocuments { get; set; }
-        public DbSet<MaterialCode> MaterialCodes { get; set; }
+        public DbSet<WarehouseItemCode> WarehouseItemsCodes { get; set; }
         public DbSet<DiaryDef> DiaryDefs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -147,7 +147,7 @@ namespace GrKouk.WebApi.Data
                 entity.HasIndex(p => p.Code).IsUnique();
             });
 
-            modelBuilder.Entity<Material>(entity =>
+            modelBuilder.Entity<WarehouseItem>(entity =>
             {
                 entity.HasIndex(c => c.Code).IsUnique();
                 entity.HasOne(bd => bd.BuyMeasureUnit)
@@ -191,7 +191,7 @@ namespace GrKouk.WebApi.Data
                 entity.HasOne(p => p.TransWarehouseDocType)
                     .WithMany()
                     .OnDelete(DeleteBehavior.Restrict);
-                entity.HasOne(p => p.Material)
+                entity.HasOne(p => p.WarehouseItem)
                     .WithMany()
                     .OnDelete(DeleteBehavior.Restrict);
                
@@ -260,7 +260,7 @@ namespace GrKouk.WebApi.Data
             });
             modelBuilder.Entity<BuyDocLine>(entity =>
             {
-                entity.HasOne(p => p.Material)
+                entity.HasOne(p => p.WarehouseItem)
                 .WithMany()
                 .OnDelete(DeleteBehavior.Restrict);
                 entity.HasOne(p => p.BuyDocument)
@@ -338,7 +338,7 @@ namespace GrKouk.WebApi.Data
             });
             modelBuilder.Entity<SellDocLine>(entity =>
             {
-                entity.HasOne(p => p.Material)
+                entity.HasOne(p => p.WarehouseItem)
                     .WithMany()
                     .OnDelete(DeleteBehavior.Restrict);
                 entity.HasOne(p => p.SellDocument)
@@ -365,15 +365,15 @@ namespace GrKouk.WebApi.Data
                     .OnDelete(DeleteBehavior.Restrict);
             });
 
-            modelBuilder.Entity<MaterialCode>(entity =>
+            modelBuilder.Entity<WarehouseItemCode>(entity =>
             {
                 entity.HasKey(p => new
                 {
-                    p.CodeType, p.MaterialId, p.Code
+                    p.CodeType, WarehouseItemId = p.WarehouseItemId, p.Code
                 });
                 entity.HasIndex(p => p.Code);
 
-                entity.HasOne(p => p.Material)
+                entity.HasOne(p => p.WarehouseItem)
                     .WithMany()
                     .OnDelete(DeleteBehavior.Restrict);
             });

@@ -1,10 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Linq;
 using GrKouk.InfoSystem.Definitions;
-using GrKouk.InfoSystem.Domain.FinConfig;
 
-namespace GrKouk.InfoSystem.Dtos.WebDtos.Materials
+namespace GrKouk.InfoSystem.Dtos.WebDtos.WarehouseItems
 {
-    public class MaterialSearchListDto
+    public class WarehouseItemSearchListDto
     {
         public int Id { get; set; }
 
@@ -14,28 +14,29 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.Materials
 
         public bool Active { get; set; }
 
-        public MaterialNatureEnum MaterialNature { get; set; }
+        public WarehouseItemNatureEnum WarehouseItemNature { get; set; }
        
-        public string MaterialNatureName
+        public string WarehouseItemNatureName
         {
             get
             {
+               
                 string ret = "";
-                switch (MaterialNature)
+                switch (WarehouseItemNature)
                 {
-                    case MaterialNatureEnum.MaterialNatureEnumUndefined:
+                    case WarehouseItemNatureEnum.WarehouseItemNatureUndefined:
                         ret = "{{Απρ}}";
                         break;
-                    case MaterialNatureEnum.MaterialNatureEnumMaterial:
+                    case WarehouseItemNatureEnum.WarehouseItemNatureMaterial:
                         ret = "{Υλ}";
                         break;
-                    case MaterialNatureEnum.MaterialNatureEnumService:
+                    case WarehouseItemNatureEnum.WarehouseItemNatureService:
                         ret = "{Υπ}";
                         break;
-                    case MaterialNatureEnum.MaterialNatureEnumExpense:
+                    case WarehouseItemNatureEnum.WarehouseItemNatureExpense:
                         ret = "{Δαπ}";
                         break;
-                    case MaterialNatureEnum.MaterialNatureEnumFixedAsset:
+                    case WarehouseItemNatureEnum.WarehouseItemNatureFixedAsset:
                         ret = "{Πάγ}";
                         break;
                     default:
@@ -52,7 +53,7 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.Materials
         {
             get
             {
-               var r= $"{this.Name} {this.MaterialNatureName}";
+               var r= $"{this.Name} {this.WarehouseItemNatureName}";
                return r;
             }
         }

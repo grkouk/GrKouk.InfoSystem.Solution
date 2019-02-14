@@ -110,7 +110,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.WarehouseTransMng
             fullListIq = fullListIq.Where(p => p.TransDate >= fromDate && p.TransDate <= toDate);
             if (!String.IsNullOrEmpty(searchString))
             {
-                fullListIq = fullListIq.Where(s => s.Material.Name.Contains(searchString));
+                fullListIq = fullListIq.Where(s => s.WarehouseItem.Name.Contains(searchString));
             }
 
             switch (sortOrder)
@@ -126,12 +126,12 @@ namespace GrKouk.WebRazor.Pages.Transactions.WarehouseTransMng
                     NameSortIcon = "invisible";
                     break;
                 case "Name":
-                    fullListIq = fullListIq.OrderBy(p => p.Material.Name);
+                    fullListIq = fullListIq.OrderBy(p => p.WarehouseItem.Name);
                     NameSortIcon = "fas fa-sort-alpha-up ";
                     DateSortIcon = "invisible";
                     break;
                 case "name_desc":
-                    fullListIq = fullListIq.OrderByDescending(p => p.Material.Name);
+                    fullListIq = fullListIq.OrderByDescending(p => p.WarehouseItem.Name);
                     NameSortIcon = "fas fa-sort-alpha-down ";
                     DateSortIcon = "invisible";
                     break;

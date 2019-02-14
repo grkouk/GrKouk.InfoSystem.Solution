@@ -19,12 +19,12 @@ namespace GrKouk.WebRazor.Pages.MainEntities.MaterialCodes
             _context = context;
         }
 
-        public IList<MaterialCode> MaterialCode { get;set; }
+        public IList<WarehouseItemCode> MaterialCode { get;set; }
 
         public async Task OnGetAsync()
         {
-            MaterialCode = await _context.MaterialCodes
-                .Include(m => m.Material).ToListAsync();
+            MaterialCode = await _context.WarehouseItemsCodes
+                .Include(m => m.WarehouseItem).ToListAsync();
         }
     }
 }

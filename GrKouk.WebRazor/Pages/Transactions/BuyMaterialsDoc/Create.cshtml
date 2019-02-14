@@ -470,7 +470,7 @@
                     $materialId.val(ui.item.value);
                     console.log(ui.item.value.toString());
                     this.value = ui.item.label;
-                    //Get Material data
+                    //Get WarehouseItem data
                     var uri = '@Configuration.GetSection("WebApiSettings")["WebApiLocal"]';
                     var finalUri = `${uri}/materials/materialdata?materialId=${ui.item.value}`;
 
@@ -845,7 +845,7 @@
                 $.each($("#detailsTable tbody tr"),function() {
                     linesArr.push({
                         // materialId: $(this).find('td:eq(0)').html(),
-                        materialId: $(this).find('td:eq(1)').attr('data-materialId'),
+                        warehouseItemId: $(this).find('td:eq(1)').attr('data-materialId'),
                         mainUnitId: $(this).find('td:eq(1)').attr('data-mainUnitId'),
                         secUnitId: $(this).find('td:eq(1)').attr('data-secUnitId'),
                         factor: $(this).find('td:eq(1)').attr('data-factor'),
@@ -889,6 +889,7 @@
             //-------------
             if ($initialLoad.val()=='True') {
                 console.log("Initial load is true setting initial values");
+                $companyId.val('@Model.RoutedCompanyId');
                 seriesChanged();
                 companyChanged();
                 setSeekType();
