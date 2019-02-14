@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using GrKouk.InfoSystem.Domain.FinConfig;
-using GrKouk.WebApi.Data;
 
-namespace GrKouk.WebRazor.Pages.Configuration
+namespace GrKouk.WebRazor.Pages.Configuration.BuyDocTypeDefinition
 {
     public class IndexModel : PageModel
     {
@@ -19,13 +14,13 @@ namespace GrKouk.WebRazor.Pages.Configuration
             _context = context;
         }
 
-        public IList<InfoSystem.Domain.FinConfig.BuyMaterialDocTypeDef> BuyDocTypeDefs { get;set; }
+        public IList<InfoSystem.Domain.FinConfig.BuyDocTypeDef> BuyDocTypeDefs { get;set; }
 
         public async Task OnGetAsync()
         {
-            BuyDocTypeDefs = await _context.BuyMaterialDocTypeDefs
+            BuyDocTypeDefs = await _context.BuyDocTypeDefs
                 .Include(b => b.Company)
-                .Include(b => b.TransSupplierDef)
+                .Include(b => b.TransTransactorDef)
                 .Include(b => b.TransWarehouseDef)
                 .ToListAsync();
         }

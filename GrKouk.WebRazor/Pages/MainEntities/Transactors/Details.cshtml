@@ -1,0 +1,108 @@
+﻿@page
+@model GrKouk.WebRazor.Pages.MainEntities.Transactors.DetailsModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Transactor</h4>
+    <hr />
+    <dl class="row">
+        <div class="col-md-6">
+            <dl class="dl-horizontal">
+                <dt>
+                    @Html.DisplayNameFor(model => model.Transactor.Code)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Transactor.Code)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Transactor.Name)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Transactor.Name)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Transactor.EMail)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Transactor.EMail)
+                </dd>
+            </dl>
+        </div>
+        <div class="col-md-6">
+            <dl class="dl-horizontal">
+                <dt>
+                    @Html.DisplayNameFor(model => model.Transactor.TransactorType)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Transactor.TransactorType.Code)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Transactor.Address)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Transactor.Address)
+                </dd>
+            </dl>
+       </div>
+       
+    </dl>
+    <label asp-for="Total">@Model.Total</label>
+
+
+    @*<dl class="dl-horizontal">
+        
+        <dt>
+            @Html.DisplayNameFor(model => model.Transactor.Address)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Transactor.Address)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Transactor.City)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Transactor.City)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Transactor.Zip)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Transactor.Zip)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Transactor.PhoneWork)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Transactor.PhoneWork)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Transactor.PhoneMobile)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Transactor.PhoneMobile)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Transactor.PhoneFax)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Transactor.PhoneFax)
+        </dd>
+       
+       
+        <dt>
+            @Html.DisplayNameFor(model => model.Transactor.Timestamp)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Transactor.Timestamp)
+        </dd>
+    </dl>*@
+</div>
+<div>
+    <a asp-page="./Edit" asp-route-id="@Model.Transactor.Id">Edit</a> |
+    <a asp-page="./Index">Back to List</a>
+</div>

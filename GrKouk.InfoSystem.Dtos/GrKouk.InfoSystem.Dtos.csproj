@@ -5,9 +5,11 @@
     <Version>1.0.1</Version>
     <Authors>George Koukoudis</Authors>
     <Copyright>George Koukoudis</Copyright>
+    <Configurations>Debug;Release;DebugWeb;RlsWeb</Configurations>
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\GrKouk.InfoSystem.Definitions\GrKouk.InfoSystem.Definitions.csproj" />
     <ProjectReference Include="..\GrKouk.InfoSystem.Domain\GrKouk.InfoSystem.Domain.csproj" />
   </ItemGroup>
 

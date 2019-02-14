@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using GrKouk.InfoSystem.Domain.FinConfig;
+using GrKouk.InfoSystem.Definitions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using GrKouk.InfoSystem.Domain.Shared;
-using GrKouk.WebApi.Data;
 using Microsoft.EntityFrameworkCore;
 using GrKouk.InfoSystem.Dtos.WebDtos.WarehouseTransactions;
+using GrKouk.WebRazor.Helpers;
 using NToastNotify;
 
 namespace GrKouk.WebRazor.Pages.Transactions.WarehouseTransMng
@@ -43,15 +42,23 @@ namespace GrKouk.WebRazor.Pages.Transactions.WarehouseTransMng
         public WarehouseTransCreateDto ItemVm { get; set; }
         private void LoadCombos()
         {
-            List<SelectListItem> warTransTypes = new List<SelectListItem>
-            {
-                new SelectListItem() {Value = WarehouseTransactionTypeEnum.WarehouseTransactionTypeImport.ToString(), Text = "Import"},
-                new SelectListItem() {Value = WarehouseTransactionTypeEnum.WarehouseTransactionTypeExport.ToString(), Text = "Export"},
+            var warTransTypes = Enum.GetValues(typeof(WarehouseTransactionTypeEnum))
+                .Cast<WarehouseTransactionTypeEnum>()
+                .Select(c => new SelectListItem()
+                {
+                    Value = c.ToString(),
+                    Text = c.GetDescription()
+                }).ToList();
+
+            //List<SelectListItem> warTransTypes = new List<SelectListItem>
+            //{
+            //    new SelectListItem() {Value = WarehouseTransactionTypeEnum.WarehouseTransactionTypeImport.ToString(), Text = "Import"},
+            //    new SelectListItem() {Value = WarehouseTransactionTypeEnum.WarehouseTransactionTypeExport.ToString(), Text = "Export"},
                
-            };
+            //};
             ViewData["CompanyId"] = new SelectList(_context.Companies.OrderBy(p => p.Code).AsNoTracking(), "Id", "Code");
             ViewData["FiscalPeriodId"] = new SelectList(_context.FiscalPeriods.OrderBy(p=>p.Name).AsNoTracking(), "Id", "Name");
-            ViewData["MaterialId"] = new SelectList(_context.Materials.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
+            ViewData["WarehouseItemId"] = new SelectList(_context.WarehouseItems.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
             //ViewData["SectionId"] = new SelectList(_context.Sections, "Id", "Code");
             ViewData["TransWarehouseDocSeriesId"] = new SelectList(_context.TransWarehouseDocSeriesDefs.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
             ViewData["TransactionType"] = new SelectList(warTransTypes, "Value", "Text");
@@ -99,65 +106,118 @@ namespace GrKouk.WebRazor.Pages.Transactions.WarehouseTransMng
             }
             transToAttach.SectionId = section.Id;
             transToAttach.TransWarehouseDocTypeId = docSeries.TransWarehouseDocTypeDefId;
-            transToAttach.InventoryAction = transWarehouseDef.InventoryTransType;
-            switch (transWarehouseDef.InventoryTransType)
+            var material = await _context.WarehouseItems.SingleOrDefaultAsync(p => p.Id == transToAttach.WarehouseItemId);
+            if (material is null)
             {
-                case WarehouseInventoryTransTypeEnum.WarehouseInventoryTransTypeEnumNoChange:
-                    transToAttach.TransactionType =
-                        WarehouseTransactionTypeEnum.WarehouseTransactionTypeIgnore;
-                    break;
-                case WarehouseInventoryTransTypeEnum.WarehouseInventoryTransTypeEnumImport:
+                ModelState.AddModelError(string.Empty, "Δεν βρέθηκε το είδος");
+                LoadCombos();
+                return Page();
+            }
 
-                    transToAttach.TransactionType =
-                        WarehouseTransactionTypeEnum.WarehouseTransactionTypeImport;
+            switch (material.WarehouseItemNature)
+            {
+                case WarehouseItemNatureEnum.WarehouseItemNatureUndefined:
+                    throw new ArgumentOutOfRangeException();
                     break;
-                case WarehouseInventoryTransTypeEnum.WarehouseInventoryTransTypeEnumExport:
+                case WarehouseItemNatureEnum.WarehouseItemNatureMaterial:
+                    transToAttach.InventoryAction = transWarehouseDef.MaterialInventoryAction;
+                    transToAttach.InventoryValueAction = transWarehouseDef.MaterialInventoryValueAction;
 
-                    transToAttach.TransactionType =
-                        WarehouseTransactionTypeEnum.WarehouseTransactionTypeExport;
                     break;
-                case WarehouseInventoryTransTypeEnum.WarehouseInventoryTransTypeEnumNegativeImport:
-
-                    transToAttach.TransactionType =
-                        WarehouseTransactionTypeEnum.WarehouseTransactionTypeImport;
-                    transToAttach.Quontity1 = transToAttach.Quontity1 * -1;
-                    transToAttach.Quontity2 = transToAttach.Quontity2 * -1;
+                case WarehouseItemNatureEnum.WarehouseItemNatureService:
+                    transToAttach.InventoryAction = transWarehouseDef.ServiceInventoryAction;
+                    transToAttach.InventoryValueAction = transWarehouseDef.ServiceInventoryValueAction;
                     break;
-                case WarehouseInventoryTransTypeEnum.WarehouseInventoryTransTypeEnumNegativeExport:
-
-                    transToAttach.TransactionType =
-                        WarehouseTransactionTypeEnum.WarehouseTransactionTypeExport;
-                    transToAttach.Quontity1 = transToAttach.Quontity1 * -1;
-                    transToAttach.Quontity2 = transToAttach.Quontity2 * -1;
+                case WarehouseItemNatureEnum.WarehouseItemNatureExpense:
+                    transToAttach.InventoryAction = transWarehouseDef.ExpenseInventoryAction;
+                    transToAttach.InventoryValueAction = transWarehouseDef.ExpenseInventoryValueAction;
+                    break;
+                case WarehouseItemNatureEnum.WarehouseItemNatureIncome:
+                    transToAttach.InventoryAction = transWarehouseDef.IncomeInventoryAction;
+                    transToAttach.InventoryValueAction = transWarehouseDef.IncomeInventoryValueAction;
+                    break;
+                case WarehouseItemNatureEnum.WarehouseItemNatureFixedAsset:
+                    transToAttach.InventoryAction = transWarehouseDef.FixedAssetInventoryAction;
+                    transToAttach.InventoryValueAction = transWarehouseDef.FixedAssetInventoryValueAction;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-
-            transToAttach.InventoryValueAction = transWarehouseDef.InventoryValueTransType;
-
-            switch (transWarehouseDef.InventoryValueTransType)
+            
+            switch (transToAttach.InventoryAction)
             {
-                case WarehouseValueTransTypeEnum.WarehouseValueTransTypeEnumNoChange:
+                case InventoryActionEnum.InventoryActionEnumNoChange:
+                    transToAttach.TransactionType =
+                        WarehouseTransactionTypeEnum.WarehouseTransactionTypeIgnore;
+                    transToAttach.TransQ1 = 0;
+                    transToAttach.TransQ2 = 0;
                     break;
-                case WarehouseValueTransTypeEnum.WarehouseValueTransTypeEnumIncrease:
+                case InventoryActionEnum.InventoryActionEnumImport:
 
+                    transToAttach.TransactionType =
+                        WarehouseTransactionTypeEnum.WarehouseTransactionTypeImport;
+                    transToAttach.TransQ1 = (decimal)transToAttach.Quontity1;
+                    transToAttach.TransQ2 = (decimal)transToAttach.Quontity2;
                     break;
-                case WarehouseValueTransTypeEnum.WarehouseValueTransTypeEnumDecrease:
+                case InventoryActionEnum.InventoryActionEnumExport:
 
+                    transToAttach.TransactionType =
+                        WarehouseTransactionTypeEnum.WarehouseTransactionTypeExport;
+                    transToAttach.TransQ1 = (decimal)transToAttach.Quontity1;
+                    transToAttach.TransQ2 = (decimal)transToAttach.Quontity2;
                     break;
-                case WarehouseValueTransTypeEnum.WarehouseValueTransTypeEnumNegativeIncrease:
-                    transToAttach.AmountNet = transToAttach.AmountNet * -1;
-                    transToAttach.AmountDiscount = transToAttach.AmountDiscount * -1;
-                    transToAttach.AmountFpa = transToAttach.AmountFpa * -1;
+                case InventoryActionEnum.InventoryActionEnumNegativeImport:
+
+                    transToAttach.TransactionType =
+                        WarehouseTransactionTypeEnum.WarehouseTransactionTypeImport;
+                    transToAttach.TransQ1 = (decimal)transToAttach.Quontity1 * -1;
+                    transToAttach.TransQ2 = (decimal)transToAttach.Quontity2 * -1;
                     break;
-                case WarehouseValueTransTypeEnum.WarehouseValueTransTypeEnumNegativeDecrease:
-                    transToAttach.AmountNet = transToAttach.AmountNet * -1;
-                    transToAttach.AmountDiscount = transToAttach.AmountDiscount * -1;
-                    transToAttach.AmountFpa = transToAttach.AmountFpa * -1;
+                case InventoryActionEnum.InventoryActionEnumNegativeExport:
+
+                    transToAttach.TransactionType =
+                        WarehouseTransactionTypeEnum.WarehouseTransactionTypeExport;
+                    transToAttach.TransQ1 = (decimal)transToAttach.Quontity1 * -1;
+                    transToAttach.TransQ2 = (decimal)transToAttach.Quontity2 * -1;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
+
+            }
+
+           
+
+            switch (transToAttach.InventoryValueAction)
+            {
+                case InventoryValueActionEnum.InventoryValueActionEnumNoChange:
+                    transToAttach.TransNetAmount = 0;
+                    transToAttach.TransFpaAmount = 0;
+                    transToAttach.TransDiscountAmount = 0;
+                    break;
+                case InventoryValueActionEnum.InventoryValueActionEnumIncrease:
+                    transToAttach.TransNetAmount = transToAttach.AmountNet;
+                    transToAttach.TransFpaAmount = transToAttach.AmountFpa;
+                    transToAttach.TransDiscountAmount = transToAttach.AmountDiscount;
+                    break;
+                case InventoryValueActionEnum.InventoryValueActionEnumDecrease:
+                    transToAttach.TransNetAmount = transToAttach.AmountNet;
+                    transToAttach.TransFpaAmount = transToAttach.AmountFpa;
+                    transToAttach.TransDiscountAmount = transToAttach.AmountDiscount;
+                    break;
+                case InventoryValueActionEnum.InventoryValueActionEnumNegativeIncrease:
+                    transToAttach.TransNetAmount = transToAttach.AmountNet * -1;
+                    transToAttach.TransFpaAmount = transToAttach.AmountFpa * -1;
+                    transToAttach.TransDiscountAmount = transToAttach.AmountDiscount * -1;
+
+                    break;
+                case InventoryValueActionEnum.InventoryValueActionEnumNegativeDecrease:
+                    transToAttach.TransNetAmount = transToAttach.AmountNet * -1;
+                    transToAttach.TransFpaAmount = transToAttach.AmountFpa * -1;
+                    transToAttach.TransDiscountAmount = transToAttach.AmountDiscount * -1;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+             
             }
             _context.WarehouseTransactions.Add(transToAttach);
             

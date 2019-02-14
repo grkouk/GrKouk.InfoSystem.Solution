@@ -7,6 +7,8 @@
     <Company>GrKouk</Company>
     <Description>GrKouk Information System</Description>
     <Copyright>George Koukoudis</Copyright>
+    <Configurations>Debug;Release;DebugWeb;RlsWeb</Configurations>
+    <Version>1.2.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,6 +20,40 @@
 
   <ItemGroup>
     <Content Remove="bundleconfig.json" />
+    <Content Remove="wwwroot\lib\cldr-data\main\as\ca-buddhist.json" />
+    <Content Remove="wwwroot\lib\cldr-data\main\as\ca-chinese.json" />
+    <Content Remove="wwwroot\lib\cldr-data\main\as\ca-coptic.json" />
+    <Content Remove="wwwroot\lib\cldr-data\main\as\ca-dangi.json" />
+    <Content Remove="wwwroot\lib\cldr-data\main\as\ca-ethiopic-amete-alem.json" />
+    <Content Remove="wwwroot\lib\cldr-data\main\as\ca-ethiopic.json" />
+    <Content Remove="wwwroot\lib\cldr-data\main\as\ca-generic.json" />
+    <Content Remove="wwwroot\lib\cldr-data\main\as\ca-gregorian.json" />
+    <Content Remove="wwwroot\lib\cldr-data\main\as\ca-hebrew.json" />
+    <Content Remove="wwwroot\lib\cldr-data\main\as\ca-indian.json" />
+    <Content Remove="wwwroot\lib\cldr-data\main\as\ca-islamic-civil.json" />
+    <Content Remove="wwwroot\lib\cldr-data\main\as\ca-islamic-rgsa.json" />
+    <Content Remove="wwwroot\lib\cldr-data\main\as\ca-islamic-tbla.json" />
+    <Content Remove="wwwroot\lib\cldr-data\main\as\ca-islamic-umalqura.json" />
+    <Content Remove="wwwroot\lib\cldr-data\main\as\ca-islamic.json" />
+    <Content Remove="wwwroot\lib\cldr-data\main\as\ca-japanese.json" />
+    <Content Remove="wwwroot\lib\cldr-data\main\as\ca-persian.json" />
+    <Content Remove="wwwroot\lib\cldr-data\main\as\ca-roc.json" />
+    <Content Remove="wwwroot\lib\cldr-data\main\as\characters.json" />
+    <Content Remove="wwwroot\lib\cldr-data\main\as\currencies.json" />
+    <Content Remove="wwwroot\lib\cldr-data\main\as\dateFields.json" />
+    <Content Remove="wwwroot\lib\cldr-data\main\as\delimiters.json" />
+    <Content Remove="wwwroot\lib\cldr-data\main\as\languages.json" />
+    <Content Remove="wwwroot\lib\cldr-data\main\as\layout.json" />
+    <Content Remove="wwwroot\lib\cldr-data\main\as\listPatterns.json" />
+    <Content Remove="wwwroot\lib\cldr-data\main\as\localeDisplayNames.json" />
+    <Content Remove="wwwroot\lib\cldr-data\main\as\measurementSystemNames.json" />
+    <Content Remove="wwwroot\lib\cldr-data\main\as\numbers.json" />
+    <Content Remove="wwwroot\lib\cldr-data\main\as\posix.json" />
+    <Content Remove="wwwroot\lib\cldr-data\main\as\scripts.json" />
+    <Content Remove="wwwroot\lib\cldr-data\main\as\territories.json" />
+    <Content Remove="wwwroot\lib\cldr-data\main\as\timeZoneNames.json" />
+    <Content Remove="wwwroot\lib\cldr-data\main\as\units.json" />
+    <Content Remove="wwwroot\lib\cldr-data\main\as\variants.json" />
   </ItemGroup>
 
   <ItemGroup>
@@ -26,6 +62,40 @@
 
   <ItemGroup>
     <None Include="bundleconfig.json" />
+    <None Include="wwwroot\lib\cldr-data\main\as\ca-buddhist.json" />
+    <None Include="wwwroot\lib\cldr-data\main\as\ca-chinese.json" />
+    <None Include="wwwroot\lib\cldr-data\main\as\ca-coptic.json" />
+    <None Include="wwwroot\lib\cldr-data\main\as\ca-dangi.json" />
+    <None Include="wwwroot\lib\cldr-data\main\as\ca-ethiopic-amete-alem.json" />
+    <None Include="wwwroot\lib\cldr-data\main\as\ca-ethiopic.json" />
+    <None Include="wwwroot\lib\cldr-data\main\as\ca-generic.json" />
+    <None Include="wwwroot\lib\cldr-data\main\as\ca-gregorian.json" />
+    <None Include="wwwroot\lib\cldr-data\main\as\ca-hebrew.json" />
+    <None Include="wwwroot\lib\cldr-data\main\as\ca-indian.json" />
+    <None Include="wwwroot\lib\cldr-data\main\as\ca-islamic-civil.json" />
+    <None Include="wwwroot\lib\cldr-data\main\as\ca-islamic-rgsa.json" />
+    <None Include="wwwroot\lib\cldr-data\main\as\ca-islamic-tbla.json" />
+    <None Include="wwwroot\lib\cldr-data\main\as\ca-islamic-umalqura.json" />
+    <None Include="wwwroot\lib\cldr-data\main\as\ca-islamic.json" />
+    <None Include="wwwroot\lib\cldr-data\main\as\ca-japanese.json" />
+    <None Include="wwwroot\lib\cldr-data\main\as\ca-persian.json" />
+    <None Include="wwwroot\lib\cldr-data\main\as\ca-roc.json" />
+    <None Include="wwwroot\lib\cldr-data\main\as\characters.json" />
+    <None Include="wwwroot\lib\cldr-data\main\as\currencies.json" />
+    <None Include="wwwroot\lib\cldr-data\main\as\dateFields.json" />
+    <None Include="wwwroot\lib\cldr-data\main\as\delimiters.json" />
+    <None Include="wwwroot\lib\cldr-data\main\as\languages.json" />
+    <None Include="wwwroot\lib\cldr-data\main\as\layout.json" />
+    <None Include="wwwroot\lib\cldr-data\main\as\listPatterns.json" />
+    <None Include="wwwroot\lib\cldr-data\main\as\localeDisplayNames.json" />
+    <None Include="wwwroot\lib\cldr-data\main\as\measurementSystemNames.json" />
+    <None Include="wwwroot\lib\cldr-data\main\as\numbers.json" />
+    <None Include="wwwroot\lib\cldr-data\main\as\posix.json" />
+    <None Include="wwwroot\lib\cldr-data\main\as\scripts.json" />
+    <None Include="wwwroot\lib\cldr-data\main\as\territories.json" />
+    <None Include="wwwroot\lib\cldr-data\main\as\timeZoneNames.json" />
+    <None Include="wwwroot\lib\cldr-data\main\as\units.json" />
+    <None Include="wwwroot\lib\cldr-data\main\as\variants.json" />
   </ItemGroup>
 
   <ItemGroup>
@@ -38,12 +108,14 @@
     </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\GrKouk.InfoSystem.Definitions\GrKouk.InfoSystem.Definitions.csproj" />
     <ProjectReference Include="..\GrKouk.InfoSystem.Domain\GrKouk.InfoSystem.Domain.csproj" />
     <ProjectReference Include="..\GrKouk.InfoSystem.Dtos\GrKouk.InfoSystem.Dtos.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Areas\Identity\Services\" />
+    <Folder Include="wwwroot\lib\multiselectListbox\" />
   </ItemGroup>
 
 </Project>

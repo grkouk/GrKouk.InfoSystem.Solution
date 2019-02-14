@@ -1,10 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using GrKouk.InfoSystem.Definitions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using GrKouk.InfoSystem.Domain.FinConfig;
+using GrKouk.WebRazor.Helpers;
 using Microsoft.EntityFrameworkCore;
 
 namespace GrKouk.WebRazor.Pages.Configuration.WarehouseTransDef
@@ -26,82 +29,69 @@ namespace GrKouk.WebRazor.Pages.Configuration.WarehouseTransDef
 
         private void LoadCombos()
         {
-            var fMovements = _context.FinancialMovements.AsNoTracking().ToList();
-            ViewData["TransWarehouseDefaultDocSeriesDefId"] =
-                new SelectList(_context.TransWarehouseDocSeriesDefs.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
+            // var fMovements = _context.FinancialMovements.AsNoTracking().ToList();
 
+            var inventoryActions = Enum.GetValues(typeof(InventoryActionEnum))
+                .Cast<InventoryActionEnum>()
+                .Select(c => new SelectListItem()
+                {
+                    Value = c.ToString(),
+                    Text = c.GetDescription()
+                }).ToList();
 
-            List<SelectListItem> inventoryTransTypes = new List<SelectListItem>
-            {
-                new SelectListItem()
+            var inventoryValueActions = Enum.GetValues(typeof(InventoryValueActionEnum))
+                .Cast<InventoryValueActionEnum>()
+                .Select(c => new SelectListItem()
                 {
-                    Value = WarehouseInventoryTransTypeEnum.WarehouseInventoryTransTypeEnumNoChange.ToString(),
-                    Text = "No Change"
-                },
-                new SelectListItem()
-                {
-                    Value = WarehouseInventoryTransTypeEnum.WarehouseInventoryTransTypeEnumExport.ToString(),
-                    Text = "Export"
-                },
-                new SelectListItem()
-                {
-                    Value = WarehouseInventoryTransTypeEnum.WarehouseInventoryTransTypeEnumImport.ToString(),
-                    Text = "Import"
-                },
-                new SelectListItem()
-                {
-                    Value = WarehouseInventoryTransTypeEnum.WarehouseInventoryTransTypeEnumNegativeExport.ToString(),
-                    Text = "Neg.Export"
-                },
-                new SelectListItem()
-                {
-                    Value = WarehouseInventoryTransTypeEnum.WarehouseInventoryTransTypeEnumNegativeImport.ToString(),
-                    Text = "Neg.Import"
-                }
-            };
-            List<SelectListItem> inventoryValueTransTypes = new List<SelectListItem>
-            {
-                new SelectListItem()
-                {
-                    Value = WarehouseValueTransTypeEnum.WarehouseValueTransTypeEnumNoChange.ToString(),
-                    Text = "No Change"
-                },
-                new SelectListItem()
-                {
-                    Value = WarehouseValueTransTypeEnum.WarehouseValueTransTypeEnumDecrease.ToString(),
-                    Text = "Decrease"
-                },
-                new SelectListItem()
-                {
-                    Value = WarehouseValueTransTypeEnum.WarehouseValueTransTypeEnumIncrease.ToString(),
-                    Text = "Increase"
-                },
-                new SelectListItem()
-                {
-                    Value = WarehouseValueTransTypeEnum.WarehouseValueTransTypeEnumNegativeDecrease.ToString(),
-                    Text = "Neg.Decrease"
-                },
-                new SelectListItem()
-                {
-                    Value = WarehouseValueTransTypeEnum.WarehouseValueTransTypeEnumNegativeIncrease.ToString(),
-                    Text = "Neg.Increase"
-                }
-            };
-            ViewData["InventoryTransTypes"] = new SelectList(inventoryTransTypes, "Value", "Text");
-            ViewData["InventoryValueTransTypes"] = new SelectList(inventoryValueTransTypes, "Value", "Text");
-            ViewData["AmtBuyTransId"] = new SelectList(fMovements, "Id", "Name", 3);
-           // ViewData["AmtExportsTransId"] = new SelectList(fMovements, "Id", "Name", 3);
-           // ViewData["AmtImportsTransId"] = new SelectList(fMovements, "Id", "Name", 3);
-            ViewData["AmtInvoicedExportsTransId"] = new SelectList(fMovements, "Id", "Name", 3);
-            ViewData["AmtInvoicedImportsTransId"] = new SelectList(fMovements, "Id", "Name", 3);
-            ViewData["AmtSellTransId"] = new SelectList(fMovements, "Id", "Name", 3);
+                    Value = c.ToString(),
+                    Text = c.GetDescription()
+                }).ToList();
+
+            //var infoEntityActionList = Enum.GetValues(typeof(InfoEntityActionEnum))
+            //    .Cast<InfoEntityActionEnum>()
+            //    .Select(c => new SelectListItem()
+            //    {
+            //        Value = c.ToString(),
+            //        Text = c.GetDescription()
+            //    }).ToList();
+
+            ViewData["MaterialInventoryActions"] = new SelectList(inventoryActions, "Value", "Text");
+            ViewData["MaterialInventoryValueActions"] = new SelectList(inventoryValueActions, "Value", "Text");
+
+            ViewData["MaterialInvoicedVolumeAction"] = new SelectList(inventoryActions, "Value", "Text");
+            ViewData["MaterialInvoicedValueAction"] = new SelectList(inventoryValueActions, "Value", "Text");
+
+            ViewData["ServiceInventoryAction"] = new SelectList(inventoryActions, "Value", "Text");
+            ViewData["ServiceInventoryValueAction"] = new SelectList(inventoryValueActions, "Value", "Text");
+
+            ViewData["ExpenseInventoryAction"] = new SelectList(inventoryActions, "Value", "Text");
+            ViewData["ExpenseInventoryValueAction"] = new SelectList(inventoryValueActions, "Value", "Text");
+
+            ViewData["IncomeInventoryAction"] = new SelectList(inventoryActions, "Value", "Text");
+            ViewData["IncomeInventoryValueAction"] = new SelectList(inventoryValueActions, "Value", "Text");
+
+            ViewData["FixedAssetInventoryAction"] = new SelectList(inventoryActions, "Value", "Text");
+            ViewData["FixedAssetInventoryValueAction"] = new SelectList(inventoryValueActions, "Value", "Text");
+
+           // ViewData["AmtBuyAction"] = new SelectList(infoEntityActionList, "Value", "Text");
+           // ViewData["AmtSellAction"] = new SelectList(infoEntityActionList, "Value", "Text");
+           // ViewData["AmtInvoicedExportsAction"] = new SelectList(infoEntityActionList, "Value", "Text");
+           // ViewData["AmtInvoicedImportsAction"] = new SelectList(infoEntityActionList, "Value", "Text");
+           
+           //ViewData["VolBuyAction"] = new SelectList(infoEntityActionList, "Value", "Text");
+           // ViewData["VolInvoicedExportsAction"] = new SelectList(infoEntityActionList, "Value", "Text");
+           // ViewData["VolInvoicedImportsAction"] = new SelectList(infoEntityActionList, "Value", "Text");
+           // ViewData["VolSellAction"] = new SelectList(infoEntityActionList, "Value", "Text");
+
             ViewData["CompanyId"] = new SelectList(_context.Companies.AsNoTracking(), "Id", "Code");
-            ViewData["VolBuyTransId"] = new SelectList(fMovements, "Id", "Name", 3);
-            //ViewData["VolExportsTransId"] = new SelectList(fMovements, "Id", "Name", 3);
-            //ViewData["VolImportsTransId"] = new SelectList(fMovements, "Id", "Name", 3);
-            ViewData["VolInvoicedExportsTransId"] = new SelectList(fMovements, "Id", "Name", 3);
-            ViewData["VolInvoicedImportsTransId"] = new SelectList(fMovements, "Id", "Name", 3);
-            ViewData["VolSellTransId"] = new SelectList(fMovements, "Id", "Name", 3);
+            var dbSeriesList = _context.TransWarehouseDocSeriesDefs.OrderBy(p => p.Name).AsNoTracking();
+            List<SelectListItem> seriesList = new List<SelectListItem>();
+            seriesList.Add(new SelectListItem() { Value = 0.ToString(), Text = "{No Default series}" });
+            foreach (var dbSeriesItem in dbSeriesList)
+            {
+                seriesList.Add(new SelectListItem() { Value = dbSeriesItem.Id.ToString(), Text = dbSeriesItem.Name });
+            }
+            ViewData["DefaultDocSeriesId"] = new SelectList(seriesList, "Value", "Text");
         }
 
         [BindProperty]

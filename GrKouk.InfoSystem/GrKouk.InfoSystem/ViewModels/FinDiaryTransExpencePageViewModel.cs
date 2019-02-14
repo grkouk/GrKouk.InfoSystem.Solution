@@ -11,6 +11,7 @@ using Prism.Logging;
 using Prism.Navigation;
 using Prism.Services;
 using System.Threading.Tasks;
+using GrKouk.InfoSystem.Definitions;
 using GrKouk.InfoSystem.Domain.FinConfig;
 using GrKouk.InfoSystem.Models;
 using Xamarin.Forms;

@@ -7,6 +7,7 @@
     <Description>GrKouk Information System Web API</Description>
     <Copyright>George Koukoudis</Copyright>
     <Version>1.0.2</Version>
+    <Configurations>Debug;Release;DebugWeb;RlsWeb</Configurations>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,6 +15,10 @@
     <Compile Remove="Migrations\20181014053724_initial.Designer.cs" />
     <Compile Remove="Migrations\20181104140516_Perigrafes.cs" />
     <Compile Remove="Migrations\20181104140516_Perigrafes.Designer.cs" />
+    <Compile Remove="Migrations\20190110180531_transactorTransactions1.cs" />
+    <Compile Remove="Migrations\20190110180531_transactorTransactions1.Designer.cs" />
+    <Compile Remove="Migrations\20190123060719_SellDocuments.cs" />
+    <Compile Remove="Migrations\20190123060719_SellDocuments.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -34,6 +39,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\GrKouk.InfoSystem.Definitions\GrKouk.InfoSystem.Definitions.csproj" />
     <ProjectReference Include="..\GrKouk.InfoSystem.Domain\GrKouk.InfoSystem.Domain.csproj" />
     <ProjectReference Include="..\GrKouk.InfoSystem.Dtos\GrKouk.InfoSystem.Dtos.csproj" />
   </ItemGroup>

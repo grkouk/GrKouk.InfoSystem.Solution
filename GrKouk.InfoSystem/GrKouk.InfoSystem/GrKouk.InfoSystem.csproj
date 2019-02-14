@@ -5,9 +5,15 @@
     <Version>1.0.2</Version>
     <Authors>George Koukoudis</Authors>
     <Copyright>George Koukoudis</Copyright>
+    <Configurations>Debug;Release;DebugWeb;RlsWeb</Configurations>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DebugType>pdbonly</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugWeb|AnyCPU'">
     <DebugType>pdbonly</DebugType>
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
@@ -23,6 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\GrKouk.InfoSystem.Definitions\GrKouk.InfoSystem.Definitions.csproj" />
     <ProjectReference Include="..\..\GrKouk.InfoSystem.Domain\GrKouk.InfoSystem.Domain.csproj" />
     <ProjectReference Include="..\..\GrKouk.InfoSystem.Dtos\GrKouk.InfoSystem.Dtos.csproj" />
   </ItemGroup>

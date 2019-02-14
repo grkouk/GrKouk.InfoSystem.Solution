@@ -6,45 +6,65 @@
     ViewData["Title"] = "Diary Transactions";
 }
 
-<h2>Diary Transactions</h2>
+<h4>Diary Transactions</h4>
 @System.Globalization.CultureInfo.CurrentCulture
 @System.Globalization.CultureInfo.CurrentUICulture
 
 <p>
-    <a asp-page="Create">Δημιουργία</a>
+    <small>
+        <a asp-page="Create">Δημιουργία</a>
+    </small>
 </p>
 
-
 <form class="form-inline" asp-page="./Index" method="get">
+    <div class="container">
+        <div class="form-row">
 
-    <p>
-        Find by name:
-        <input class="form-control-sm" type="text" name="SearchString" value="@Model.CurrentFilter" />
-        <select name="DatePeriodFilter" asp-for="CurrentDatePeriod" class="form-control-sm" asp-items="ViewBag.DataFilterValues"></select>
-        <input type="submit" value="Refresh" class="btn btn-light btn-sm" /> |
-        Page Size:
-        <select asp-for="PageSize" onchange="this.form.submit()" >
-            <option value="3">3</option>
-            <option value="5">5</option>
-            <option value="10">10</option>
-            <option value="20">20</option>
-            <option value="100">100</option>
-        </select>
-        |
-        <a asp-page="./Index"
-           asp-route-sortOrder="@Model.CurrentSort"
-           asp-route-pageIndex="@(Model.ListItems.CurrentPage )"
-          asp-route-datePeriodFilter="CURMONTH"
-           asp-route-PageSize="@Model.PageSize">Back to full List</a>
+            <div class="form-group col-md-auto">
+                <label class="small"> Search:</label>
+                <input class="form-control form-control-sm small" type="text" name="SearchString" value="@Model.CurrentFilter" />
+                <input type="submit" value="Search" class="btn btn-light btn-sm" />
+            </div>
+            <div class="form-group col-md-auto">
+                <a class="small" asp-page="./Index"
+                   asp-route-sortOrder="@Model.CurrentSort"
+                   asp-route-pageIndex="@(Model.ListItems.CurrentPage)"
+                   asp-route-currentFilter="@Model.CurrentFilter"
+                   asp-route-datePeriodFilter="CURMONTH"
+                   asp-route-PageSize="@Model.PageSize">Back to full List</a>
+            </div>
+            <div class="form-group col-md-auto">
+                <label class="small"> Period:</label>
+                <select name="DatePeriodFilter" asp-for="CurrentDatePeriod" class="form-control form-control-sm small" asp-items="ViewBag.DataFilterValues"
+                        onchange="this.form.submit()"></select>
+            </div>
+            <div class="form-group col-md-auto">
+                <label class="small"> Page Size:</label>
+                <select asp-for="PageSize" onchange="this.form.submit()" class="form-control form-control-sm small">
+                    <option value="3">3</option>
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="100">100</option>
+                </select>
+            </div>
+            <div class="form-group col-md-auto">
+                <small>
 
-    </p>
+                    Page:@Model.ListItems.CurrentPage of @Model.ListItems.TotalPages Total Items @Model.ListItems.TotalCount
+                </small>
+            </div>
 
+        </div>
+    </div>
 </form>
+
+<br />
 <div class="table-responsive-sm">
     <table class="table table-bordered table-sm">
         <thead class="thead-light">
             <tr>
-                <th>
+                <th class="small text-right">
                     <a asp-page="./Index" asp-route-sortOrder="@Model.DateSort"
                        asp-route-searchFilter="@Model.CurrentFilter"
                        asp-route-datePeriodFilter="@Model.CurrentDatePeriod"
@@ -54,10 +74,10 @@
                     </a>
                     <i class="@Model.DateSortIcon"></i>
                 </th>
-                <th>
+                <th class="small">
                     @Html.DisplayNameFor(model => model.ListItems[0].ReferenceCode)
                 </th>
-                <th>
+                <th class="small">
                     <a asp-page="./Index" asp-route-sortOrder="@Model.NameSort"
                        asp-route-searchFilter="@Model.CurrentFilter"
                        asp-route-datePeriodFilter="@Model.CurrentDatePeriod"
@@ -67,45 +87,45 @@
 
                     <i class="@Model.NameSortIcon"></i>
                 </th>
-                <th>
+                <th class="small">
                     @Html.DisplayNameFor(model => model.ListItems[0].FinTransCategoryName)
                 </th>
-                <th>
+                <th class="small">
                     @Html.DisplayNameFor(model => model.ListItems[0].CompanyName)
                 </th>
-                <th>
+                <th class="small">
                     @Html.DisplayNameFor(model => model.ListItems[0].CostCentreName)
                 </th>
 
 
 
-                <th>
+                <th class="small">
                     @Html.DisplayNameFor(model => model.ListItems[0].AmountTotal)
                 </th>
 
-                <th>Available Actions</th>
+                <th class="small">Available Actions</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var item in Model.ListItems)
             {
                 <tr>
-                    <td class="text-right">
+                    <td class="text-right small">
                         @Html.DisplayFor(modelItem => item.TransactionDate)
                     </td>
-                    <td>
+                    <td class="small">
                         @Html.DisplayFor(modelItem => item.ReferenceCode)
                     </td>
-                    <td>
+                    <td class="small">
                         @Html.DisplayFor(modelItem => item.TransactorName)
                     </td>
-                    <td>
+                    <td class="small">
                         @Html.DisplayFor(modelItem => item.FinTransCategoryName)
                     </td>
-                    <td>
+                    <td class="small">
                         @Html.DisplayFor(modelItem => item.CompanyName)
                     </td>
-                    <td>
+                    <td class="small">
                         @Html.DisplayFor(modelItem => item.CostCentreName)
                     </td>
 
@@ -113,7 +133,7 @@
                     <td class="text-right">
                         @Html.DisplayFor(modelItem => item.AmountTotal)
                     </td>
-                    <td>
+                    <td class="small">
                         <a asp-page="./Edit" asp-route-id="@item.Id"><i class="fas fa-edit"></i></a> |
                         <a asp-page="./Details" asp-route-id="@item.Id"><i class="fas fa-info-circle"></i></a> |
                         <a asp-page="./Delete" asp-route-id="@item.Id"><i class="fas fa-trash"></i></a>
@@ -129,49 +149,82 @@
     var nextDisabled = !Model.ListItems.HasNext ? "disabled" : "";
 }
 
-<form class="form-inline" name="PageSizeForm" method="get">
-  
-    <a asp-page="./Index"
-       asp-route-sortOrder="@Model.CurrentSort"
-       asp-route-pageIndex="@(Model.ListItems.CurrentPage - 1)"
-       asp-route-searchFilter="@Model.CurrentFilter"
-       asp-route-datePeriodFilter="@Model.CurrentDatePeriod"
-       asp-route-PageSize="@Model.PageSize"
-       class="btn btn-light @prevDisabled">
-        <
-    </a>
-    Page:@Model.ListItems.CurrentPage of @Model.TotalPages Total Items @Model.TotalCount
-    <a asp-page="./Index"
-       asp-route-sortOrder="@Model.CurrentSort"
-       asp-route-pageIndex="@(Model.ListItems.CurrentPage + 1)"
-       asp-route-searchFilter="@Model.CurrentFilter"
-       asp-route-datePeriodFilter="@Model.CurrentDatePeriod"
-       asp-route-PageSize="@Model.PageSize"
-       class="btn btn-light @nextDisabled">
-        >
-    </a>
+<nav aria-label="Page navigation example">
+    <ul class="pagination pagination-sm">
+        <li class="page-item @prevDisabled">
+            <a asp-page="./Index"
+               asp-route-sortOrder="@Model.CurrentSort"
+               asp-route-pageIndex="1"
+               asp-route-searchFilter="@Model.CurrentFilter"
+               asp-route-datePeriodFilter="@Model.CurrentDatePeriod"
+               asp-route-PageSize="@Model.PageSize"
+               class="page-link" aria-label="First">
+                @*<span aria-hidden="true">;</span>*@
+                First
+            </a>
+        </li>
+        <li class="page-item @prevDisabled">
+            <a asp-page="./Index"
+               asp-route-sortOrder="@Model.CurrentSort"
+               asp-route-pageIndex="@(Model.ListItems.CurrentPage - 1)"
+               asp-route-searchFilter="@Model.CurrentFilter"
+               asp-route-datePeriodFilter="@Model.CurrentDatePeriod"
+               asp-route-PageSize="@Model.PageSize"
+               class="page-link" aria-label="Previous">
+                @*<span aria-hidden="true">&laquo;</span>*@
+                Previous
+            </a>
+        </li>
+        @*<li class="page-item"><a class="page-link" href="#">1</a></li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>*@
+        <li class="page-item @nextDisabled">
+            <a asp-page="./Index"
+               asp-route-sortOrder="@Model.CurrentSort"
+               asp-route-pageIndex="@(Model.ListItems.CurrentPage + 1)"
+               asp-route-searchFilter="@Model.CurrentFilter"
+               asp-route-datePeriodFilter="@Model.CurrentDatePeriod"
+               asp-route-PageSize="@Model.PageSize"
+               class="page-link" aria-label="Next">
+                @*<span aria-hidden="true">&raquo;</span>*@
+                Next
+            </a>
+        </li>
+        <li class="page-item  @nextDisabled">
+            <a asp-page="./Index"
+               asp-route-sortOrder="@Model.CurrentSort"
+               asp-route-pageIndex="@Model.ListItems.TotalPages"
+               asp-route-searchFilter="@Model.CurrentFilter"
+               asp-route-datePeriodFilter="@Model.CurrentDatePeriod"
+               asp-route-PageSize="@Model.PageSize"
+               class="page-link" aria-label="First">
+                @*<span aria-hidden="true">;</span>*@
+                Last
+            </a>
+        </li>
+    </ul>
+</nav>
 
-</form>
 @section Scripts {
     <script>
-        //$(document).ready(function () { });
-        //var $pageSize = $('#PageSize');
-        //var $datePeriod = $('#CurrentDatePeriod');
-        //var $searchString = $('[name="SearchString"]');
-        //$pageSize.change((e) => {
-        //    console.log(e.tostring);
-        //    $('#searchFilter').val($searchString.val());
-        //    console.log("Parameter Search Filter is " + $searchString.val());
-        //    $('#datePeriodFilter').val($datePeriod.val());
-        //    console.log("Parameter datePeriodFilter is " + $datePeriod.val());
-        //    //$('#sortOrder').val();
-        //    console.log(this.toString());
-        //    console.log($(this).toString());
-        //    var $f = $('[name="PageSizeForm"]');
-        //    console.log($f.toString());
-        //    console.log('Form Data');
-        //    console.log($f.serialize().toString());
-        //    $f.submit();
-        //});
+                //$(document).ready(function () { });
+                //var $pageSize = $('#PageSize');
+                //var $datePeriod = $('#CurrentDatePeriod');
+                //var $searchString = $('[name="SearchString"]');
+                //$pageSize.change((e) => {
+                //    console.log(e.tostring);
+                //    $('#searchFilter').val($searchString.val());
+                //    console.log("Parameter Search Filter is " + $searchString.val());
+                //    $('#datePeriodFilter').val($datePeriod.val());
+                //    console.log("Parameter datePeriodFilter is " + $datePeriod.val());
+                //    //$('#sortOrder').val();
+                //    console.log(this.toString());
+                //    console.log($(this).toString());
+                //    var $f = $('[name="PageSizeForm"]');
+                //    console.log($f.toString());
+                //    console.log('Form Data');
+                //    console.log($f.serialize().toString());
+                //    $f.submit();
+                //});
     </script>
 }

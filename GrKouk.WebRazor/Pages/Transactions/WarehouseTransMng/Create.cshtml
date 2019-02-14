@@ -51,9 +51,9 @@
         </div>
         <div class="form-row">
             <div class="form-group col-md-6">
-                <label asp-for="ItemVm.MaterialId" class="small " id="materialLabel"></label>
+                <label asp-for="ItemVm.WarehouseItemId" class="small " id="materialLabel"></label>
                 <div class="input-group ">
-                    <select asp-for="ItemVm.MaterialId" class="form-control form-control-sm small " asp-items="ViewBag.MaterialId"></select>
+                    <select asp-for="ItemVm.WarehouseItemId" class="form-control form-control-sm small " asp-items="ViewBag.MaterialId"></select>
                     <div class="input-group-append">
                         <span class="form-control-sm small" id="matLoading" hidden><i class="fas fa-spinner fa-spin"></i></span>
                     </div>
@@ -71,12 +71,7 @@
                 <select asp-for="ItemVm.CompanyId" class="form-control form-control-sm small" asp-items="ViewBag.CompanyId"></select>
             </div>
         </div>
-        <div class="form-row">
-            <div class="form-group col-md-3">
-                <label asp-for="ItemVm.TransactionType" class="small"></label>
-                <select asp-for="ItemVm.TransactionType" class="form-control form-control-sm small" asp-items="ViewBag.TransactionType" disabled></select>
-            </div>
-        </div>
+        
         <div class="form-row">
             <div class="form-group  col-md-3">
                 <label asp-for="ItemVm.Quontity1" class="small"></label>
@@ -194,7 +189,7 @@
                 var $spinner = $('#matLoading');
                 $spinner.attr('hidden', false);
                 var materialId = $material.val();
-                console.log("Material change event ->" + materialId);
+                console.log("WarehouseItem change event ->" + materialId);
 
                 var uri = '@Configuration.GetSection("WebApiSettings")["WebApiLocal"]';
                 var finalUri = `${uri}/materials/materialdata?materialId=${materialId}`;
@@ -332,9 +327,7 @@
             $material.change(() => {
                 materialChanged();
             });
-            $series.change(() => {
-                seriesChanged();
-            });
+           
             //#region Initial values
             if ($initialLoad.val() == 'True') {
                 $('#matLoading').attr('hidden', true);

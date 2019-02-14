@@ -54,24 +54,19 @@ namespace GrKouk.WebRazor
                 // We will put our translations in a folder called Resources
                 o.ResourcesPath = "Resources";
             });
-
+            services.AddDistributedMemoryCache();
+            services.AddSession();
             services.AddMvc()
                 .AddNToastNotifyToastr(new ToastrOptions()
                 {
                     ProgressBar = true,
                     PositionClass = ToastPositions.BottomRight,
-                    TimeOut=5000,
-                    ExtendedTimeOut=1000
+                    TimeOut = 5000,
+                    ExtendedTimeOut = 1000
                 })
-
-                //.AddNToastNotifyNoty(new NotyOptions()
-                //{
-                //    ProgressBar = true,
-                //    Timeout = 5000,
-                //    Layout = "bottomRight",
-                //    Theme = "bootstrap-v4"
-                //})
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+
             services.AddAutoMapper(cfg =>
             {
                 cfg.AddProfile(new AutoMapperProfile());
@@ -112,6 +107,7 @@ namespace GrKouk.WebRazor
                 SupportedUICultures = supportedCultures
             });
             app.UseNToastNotify();
+            app.UseSession();
             app.UseMvc();
         }
     }

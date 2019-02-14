@@ -19,7 +19,7 @@ namespace GrKouk.WebApi.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("GrKouk.InfoSystem.Domain.FinConfig.BuyMaterialDocSeriesDef", b =>
+            modelBuilder.Entity("GrKouk.InfoSystem.Domain.FinConfig.BuyDocSeriesDef", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -30,7 +30,7 @@ namespace GrKouk.WebApi.Migrations
 
                     b.Property<bool>("Active");
 
-                    b.Property<int>("BuyMaterialDocTypeDefId");
+                    b.Property<int>("BuyDocTypeDefId");
 
                     b.Property<string>("Code")
                         .IsRequired()
@@ -43,17 +43,17 @@ namespace GrKouk.WebApi.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BuyMaterialDocTypeDefId");
+                    b.HasIndex("BuyDocTypeDefId");
 
                     b.HasIndex("Code")
                         .IsUnique();
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("BuyMaterialDocSeriesDefs");
+                    b.ToTable("BuyDocSeriesDefs");
                 });
 
-            modelBuilder.Entity("GrKouk.InfoSystem.Domain.FinConfig.BuyMaterialDocTypeDef", b =>
+            modelBuilder.Entity("GrKouk.InfoSystem.Domain.FinConfig.BuyDocTypeDef", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -73,10 +73,12 @@ namespace GrKouk.WebApi.Migrations
                     b.Property<string>("Name")
                         .HasMaxLength(200);
 
-                    b.Property<int?>("TransSupplierDefId");
+                    b.Property<int?>("TransTransactorDefId");
 
                     b.Property<int?>("TransWarehouseDefId");
 
+                    b.Property<int>("UsedPrice");
+
                     b.HasKey("Id");
 
                     b.HasIndex("Code")
@@ -84,11 +86,11 @@ namespace GrKouk.WebApi.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.HasIndex("TransSupplierDefId");
+                    b.HasIndex("TransTransactorDefId");
 
                     b.HasIndex("TransWarehouseDefId");
 
-                    b.ToTable("BuyMaterialDocTypeDefs");
+                    b.ToTable("BuyDocTypeDefs");
                 });
 
             modelBuilder.Entity("GrKouk.InfoSystem.Domain.FinConfig.FinancialMovement", b =>
@@ -138,7 +140,114 @@ namespace GrKouk.WebApi.Migrations
                     b.ToTable("FpaKategories");
                 });
 
-            modelBuilder.Entity("GrKouk.InfoSystem.Domain.FinConfig.TransCustomerDef", b =>
+            modelBuilder.Entity("GrKouk.InfoSystem.Domain.FinConfig.SellDocSeriesDef", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Abbr")
+                        .HasMaxLength(20);
+
+                    b.Property<bool>("Active");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(15);
+
+                    b.Property<int>("CompanyId");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(200);
+
+                    b.Property<int>("SellDocTypeDefId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Code")
+                        .IsUnique();
+
+                    b.HasIndex("CompanyId");
+
+                    b.HasIndex("SellDocTypeDefId");
+
+                    b.ToTable("SellDocSeriesDefs");
+                });
+
+            modelBuilder.Entity("GrKouk.InfoSystem.Domain.FinConfig.SellDocTypeDef", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Abbr")
+                        .HasMaxLength(20);
+
+                    b.Property<bool>("Active");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(15);
+
+                    b.Property<int>("CompanyId");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(200);
+
+                    b.Property<int?>("TransTransactorDefId");
+
+                    b.Property<int?>("TransWarehouseDefId");
+
+                    b.Property<int>("UsedPrice");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Code")
+                        .IsUnique();
+
+                    b.HasIndex("CompanyId");
+
+                    b.HasIndex("TransTransactorDefId");
+
+                    b.HasIndex("TransWarehouseDefId");
+
+                    b.ToTable("SellDocTypeDefs");
+                });
+
+            modelBuilder.Entity("GrKouk.InfoSystem.Domain.FinConfig.TransExpenseDef", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<bool>("Active");
+
+                    b.Property<string>("Code")
+                        .HasMaxLength(20);
+
+                    b.Property<int>("CompanyId");
+
+                    b.Property<int?>("DefaultDocSeriesId");
+
+                    b.Property<int>("InventoryAction");
+
+                    b.Property<int>("InventoryValueAction");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(200);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Code")
+                        .IsUnique()
+                        .HasFilter("[Code] IS NOT NULL");
+
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("TransExpenseDefs");
+                });
+
+            modelBuilder.Entity("GrKouk.InfoSystem.Domain.FinConfig.TransTransactorDef", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -151,16 +260,12 @@ namespace GrKouk.WebApi.Migrations
 
                     b.Property<int>("CompanyId");
 
-                    b.Property<int>("CreditTransId");
+                    b.Property<int>("DefaultDocSeriesId");
 
-                    b.Property<int>("DebitTransId");
-
-                    b.Property<int>("FinancialTransType");
+                    b.Property<int>("FinancialTransAction");
 
                     b.Property<string>("Name")
                         .HasMaxLength(200);
-
-                    b.Property<int?>("TransCustomerDefaultDocSeriesId");
 
                     b.Property<int>("TurnOverTransId");
 
@@ -172,18 +277,12 @@ namespace GrKouk.WebApi.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.HasIndex("CreditTransId");
-
-                    b.HasIndex("DebitTransId");
-
-                    b.HasIndex("TransCustomerDefaultDocSeriesId");
-
                     b.HasIndex("TurnOverTransId");
 
-                    b.ToTable("TransCustomerDefs");
+                    b.ToTable("TransTransactorDefs");
                 });
 
-            modelBuilder.Entity("GrKouk.InfoSystem.Domain.FinConfig.TransCustomerDocSeriesDef", b =>
+            modelBuilder.Entity("GrKouk.InfoSystem.Domain.FinConfig.TransTransactorDocSeriesDef", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -199,7 +298,7 @@ namespace GrKouk.WebApi.Migrations
                     b.Property<string>("Name")
                         .HasMaxLength(200);
 
-                    b.Property<int>("TransCustomerDocTypeDefId");
+                    b.Property<int>("TransTransactorDocTypeDefId");
 
                     b.HasKey("Id");
 
@@ -209,12 +308,12 @@ namespace GrKouk.WebApi.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.HasIndex("TransCustomerDocTypeDefId");
+                    b.HasIndex("TransTransactorDocTypeDefId");
 
-                    b.ToTable("TransCustomerDocSeriesDefs");
+                    b.ToTable("TransTransactorDocSeriesDefs");
                 });
 
-            modelBuilder.Entity("GrKouk.InfoSystem.Domain.FinConfig.TransCustomerDocTypeDef", b =>
+            modelBuilder.Entity("GrKouk.InfoSystem.Domain.FinConfig.TransTransactorDocTypeDef", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -230,7 +329,7 @@ namespace GrKouk.WebApi.Migrations
                     b.Property<string>("Name")
                         .HasMaxLength(200);
 
-                    b.Property<int?>("TransCustomerDefId");
+                    b.Property<int?>("TransTransactorDefId");
 
                     b.HasKey("Id");
 
@@ -240,112 +339,9 @@ namespace GrKouk.WebApi.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.HasIndex("TransCustomerDefId");
+                    b.HasIndex("TransTransactorDefId");
 
-                    b.ToTable("TransCustomerDocTypeDefs");
-                });
-
-            modelBuilder.Entity("GrKouk.InfoSystem.Domain.FinConfig.TransSupplierDef", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<bool>("Active");
-
-                    b.Property<string>("Code")
-                        .HasMaxLength(15);
-
-                    b.Property<int>("CompanyId");
-
-                    b.Property<int>("CreditTransId");
-
-                    b.Property<int>("DebitTransId");
-
-                    b.Property<int>("FinancialTransType");
-
-                    b.Property<string>("Name")
-                        .HasMaxLength(200);
-
-                    b.Property<int>("TransSupplierDefaultDocSeriesId");
-
-                    b.Property<int>("TurnOverTransId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Code")
-                        .IsUnique()
-                        .HasFilter("[Code] IS NOT NULL");
-
-                    b.HasIndex("CompanyId");
-
-                    b.HasIndex("TransSupplierDefaultDocSeriesId");
-
-                    b.HasIndex("TurnOverTransId");
-
-                    b.ToTable("TransSupplierDefs");
-                });
-
-            modelBuilder.Entity("GrKouk.InfoSystem.Domain.FinConfig.TransSupplierDocSeriesDef", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<bool>("Active");
-
-                    b.Property<string>("Code")
-                        .HasMaxLength(15);
-
-                    b.Property<int>("CompanyId");
-
-                    b.Property<string>("Name")
-                        .HasMaxLength(200);
-
-                    b.Property<int>("TransSupplierDocTypeDefId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Code")
-                        .IsUnique()
-                        .HasFilter("[Code] IS NOT NULL");
-
-                    b.HasIndex("CompanyId");
-
-                    b.HasIndex("TransSupplierDocTypeDefId");
-
-                    b.ToTable("TransSupplierDocSeriesDefs");
-                });
-
-            modelBuilder.Entity("GrKouk.InfoSystem.Domain.FinConfig.TransSupplierDocTypeDef", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<bool>("Active");
-
-                    b.Property<string>("Code")
-                        .HasMaxLength(15);
-
-                    b.Property<int>("CompanyId");
-
-                    b.Property<string>("Name")
-                        .HasMaxLength(200);
-
-                    b.Property<int?>("TransSupplierDefId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Code")
-                        .IsUnique()
-                        .HasFilter("[Code] IS NOT NULL");
-
-                    b.HasIndex("CompanyId");
-
-                    b.HasIndex("TransSupplierDefId");
-
-                    b.ToTable("TransSupplierDocTypeDefs");
+                    b.ToTable("TransTransactorDocTypeDefs");
                 });
 
             modelBuilder.Entity("GrKouk.InfoSystem.Domain.FinConfig.TransWarehouseDef", b =>
@@ -356,69 +352,47 @@ namespace GrKouk.WebApi.Migrations
 
                     b.Property<bool>("Active");
 
-                    b.Property<int>("AmtBuyTransId");
-
-                    b.Property<int>("AmtExportsTransId");
-
-                    b.Property<int>("AmtImportsTransId");
-
-                    b.Property<int>("AmtInvoicedExportsTransId");
-
-                    b.Property<int>("AmtInvoicedImportsTransId");
-
-                    b.Property<int>("AmtSellTransId");
-
                     b.Property<string>("Code")
                         .HasMaxLength(15);
 
                     b.Property<int>("CompanyId");
 
-                    b.Property<int>("InventoryTransType");
+                    b.Property<int>("DefaultDocSeriesId");
 
-                    b.Property<int>("InventoryValueTransType");
+                    b.Property<int>("ExpenseInventoryAction");
+
+                    b.Property<int>("ExpenseInventoryValueAction");
+
+                    b.Property<int>("FixedAssetInventoryAction");
+
+                    b.Property<int>("FixedAssetInventoryValueAction");
+
+                    b.Property<int>("IncomeInventoryAction");
+
+                    b.Property<int>("IncomeInventoryValueAction");
+
+                    b.Property<int>("MaterialInventoryAction");
+
+                    b.Property<int>("MaterialInventoryValueAction");
+
+                    b.Property<int>("MaterialInvoicedValueAction");
+
+                    b.Property<int>("MaterialInvoicedVolumeAction");
 
                     b.Property<string>("Name")
                         .HasMaxLength(200);
 
-                    b.Property<int>("TransWarehouseDefaultDocSeriesDefId");
+                    b.Property<int>("ServiceInventoryAction");
 
-                    b.Property<int>("VolBuyTransId");
-
-                    b.Property<int>("VolExportsTransId");
-
-                    b.Property<int>("VolImportsTransId");
-
-                    b.Property<int>("VolInvoicedExportsTransId");
-
-                    b.Property<int>("VolInvoicedImportsTransId");
-
-                    b.Property<int>("VolSellTransId");
+                    b.Property<int>("ServiceInventoryValueAction");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AmtBuyTransId");
-
-                    b.HasIndex("AmtInvoicedExportsTransId");
-
-                    b.HasIndex("AmtInvoicedImportsTransId");
-
-                    b.HasIndex("AmtSellTransId");
 
                     b.HasIndex("Code")
                         .IsUnique()
                         .HasFilter("[Code] IS NOT NULL");
 
                     b.HasIndex("CompanyId");
-
-                    b.HasIndex("TransWarehouseDefaultDocSeriesDefId");
-
-                    b.HasIndex("VolBuyTransId");
-
-                    b.HasIndex("VolInvoicedExportsTransId");
-
-                    b.HasIndex("VolInvoicedImportsTransId");
-
-                    b.HasIndex("VolSellTransId");
 
                     b.ToTable("TransWarehouseDefs");
                 });
@@ -485,7 +459,7 @@ namespace GrKouk.WebApi.Migrations
                     b.ToTable("TransWarehouseDocTypeDefs");
                 });
 
-            modelBuilder.Entity("GrKouk.InfoSystem.Domain.Shared.BuyMaterialsDocLine", b =>
+            modelBuilder.Entity("GrKouk.InfoSystem.Domain.Shared.BuyDocLine", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -499,7 +473,7 @@ namespace GrKouk.WebApi.Migrations
 
                     b.Property<int>("BuyDocumentId");
 
-                    b.Property<int?>("BuyMaterialsDocumentId");
+                    b.Property<int?>("BuyDocumentId1");
 
                     b.Property<decimal>("DiscountRate");
 
@@ -509,8 +483,6 @@ namespace GrKouk.WebApi.Migrations
                     b.Property<float>("Factor");
 
                     b.Property<decimal>("FpaRate");
-
-                    b.Property<int>("MaterialId");
 
                     b.Property<int>("PrimaryUnitId");
 
@@ -522,18 +494,20 @@ namespace GrKouk.WebApi.Migrations
 
                     b.Property<decimal>("UnitPrice");
 
+                    b.Property<int>("WarehouseItemId");
+
                     b.HasKey("Id");
 
                     b.HasIndex("BuyDocumentId");
 
-                    b.HasIndex("BuyMaterialsDocumentId");
+                    b.HasIndex("BuyDocumentId1");
 
-                    b.HasIndex("MaterialId");
+                    b.HasIndex("WarehouseItemId");
 
-                    b.ToTable("BuyMaterialsDocLines");
+                    b.ToTable("BuyDocLines");
                 });
 
-            modelBuilder.Entity("GrKouk.InfoSystem.Domain.Shared.BuyMaterialsDocument", b =>
+            modelBuilder.Entity("GrKouk.InfoSystem.Domain.Shared.BuyDocument", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -545,6 +519,10 @@ namespace GrKouk.WebApi.Migrations
 
                     b.Property<decimal>("AmountNet");
 
+                    b.Property<int>("BuyDocSeriesId");
+
+                    b.Property<int>("BuyDocTypeId");
+
                     b.Property<int>("CompanyId");
 
                     b.Property<string>("Etiology")
@@ -552,13 +530,7 @@ namespace GrKouk.WebApi.Migrations
 
                     b.Property<int>("FiscalPeriodId");
 
-                    b.Property<int>("MaterialDocSeriesId");
-
-                    b.Property<int>("MaterialDocTypeId");
-
                     b.Property<int>("SectionId");
-
-                    b.Property<int>("SupplierId");
 
                     b.Property<byte[]>("Timestamp")
                         .IsConcurrencyToken()
@@ -568,23 +540,25 @@ namespace GrKouk.WebApi.Migrations
 
                     b.Property<string>("TransRefCode");
 
+                    b.Property<int>("TransactorId");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("BuyDocSeriesId");
+
+                    b.HasIndex("BuyDocTypeId");
 
                     b.HasIndex("CompanyId");
 
                     b.HasIndex("FiscalPeriodId");
 
-                    b.HasIndex("MaterialDocSeriesId");
-
-                    b.HasIndex("MaterialDocTypeId");
-
                     b.HasIndex("SectionId");
-
-                    b.HasIndex("SupplierId");
 
                     b.HasIndex("TransDate");
 
-                    b.ToTable("BuyMaterialsDocuments");
+                    b.HasIndex("TransactorId");
+
+                    b.ToTable("BuyDocuments");
                 });
 
             modelBuilder.Entity("GrKouk.InfoSystem.Domain.Shared.Company", b =>
@@ -625,70 +599,28 @@ namespace GrKouk.WebApi.Migrations
                     b.ToTable("CostCentres");
                 });
 
-            modelBuilder.Entity("GrKouk.InfoSystem.Domain.Shared.CustomerTransaction", b =>
+            modelBuilder.Entity("GrKouk.InfoSystem.Domain.Shared.DiaryDef", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<decimal>("AmountDiscount");
+                    b.Property<int>("DiaryType");
 
-                    b.Property<decimal>("AmountFpa");
+                    b.Property<string>("Name");
 
-                    b.Property<decimal>("AmountNet");
+                    b.Property<string>("SelectedDocTypes")
+                        .HasMaxLength(200);
 
-                    b.Property<int>("CompanyId");
+                    b.Property<string>("SelectedMatNatures")
+                        .HasMaxLength(200);
 
-                    b.Property<int>("CreatorId");
-
-                    b.Property<int>("CustomerId");
-
-                    b.Property<decimal>("DiscountRate");
-
-                    b.Property<string>("Etiology")
-                        .HasMaxLength(500);
-
-                    b.Property<int>("FinancialAction");
-
-                    b.Property<int>("FiscalPeriodId");
-
-                    b.Property<decimal>("FpaRate");
-
-                    b.Property<int>("SectionId");
-
-                    b.Property<byte[]>("Timestamp")
-                        .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate();
-
-                    b.Property<int>("TransCustomerDocSeriesId");
-
-                    b.Property<int>("TransCustomerDocTypeId");
-
-                    b.Property<DateTime>("TransDate");
-
-                    b.Property<string>("TransRefCode");
-
-                    b.Property<int>("TransactionType");
+                    b.Property<string>("SelectedTransTypes")
+                        .HasMaxLength(200);
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId");
-
-                    b.HasIndex("CreatorId");
-
-                    b.HasIndex("CustomerId");
-
-                    b.HasIndex("FiscalPeriodId");
-
-                    b.HasIndex("SectionId");
-
-                    b.HasIndex("TransCustomerDocSeriesId");
-
-                    b.HasIndex("TransCustomerDocTypeId");
-
-                    b.HasIndex("TransDate");
-
-                    b.ToTable("CustomerTransactions");
+                    b.ToTable("DiaryDefs");
                 });
 
             modelBuilder.Entity("GrKouk.InfoSystem.Domain.Shared.FinDiaryTransaction", b =>
@@ -790,76 +722,6 @@ namespace GrKouk.WebApi.Migrations
                     b.ToTable("FiscalPeriods");
                 });
 
-            modelBuilder.Entity("GrKouk.InfoSystem.Domain.Shared.Material", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<bool>("Active");
-
-                    b.Property<string>("BarCode")
-                        .HasMaxLength(50);
-
-                    b.Property<int>("BuyMeasureUnitId");
-
-                    b.Property<double>("BuyUnitToMainRate");
-
-                    b.Property<string>("Code")
-                        .HasMaxLength(20);
-
-                    b.Property<int>("CompanyId");
-
-                    b.Property<string>("Description");
-
-                    b.Property<int>("FpaDefId");
-
-                    b.Property<int>("MainMeasureUnitId");
-
-                    b.Property<string>("ManufacturerCode")
-                        .HasMaxLength(50);
-
-                    b.Property<int>("MaterialCategoryId");
-
-                    b.Property<int>("MaterialNature");
-
-                    b.Property<int>("MaterialType");
-
-                    b.Property<string>("Name")
-                        .HasMaxLength(200);
-
-                    b.Property<int>("SecondaryMeasureUnitId");
-
-                    b.Property<double>("SecondaryUnitToMainRate");
-
-                    b.Property<string>("ShortDescription")
-                        .HasMaxLength(500);
-
-                    b.Property<byte[]>("Timestamp")
-                        .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate();
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BuyMeasureUnitId");
-
-                    b.HasIndex("Code")
-                        .IsUnique()
-                        .HasFilter("[Code] IS NOT NULL");
-
-                    b.HasIndex("CompanyId");
-
-                    b.HasIndex("FpaDefId");
-
-                    b.HasIndex("MainMeasureUnitId");
-
-                    b.HasIndex("MaterialCategoryId");
-
-                    b.HasIndex("SecondaryMeasureUnitId");
-
-                    b.ToTable("Materials");
-                });
-
             modelBuilder.Entity("GrKouk.InfoSystem.Domain.Shared.MaterialCategory", b =>
                 {
                     b.Property<int>("Id")
@@ -950,7 +812,51 @@ namespace GrKouk.WebApi.Migrations
                     b.ToTable("Sections");
                 });
 
-            modelBuilder.Entity("GrKouk.InfoSystem.Domain.Shared.SupplierTransaction", b =>
+            modelBuilder.Entity("GrKouk.InfoSystem.Domain.Shared.SellDocLine", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<decimal>("AmountDiscount");
+
+                    b.Property<decimal>("AmountFpa");
+
+                    b.Property<decimal>("AmountNet");
+
+                    b.Property<decimal>("DiscountRate");
+
+                    b.Property<string>("Etiology")
+                        .HasMaxLength(500);
+
+                    b.Property<float>("Factor");
+
+                    b.Property<decimal>("FpaRate");
+
+                    b.Property<int>("PrimaryUnitId");
+
+                    b.Property<double>("Quontity1");
+
+                    b.Property<double>("Quontity2");
+
+                    b.Property<int>("SecondaryUnitId");
+
+                    b.Property<int>("SellDocumentId");
+
+                    b.Property<decimal>("UnitPrice");
+
+                    b.Property<int>("WarehouseItemId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SellDocumentId");
+
+                    b.HasIndex("WarehouseItemId");
+
+                    b.ToTable("SellDocLines");
+                });
+
+            modelBuilder.Entity("GrKouk.InfoSystem.Domain.Shared.SellDocument", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -964,22 +870,16 @@ namespace GrKouk.WebApi.Migrations
 
                     b.Property<int>("CompanyId");
 
-                    b.Property<int>("CreatorId");
-
-                    b.Property<decimal>("DiscountRate");
-
                     b.Property<string>("Etiology")
                         .HasMaxLength(500);
 
-                    b.Property<int>("FinancialAction");
-
                     b.Property<int>("FiscalPeriodId");
-
-                    b.Property<decimal>("FpaRate");
 
                     b.Property<int>("SectionId");
 
-                    b.Property<int>("SupplierId");
+                    b.Property<int>("SellDocSeriesId");
+
+                    b.Property<int>("SellDocTypeId");
 
                     b.Property<byte[]>("Timestamp")
                         .IsConcurrencyToken()
@@ -989,31 +889,25 @@ namespace GrKouk.WebApi.Migrations
 
                     b.Property<string>("TransRefCode");
 
-                    b.Property<int>("TransSupplierDocSeriesId");
-
-                    b.Property<int>("TransSupplierDocTypeId");
-
-                    b.Property<int>("TransactionType");
+                    b.Property<int>("TransactorId");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CompanyId");
 
-                    b.HasIndex("CreatorId");
-
                     b.HasIndex("FiscalPeriodId");
 
                     b.HasIndex("SectionId");
 
-                    b.HasIndex("SupplierId");
+                    b.HasIndex("SellDocSeriesId");
+
+                    b.HasIndex("SellDocTypeId");
 
                     b.HasIndex("TransDate");
 
-                    b.HasIndex("TransSupplierDocSeriesId");
+                    b.HasIndex("TransactorId");
 
-                    b.HasIndex("TransSupplierDocTypeId");
-
-                    b.ToTable("SupplierTransactions");
+                    b.ToTable("SellDocuments");
                 });
 
             modelBuilder.Entity("GrKouk.InfoSystem.Domain.Shared.Transactor", b =>
@@ -1063,6 +957,76 @@ namespace GrKouk.WebApi.Migrations
                     b.ToTable("Transactors");
                 });
 
+            modelBuilder.Entity("GrKouk.InfoSystem.Domain.Shared.TransactorTransaction", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<decimal>("AmountDiscount");
+
+                    b.Property<decimal>("AmountFpa");
+
+                    b.Property<decimal>("AmountNet");
+
+                    b.Property<int>("CompanyId");
+
+                    b.Property<int>("CreatorId");
+
+                    b.Property<decimal>("DiscountRate");
+
+                    b.Property<string>("Etiology")
+                        .HasMaxLength(500);
+
+                    b.Property<int>("FinancialAction");
+
+                    b.Property<int>("FiscalPeriodId");
+
+                    b.Property<decimal>("FpaRate");
+
+                    b.Property<int>("SectionId");
+
+                    b.Property<byte[]>("Timestamp")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate();
+
+                    b.Property<DateTime>("TransDate");
+
+                    b.Property<decimal>("TransDiscountAmount");
+
+                    b.Property<decimal>("TransFpaAmount");
+
+                    b.Property<decimal>("TransNetAmount");
+
+                    b.Property<string>("TransRefCode");
+
+                    b.Property<int>("TransTransactorDocSeriesId");
+
+                    b.Property<int>("TransTransactorDocTypeId");
+
+                    b.Property<int>("TransactorId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.HasIndex("CreatorId");
+
+                    b.HasIndex("FiscalPeriodId");
+
+                    b.HasIndex("SectionId");
+
+                    b.HasIndex("TransDate");
+
+                    b.HasIndex("TransTransactorDocSeriesId");
+
+                    b.HasIndex("TransTransactorDocTypeId");
+
+                    b.HasIndex("TransactorId");
+
+                    b.ToTable("TransactorTransactions");
+                });
+
             modelBuilder.Entity("GrKouk.InfoSystem.Domain.Shared.TransactorType", b =>
                 {
                     b.Property<int>("Id")
@@ -1082,6 +1046,102 @@ namespace GrKouk.WebApi.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("TransactorTypes");
+                });
+
+            modelBuilder.Entity("GrKouk.InfoSystem.Domain.Shared.WarehouseItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<bool>("Active");
+
+                    b.Property<string>("BarCode")
+                        .HasMaxLength(50);
+
+                    b.Property<int>("BuyMeasureUnitId");
+
+                    b.Property<double>("BuyUnitToMainRate");
+
+                    b.Property<string>("Code")
+                        .HasMaxLength(20);
+
+                    b.Property<int>("CompanyId");
+
+                    b.Property<string>("Description");
+
+                    b.Property<int>("FpaDefId");
+
+                    b.Property<int>("MainMeasureUnitId");
+
+                    b.Property<string>("ManufacturerCode")
+                        .HasMaxLength(50);
+
+                    b.Property<int>("MaterialCategoryId");
+
+                    b.Property<int>("MaterialType");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(200);
+
+                    b.Property<decimal>("PriceBrutto");
+
+                    b.Property<decimal>("PriceNetto");
+
+                    b.Property<int>("SecondaryMeasureUnitId");
+
+                    b.Property<double>("SecondaryUnitToMainRate");
+
+                    b.Property<string>("ShortDescription")
+                        .HasMaxLength(500);
+
+                    b.Property<byte[]>("Timestamp")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate();
+
+                    b.Property<int>("WarehouseItemNature");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BuyMeasureUnitId");
+
+                    b.HasIndex("Code")
+                        .IsUnique()
+                        .HasFilter("[Code] IS NOT NULL");
+
+                    b.HasIndex("CompanyId");
+
+                    b.HasIndex("FpaDefId");
+
+                    b.HasIndex("MainMeasureUnitId");
+
+                    b.HasIndex("MaterialCategoryId");
+
+                    b.HasIndex("SecondaryMeasureUnitId");
+
+                    b.ToTable("WarehouseItems");
+                });
+
+            modelBuilder.Entity("GrKouk.InfoSystem.Domain.Shared.WarehouseItemCode", b =>
+                {
+                    b.Property<int>("CodeType");
+
+                    b.Property<int>("WarehouseItemId");
+
+                    b.Property<string>("Code")
+                        .HasMaxLength(30);
+
+                    b.Property<int>("CodeUsedUnit");
+
+                    b.Property<int>("TransactorId");
+
+                    b.HasKey("CodeType", "WarehouseItemId", "Code");
+
+                    b.HasIndex("Code");
+
+                    b.HasIndex("WarehouseItemId");
+
+                    b.ToTable("WarehouseItemsCodes");
                 });
 
             modelBuilder.Entity("GrKouk.InfoSystem.Domain.Shared.WarehouseTransaction", b =>
@@ -1113,7 +1173,9 @@ namespace GrKouk.WebApi.Migrations
 
                     b.Property<int>("InventoryValueAction");
 
-                    b.Property<int>("MaterialId");
+                    b.Property<int>("InvoicedValueAction");
+
+                    b.Property<int>("InvoicedVolumeAction");
 
                     b.Property<int>("PrimaryUnitId");
 
@@ -1131,6 +1193,16 @@ namespace GrKouk.WebApi.Migrations
 
                     b.Property<DateTime>("TransDate");
 
+                    b.Property<decimal>("TransDiscountAmount");
+
+                    b.Property<decimal>("TransFpaAmount");
+
+                    b.Property<decimal>("TransNetAmount");
+
+                    b.Property<decimal>("TransQ1");
+
+                    b.Property<decimal>("TransQ2");
+
                     b.Property<string>("TransRefCode");
 
                     b.Property<int>("TransWarehouseDocSeriesId");
@@ -1143,6 +1215,8 @@ namespace GrKouk.WebApi.Migrations
 
                     b.Property<decimal>("UnitPrice");
 
+                    b.Property<int>("WarehouseItemId");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CompanyId");
@@ -1150,8 +1224,6 @@ namespace GrKouk.WebApi.Migrations
                     b.HasIndex("CreatorId");
 
                     b.HasIndex("FiscalPeriodId");
-
-                    b.HasIndex("MaterialId");
 
                     b.HasIndex("SectionId");
 
@@ -1161,14 +1233,16 @@ namespace GrKouk.WebApi.Migrations
 
                     b.HasIndex("TransWarehouseDocTypeId");
 
+                    b.HasIndex("WarehouseItemId");
+
                     b.ToTable("WarehouseTransactions");
                 });
 
-            modelBuilder.Entity("GrKouk.InfoSystem.Domain.FinConfig.BuyMaterialDocSeriesDef", b =>
+            modelBuilder.Entity("GrKouk.InfoSystem.Domain.FinConfig.BuyDocSeriesDef", b =>
                 {
-                    b.HasOne("GrKouk.InfoSystem.Domain.FinConfig.BuyMaterialDocTypeDef", "BuyMaterialDocTypeDef")
+                    b.HasOne("GrKouk.InfoSystem.Domain.FinConfig.BuyDocTypeDef", "BuyDocTypeDef")
                         .WithMany()
-                        .HasForeignKey("BuyMaterialDocTypeDefId")
+                        .HasForeignKey("BuyDocTypeDefId")
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("GrKouk.InfoSystem.Domain.Shared.Company", "Company")
@@ -1177,16 +1251,16 @@ namespace GrKouk.WebApi.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 
-            modelBuilder.Entity("GrKouk.InfoSystem.Domain.FinConfig.BuyMaterialDocTypeDef", b =>
+            modelBuilder.Entity("GrKouk.InfoSystem.Domain.FinConfig.BuyDocTypeDef", b =>
                 {
                     b.HasOne("GrKouk.InfoSystem.Domain.Shared.Company", "Company")
                         .WithMany()
                         .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("GrKouk.InfoSystem.Domain.FinConfig.TransSupplierDef", "TransSupplierDef")
+                    b.HasOne("GrKouk.InfoSystem.Domain.FinConfig.TransTransactorDef", "TransTransactorDef")
                         .WithMany()
-                        .HasForeignKey("TransSupplierDefId")
+                        .HasForeignKey("TransTransactorDefId")
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("GrKouk.InfoSystem.Domain.FinConfig.TransWarehouseDef", "TransWarehouseDef")
@@ -1195,155 +1269,90 @@ namespace GrKouk.WebApi.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 
-            modelBuilder.Entity("GrKouk.InfoSystem.Domain.FinConfig.TransCustomerDef", b =>
+            modelBuilder.Entity("GrKouk.InfoSystem.Domain.FinConfig.SellDocSeriesDef", b =>
                 {
                     b.HasOne("GrKouk.InfoSystem.Domain.Shared.Company", "Company")
                         .WithMany()
                         .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("GrKouk.InfoSystem.Domain.FinConfig.FinancialMovement", "CreditTrans")
-                        .WithMany()
-                        .HasForeignKey("CreditTransId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("GrKouk.InfoSystem.Domain.FinConfig.FinancialMovement", "DebitTrans")
+                    b.HasOne("GrKouk.InfoSystem.Domain.FinConfig.SellDocTypeDef", "SellDocTypeDef")
                         .WithMany()
-                        .HasForeignKey("DebitTransId")
+                        .HasForeignKey("SellDocTypeDefId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("GrKouk.InfoSystem.Domain.FinConfig.SellDocTypeDef", b =>
+                {
+                    b.HasOne("GrKouk.InfoSystem.Domain.Shared.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("GrKouk.InfoSystem.Domain.FinConfig.TransCustomerDocSeriesDef", "TransCustomerDefaultDocSeries")
+                    b.HasOne("GrKouk.InfoSystem.Domain.FinConfig.TransTransactorDef", "TransTransactorDef")
                         .WithMany()
-                        .HasForeignKey("TransCustomerDefaultDocSeriesId")
+                        .HasForeignKey("TransTransactorDefId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("GrKouk.InfoSystem.Domain.FinConfig.TransWarehouseDef", "TransWarehouseDef")
+                        .WithMany()
+                        .HasForeignKey("TransWarehouseDefId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("GrKouk.InfoSystem.Domain.FinConfig.TransExpenseDef", b =>
+                {
+                    b.HasOne("GrKouk.InfoSystem.Domain.Shared.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("GrKouk.InfoSystem.Domain.FinConfig.TransTransactorDef", b =>
+                {
+                    b.HasOne("GrKouk.InfoSystem.Domain.Shared.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("GrKouk.InfoSystem.Domain.FinConfig.FinancialMovement", "TurnOverTrans")
                         .WithMany()
                         .HasForeignKey("TurnOverTransId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("GrKouk.InfoSystem.Domain.FinConfig.TransCustomerDocSeriesDef", b =>
+            modelBuilder.Entity("GrKouk.InfoSystem.Domain.FinConfig.TransTransactorDocSeriesDef", b =>
                 {
                     b.HasOne("GrKouk.InfoSystem.Domain.Shared.Company", "Company")
                         .WithMany()
                         .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("GrKouk.InfoSystem.Domain.FinConfig.TransCustomerDocTypeDef", "TransCustomerDocTypeDef")
+                    b.HasOne("GrKouk.InfoSystem.Domain.FinConfig.TransTransactorDocTypeDef", "TransTransactorDocTypeDef")
                         .WithMany()
-                        .HasForeignKey("TransCustomerDocTypeDefId")
+                        .HasForeignKey("TransTransactorDocTypeDefId")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 
-            modelBuilder.Entity("GrKouk.InfoSystem.Domain.FinConfig.TransCustomerDocTypeDef", b =>
+            modelBuilder.Entity("GrKouk.InfoSystem.Domain.FinConfig.TransTransactorDocTypeDef", b =>
                 {
                     b.HasOne("GrKouk.InfoSystem.Domain.Shared.Company", "Company")
                         .WithMany()
                         .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("GrKouk.InfoSystem.Domain.FinConfig.TransCustomerDef", "TransCustomerDef")
+                    b.HasOne("GrKouk.InfoSystem.Domain.FinConfig.TransTransactorDef", "TransTransactorDef")
                         .WithMany()
-                        .HasForeignKey("TransCustomerDefId")
-                        .OnDelete(DeleteBehavior.Restrict);
-                });
-
-            modelBuilder.Entity("GrKouk.InfoSystem.Domain.FinConfig.TransSupplierDef", b =>
-                {
-                    b.HasOne("GrKouk.InfoSystem.Domain.Shared.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("GrKouk.InfoSystem.Domain.FinConfig.TransSupplierDocSeriesDef", "TransSupplierDefaultDocSeries")
-                        .WithMany()
-                        .HasForeignKey("TransSupplierDefaultDocSeriesId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("GrKouk.InfoSystem.Domain.FinConfig.FinancialMovement", "TurnOverTrans")
-                        .WithMany()
-                        .HasForeignKey("TurnOverTransId")
-                        .OnDelete(DeleteBehavior.Restrict);
-                });
-
-            modelBuilder.Entity("GrKouk.InfoSystem.Domain.FinConfig.TransSupplierDocSeriesDef", b =>
-                {
-                    b.HasOne("GrKouk.InfoSystem.Domain.Shared.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("GrKouk.InfoSystem.Domain.FinConfig.TransSupplierDocTypeDef", "TransSupplierDocTypeDef")
-                        .WithMany()
-                        .HasForeignKey("TransSupplierDocTypeDefId")
-                        .OnDelete(DeleteBehavior.Restrict);
-                });
-
-            modelBuilder.Entity("GrKouk.InfoSystem.Domain.FinConfig.TransSupplierDocTypeDef", b =>
-                {
-                    b.HasOne("GrKouk.InfoSystem.Domain.Shared.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("GrKouk.InfoSystem.Domain.FinConfig.TransSupplierDef", "TransSupplierDef")
-                        .WithMany()
-                        .HasForeignKey("TransSupplierDefId")
+                        .HasForeignKey("TransTransactorDefId")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("GrKouk.InfoSystem.Domain.FinConfig.TransWarehouseDef", b =>
                 {
-                    b.HasOne("GrKouk.InfoSystem.Domain.FinConfig.FinancialMovement", "AmtBuyTrans")
-                        .WithMany()
-                        .HasForeignKey("AmtBuyTransId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("GrKouk.InfoSystem.Domain.FinConfig.FinancialMovement", "AmtInvoicedExportsTrans")
-                        .WithMany()
-                        .HasForeignKey("AmtInvoicedExportsTransId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("GrKouk.InfoSystem.Domain.FinConfig.FinancialMovement", "AmtInvoicedImportsTrans")
-                        .WithMany()
-                        .HasForeignKey("AmtInvoicedImportsTransId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("GrKouk.InfoSystem.Domain.FinConfig.FinancialMovement", "AmtSellTrans")
-                        .WithMany()
-                        .HasForeignKey("AmtSellTransId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.HasOne("GrKouk.InfoSystem.Domain.Shared.Company", "Company")
                         .WithMany()
                         .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("GrKouk.InfoSystem.Domain.FinConfig.TransWarehouseDocSeriesDef", "TransWarehouseDefaultDocSeriesDef")
-                        .WithMany()
-                        .HasForeignKey("TransWarehouseDefaultDocSeriesDefId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("GrKouk.InfoSystem.Domain.FinConfig.FinancialMovement", "VolBuyTrans")
-                        .WithMany()
-                        .HasForeignKey("VolBuyTransId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("GrKouk.InfoSystem.Domain.FinConfig.FinancialMovement", "VolInvoicedExportsTrans")
-                        .WithMany()
-                        .HasForeignKey("VolInvoicedExportsTransId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("GrKouk.InfoSystem.Domain.FinConfig.FinancialMovement", "VolInvoicedImportsTrans")
-                        .WithMany()
-                        .HasForeignKey("VolInvoicedImportsTransId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("GrKouk.InfoSystem.Domain.FinConfig.FinancialMovement", "VolSellTrans")
-                        .WithMany()
-                        .HasForeignKey("VolSellTransId")
-                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("GrKouk.InfoSystem.Domain.FinConfig.TransWarehouseDocSeriesDef", b =>
@@ -1372,66 +1381,38 @@ namespace GrKouk.WebApi.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 
-            modelBuilder.Entity("GrKouk.InfoSystem.Domain.Shared.BuyMaterialsDocLine", b =>
+            modelBuilder.Entity("GrKouk.InfoSystem.Domain.Shared.BuyDocLine", b =>
                 {
-                    b.HasOne("GrKouk.InfoSystem.Domain.Shared.BuyMaterialsDocument", "BuyDocument")
+                    b.HasOne("GrKouk.InfoSystem.Domain.Shared.BuyDocument", "BuyDocument")
                         .WithMany()
                         .HasForeignKey("BuyDocumentId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("GrKouk.InfoSystem.Domain.Shared.BuyMaterialsDocument")
+                    b.HasOne("GrKouk.InfoSystem.Domain.Shared.BuyDocument")
                         .WithMany("BuyDocLines")
-                        .HasForeignKey("BuyMaterialsDocumentId");
+                        .HasForeignKey("BuyDocumentId1");
 
-                    b.HasOne("GrKouk.InfoSystem.Domain.Shared.Material", "Material")
+                    b.HasOne("GrKouk.InfoSystem.Domain.Shared.WarehouseItem", "WarehouseItem")
                         .WithMany()
-                        .HasForeignKey("MaterialId")
+                        .HasForeignKey("WarehouseItemId")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 
-            modelBuilder.Entity("GrKouk.InfoSystem.Domain.Shared.BuyMaterialsDocument", b =>
+            modelBuilder.Entity("GrKouk.InfoSystem.Domain.Shared.BuyDocument", b =>
                 {
+                    b.HasOne("GrKouk.InfoSystem.Domain.FinConfig.BuyDocSeriesDef", "BuyDocSeries")
+                        .WithMany()
+                        .HasForeignKey("BuyDocSeriesId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("GrKouk.InfoSystem.Domain.FinConfig.BuyDocTypeDef", "BuyDocType")
+                        .WithMany()
+                        .HasForeignKey("BuyDocTypeId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
                     b.HasOne("GrKouk.InfoSystem.Domain.Shared.Company", "Company")
                         .WithMany()
                         .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("GrKouk.InfoSystem.Domain.Shared.FiscalPeriod", "FiscalPeriod")
-                        .WithMany()
-                        .HasForeignKey("FiscalPeriodId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("GrKouk.InfoSystem.Domain.FinConfig.BuyMaterialDocSeriesDef", "MaterialDocSeries")
-                        .WithMany()
-                        .HasForeignKey("MaterialDocSeriesId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("GrKouk.InfoSystem.Domain.FinConfig.BuyMaterialDocTypeDef", "MaterialDocType")
-                        .WithMany()
-                        .HasForeignKey("MaterialDocTypeId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("GrKouk.InfoSystem.Domain.Shared.Section", "Section")
-                        .WithMany()
-                        .HasForeignKey("SectionId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("GrKouk.InfoSystem.Domain.Shared.Transactor", "Supplier")
-                        .WithMany()
-                        .HasForeignKey("SupplierId")
-                        .OnDelete(DeleteBehavior.Restrict);
-                });
-
-            modelBuilder.Entity("GrKouk.InfoSystem.Domain.Shared.CustomerTransaction", b =>
-                {
-                    b.HasOne("GrKouk.InfoSystem.Domain.Shared.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("GrKouk.InfoSystem.Domain.Shared.Transactor", "Customer")
-                        .WithMany()
-                        .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("GrKouk.InfoSystem.Domain.Shared.FiscalPeriod", "FiscalPeriod")
@@ -1444,14 +1425,9 @@ namespace GrKouk.WebApi.Migrations
                         .HasForeignKey("SectionId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("GrKouk.InfoSystem.Domain.FinConfig.TransCustomerDocSeriesDef", "TransCustomerDocSeries")
+                    b.HasOne("GrKouk.InfoSystem.Domain.Shared.Transactor", "Transactor")
                         .WithMany()
-                        .HasForeignKey("TransCustomerDocSeriesId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("GrKouk.InfoSystem.Domain.FinConfig.TransCustomerDocTypeDef", "TransCustomerDocType")
-                        .WithMany()
-                        .HasForeignKey("TransCustomerDocTypeId")
+                        .HasForeignKey("TransactorId")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 
@@ -1483,7 +1459,94 @@ namespace GrKouk.WebApi.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 
-            modelBuilder.Entity("GrKouk.InfoSystem.Domain.Shared.Material", b =>
+            modelBuilder.Entity("GrKouk.InfoSystem.Domain.Shared.SellDocLine", b =>
+                {
+                    b.HasOne("GrKouk.InfoSystem.Domain.Shared.SellDocument", "SellDocument")
+                        .WithMany("SellDocLines")
+                        .HasForeignKey("SellDocumentId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("GrKouk.InfoSystem.Domain.Shared.WarehouseItem", "WarehouseItem")
+                        .WithMany()
+                        .HasForeignKey("WarehouseItemId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("GrKouk.InfoSystem.Domain.Shared.SellDocument", b =>
+                {
+                    b.HasOne("GrKouk.InfoSystem.Domain.Shared.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("GrKouk.InfoSystem.Domain.Shared.FiscalPeriod", "FiscalPeriod")
+                        .WithMany()
+                        .HasForeignKey("FiscalPeriodId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("GrKouk.InfoSystem.Domain.Shared.Section", "Section")
+                        .WithMany()
+                        .HasForeignKey("SectionId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("GrKouk.InfoSystem.Domain.FinConfig.SellDocSeriesDef", "SellDocSeries")
+                        .WithMany()
+                        .HasForeignKey("SellDocSeriesId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("GrKouk.InfoSystem.Domain.FinConfig.SellDocTypeDef", "SellDocType")
+                        .WithMany()
+                        .HasForeignKey("SellDocTypeId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("GrKouk.InfoSystem.Domain.Shared.Transactor", "Transactor")
+                        .WithMany()
+                        .HasForeignKey("TransactorId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("GrKouk.InfoSystem.Domain.Shared.Transactor", b =>
+                {
+                    b.HasOne("GrKouk.InfoSystem.Domain.Shared.TransactorType", "TransactorType")
+                        .WithMany()
+                        .HasForeignKey("TransactorTypeId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("GrKouk.InfoSystem.Domain.Shared.TransactorTransaction", b =>
+                {
+                    b.HasOne("GrKouk.InfoSystem.Domain.Shared.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("GrKouk.InfoSystem.Domain.Shared.FiscalPeriod", "FiscalPeriod")
+                        .WithMany()
+                        .HasForeignKey("FiscalPeriodId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("GrKouk.InfoSystem.Domain.Shared.Section", "Section")
+                        .WithMany()
+                        .HasForeignKey("SectionId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("GrKouk.InfoSystem.Domain.FinConfig.TransTransactorDocSeriesDef", "TransTransactorDocSeries")
+                        .WithMany()
+                        .HasForeignKey("TransTransactorDocSeriesId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("GrKouk.InfoSystem.Domain.FinConfig.TransTransactorDocTypeDef", "TransTransactorDocType")
+                        .WithMany()
+                        .HasForeignKey("TransTransactorDocTypeId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("GrKouk.InfoSystem.Domain.Shared.Transactor", "Transactor")
+                        .WithMany()
+                        .HasForeignKey("TransactorId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("GrKouk.InfoSystem.Domain.Shared.WarehouseItem", b =>
                 {
                     b.HasOne("GrKouk.InfoSystem.Domain.Shared.MeasureUnit", "BuyMeasureUnit")
                         .WithMany()
@@ -1516,44 +1579,11 @@ namespace GrKouk.WebApi.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 
-            modelBuilder.Entity("GrKouk.InfoSystem.Domain.Shared.SupplierTransaction", b =>
+            modelBuilder.Entity("GrKouk.InfoSystem.Domain.Shared.WarehouseItemCode", b =>
                 {
-                    b.HasOne("GrKouk.InfoSystem.Domain.Shared.Company", "Company")
+                    b.HasOne("GrKouk.InfoSystem.Domain.Shared.WarehouseItem", "WarehouseItem")
                         .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("GrKouk.InfoSystem.Domain.Shared.FiscalPeriod", "FiscalPeriod")
-                        .WithMany()
-                        .HasForeignKey("FiscalPeriodId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("GrKouk.InfoSystem.Domain.Shared.Section", "Section")
-                        .WithMany()
-                        .HasForeignKey("SectionId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("GrKouk.InfoSystem.Domain.Shared.Transactor", "Supplier")
-                        .WithMany()
-                        .HasForeignKey("SupplierId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("GrKouk.InfoSystem.Domain.FinConfig.TransSupplierDocSeriesDef", "TransSupplierDocSeries")
-                        .WithMany()
-                        .HasForeignKey("TransSupplierDocSeriesId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("GrKouk.InfoSystem.Domain.FinConfig.TransSupplierDocTypeDef", "TransSupplierDocType")
-                        .WithMany()
-                        .HasForeignKey("TransSupplierDocTypeId")
-                        .OnDelete(DeleteBehavior.Restrict);
-                });
-
-            modelBuilder.Entity("GrKouk.InfoSystem.Domain.Shared.Transactor", b =>
-                {
-                    b.HasOne("GrKouk.InfoSystem.Domain.Shared.TransactorType", "TransactorType")
-                        .WithMany()
-                        .HasForeignKey("TransactorTypeId")
+                        .HasForeignKey("WarehouseItemId")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 
@@ -1569,11 +1599,6 @@ namespace GrKouk.WebApi.Migrations
                         .HasForeignKey("FiscalPeriodId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("GrKouk.InfoSystem.Domain.Shared.Material", "Material")
-                        .WithMany()
-                        .HasForeignKey("MaterialId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.HasOne("GrKouk.InfoSystem.Domain.Shared.Section", "Section")
                         .WithMany()
                         .HasForeignKey("SectionId")
@@ -1587,6 +1612,11 @@ namespace GrKouk.WebApi.Migrations
                     b.HasOne("GrKouk.InfoSystem.Domain.FinConfig.TransWarehouseDocTypeDef", "TransWarehouseDocType")
                         .WithMany()
                         .HasForeignKey("TransWarehouseDocTypeId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("GrKouk.InfoSystem.Domain.Shared.WarehouseItem", "WarehouseItem")
+                        .WithMany()
+                        .HasForeignKey("WarehouseItemId")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 #pragma warning restore 612, 618

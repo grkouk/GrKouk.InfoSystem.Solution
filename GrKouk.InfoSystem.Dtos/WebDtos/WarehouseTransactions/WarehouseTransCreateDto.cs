@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
+using GrKouk.InfoSystem.Definitions;
 using GrKouk.InfoSystem.Domain.FinConfig;
 using GrKouk.InfoSystem.Domain.Shared;
 
@@ -17,13 +18,13 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.WarehouseTransactions
         public int TransWarehouseDocSeriesId { get; set; }
         [Display(Name = "Ref")]
         public string TransRefCode { get; set; }
-        [Display(Name = "Material")]
-        public int MaterialId { get; set; }
+        [Display(Name = "WarehouseItem")]
+        public int WarehouseItemId { get; set; }
 
         public int FiscalPeriodId { get; set; }
         public WarehouseTransactionTypeEnum TransactionType { get; set; }
-        public WarehouseInventoryTransTypeEnum InventoryAction { get; set; }
-        public WarehouseValueTransTypeEnum InventoryValueAction { get; set; }
+        public InventoryActionEnum InventoryAction { get; set; }
+        public InventoryValueActionEnum InventoryValueAction { get; set; }
         public int SectionId { get; set; }
         [Display(Name = "Main Unit")]
         public int PrimaryUnitId { get; set; }

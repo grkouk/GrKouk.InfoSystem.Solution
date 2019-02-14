@@ -6,9 +6,10 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using GrKouk.InfoSystem.Domain.Shared;
-using GrKouk.InfoSystem.Dtos.WebDtos.BuyMaterialsDocs;
+using GrKouk.InfoSystem.Dtos.WebDtos.BuyDocuments;
 using GrKouk.WebRazor.Helpers;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using NToastNotify;
 
 namespace GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc
@@ -18,7 +19,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc
         private readonly GrKouk.WebApi.Data.ApiDbContext _context;
         private readonly IMapper _mapper;
         private readonly IToastNotification _toastNotification;
-
+        #region Fields
         public string NameSort { get; set; }
         public string NameSortIcon { get; set; }
         public string DateSort { get; set; }
@@ -26,10 +27,16 @@ namespace GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc
         public string CurrentFilter { get; set; }
         public string CurrentDatePeriod { get; set; }
         public string CurrentSort { get; set; }
+        public int CompanyFilter { get; set; }
         public int PageSize { get; set; }
         public int CurrentPageSize { get; set; }
         public int TotalPages { get; set; }
         public int TotalCount { get; set; }
+        public decimal SumTotalAmount { get; set; }
+        public bool FiltersVisible { get; set; } = false;
+        public bool RowSelectorsVisible { get; set; } = false;
+        public string SectionCode { get; set; } = "SYS-BUY-MATERIALS-SCN";
+        #endregion
         public IndexModel(GrKouk.WebApi.Data.ApiDbContext context,IMapper mapper, IToastNotification toastNotification)
         {
             _context = context;
@@ -38,10 +45,14 @@ namespace GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc
         }
 
        
-        public PagedList<BuyMaterialsDocListDto> ListItems { get; set; }
-        public async Task OnGetAsync(string sortOrder, string searchString, string datePeriodFilter, int? pageIndex, int? pageSize)
+        public PagedList<BuyDocListDto> ListItems { get; set; }
+        public async Task OnGetAsync(string sortOrder, string searchString, string datePeriodFilter, int? companyFilter
+            , bool filtersVisible,bool rowSelectorsVisible, int? pageIndex, int? pageSize)
         {
             LoadFilters();
+            FiltersVisible = filtersVisible;
+            RowSelectorsVisible = rowSelectorsVisible;
+            CompanyFilter = (int)(companyFilter ?? 0);
             PageSize = (int)((pageSize == null || pageSize == 0) ? 20 : pageSize);
             CurrentPageSize = PageSize;
             CurrentSort = sortOrder;
@@ -58,7 +69,11 @@ namespace GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc
             }
             CurrentFilter = searchString;
             CurrentDatePeriod = datePeriodFilter;
-            IQueryable<BuyMaterialsDocument> fullListIq = _context.BuyMaterialsDocuments;
+            IQueryable<BuyDocument> fullListIq = _context.BuyDocuments;
+            if (companyFilter > 0)
+            {
+                fullListIq = fullListIq.Where(p => p.CompanyId == companyFilter);
+            }
             DateTime fromDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
             DateTime toDate = DateTime.Now;
             switch (datePeriodFilter)
@@ -91,7 +106,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc
             fullListIq = fullListIq.Where(p => p.TransDate >= fromDate && p.TransDate <= toDate);
             if (!String.IsNullOrEmpty(searchString))
             {
-                fullListIq = fullListIq.Where(s => s.Supplier.Name.Contains(searchString));
+                fullListIq = fullListIq.Where(s => s.Transactor.Name.Contains(searchString));
             }
             switch (sortOrder)
             {
@@ -106,12 +121,12 @@ namespace GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc
                     NameSortIcon = "invisible";
                     break;
                 case "Name":
-                    fullListIq = fullListIq.OrderBy(p => p.Supplier.Name);
+                    fullListIq = fullListIq.OrderBy(p => p.Transactor.Name);
                     NameSortIcon = "fas fa-sort-alpha-up ";
                     DateSortIcon = "invisible";
                     break;
                 case "name_desc":
-                    fullListIq = fullListIq.OrderByDescending(p => p.Supplier.Name);
+                    fullListIq = fullListIq.OrderByDescending(p => p.Transactor.Name);
                     NameSortIcon = "fas fa-sort-alpha-down ";
                     DateSortIcon = "invisible";
                     break;
@@ -120,10 +135,10 @@ namespace GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc
                     break;
             }
 
-            var t = fullListIq.ProjectTo<BuyMaterialsDocListDto>(_mapper.ConfigurationProvider);
+            var t = fullListIq.ProjectTo<BuyDocListDto>(_mapper.ConfigurationProvider);
 
-            ListItems = await PagedList<BuyMaterialsDocListDto>.CreateAsync(t, pageIndex ?? 1, PageSize);
-           
+            ListItems = await PagedList<BuyDocListDto>.CreateAsync(t, pageIndex ?? 1, PageSize);
+            SumTotalAmount = ListItems.Sum(p => p.TotalAmount);
         }
         private void LoadFilters()
         {
@@ -136,10 +151,19 @@ namespace GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc
                 new SelectListItem() {Value = "CURYEAR", Text = "Τρέχων Ετος"}
 
             };
-
-
-
             ViewData["DataFilterValues"] = new SelectList(datePeriods, "Value", "Text");
+
+            var dbCompanies = _context.Companies.OrderBy(p => p.Code).AsNoTracking();
+            List<SelectListItem> companiesList = new List<SelectListItem>();
+            companiesList.Add(new SelectListItem() { Value = 0.ToString(), Text = "{All Companies}" });
+            foreach (var company in dbCompanies)
+            {
+                companiesList.Add(new SelectListItem() { Value = company.Id.ToString(), Text = company.Code });
+            }
+            ViewData["CompanyFilter"] = new SelectList(companiesList, "Value", "Text");
+
+            var pageFilterSize = PageFilter.GetPageSizeFiltersSelectList();
+            ViewData["PageFilterSize"] = new SelectList(pageFilterSize, "Value", "Text");
         }
     }
 }

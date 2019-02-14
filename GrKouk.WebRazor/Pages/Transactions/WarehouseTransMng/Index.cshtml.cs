@@ -9,6 +9,7 @@ using GrKouk.InfoSystem.Domain.Shared;
 using GrKouk.InfoSystem.Dtos.WebDtos.WarehouseTransactions;
 using GrKouk.WebRazor.Helpers;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using NToastNotify;
 
 namespace GrKouk.WebRazor.Pages.Transactions.WarehouseTransMng
@@ -25,7 +26,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.WarehouseTransMng
             _mapper = mapper;
             _toastNotification = toastNotification;
         }
-
+        #region Fields
         public string NameSort { get; set; }
         public string NameSortIcon { get; set; }
         public string DateSort { get; set; }
@@ -36,13 +37,27 @@ namespace GrKouk.WebRazor.Pages.Transactions.WarehouseTransMng
         public int PageSize { get; set; }
         public int CurrentPageSize { get; set; }
         public int TotalPages { get; set; }
+        public int CompanyFilter { get; set; }
+        public bool FiltersVisible { get; set; } = false;
+        public bool RowSelectorsVisible { get; set; } = false;
         public int TotalCount { get; set; }
+        public string SectionCode { get; set; } = "SYS-WAREHOUSE-TRANS";
+        #endregion
+        public decimal SumImportVolume = 0;
+        public decimal SumExportVolume = 0;
+        public decimal SumImportValue = 0;
+        public decimal SumExportValue = 0;
+
         public PagedList<WarehouseTransListDto> ListItems { get; set; }
-        public async Task OnGetAsync(string sortOrder, string searchString, string datePeriodFilter, int? pageIndex, int? pageSize)
+        public async Task OnGetAsync(string sortOrder, string searchString, int? companyFilter, string datePeriodFilter
+            , bool filtersVisible, bool rowSelectorsVisible, int? pageIndex, int? pageSize)
         {
             LoadFilters();
+            FiltersVisible = filtersVisible;
+            RowSelectorsVisible = rowSelectorsVisible;
             PageSize = (int)((pageSize == null || pageSize == 0) ? 20 : pageSize);
             CurrentPageSize = PageSize;
+            CompanyFilter = (int)(companyFilter ?? 0);
             CurrentSort = sortOrder;
             NameSort = sortOrder == "Name" ? "name_desc" : "Name";
             DateSort = sortOrder == "Date" ? "date_desc" : "Date";
@@ -59,6 +74,10 @@ namespace GrKouk.WebRazor.Pages.Transactions.WarehouseTransMng
             CurrentDatePeriod = datePeriodFilter;
             IQueryable<WarehouseTransaction> fullListIq = from s in _context.WarehouseTransactions
                 select s;
+            if (companyFilter > 0)
+            {
+                fullListIq = fullListIq.Where(p => p.CompanyId == companyFilter);
+            }
             DateTime fromDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
             DateTime toDate = DateTime.Now;
             switch (datePeriodFilter)
@@ -91,7 +110,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.WarehouseTransMng
             fullListIq = fullListIq.Where(p => p.TransDate >= fromDate && p.TransDate <= toDate);
             if (!String.IsNullOrEmpty(searchString))
             {
-                fullListIq = fullListIq.Where(s => s.Material.Name.Contains(searchString));
+                fullListIq = fullListIq.Where(s => s.WarehouseItem.Name.Contains(searchString));
             }
 
             switch (sortOrder)
@@ -107,12 +126,12 @@ namespace GrKouk.WebRazor.Pages.Transactions.WarehouseTransMng
                     NameSortIcon = "invisible";
                     break;
                 case "Name":
-                    fullListIq = fullListIq.OrderBy(p => p.Material.Name);
+                    fullListIq = fullListIq.OrderBy(p => p.WarehouseItem.Name);
                     NameSortIcon = "fas fa-sort-alpha-up ";
                     DateSortIcon = "invisible";
                     break;
                 case "name_desc":
-                    fullListIq = fullListIq.OrderByDescending(p => p.Material.Name);
+                    fullListIq = fullListIq.OrderByDescending(p => p.WarehouseItem.Name);
                     NameSortIcon = "fas fa-sort-alpha-down ";
                     DateSortIcon = "invisible";
                     break;
@@ -123,6 +142,10 @@ namespace GrKouk.WebRazor.Pages.Transactions.WarehouseTransMng
             var t = fullListIq.ProjectTo<WarehouseTransListDto>(_mapper.ConfigurationProvider);
             ListItems = await PagedList<WarehouseTransListDto>.CreateAsync(
                 t, pageIndex ?? 1, PageSize);
+            SumImportVolume = ListItems.Sum(p => p.ImportUnits);
+            SumImportValue = ListItems.Sum(p => p.ImportAmount);
+            SumExportVolume = ListItems.Sum(p => p.ExportUnits);
+            SumExportValue = ListItems.Sum(p => p.ExportAmount);
         }
         private void LoadFilters()
         {
@@ -135,10 +158,19 @@ namespace GrKouk.WebRazor.Pages.Transactions.WarehouseTransMng
                 new SelectListItem() {Value = "CURYEAR", Text = "Τρέχων Ετος"}
 
             };
-
-
-
             ViewData["DataFilterValues"] = new SelectList(datePeriods, "Value", "Text");
+
+            var dbCompanies = _context.Companies.OrderBy(p => p.Code).AsNoTracking();
+            List<SelectListItem> companiesList = new List<SelectListItem>();
+            companiesList.Add(new SelectListItem() { Value = 0.ToString(), Text = "{All Companies}" });
+            foreach (var company in dbCompanies)
+            {
+                companiesList.Add(new SelectListItem() { Value = company.Id.ToString(), Text = company.Code });
+            }
+            ViewData["CompanyFilter"] = new SelectList(companiesList, "Value", "Text");
+
+            var pageFilterSize = PageFilter.GetPageSizeFiltersSelectList();
+            ViewData["PageFilterSize"] = new SelectList(pageFilterSize, "Value", "Text");
         }
     }
 }

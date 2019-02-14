@@ -1,4 +1,5 @@
-﻿using GrKouk.InfoSystem.Domain.FinConfig;
+﻿using GrKouk.InfoSystem.Definitions;
+using GrKouk.InfoSystem.Domain.FinConfig;
 
 namespace GrKouk.InfoSystem.Domain.Helpers
 {

@@ -1,0 +1,79 @@
+﻿@page
+@model GrKouk.WebRazor.Pages.MainEntities.MaterialCodes.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h4>List of WarehouseItem Codes</h4>
+
+<p>
+    <a class="small" asp-page="Create">Create New</a>
+</p>
+<table class="table table-bordered table-sm">
+    <thead class="thead-light">
+    <tr>
+        <th class="small">
+            @Html.DisplayNameFor(model => model.MaterialCode[0].WarehouseItem)
+        </th>
+        <th class="small">
+            @Html.DisplayNameFor(model => model.MaterialCode[0].CodeType)
+        </th>
+        <th class="small">
+            @Html.DisplayNameFor(model => model.MaterialCode[0].Code)
+        </th>
+        <th class="small">
+            @Html.DisplayNameFor(model => model.MaterialCode[0].TransactorId)
+        </th>
+
+        <th class="small">
+            @Html.DisplayNameFor(model => model.MaterialCode[0].CodeUsedUnit)
+        </th>
+        <th class="small"></th>
+    </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.MaterialCode) {
+    <tr>
+          <td class="small">
+                @Html.DisplayFor(modelItem => item.WarehouseItem.Name)
+            </td>
+            <td class="small">
+                @Html.DisplayFor(modelItem => item.CodeType)
+            </td>
+        <td class="small">
+            @Html.DisplayFor(modelItem => item.Code)
+        </td>
+        <td class="small">
+            @Html.DisplayFor(modelItem => item.TransactorId)
+        </td>
+        <td class="small">
+            @Html.DisplayFor(modelItem => item.CodeUsedUnit)
+        </td>
+        <td>
+            @*<a asp-page="./Edit"
+               asp-route-materialid="@item.WarehouseItemId"
+               asp-route-codetype="@item.CodeType"
+               asp-route-code="@item.Code">
+                <i class="fas fa-edit" style="color: slategray"></i>
+            </a> |*@
+            <a asp-page="./Details"
+               asp-route-materialid="@item.WarehouseItemId"
+               asp-route-codetype="@item.CodeType"
+               asp-route-code="@item.Code">
+                <i class="fas fa-info-circle" style="color: slategray"></i>
+            </a> |
+            <a asp-page="./Delete"
+               asp-route-materialid="@item.WarehouseItemId"
+               asp-route-codetype="@item.CodeType"
+               asp-route-code="@item.Code">
+                <i class="fas fa-trash" style="color: slategray"></i>
+            </a> 
+            @*@Html.ActionLink("Edit", "Edit", new {materialId = item.WarehouseItemId, codeType = item.CodeType, code = item.Code}) |
+            @Html.ActionLink("Details", "Details", new {materialId = item.WarehouseItemId, codeType = item.CodeType, code = item.Code}) |
+            @Html.ActionLink("Delete", "Delete", new {materialId = item.WarehouseItemId, codeType = item.CodeType, code = item.Code})*@
+        </td>
+    </tr>
+}
+    </tbody>
+</table>

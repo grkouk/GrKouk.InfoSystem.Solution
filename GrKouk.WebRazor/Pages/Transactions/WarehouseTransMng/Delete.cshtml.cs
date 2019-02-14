@@ -38,7 +38,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.WarehouseTransMng
             WarehouseTransaction = await _context.WarehouseTransactions
                 .Include(w => w.Company)
                 .Include(w => w.FiscalPeriod)
-                .Include(w => w.Material)
+                .Include(w => w.WarehouseItem)
                 .Include(w => w.Section)
                 .Include(w => w.TransWarehouseDocSeries)
                 .Include(w => w.TransWarehouseDocType).FirstOrDefaultAsync(m => m.Id == id);

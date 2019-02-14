@@ -29,19 +29,8 @@ namespace GrKouk.WebRazor.Pages.Configuration.WarehouseTransDef
             }
 
             TransWarehouseDef = await _context.TransWarehouseDefs
-                .Include(t => t.AmtBuyTrans)
-               // .Include(t => t.AmtExportsTrans)
-               // .Include(t => t.AmtImportsTrans)
-                .Include(t => t.AmtInvoicedExportsTrans)
-                .Include(t => t.AmtInvoicedImportsTrans)
-                .Include(t => t.AmtSellTrans)
                 .Include(t => t.Company)
-                .Include(t => t.VolBuyTrans)
-                //.Include(t => t.VolExportsTrans)
-                //.Include(t => t.VolImportsTrans)
-                .Include(t => t.VolInvoicedExportsTrans)
-                .Include(t => t.VolInvoicedImportsTrans)
-                .Include(t => t.VolSellTrans).FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(m => m.Id == id);
 
             if (TransWarehouseDef == null)
             {

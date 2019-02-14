@@ -22,7 +22,17 @@
     <form method="post" id="transForm">
         <fieldset id="thisForm">
             <div asp-validation-summary="ModelOnly" class="text-danger small"></div>
-
+            <input type="hidden" asp-for="@Model.InitialLoad" id="IsInitialLoad" />
+            <input type="hidden" id="MaterialId" />
+            <input type="hidden" id="MaterialLastPrice" />
+            <input type="hidden" id="MaterialFactor" />
+            <input type="hidden" id="MaterialFpaId" />
+            <input type="hidden" id="MaterialMainUnitId" />
+            <input type="hidden" id="MaterialSecondaryUnitId" />
+            <input type="hidden" id="MaterialsCounter" />
+            <input type="hidden" id="SeriesUsedPrice" />
+            <input type="hidden" id="LineEditing" />
+            <input type="hidden" id="LookupValueValid" />
             <div class="form-row">
                 <div class="form-group col-md-2">
                     <label asp-for="ItemVm.TransDate" class="control-label small "></label>
@@ -30,8 +40,8 @@
                     <span asp-validation-for="ItemVm.TransDate" class="text-danger small"></span>
                 </div>
                 <div class="form-group col-md-7">
-                    <label asp-for="ItemVm.MaterialDocSeriesId" class="control-label small"></label>
-                    <select asp-for="ItemVm.MaterialDocSeriesId" class="form-control form-control-sm small" asp-items="ViewBag.MaterialDocSeriesId"></select>
+                    <label asp-for="ItemVm.BuyDocSeriesId" class="control-label small"></label>
+                    <select asp-for="ItemVm.BuyDocSeriesId" class="form-control form-control-sm small" asp-items="ViewBag.BuyDocSeriesId"></select>
                 </div>
                 <div class="form-group col-md-3">
                     <label asp-for="ItemVm.TransRefCode" class="control-label small"></label>
@@ -42,63 +52,57 @@
             </div>
             <div class="form-row">
                 <div class="form-group col-md-8">
-                    <label asp-for="ItemVm.SupplierId" class="control-label small"></label>
-                    <select asp-for="ItemVm.SupplierId" class="form-control form-control-sm small" asp-items="ViewBag.SupplierId"></select>
+                    <label asp-for="ItemVm.TransactorId" class="control-label small"></label>
+                    <select asp-for="ItemVm.TransactorId" class="form-control form-control-sm small" asp-items="ViewBag.TransactorId"></select>
                 </div>
                 <div class="form-group col-md-4">
                     <label asp-for="ItemVm.CompanyId" class="control-label" small></label>
                     <select asp-for="ItemVm.CompanyId" class="form-control form-control-sm small" asp-items="ViewBag.CompanyId"></select>
                 </div>
             </div>
+
             <div class="form-row">
-                <div class="form-group col-md-12">
-                    <label asp-for="ItemVm.Etiology" class="control-label small"></label>
-                    <textarea asp-for="ItemVm.Etiology" class="form-control form-control-sm small"></textarea>
-                    <span asp-validation-for="ItemVm.Etiology" class="text-danger small"></span>
+                <div class="form-group col-sm-1">
+                    <label class="control-label small">Seek Type</label>
+                    <select asp-for="SeekType" class="form-control form-control-sm " style="font-size: 0.7rem" asp-items="ViewBag.SeekType"></select>
                 </div>
-            </div>
-            <div class="form-row">
-                <input type="hidden" id="MaterialId" />
-                <input type="hidden" id="MaterialLastPrice" />
-                <input type="hidden" id="MaterialFactor" />
-                <input type="hidden" id="MaterialFpaId" />
-                <input type="hidden" id="MaterialMainUnitId" />
-                <input type="hidden" id="MaterialSecondaryUnitId" />
-                <input type="hidden" id="MaterialsCounter" />
-                <input type="hidden" id="LineEditing" />
                 <div class="form-group col-sm-3">
 
                     <label class="small">LookUp</label>
-                    <input class="form-control form-control-sm small" id="Lookup" />
+                    <input class="form-control form-control-sm small" style="font-size: 0.7rem" id="Lookup" />
                     <span class="text-danger small"></span>
                 </div>
 
                 <div class="form-group col-sm-2">
                     <label class="small" id="q1Label">Q1</label>
-                    <input class="form-control form-control-sm small " type="number" placeholder="Q 1" id="Q1" />
+                    <input class="form-control form-control-sm small " style="font-size: 0.7rem" type="number" placeholder="Q 1" id="Q1" />
                     <div class="invalid-feedback">
                         Please enter a valid Q1.
                     </div>
-                    @*<span class="text-danger invalid-feedback small">Invalid Q1</span>*@
                 </div>
                 <div class="form-group col-sm-2">
                     <label class="small" id="q2Label">Q2</label>
-                    <input class="form-control form-control-sm small " type="number" placeholder="Q 2" id="Q2" />
+                    <input class="form-control form-control-sm small " style="font-size: 0.7rem" type="number" placeholder="Q 2" id="Q2" />
                     <span class="text-danger small"></span>
                 </div>
-                <div class="form-group col-sm-2">
-                    <label class="small">Price</label>
-                    <input class="form-control form-control-sm small " type="number" placeholder="Price Net" id="Price" />
+                <div class="form-group col-md-1">
+                    <label class="small" id="priceLabel">Price</label>
+                    <input class="form-control form-control-sm " type="number" style="font-size: 0.7rem" placeholder="Price" id="Price" />
+                    <span class="text-danger small"></span>
+                </div>
+                <div class="form-group col-md-1">
+                    <label class="small">Price Net</label>
+                    <input class="form-control form-control-sm " style="font-size: 0.7rem" type="number" placeholder="Price Net" id="PriceNet" tabindex="-1" readonly />
                     <span class="text-danger small"></span>
                 </div>
                 <div class="form-group col-sm-1">
                     <label class="small">Dis% </label>
-                    <input class="form-control form-control-sm small " type="number" placeholder="Dis %" id="Discount" />
+                    <input class="form-control form-control-sm small " style="font-size: 0.7rem" type="number" placeholder="Dis %" id="Discount" />
                     <span class="text-danger small"></span>
                 </div>
                 <div class="form-group col-sm-1">
                     <label class="small">VAT% </label>
-                    <input class="form-control form-control-sm small " type="number" placeholder="Vat%" id="VatPercent" />
+                    <input class="form-control form-control-sm small " style="font-size: 0.7rem" type="number" placeholder="Vat%" id="VatPercent" />
                     <span class="text-danger small"></span>
                 </div>
                 <div class="form-group col-sm-1 align-self-end">
@@ -122,8 +126,8 @@
                             <th class="small text-center" style="width: 10%">Disc</th>
                             <th class="small text-center" style="width: 10%">Vat</th>
                             <th class="small text-center" style="width: 10%">Gross</th>
-                            <th class="small" style="width: 5%"></th>
-                            <th class="small" style="width: 5%"></th>
+                            <th class="small" style="width: 1%"></th>
+                            <th class="small" style="width: 1%"></th>
 
                         </tr>
                     </thead>
@@ -146,15 +150,21 @@
                     <input id="ItemVm_AmountFpa" class="form-control form-control-sm small text-right" type="text" disabled />
                     <span asp-validation-for="ItemVm.AmountFpa" class="text-danger small"></span>
                 </div>
-               
-               
+
+
                 <div class="form-group">
                     <label class=" small">Sum</label>
                     <input id="DocumentSum" type="text" class="form-control form-control-sm small text-right" disabled />
 
                 </div>
             </div>
-
+            <div class="form-row">
+                <div class="form-group col-md-12">
+                    <label asp-for="ItemVm.Etiology" class="control-label small"></label>
+                    <textarea asp-for="ItemVm.Etiology" class="form-control form-control-sm small"></textarea>
+                    <span asp-validation-for="ItemVm.Etiology" class="text-danger small"></span>
+                </div>
+            </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary btn-sm" id="saveForm" />
             </div>
@@ -164,12 +174,13 @@
 </div>
 
 <div>
-    <a asp-page="Index">Back to List</a>
+    <a class="small" asp-page="Index">Back to List</a>
 </div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script src="~/lib/jqueryui/jquery-ui.min.js"></script>
+    <script src="~/js/jquery.ui.autocomplete.scroll.min.js"></script>
     <script>
         $(document).ready(function() {
             console.log("Inside Document ready");
@@ -191,11 +202,10 @@
             //#region variables
             var $transDate = $('#ItemVm_TransDate');
             var securityToken = $('[name=__RequestVerificationToken]').val();
-          
+
             var $lookUp = $('#Lookup');
             var $q1 = $('#Q1');
             var $q2 = $('#Q2');
-            var $price = $("#Price");
             var $materialCounter = $('#MaterialsCounter');
             var $lineEditing = $('#LineEditing');
             var $amountNet = $('#ItemVm_AmountNet');
@@ -210,6 +220,18 @@
             var $factor = $('#MaterialFactor');
             var $mainUnitId = $('#MaterialMainUnitId');
             var $secUnitId = $('#MaterialSecondaryUnitId');
+            var $seekType = $('#SeekType');
+            var $initialLoad = $('#IsInitialLoad');
+            var $priceNetto = $('#MaterialNettoPrice');
+            var $priceBrutto = $('#MaterialBruttoPrice');
+            var $seriesUsedPrice = $('#SeriesUsedPrice');
+            var $priceLabel = $('#priceLabel');
+            var $transDocSeriesId = $('#ItemVm_BuyDocSeriesId');
+            var $companyId = $('#ItemVm_CompanyId');
+            var $price = $("#Price");
+            var $priceNet = $("#PriceNet");
+            var $lookupValueValid = $("#LookupValueValid");
+            var $materialFpaId = $('#MaterialFpaId');
             //#endregion
 
             //#region Initial values
@@ -224,6 +246,193 @@
             $amountSum.attr('data-actualValue', '0');
             $amountSum.val(0);
             //#endregion
+            var priceChanged = () => {
+                var priceValue =parseFloat( $price.val());
+                var fpaValue = parseFloat($vatPercent.val());
+                var priceNetValue = 0;
+
+                if (fpaValue != 0) {
+                    priceNetValue = priceValue / (1 + fpaValue);
+                } else {
+                    priceNetValue = priceValue;
+                }
+                var priceType = $seriesUsedPrice.val();
+                switch (priceType) {
+                case '1':
+                    $priceNet.val(priceValue);
+                    break;
+                case '2':
+                    $priceNet.val(priceNetValue);
+                    break;
+                default:
+                    break;
+                }
+            };
+            var lineUpdatePrice = (linePrice, lineFpaRate) => {
+                var priceNetValue = parseFloat( linePrice);
+                var fpaValue = parseFloat(lineFpaRate);
+                var priceValue = 0;
+
+                if (fpaValue != 0) {
+                    priceValue = priceNetValue * (1 + fpaValue);
+                } else {
+                    priceValue = priceNetValue;
+                }
+                var priceType = $seriesUsedPrice.val();
+                switch (priceType) {
+                case '1'://Netto
+                        $priceNet.val(priceNetValue);
+                        $price.val(priceNetValue);
+                    break;
+                case '2'://Brutto
+                        $priceNet.val(priceNetValue);
+                        $price.val(priceValue);
+                    break;
+                default:
+                    break;
+                }
+            };
+
+            var companyChanged = () => {
+
+                //sessionStorage.setItem('CompanyId', $companyId.val());
+                return $.ajax({
+                    contentType: 'application/json; charset=utf-8',
+
+                    dataType: 'json',
+                    type: 'GET',
+                    url: "/api/Materials/SetCompanyInSession?companyId="+$companyId.val(),
+
+                    success: function(result) {
+
+                    },
+                    error: function(e) {
+
+                    }
+                });
+            };
+            var seriesChanged = () => {
+                console.log("Inside Series Changed");
+
+                var seriesId = $transDocSeriesId.val();
+                var uri = '@Configuration.GetSection("WebApiSettings")["WebApiLocal"]';
+                var finalUri = `${uri}/materials/BuySeriesData?seriesId=${seriesId}`;
+                fetch(finalUri)
+                    .then(function(response) {
+                        if (response.ok) {
+                            return response.json();
+                        } else {
+                            return "-1";
+                        }
+
+                    })
+                    .then(function(myJson) {
+                        console.log("Inside fetch then with myJson" + JSON.stringify(myJson));
+                        if (myJson) {
+
+                            var usedPrice = myJson.usedPrice;
+                            console.log("Returned usedPrice=" + usedPrice);
+                            $seriesUsedPrice.val(usedPrice);
+
+                        }
+                        // $spinner.attr('hidden', true);
+                    })
+                    .catch((error) => {
+                            // $spinner.attr('hidden', true);
+                            console.log(error);
+                        }
+                    );
+            };
+            var q1Changed = () => {
+                $q2.val($q1.val() / $factor.val());
+            };
+            var q2Changed = () => {
+                $q1.val($q2.val() * $factor.val());
+            };
+            var setupUnitToUse = (e) => {
+                switch (e) {
+                    case 'MAIN':
+                        $q1.prop('disabled', false);
+                        $q2.prop('disabled' , true);
+                        break;
+                    case 'SEC':
+                        $q1.prop('disabled', true);
+                        $q2.prop('disabled' , false);
+                        break;
+                    case 'BUY':
+                        $q1.prop('disabled', true);
+                        $q2.prop('disabled' , false);
+                        break;
+
+                    default:
+                        $q1.prop('disabled', false);
+                        $q2.prop('disabled', false);
+                        break;
+                }
+            };
+            var initValUnitToUse = (e) => {
+                switch (e) {
+                    case 'MAIN':
+                        $q1.val(1);
+                        q1Changed();
+                        $q1.focus();
+                        break;
+                    case 'SEC':
+                        $q2.val(1);
+                        q2Changed();
+                        $q2.focus();    
+                        break;
+                    case 'BUY':
+                        $q2.val(1);
+                        q2Changed();
+                        $q2.focus();    
+                        break;
+
+                    default:
+                        $q1.val(1);
+                        q1Changed();
+                        break;
+                }
+            };
+
+            var seekBarcode = () => {
+                return $.ajax({
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    type: 'GET',
+                    url: "/api/Materials/SeekBarcode?barcode="+$lookUp.val(),
+
+                    success: function(result) {
+
+                        var r = result;
+                        console.log(r);
+                        var mName = r.name;
+                        var mFactor = r.factor;
+                        var mId = r.id;
+                        var rate = r.fpaRate;
+                        var lastPrice = r.lastPrice;
+                        var fpaId = r.fpaId;
+                        var unitToUse = r.unitToUse;
+                        setupUnitToUse(unitToUse);
+                        $mainUnitId.val(r.mainUnitId);
+                        $secUnitId.val(r.buyUnitId);
+                        $materialId.val(mId);
+                        $factor.val(mFactor);
+                        $vatPercent.val(rate);
+                        $discount.val(0);
+                        $materialFpaId.val(fpaId);
+                        $price.val(lastPrice);
+                        $priceNet.val(lastPrice);
+                        $lookUp.val(mName);
+                        initValUnitToUse(unitToUse);
+                        $lookupValueValid.val('OK');
+                    },
+                    error: function(e) {
+                        $lookupValueValid.val('ERROR');
+                        toastr.error(e.toString(), "Error");
+                    }
+                });
+            };
             var updateCounter = () => {
                 var lineCounter = 0;
                 var sumNet = 0;
@@ -253,29 +462,15 @@
                 $amountSum.val(formatterCurrency.format(sumGross));
                 $amountSum.attr('data-actualValue', sumGross);
             };
-
-            $('#Q1').change(() => {
-                console.log("Q1 change event ->" + $q1.val());
-
-                $q2.val($q1.val() / $factor.val());
-
-            });
-
-            $('#Q2').change(() => {
-                console.log("Q2 change event ->" + $q2.val());
-                $q1.val($q2.val() * $factor.val());
-
-            });
-            //$('.ui-autocomplete-input').css('fontSize', '8px');
-            $('#Lookup').autocomplete({
-                source: '/api/materials/search',
+            var autoCompleteNameDef = {
+                 source: '/api/materials/SearchForMaterials',
                 minLength: 2,
-
+                maxShowItems:10,
                 select: function(event, ui) {
                     $materialId.val(ui.item.value);
                     console.log(ui.item.value.toString());
                     this.value = ui.item.label;
-                    //Get Material data
+                    //Get WarehouseItem data
                     var uri = '@Configuration.GetSection("WebApiSettings")["WebApiLocal"]';
                     var finalUri = `${uri}/materials/materialdata?materialId=${ui.item.value}`;
 
@@ -302,32 +497,94 @@
                                 $vatPercent.val(rate);
                                 $('#MaterialFpaId').val(fpaId);
                                 $price.val(lastPrice);
+                                $priceNet.val(lastPrice);
                                 $mainUnitId.val(myJson.mainUnitId);
                                 $secUnitId.val(myJson.buyUnitId);
                                 $factor.val(myJson.factorBuy);
+                                $discount.val('0');
+                                $lookupValueValid.val('OK');
+                            }
+                            else {
+                                $lookupValueValid.val('ERROR');
                             }
 
                         })
-                        .catch(error => console.log(error));
+                        .catch((error) => {
+                            $lookupValueValid.val('ERROR');
+                            console.log(error);
+                        });
                     return false;
+                 }
+
+            };
+
+            var setSeekType = () => {
+                $lookUp.off('change');
+                try {
+                    $lookUp.autocomplete("destroy");
+                } catch (e) {
+                    console.log('Error in autocomplete destroy.');
                 }
-                //#region commented out code
-                //_resizeMenu: function () { this.menu.element.outerWidth(300); }
-                //open: function(event, ui)
-                //{
-                //    //$("#autocompleteID").autocomplete("widget").css("width", "300px");
-                //    $('.ui-autocomplete').css('width', '300px');
-                //}
-                //#endregion
+
+                var sType = $seekType.val();
+                switch (sType) {
+                    case 'NAME':
+                        $q1.prop('disabled', false);
+                        $q2.prop('disabled' , false);
+                        $lookUp.autocomplete(autoCompleteNameDef);
+                        break;
+                    case 'CODE':
+                        break;
+                    case 'BARCODE':
+                        $lookUp.change(() => {
+                            seekBarcode();
+                         });
+                        break;
+                    default:
+                }
+            };
+            $seekType.change(() => {
+                setSeekType();
+            });
+            $vatPercent.change(() => {
+                priceChanged();
+            });
+            $price.change(() => {
+                priceChanged();
+            });
+            $companyId.change(() => {
+                companyChanged();
+            });
+
+            $transDocSeriesId.change(() => {
+                seriesChanged();
+            });
+           
+            $q1.change(() => {
+                console.log("Q1 change event ->" + $q1.val());
+                q1Changed();
+            });
+
+            $q2.change(() => {
+                console.log("Q2 change event ->" + $q2.val());
+                q2Changed();
+
             });
 
             $('#addToList').click((e) => {
                 e.preventDefault();
+                if ($lookupValueValid.val() != 'OK') {
+                    toastr.error('Lookup value not correct');
+                    return;
+                }
                 if ($.trim($lookUp.val()) == "" ||
                     $.trim($price.val()) == "" ||
-                    $.trim($q1.val()) == "") return;
+                    $.trim($q1.val()) == "") {
+                    toastr.error('Line not correct');
+                    return;
+                }
                 var productName = $lookUp.val();
-                var price = $price.val();
+                var price = $priceNet.val();
                 var quantity1 = $q1.val();
                 var quantity2 = $q2.val();
                 var discount = $discount.val();
@@ -347,7 +604,7 @@
                 if (lineEdit == 0) {
                     console.log("Inside lineEdit Adding Line");
                     //Εισαγωγή γραμμής
-                   
+
                     var detailsTableBody = $("#detailsTable tbody");
 
                     //#region Add Table Line
@@ -419,13 +676,14 @@
                         '</td></tr>';
                     detailsTableBody.append(productItem);
                     //#endregion
-                } else {
+                }
+                else {
                     console.log("Inside lineEdit Modifying Line");
                     //Μεταβολή γραμμής πίνακα
                     var $tbl = $('#detailsTable');
                     var $rows = $('tr',$tbl);
                     var $row = $rows.eq(lineEdit);
-                   
+
                     var $colMaterial = $('td:eq(1)', $row);
                     var $colQ1 = $('td:eq(2)', $row);
                     var $colQ2 = $('td:eq(3)', $row);
@@ -442,40 +700,40 @@
                     $colMaterial.attr('data-secUnitId', secUnitId);
                     $colMaterial.attr('data-factor', factor);
                     $colMaterial.text(productName);
-                   
+
                     $colQ1.attr('data-actualValue', quantity1);
                     $colQ1.text(formatterNumber.format(quantity1));
-                    
+
                     $colQ2.attr('data-actualValue', quantity2);
                     $colQ2.text(formatterNumber.format(quantity2));
-                    
+
                     $colPrice.attr('data-actualValue', price);
                     $colPrice.text(formatterCurrency.format(price));
-                    
+
                     $colDiscRate.attr('data-actualValue', discount);
                     $colDiscRate.text(formatterNumber.format(discount));
-                    
+
                     $colFpaRate.attr('data-actualValue', vatPercent);
                     $colFpaRate.text(formatterNumber.format(vatPercent));
-                    
+
                     $colNetAmount.attr('data-actualValue', netAmount);
                     $colNetAmount.text(formatterCurrency.format(netAmount));
-                    
+
                     $colDiscAmount.attr('data-actualValue', discountAmount);
                     $colDiscAmount.text(formatterCurrency.format(discountAmount));
-                    
+
                     $colFpaAmount.attr('data-actualValue', fpaAmount);
                     $colFpaAmount.text(formatterCurrency.format(fpaAmount));
-                    
+
                     $colGrossAmount.attr('data-actualValue', grosAmount);
                     $colGrossAmount.text(formatterCurrency.format(grosAmount));
                 }
-                
+
                 $lineEditing.val(0);
                 clearItem();
                 $lookUp.focus();
                 updateCounter();
-
+               
             });
 
             //After Add A New Order In The List, Clear Clean The Form For Add More Order.
@@ -486,84 +744,56 @@
                 $q2.val('');
                 $discount.val('');
                 $vatPercent.val('');
+                $priceNet.val('');
+                $q1.prop('disabled', false);
+                $q2.prop('disabled', false);
             }
 
-            $(document).on('click',
-                'a.deleteItem',
-                function(e) {
-                    e.preventDefault();
-                    var $self = $(this);
-                    if ($(this).attr('data-itemId') == "0") {
-                        var netAmount = $(this).parents('tr').find('td:eq(7)').attr('data-actualValue');
-                        var discountAmount = $(this).parents('tr').find('td:eq(8)').attr('data-actualValue');
-                        var fpaAmount = $(this).parents('tr').find('td:eq(9)').attr('data-actualValue');
-                        var grosAmount = $(this).parents('tr').find('td:eq(10)').attr('data-actualValue');
-                        var $amountNetSum = $('#ItemVm_AmountNet');
-                        var $amountFpaSum = $('#ItemVm_AmountFpa');
-                        var $amountDiscountSum = $('#ItemVm_AmountDiscount');
-                        var $DocSum = $('#DocumentSum');
-                        var amNetSum = parseFloat($amountNetSum.attr('data-actualValue')) - parseFloat(netAmount);
-                        var amFpaSum = parseFloat($amountFpaSum.attr('data-actualValue')) - parseFloat(fpaAmount);
-                        var amDisSum = parseFloat($amountDiscountSum.attr('data-actualValue')) -
-                            parseFloat(discountAmount);
-                        var amSumSum = parseFloat($DocSum.attr('data-actualValue')) - parseFloat(grosAmount);
+            $(document).on('click','a.deleteItem',function(e) {
+                e.preventDefault();
+                var $self = $(this);
+                if ($(this).attr('data-itemId') == "0") {
 
-                        $amountNetSum.val(formatterCurrency.format(amNetSum));
-                        $amountNetSum.attr('data-actualValue', amNetSum);
-
-                        $amountFpaSum.val(formatterCurrency.format(amFpaSum));
-                        $amountFpaSum.attr('data-actualValue', amFpaSum);
-
-                        $amountDiscountSum.val(formatterCurrency.format(amDisSum));
-                        $amountDiscountSum.attr('data-actualValue', amDisSum);
-
-                        $DocSum.val(formatterCurrency.format(amSumSum));
-                        $DocSum.attr('data-actualValue', amSumSum);
-                        $(this).parents('tr').css("background-color", "#ff6347").fadeOut(800,
-                            function() {
-                                $(this).remove();
-                            });
-                        updateCounter();
-                    }
-                });
+                    $(this).parents('tr').css("background-color", "#ff6347").fadeOut(800,
+                        function() {
+                            $(this).remove();
+                            updateCounter();
+                        });
+                    
+                }
+            });
             //--------------------
-            $(document).on('click',
-                'a.modifyItem',
-                function(e) {
-                    e.preventDefault();
-                    var $self = $(this);
-                    if ($(this).attr('data-itemId') == "0") {
-                        //var $netAmount = $(this).parents('tr').find('td:eq(7)');
-                        //var $discountAmount = $(this).parents('tr').find('td:eq(8)');
-                        //var $fpaAmount = $(this).parents('tr').find('td:eq(9)');
-                        //var $grosAmount = $(this).parents('tr').find('td:eq(10)');
-                        var lineEdit = $(this).parents('tr').find('td:eq(0)').text();
-                        var materialId = $(this).parents('tr').find('td:eq(1)').attr('data-materialId');
-                        var materialName = $(this).parents('tr').find('td:eq(1)').text();
-                        var mainUnitId = $(this).parents('tr').find('td:eq(1)').attr('data-mainUnitId');
-                        var secUnitId = $(this).parents('tr').find('td:eq(1)').attr('data-secUnitId');
-                        var factor = $(this).parents('tr').find('td:eq(1)').attr('data-factor');
-                        var q1 = $(this).parents('tr').find('td:eq(2)').attr('data-actualValue');
-                        var q2 = $(this).parents('tr').find('td:eq(3)').attr('data-actualValue');
-                        var price = $(this).parents('tr').find('td:eq(4)').attr('data-actualValue');
-                        //var discount = $(this).parents('tr').find('td:eq(5)').attr('data-actualValue');
-                        var discountRate = $(this).parents('tr').find('td:eq(5)').attr('data-actualValue');
-                        var fpaRate = $(this).parents('tr').find('td:eq(6)').attr('data-actualValue');
-                       // var vatPercent = $(this).parents('tr').find('td:eq(6)').attr('data-actualValue');
+            $(document).on('click','a.modifyItem',function(e) {
+                e.preventDefault();
+                var $self = $(this);
+                if ($(this).attr('data-itemId') == "0") {
 
-                        $lineEditing.val(lineEdit);
-                        $materialId.val(materialId);
-                        $lookUp.val(materialName);
-                        $price.val(price);
-                        $q1.val(q1);
-                        $q2.val(q2);
-                        $vatPercent.val(fpaRate);
-                        $discount.val(discountRate);
-                        $mainUnitId.val(mainUnitId);
-                        $secUnitId.val(secUnitId);
-                        $factor.val(factor);
-                    }
-                });
+                    var lineEdit = $(this).parents('tr').find('td:eq(0)').text();
+                    var materialId = $(this).parents('tr').find('td:eq(1)').attr('data-materialId');
+                    var materialName = $(this).parents('tr').find('td:eq(1)').text();
+                    var mainUnitId = $(this).parents('tr').find('td:eq(1)').attr('data-mainUnitId');
+                    var secUnitId = $(this).parents('tr').find('td:eq(1)').attr('data-secUnitId');
+                    var factor = $(this).parents('tr').find('td:eq(1)').attr('data-factor');
+                    var q1 = $(this).parents('tr').find('td:eq(2)').attr('data-actualValue');
+                    var q2 = $(this).parents('tr').find('td:eq(3)').attr('data-actualValue');
+                    var price = $(this).parents('tr').find('td:eq(4)').attr('data-actualValue');
+                    var discountRate = $(this).parents('tr').find('td:eq(5)').attr('data-actualValue');
+                    var fpaRate = $(this).parents('tr').find('td:eq(6)').attr('data-actualValue');
+
+                    $lineEditing.val(lineEdit);
+                    $materialId.val(materialId);
+                    $lookUp.val(materialName);
+                    //$price.val(price);
+                    $q1.val(q1);
+                    $q2.val(q2);
+                    $vatPercent.val(fpaRate);
+                    $discount.val(discountRate);
+                    $mainUnitId.val(mainUnitId);
+                    $secUnitId.val(secUnitId);
+                    $factor.val(factor);
+                    lineUpdatePrice(price,fpaRate);
+                }
+            });
 
 
             function saveData(data) {
@@ -581,9 +811,10 @@
                         toastr.success("Success", "Success");
                         //location.reload();
                     },
-                    error: function(e) {
-
-                        toastr.error("Error", "Error");
+                    error: function (e) {
+                        
+                        var r = e.responseJSON.error;
+                        toastr.error(r, "saveData");
                     }
                 });
             }
@@ -611,31 +842,30 @@
                 var linesArr = [];
                 linesArr.length = 0;
 
-                $.each($("#detailsTable tbody tr"),
-                    function() {
-                        linesArr.push({
-                            // materialId: $(this).find('td:eq(0)').html(),
-                            materialId: $(this).find('td:eq(1)').attr('data-materialId'),
-                            mainUnitId: $(this).find('td:eq(1)').attr('data-mainUnitId'),
-                            secUnitId: $(this).find('td:eq(1)').attr('data-secUnitId'),
-                            factor: $(this).find('td:eq(1)').attr('data-factor'),
-                            q1: $(this).find('td:eq(2)').attr('data-actualValue'),
-                            q2: $(this).find('td:eq(3)').attr('data-actualValue'),
-                            price: $(this).find('td:eq(4)').attr('data-actualValue'),
-                            discount: $(this).find('td:eq(5)').attr('data-actualValue'),
-                            discountRate: $(this).find('td:eq(5)').attr('data-actualValue'),
-                            fpaRate: $(this).find('td:eq(6)').attr('data-actualValue'),
-                            vatPercent: $(this).find('td:eq(6)').attr('data-actualValue')
+                $.each($("#detailsTable tbody tr"),function() {
+                    linesArr.push({
+                        // materialId: $(this).find('td:eq(0)').html(),
+                        warehouseItemId: $(this).find('td:eq(1)').attr('data-materialId'),
+                        mainUnitId: $(this).find('td:eq(1)').attr('data-mainUnitId'),
+                        secUnitId: $(this).find('td:eq(1)').attr('data-secUnitId'),
+                        factor: $(this).find('td:eq(1)').attr('data-factor'),
+                        q1: $(this).find('td:eq(2)').attr('data-actualValue'),
+                        q2: $(this).find('td:eq(3)').attr('data-actualValue'),
+                        price: $(this).find('td:eq(4)').attr('data-actualValue'),
+                        discount: $(this).find('td:eq(5)').attr('data-actualValue'),
+                        discountRate: $(this).find('td:eq(5)').attr('data-actualValue'),
+                        fpaRate: $(this).find('td:eq(6)').attr('data-actualValue'),
+                        vatPercent: $(this).find('td:eq(6)').attr('data-actualValue')
 
-                        });
                     });
+                });
 
                 var data = JSON.stringify({
                     transDate: $("#ItemVm_TransDate").val(),
                     transRefCode: $("#ItemVm_TransRefCode").val(),
-                    supplierId: $("#ItemVm_SupplierId").val(),
+                    transactorId: $("#ItemVm_TransactorId").val(),
                     companyId: $("#ItemVm_CompanyId").val(),
-                    materialDocSeriesId: $("#ItemVm_MaterialDocSeriesId").val(),
+                    buyDocSeriesId: $("#ItemVm_BuyDocSeriesId").val(),
                     Etiology: $("#ItemVm_Etiology").val(),
                     amountFpa: $("#ItemVm_AmountFpa").attr('data-actualValue'),
                     amountNet: $("#ItemVm_AmountNet").attr('data-actualValue'),
@@ -653,10 +883,20 @@
                     .fail(function(err) {
                         console.log(err);
                         $('#thisForm').prop("disabled", false);
+                        //toastr.error(e.toString(), "when SaveData");
                     });
             });
             //-------------
+            if ($initialLoad.val()=='True') {
+                console.log("Initial load is true setting initial values");
+                $companyId.val('@Model.RoutedCompanyId');
+                seriesChanged();
+                companyChanged();
+                setSeekType();
+            }
+            console.log("After initial load check");
 
+            $initialLoad.val(false);
         });
 
 

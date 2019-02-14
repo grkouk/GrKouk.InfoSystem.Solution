@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using GrKouk.InfoSystem.Definitions;
 using GrKouk.InfoSystem.Domain.Shared;
 
 namespace GrKouk.InfoSystem.Domain.FinConfig
@@ -13,65 +14,62 @@ namespace GrKouk.InfoSystem.Domain.FinConfig
         public string Name { get; set; }
         [Display(Name = "Ενεργό")] public bool Active { get; set; }
 
-        [Display(Name = "Inventory Action")]
-        public WarehouseInventoryTransTypeEnum InventoryTransType { get; set; }
-        [Display(Name = "Inventory Value Action")]
-        public WarehouseValueTransTypeEnum InventoryValueTransType { get; set; }
+        [Display(Name = "Mat.Inventory")]
+        public InventoryActionEnum MaterialInventoryAction { get; set; }
+       
+        [Display(Name = "Mat.InvValAct")]
+        public InventoryValueActionEnum MaterialInventoryValueAction { get; set; }
+        [Display(Name = "Mat.Invoiced Volume")]
+        public InventoryActionEnum MaterialInvoicedVolumeAction { get; set; }
+        [Display(Name = "Mat.Invoiced Value")]
+        public InventoryValueActionEnum MaterialInvoicedValueAction { get; set; }
+        [Display(Name = "Ser.InvAct")]
+        public InventoryActionEnum ServiceInventoryAction { get; set; }
+        [Display(Name = "Ser.InvValAct")]
+        public InventoryValueActionEnum ServiceInventoryValueAction { get; set; }
+        [Display(Name = "Exp.InvAct")]
+        public InventoryActionEnum ExpenseInventoryAction { get; set; }
+        [Display(Name = "Exp.InvValAct")]
+        public InventoryValueActionEnum ExpenseInventoryValueAction { get; set; }
+        [Display(Name = "Inc.InvAct")]
+        public InventoryActionEnum IncomeInventoryAction { get; set; }
+        [Display(Name = "Inc.InvValAct")]
+        public InventoryValueActionEnum IncomeInventoryValueAction { get; set; }
 
-        [Display(Name = "ΠοσΕισαγωγών")]
-        public int VolImportsTransId { get; set; }
-       // public virtual FinancialMovement VolImportsTrans { get; set; }
+        [Display(Name = "Fixed As.InvAct")]
+        public InventoryActionEnum FixedAssetInventoryAction { get; set; }
+        [Display(Name = "Fixed As.InvValAct")]
+        public InventoryValueActionEnum FixedAssetInventoryValueAction { get; set; }
 
-        [Display(Name = "ΠοσΕξαγωγών")]
-        public int VolExportsTransId { get; set; }
-        //public virtual FinancialMovement VolExportsTrans { get; set; }
+        //[Display(Name = "Ποσ Τιμ/νων Εξ")]
+        //public InfoEntityActionEnum VolInvoicedExportsAction { get; set; }
 
-        [Display(Name = "Ποσ Τιμ/νων Εξ")]
-        public int VolInvoicedExportsTransId { get; set; }
+        //[Display(Name = "Ποσ Τιμ/νων Εισ")]
+        //public InfoEntityActionEnum VolInvoicedImportsAction { get; set; }
+        
+        //[Display(Name = "Αξία Τιμ/νων Εξ")]
+        //public InfoEntityActionEnum AmtInvoicedExportsAction { get; set; }
 
-        public virtual FinancialMovement VolInvoicedExportsTrans { get; set; }
+        //[Display(Name = "Αξία Τιμ/νων Εισ")]
+        //public InfoEntityActionEnum AmtInvoicedImportsAction { get; set; }
 
-        [Display(Name = "Ποσ Τιμ/νων Εισ")]
-        public int VolInvoicedImportsTransId { get; set; }
+        //[Display(Name = "Ποσ Αγορών")]
+        //public InfoEntityActionEnum VolBuyAction { get; set; }
+       
 
-        public virtual FinancialMovement VolInvoicedImportsTrans { get; set; }
+        //[Display(Name = "Αξία Αγορών")]
+        //public InfoEntityActionEnum AmtBuyAction { get; set; }
+       
 
-        [Display(Name = "Αξία Εισ")]
-        public int AmtImportsTransId { get; set; }
-        //public virtual FinancialMovement AmtImportsTrans { get; set; }
+        //[Display(Name = "Ποσ Πωλήσεων")]
+        //public InfoEntityActionEnum VolSellAction { get; set; }
+      
 
-        [Display(Name = "Αξία Εξα")]
-        public int AmtExportsTransId { get; set; }
-        //public virtual FinancialMovement AmtExportsTrans { get; set; }
-
-        [Display(Name = "Αξία Τιμ/νων Εξ")]
-        public int AmtInvoicedExportsTransId { get; set; }
-
-        public virtual FinancialMovement AmtInvoicedExportsTrans { get; set; }
-
-        [Display(Name = "Αξία Τιμ/νων Εισ")]
-        public int AmtInvoicedImportsTransId { get; set; }
-
-        public virtual FinancialMovement AmtInvoicedImportsTrans { get; set; }
-
-        [Display(Name = "Ποσ Αγορών")]
-        public int VolBuyTransId { get; set; }
-        public virtual FinancialMovement VolBuyTrans { get; set; }
-
-        [Display(Name = "Αξία Αγορών")]
-        public int AmtBuyTransId { get; set; }
-        public virtual FinancialMovement AmtBuyTrans { get; set; }
-
-        [Display(Name = "Ποσ Πωλήσεων")]
-        public int VolSellTransId { get; set; }
-        public virtual FinancialMovement VolSellTrans { get; set; }
-
-        [Display(Name = "Αξία Πωλήσεων")]
-        public int AmtSellTransId { get; set; }
-        public virtual FinancialMovement AmtSellTrans { get; set; }
+        //[Display(Name = "Αξία Πωλήσεων")]
+        //public InfoEntityActionEnum AmtSellAction { get; set; }
+       
         [Display(Name = "Default Series")]
-        public int TransWarehouseDefaultDocSeriesDefId { get; set; }
-        public virtual TransWarehouseDocSeriesDef TransWarehouseDefaultDocSeriesDef { get; set; }
+        public int DefaultDocSeriesId { get; set; }
         public int CompanyId { get; set; }
         public virtual Company Company { get; set; }
     }
