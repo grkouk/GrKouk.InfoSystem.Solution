@@ -87,16 +87,13 @@
     <script src="~/lib/bootstrap-select/js/bootstrap-select.min.js"></script>
     <script>
         $(document).ready(function() {
-            var $selectedWarehouseItemNatures = $('#BSellDocTypeDef_SelectedWarehouseItemNatures');
+            var $selectedWarehouseItemNatures = $('#SellDocTypeDef_SelectedWarehouseItemNatures');
             var $matNatureTypes = $('#MaterialNatureTypes');
 
             $('.selectpicker').selectpicker();
             var updateSelectedWareItemNatures = () => {
                
                 var matList = $selectedWarehouseItemNatures.val();
-               
-               
-               
                 console.log('matList=' + matList);
                if (matList != null) {
                     var matListArr = matList.split(',');
