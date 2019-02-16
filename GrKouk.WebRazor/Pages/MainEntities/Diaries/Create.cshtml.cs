@@ -40,7 +40,7 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Diaries
                     Text = c.GetDescription()
                 }).ToList();
 
-            #region MyRegion
+            #region CommentOut
             //foreach (DiaryTypeEnum value in Enum.GetValues(typeof(DiaryTypeEnum)))
             //{
             //    var a = value.GetDescription()
@@ -84,7 +84,7 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Diaries
                     Title = p.Name,
                     Value = p.Id
                 }).ToList();
-            #region MyRegion
+            #region CommentOut
             //var BuyDocTypeListJs = _context.BuyDocTypeDefs.OrderBy(p => p.Name)
             //   .ProjectTo<DiaryDocTypeItem>(_mapper.ConfigurationProvider).ToList();
 

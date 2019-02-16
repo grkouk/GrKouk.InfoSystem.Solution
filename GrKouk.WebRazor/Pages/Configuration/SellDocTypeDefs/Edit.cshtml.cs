@@ -8,7 +8,9 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using GrKouk.InfoSystem.Domain.FinConfig;
+using GrKouk.InfoSystem.Dtos.WebDtos.Diaries;
 using GrKouk.WebApi.Data;
+using GrKouk.WebRazor.Helpers;
 
 namespace GrKouk.WebRazor.Pages.Configuration.SellDocTypeDefs
 {
@@ -85,6 +87,14 @@ namespace GrKouk.WebRazor.Pages.Configuration.SellDocTypeDefs
                 new SelectListItem() {Value = PriceTypeEnum.PriceTypeEnumBrutto.ToString(), Text = "Μικτή Τιμή"}
 
             };
+            var warehouseItemNaturesList = Enum.GetValues(typeof(WarehouseItemNatureEnum))
+                .Cast<WarehouseItemNatureEnum>()
+                .Select(c => new UISelectTypeItem()
+                {
+                    Value = c.ToString(),
+                    Title = c.GetDescription()
+                }).ToList();
+            ViewData["warehouseItemNaturesList"] = new SelectList(warehouseItemNaturesList, "Value", "Title");
             ViewData["UsedPrice"] = new SelectList(usedPriceTypeList, "Value", "Text");
             ViewData["CompanyId"] = new SelectList(_context.Companies.OrderBy(p => p.Code).AsNoTracking(), "Id", "Code");
 

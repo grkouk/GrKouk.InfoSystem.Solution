@@ -4,13 +4,17 @@
 @{
     ViewData["Title"] = "Edit";
 }
-
+@section MyCss
+{
+    <link rel="stylesheet" href="~/lib/bootstrap-select/css/bootstrap-select.min.css" />
+}
 <h4>Edit SellDocTypeDef</h4>
 <hr />
 
 <div class="container">
     <form method="post">
         <input type="hidden" asp-for="SellDocTypeDef.Id" />
+        <input type="hidden" asp-for="SellDocTypeDef.SelectedWarehouseItemNatures" />
         <div asp-validation-summary="ModelOnly" class="text-danger small"></div>
         <div class="form-row">
             <div class="form-group col-md-2">
@@ -56,7 +60,15 @@
                 <span asp-validation-for="SellDocTypeDef.CompanyId" class="text-danger small"></span>
             </div>
         </div>
-
+        <div class="form-row">
+            <div class=" form-group col-md-3">
+                <label class="control-label small">WarehouseItem Natures </label>
+                <select class="selectpicker form-control " id="MaterialNatureTypes" multiple
+                        data-selected-text-format="count > 1"
+                        asp-items="ViewBag.warehouseItemNaturesList"
+                ></select>
+            </div>
+        </div>
         <div class="form-row">
             <div class="form-group">
                 <input type="submit" value="Update" class="btn btn-primary btn-sm" />
@@ -72,4 +84,39 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/lib/bootstrap-select/js/bootstrap-select.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            var $selectedWarehouseItemNatures = $('#BSellDocTypeDef_SelectedWarehouseItemNatures');
+            var $matNatureTypes = $('#MaterialNatureTypes');
+
+            $('.selectpicker').selectpicker();
+            var updateSelectedWareItemNatures = () => {
+               
+                var matList = $selectedWarehouseItemNatures.val();
+               
+               
+               
+                console.log('matList=' + matList);
+               if (matList != null) {
+                    var matListArr = matList.split(',');
+                    $matNatureTypes.selectpicker('val', matListArr);
+                }
+               
+            };
+            $matNatureTypes.on('changed.bs.select', function (e, clickedIndex, isSelected, previousValue) {
+                var sel = $('#MaterialNatureTypes option:selected');
+                var selected = [];
+                $(sel).each(function(index, item) {
+                    selected.push([$(this).val()]);
+                });
+                console.log('selected=' + selected);
+                var sDocs = selected.toString();
+                console.log('sDocs=' + sDocs);
+               
+                $selectedWarehouseItemNatures.val(sDocs);
+            });
+            updateSelectedWareItemNatures();
+        });
+    </script>
 }
