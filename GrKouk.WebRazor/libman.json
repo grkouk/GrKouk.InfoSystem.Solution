@@ -17,6 +17,10 @@
     {
       "library": "bootstrap-select@1.13.5",
       "destination": "wwwroot/lib/bootstrap-select/"
+    },
+    {
+      "library": "node-uuid@1.4.8",
+      "destination": "wwwroot/lib/node-uuid/"
     }
   ]
 }

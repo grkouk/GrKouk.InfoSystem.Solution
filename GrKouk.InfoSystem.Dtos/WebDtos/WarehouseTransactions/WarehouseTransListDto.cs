@@ -37,8 +37,19 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.WarehouseTransactions
         //----------------------
         public double Quontity1 { get; set; }
         public double Quontity2 { get; set; }
-
+  // Ονομαστική τιμή: η αρχική τιμή που έχει οριστεί χωρίς εκπτώσεις /επιβαρύνσεις.
+        [Display(Name = "Τιμή Μονάδας")]
         public decimal UnitPrice { get; set; }
+        [Display(Name = "Εξοδα Μονάδος")]
+        public decimal UnitExpenses { get; set; }
+        // Τιμή μείον έκπτωση: η τιμή μείον την έκπτωση γραμμής.
+        [Display(Name = "Τιμή μετά Εκπτ.")]
+        public decimal UnitPriceAfterDiscount => InvoicedQ1==0?0: InvoicedValueNetto / InvoicedQ1;
+
+        // Ανηγμένη τιμή: η τιμή μείον εκπτώσεις, συν τυχόν επιβαρύνσεις.
+        [Display(Name = "Ανηγμένη Τιμή")]
+        public decimal UnitPriceFinal { get; set; }
+        
         public decimal AmountFpa { get; set; }
         public decimal AmountNet { get; set; }
 
@@ -72,6 +83,7 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.WarehouseTransactions
                         : 0)
                 )
             );
+        [Display(Name = "Αξία Τιμολόγησης")]
         public decimal InvoicedValue
         {
             get
@@ -94,6 +106,9 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.WarehouseTransactions
                 }
 
                 return ret;
+
+                #region CommentOut
+
                 //return (InvoicedValueAction.Equals(InventoryValueActionEnum.InventoryValueActionEnumIncrease) ||
                 //        InvoicedValueAction.Equals(InventoryValueActionEnum.InventoryValueActionEnumDecrease)
                 //        ? AmountNet + AmountFpa - AmountDiscount
@@ -105,9 +120,35 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.WarehouseTransactions
                 //                : 0)
                 //        )
                 //    );
+
+                #endregion
             }
         }
+        public decimal InvoicedValueNetto
+        {
+            get
+            {
+                decimal ret = 0;
+                if (InvoicedValueAction.Equals(InventoryValueActionEnum.InventoryValueActionEnumIncrease) ||
+                    InvoicedValueAction.Equals(InventoryValueActionEnum.InventoryValueActionEnumDecrease))
+                {
+                    ret = AmountNet  - AmountDiscount;
+                }
+                else if (InvoicedValueAction.Equals(InventoryValueActionEnum.InventoryValueActionEnumNegativeIncrease) ||
+                         InvoicedValueAction.Equals(InventoryValueActionEnum.InventoryValueActionEnumNegativeDecrease))
+                {
+                    ret = (AmountNet - AmountDiscount) * -1;
 
+                }
+                else
+                {
+                    ret = 0;
+                }
+
+                return ret;
+
+            }
+        }
         [DisplayFormat(DataFormatString = "{0:C}")]
         [Display(Name = "Import Value")]
         public decimal ImportAmount

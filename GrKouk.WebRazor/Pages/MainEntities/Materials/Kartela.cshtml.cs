@@ -33,7 +33,8 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Materials
         public int TransactorTypeFilter { get; set; }
         public int ParentPageIndex { get; set; }
         public PagedList<WarehouseKartelaLine> ListItems { get; set; }
-        public async Task OnGetAsync(int transactorId, int? pageIndexKartela, int? pageSizeKartela, string transactorName, int? transactorTypeFilter, int? parentPageIndex, int? parentPageSize)
+        public async Task OnGetAsync(int transactorId, int? pageIndexKartela, int? pageSizeKartela, string transactorName
+            , int? transactorTypeFilter, int? parentPageIndex, int? parentPageSize)
         {
             TransactorTypeFilter = (int)(transactorTypeFilter ?? 0);
             ParentPageSize = (int)(parentPageSize ?? 0);

@@ -45,7 +45,18 @@ namespace GrKouk.WebRazor.Controllers
             HttpContext.Session.SetString ("CompanyId",companyId);
             return Ok(new {});
         }
-
+        [HttpGet("SetBuySeriesInSession")]
+        public IActionResult BuySeriesInSession(string seriesId)
+        {
+            HttpContext.Session.SetString("BuySeriesId", seriesId);
+            return Ok(new { });
+        }
+        [HttpGet("SetSaleSeriesInSession")]
+        public IActionResult SaleSeriesInSession(string seriesId)
+        {
+            HttpContext.Session.SetString("SalesSeriesId", seriesId);
+            return Ok(new { });
+        }
         [HttpGet("SeekBarcode")]
         public async Task<IActionResult> GetMaterialFromBarcode(string barcode)
         {
@@ -128,14 +139,106 @@ namespace GrKouk.WebRazor.Controllers
 
             });
         }
-        [HttpGet("SearchForMaterials")]
-        public async Task<IActionResult> GetMaterials(string term)
+        [HttpGet("SearchWarehouseItemsForBuy")]
+        public async Task<IActionResult> GetWarehouseItemsForBuy(string term)
         {
             var sessionCompanyId = HttpContext.Session.GetString("CompanyId");
-            var materials = await _context.WarehouseItems.Where(p => p.Name.Contains(term) )
+            var sessionSeriesId= HttpContext.Session.GetString("BuySeriesId");
+            IQueryable<WarehouseItem> fullListIq = _context.WarehouseItems;
+            if (sessionCompanyId != null)
+            {
+                int companyId;
+                bool isInt = int.TryParse(sessionCompanyId, out companyId);
+                if (isInt)
+                {
+                    if (companyId>1)
+                    {
+                        //Not all companies 
+                       fullListIq= fullListIq.Where(p => p.CompanyId == companyId || p.CompanyId==1);
+                    }
+                }
+            }
+
+            if (sessionSeriesId != null)
+            {
+                int seriesId;
+                bool isInt = int.TryParse(sessionSeriesId, out seriesId);
+                var series = await _context.BuyDocSeriesDefs
+                    .Include(p => p.BuyDocTypeDef)
+                    .SingleOrDefaultAsync(p => p.Id == seriesId);
+                if (series!=null)
+                {
+                    var docType = series.BuyDocTypeDef;
+                    var itemNatures = docType.SelectedWarehouseItemNatures;
+                    if (!string.IsNullOrEmpty(itemNatures))
+                    {
+                        var natures = Array.ConvertAll(docType.SelectedWarehouseItemNatures.Split(","), int.Parse);
+                        //var natures = docType.SelectedWarehouseItemNatures;
+                        fullListIq = fullListIq.Where(p => natures.Contains( (int)p.WarehouseItemNature));
+                    }
+                }
+            }
+
+            fullListIq = fullListIq.Where(p => p.Active);
+            fullListIq = fullListIq.Where(p => p.Name.Contains(term));
+            var materials = await fullListIq
                 .ProjectTo<WarehouseItemSearchListDto>(_mapper.ConfigurationProvider)
                 .Select(p => new { label = p.Label, value = p.Id }).ToListAsync();
 
+            if (materials == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(materials);
+        }
+        [HttpGet("SearchWarehouseItemsForSale")]
+        public async Task<IActionResult> GetWarehouseItemsForSale(string term)
+        {
+            var sessionCompanyId = HttpContext.Session.GetString("CompanyId");
+            var sessionSeriesId = HttpContext.Session.GetString("BuySeriesId");
+            IQueryable<WarehouseItem> fullListIq = _context.WarehouseItems;
+            if (sessionCompanyId != null)
+            {
+                int companyId;
+                bool isInt = int.TryParse(sessionCompanyId, out companyId);
+                if (isInt)
+                {
+                    if (companyId > 1)
+                    {
+                        //Not all companies 
+                       fullListIq= fullListIq.Where(p => p.CompanyId == companyId || p.CompanyId == 1);
+                    }
+                }
+            }
+
+            if (sessionSeriesId != null)
+            {
+                int seriesId;
+                bool isInt = int.TryParse(sessionSeriesId, out seriesId);
+                var series = await _context.SellDocSeriesDefs
+                    .Include(p => p.SellDocTypeDef)
+                    .SingleOrDefaultAsync(p => p.Id == seriesId);
+                if (series != null)
+                {
+                    var docType = series.SellDocTypeDef;
+                    var itemNatures = docType.SelectedWarehouseItemNatures;
+                    if (!string.IsNullOrEmpty(itemNatures))
+                    {
+                        var natures = Array.ConvertAll(docType.SelectedWarehouseItemNatures.Split(","), int.Parse);
+                        //var natures = docType.SelectedWarehouseItemNatures;
+                        fullListIq = fullListIq.Where(p => natures.Contains((int)p.WarehouseItemNature));
+                    }
+                }
+            }
+
+            fullListIq = fullListIq.Where(p => p.Name.Contains(term));
+            //var materials = await _context.WarehouseItems.Where(p => p.Name.Contains(term) )
+            //    .ProjectTo<WarehouseItemSearchListDto>(_mapper.ConfigurationProvider)
+            //    .Select(p => new { label = p.Label, value = p.Id }).ToListAsync();
+            var materials = await fullListIq
+                .ProjectTo<WarehouseItemSearchListDto>(_mapper.ConfigurationProvider)
+                .Select(p => new { label = p.Label, value = p.Id }).ToListAsync();
             if (materials == null)
             {
                 return NotFound();
@@ -247,7 +350,7 @@ namespace GrKouk.WebRazor.Controllers
                     error = "No Series Found"
                 });
             }
-
+           // SaleSeriesInSession(seriesId.ToString());
             await _context.Entry(salesSeriesDef)
                 .Reference(p => p.SellDocTypeDef)
                 .LoadAsync();
@@ -271,6 +374,7 @@ namespace GrKouk.WebRazor.Controllers
                 });
             }
 
+            //BuySeriesInSession(seriesId.ToString());
             await _context.Entry(buySeriesDef)
                 .Reference(p => p.BuyDocTypeDef)
                 .LoadAsync();

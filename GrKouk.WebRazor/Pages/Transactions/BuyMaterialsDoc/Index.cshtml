@@ -5,7 +5,7 @@
     ViewData["Title"] = "Παραστατικά Αγορών";
 }
 @section MyCss
-    {
+{
     <link rel="stylesheet" href="~/css/custom-checkbox.css" />
 }
 <h4>Λίστα Αγορές Υλικών</h4>
@@ -26,8 +26,7 @@
                asp-route-pageIndex="@(Model.ListItems.CurrentPage)"
                asp-route-currentFilter="@Model.CurrentFilter"
                asp-route-PageSize="@Model.PageSize"
-               asp-route-companyFilter="@Model.CompanyFilter"
-               >Create New</a>
+               asp-route-companyFilter="@Model.CompanyFilter">Create New</a>
         </li>
         <li class="nav-item">
             <a class="nav-link" data-toggle="collapse" href="#filterCollapse" role="button" id="filtersToggle"
@@ -325,7 +324,7 @@
                         ids: idsToDelete
                     });
                     var timeout;
-                   
+
                     $.ajax({
                         contentType: 'application/json; charset=utf-8',
 
@@ -336,20 +335,20 @@
                         beforeSend: function () {
                             if (timeout) { clearTimeout(timeout); }
                             timeout = setTimeout(function() {
-                               
+
                                 $("#loadMe").modal({
                                     backdrop: "static", //remove ability to close modal with click
                                     keyboard: false, //remove option to close with keyboard
                                     show: true //Display loader!
-                                }); 
+                                });
                             }, 1000);
-                           
+
                         },
                         success: function (result) {
                             console.log(success);
                         },
                         complete: function () {
-                            if (timeout) { clearTimeout(timeout); } 
+                            if (timeout) { clearTimeout(timeout); }
                             $("#loadMe").modal("hide");
                             setTimeout(function() {
                                 console.log('Checking for open modals');
@@ -364,10 +363,10 @@
                         },
                         error: function (e) {
                             console.log(e);
-                           
+
                         }
                     });
-                    
+
                 }
 
             };

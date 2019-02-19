@@ -113,7 +113,11 @@ namespace GrKouk.InfoSystem.Definitions
         [Description("Καθαρή Τιμή")]
         PriceTypeEnumNetto = 1,
         [Description("Μικτή Τιμή")]
-        PriceTypeEnumBrutto = 2
+        PriceTypeEnumBrutto = 2,
+        [Description("Τελ.Τιμή Αγοράς")]
+        PriceTypeEnumLastBuy = 3,
+        [Description("Τιμή Κόστους")]
+        PriceTypeEnumCost = 4
     }
 
     public enum WarehouseItemCodeTypeEnum

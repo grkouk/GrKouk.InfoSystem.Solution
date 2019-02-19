@@ -137,6 +137,8 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Transactors
                 transactorTypes.Add(new SelectListItem() { Value = dbTransactorType.Id.ToString(), Text = dbTransactorType.Code });
             }
             ViewData["TransactorTypeId"] = new SelectList(transactorTypes, "Value", "Text");
+            var pageFilterSize = PageFilter.GetPageSizeFiltersSelectList();
+            ViewData["PageFilterSize"] = new SelectList(pageFilterSize, "Value", "Text");
         }
     }
 }

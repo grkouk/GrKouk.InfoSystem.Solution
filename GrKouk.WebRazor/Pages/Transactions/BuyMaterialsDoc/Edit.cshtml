@@ -332,7 +332,22 @@
                     break;
                 }
             };
+            var setSeriesInSession = () => {
+                return $.ajax({
+                    contentType: 'application/json; charset=utf-8',
 
+                    dataType: 'json',
+                    type: 'GET',
+                    url: "/api/Materials/SetBuySeriesInSession?seriesId="+$transDocSeriesId.val(),
+
+                    success: function(result) {
+
+                    },
+                    error: function(e) {
+
+                    }
+                });
+            };
             var companyChanged = () => {
 
                 //sessionStorage.setItem('CompanyId', $companyId.val());
@@ -353,7 +368,7 @@
             };
             var seriesChanged = () => {
                 console.log("Inside Series Changed");
-
+                setSeriesInSession();
                 var seriesId = $transDocSeriesId.val();
                 var uri = '@Configuration.GetSection("WebApiSettings")["WebApiLocal"]';
                 var finalUri = `${uri}/materials/BuySeriesData?seriesId=${seriesId}`;
@@ -502,7 +517,7 @@
                 $amountSum.attr('data-actualValue', sumGross);
             };
             var autoCompleteNameDef = {
-                 source: '/api/materials/SearchForMaterials',
+                 source: '/api/materials/SearchWarehouseItemsForBuy',
                 minLength: 2,
                 maxShowItems:10,
                 select: function(event, ui) {

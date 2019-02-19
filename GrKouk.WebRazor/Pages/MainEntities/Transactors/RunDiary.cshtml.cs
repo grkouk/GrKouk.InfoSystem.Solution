@@ -46,7 +46,8 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Transactors
         public decimal sumCredit = 0;
         public decimal sumDebit = 0;
         public async Task<IActionResult> OnGetAsync(int? diaryId, string sortOrder, string searchString, string datePeriodFilter
-            , int? pageIndexKartela, int? pageSizeKartela,int? transactorTypeFilter, int? companyFilter, int? parentPageIndex, int? parentPageSize)
+            , int? pageIndexKartela, int? pageSizeKartela,int? transactorTypeFilter, int? companyFilter, int? parentPageIndex
+            , int? parentPageSize)
         {
             if (diaryId == null)
             {

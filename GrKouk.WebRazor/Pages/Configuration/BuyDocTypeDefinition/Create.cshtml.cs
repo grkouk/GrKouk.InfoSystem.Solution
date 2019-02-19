@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GrKouk.InfoSystem.Definitions;
-using GrKouk.InfoSystem.Domain.FinConfig;
 using GrKouk.InfoSystem.Dtos.WebDtos.Diaries;
 using GrKouk.WebRazor.Helpers;
 using Microsoft.AspNetCore.Mvc;
@@ -17,12 +15,12 @@ namespace GrKouk.WebRazor.Pages.Configuration.BuyDocTypeDefinition
     public class CreateModel : PageModel
     {
         private readonly GrKouk.WebApi.Data.ApiDbContext _context;
-        private readonly IToastNotification toastNotification;
+        private readonly IToastNotification _toastNotification;
 
         public CreateModel(GrKouk.WebApi.Data.ApiDbContext context,IToastNotification toastNotification)
         {
             _context = context;
-            this.toastNotification = toastNotification;
+            this._toastNotification = toastNotification;
         }
 
         public IActionResult OnGet()
@@ -33,23 +31,28 @@ namespace GrKouk.WebRazor.Pages.Configuration.BuyDocTypeDefinition
 
         private void LoadCompbos()
         {
-            List<SelectListItem> usedPriceTypeList = new List<SelectListItem>
-            {
+          
+            var usedPriceTypeList = Enum.GetValues(typeof(PriceTypeEnum))
+                .Cast<PriceTypeEnum>()
+                .Select(c => new UISelectTypeItem()
+                {
+                    Value = ((int)c).ToString(),
+                    ValueInt = (int)c,
+                    Text = c.GetDescription(),
+                    Title = c.GetDescription()
+                }).ToList();
+            ViewData["UsedPrice"] = new SelectList(usedPriceTypeList, "Value", "Text");
 
-                new SelectListItem() {Value = PriceTypeEnum.PriceTypeEnumNetto.ToString(), Text = "Καθαρή Τιμή"},
-                new SelectListItem() {Value = PriceTypeEnum.PriceTypeEnumBrutto.ToString(), Text = "Μικτή Τιμή"}
-
-            };
             var warehouseItemNaturesList = Enum.GetValues(typeof(WarehouseItemNatureEnum))
                 .Cast<WarehouseItemNatureEnum>()
                 .Select(c => new UISelectTypeItem()
                 {
-                    Value = c.ToString(),
+                    ValueInt = (int)c,
                     Title = c.GetDescription()
                 }).ToList();
-            ViewData["warehouseItemNaturesList"] = new SelectList(warehouseItemNaturesList, "Value", "Title"); 
+            ViewData["warehouseItemNaturesList"] = new SelectList(warehouseItemNaturesList, "ValueInt", "Title"); 
 
-            ViewData["UsedPrice"] = new SelectList(usedPriceTypeList, "Value", "Text");
+           
             ViewData["CompanyId"] = new SelectList(_context.Companies.OrderBy(p => p.Code).AsNoTracking(), "Id", "Code");
           //  ViewData["TransSupplierDefId"] = new SelectList(_context.TransSupplierDefs.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
             ViewData["TransTransactorDefId"] = new SelectList(_context.TransTransactorDefs.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
@@ -68,7 +71,7 @@ namespace GrKouk.WebRazor.Pages.Configuration.BuyDocTypeDefinition
 
             _context.BuyDocTypeDefs.Add(BuyDocTypeDef);
             await _context.SaveChangesAsync();
-            toastNotification.AddSuccessToastMessage("Saved successfully");
+            _toastNotification.AddSuccessToastMessage("Saved successfully");
             return RedirectToPage("./Index");
         }
     }

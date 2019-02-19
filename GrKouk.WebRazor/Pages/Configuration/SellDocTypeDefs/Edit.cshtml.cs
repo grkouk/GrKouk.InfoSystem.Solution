@@ -91,10 +91,10 @@ namespace GrKouk.WebRazor.Pages.Configuration.SellDocTypeDefs
                 .Cast<WarehouseItemNatureEnum>()
                 .Select(c => new UISelectTypeItem()
                 {
-                    Value = c.ToString(),
+                    ValueInt =(int) c,
                     Title = c.GetDescription()
                 }).ToList();
-            ViewData["warehouseItemNaturesList"] = new SelectList(warehouseItemNaturesList, "Value", "Title");
+            ViewData["warehouseItemNaturesList"] = new SelectList(warehouseItemNaturesList, "ValueInt", "Title");
             ViewData["UsedPrice"] = new SelectList(usedPriceTypeList, "Value", "Text");
             ViewData["CompanyId"] = new SelectList(_context.Companies.OrderBy(p => p.Code).AsNoTracking(), "Id", "Code");
 

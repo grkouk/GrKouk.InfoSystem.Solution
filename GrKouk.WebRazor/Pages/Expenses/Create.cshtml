@@ -10,59 +10,59 @@
 <hr />
 <div class="container">
     <form method="post">
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div asp-validation-summary="ModelOnly" class="text-danger small"></div>
         <div class="form-row">
 
-            <div class="form-group col-md-4">
-                <label asp-for="FinDiaryTransaction.TransactionDate"></label>
+            <div class="form-group col-md-2">
+                <label asp-for="FinDiaryTransaction.TransactionDate" class="small"></label>
                 <input asp-for="FinDiaryTransaction.TransactionDate" class="form-control form-control-sm" />
-                <span asp-validation-for="FinDiaryTransaction.TransactionDate" class="text-danger"></span>
+                <span asp-validation-for="FinDiaryTransaction.TransactionDate" class="text-danger small"></span>
             </div>
-            <div class="form-group col-md-8">
-                <label asp-for="FinDiaryTransaction.TransactorId"></label>
+            <div class="form-group col-md-4">
+                <label asp-for="FinDiaryTransaction.TransactorId" class="small"></label>
                 <select asp-for="FinDiaryTransaction.TransactorId" class="form-control form-control-sm"
                         onchange=""
                         asp-items="ViewBag.TransactorId"></select>
             </div>
         </div>
         <div class="form-row">
-            <div class="form-group col-md-4">
-                <label asp-for="FinDiaryTransaction.ReferenceCode"></label>
+            <div class="form-group col-md-2">
+                <label asp-for="FinDiaryTransaction.ReferenceCode" class="small"></label>
                 <input asp-for="FinDiaryTransaction.ReferenceCode" class="form-control form-control-sm" />
-                <span asp-validation-for="FinDiaryTransaction.ReferenceCode" class="text-danger"></span>
+                <span asp-validation-for="FinDiaryTransaction.ReferenceCode" class="text-danger small"></span>
             </div>
-            <div class="form-group col-md-8">
-                <label asp-for="FinDiaryTransaction.FinTransCategoryId"></label>
+            <div class="form-group col-md-4">
+                <label asp-for="FinDiaryTransaction.FinTransCategoryId" class="small"></label>
                 <select asp-for="FinDiaryTransaction.FinTransCategoryId" class="form-control form-control-sm" asp-items="ViewBag.FinTransCategoryId"></select>
             </div>
         </div>
         <div class="form-row">
-            <div class="form-group col-md-6">
-                <label asp-for="FinDiaryTransaction.CompanyId"></label>
+            <div class="form-group col-md-2">
+                <label asp-for="FinDiaryTransaction.CompanyId" class="small"></label>
                 <select asp-for="FinDiaryTransaction.CompanyId" class="form-control form-control-sm" asp-items="ViewBag.CompanyId"></select>
             </div>
-            <div class="form-group col-md-6">
-                <label asp-for="FinDiaryTransaction.CostCentreId"></label>
+            <div class="form-group col-md-4">
+                <label asp-for="FinDiaryTransaction.CostCentreId" class="small"></label>
                 <select asp-for="FinDiaryTransaction.CostCentreId" class="form-control form-control-sm" asp-items="ViewBag.CostCentreId"></select>
             </div>
         </div>
         <div class="form-row">
-            <div class="form-group col-md-12">
-                <label asp-for="FinDiaryTransaction.Description"></label>
+            <div class="form-group col-md-6">
+                <label asp-for="FinDiaryTransaction.Description" class="small"></label>
                 <textarea asp-for="FinDiaryTransaction.Description" class="form-control form-control-sm" placeholder="Description of Transaction"></textarea>
-                <span asp-validation-for="FinDiaryTransaction.Description" class="text-danger"></span>
+                <span asp-validation-for="FinDiaryTransaction.Description" class="text-danger small"></span>
             </div>
         </div>
         <div class="form-row">
-            <div class="form-group col-md-6">
-                <label asp-for="FinDiaryTransaction.AmountFpa"></label>
+            <div class="form-group col-md-3">
+                <label asp-for="FinDiaryTransaction.AmountFpa" class="small"></label>
                 <input asp-for="FinDiaryTransaction.AmountFpa" class="form-control form-control-sm" />
-                <span asp-validation-for="FinDiaryTransaction.AmountFpa" class="text-danger"></span>
+                <span asp-validation-for="FinDiaryTransaction.AmountFpa" class="text-danger small"></span>
             </div>
-            <div class="form-group col-md-6">
-                <label asp-for="FinDiaryTransaction.AmountNet"></label>
+            <div class="form-group col-md-3">
+                <label asp-for="FinDiaryTransaction.AmountNet" class="small"></label>
                 <input asp-for="FinDiaryTransaction.AmountNet" class="form-control form-control-sm" />
-                <span asp-validation-for="FinDiaryTransaction.AmountNet" class="text-danger"></span>
+                <span asp-validation-for="FinDiaryTransaction.AmountNet" class="text-danger small"></span>
             </div>
         </div>
         <div class="form-row">

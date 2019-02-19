@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using GrKouk.InfoSystem.Definitions;
-using GrKouk.InfoSystem.Domain.FinConfig;
 using GrKouk.InfoSystem.Domain.Shared;
+using GrKouk.InfoSystem.Dtos.WebDtos.Diaries;
 using GrKouk.InfoSystem.Dtos.WebDtos.WarehouseItems;
 using GrKouk.WebRazor.Helpers;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -24,7 +24,7 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Materials
         public string DateSort { get; set; }
         public string DateSortIcon { get; set; }
         public string CurrentFilter { get; set; }
-        public string CurrentMaterialNature { get; set; }
+        public string WarehouseItemNatureFilter { get; set; }
         public string CurrentSort { get; set; }
         public int PageSize { get; set; }
         public int CurrentPageSize { get; set; }
@@ -39,7 +39,7 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Materials
         public PagedList<WarehouseItemListDto> ListItems { get; set; }
        // public IList<WarehouseItem> WarehouseItem { get;set; }
 
-        public async Task OnGetAsync(string sortOrder, string searchString, string materialNatureFilter, int? pageIndex, int? pageSize)
+        public async Task OnGetAsync(string sortOrder, string searchString, string warehouseItemNatureFilter, int? pageIndex, int? pageSize)
         {
             LoadFilters();
             PageSize = (int)((pageSize == null || pageSize == 0) ? 20 : pageSize);
@@ -57,34 +57,21 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Materials
                 searchString = CurrentFilter;
             }
             CurrentFilter = searchString;
-            CurrentMaterialNature = materialNatureFilter;
+            WarehouseItemNatureFilter = warehouseItemNatureFilter;
 
             IQueryable<WarehouseItem> fullListIq = from s in _context.WarehouseItems
                                                          select s;
 
 
             WarehouseItemNatureEnum natureFilterValue = WarehouseItemNatureEnum.WarehouseItemNatureUndefined;
-
-            switch (CurrentMaterialNature)
+            if (WarehouseItemNatureFilter is null)
             {
-                case "WarehouseItemNatureUndefined":
-                    natureFilterValue = WarehouseItemNatureEnum.WarehouseItemNatureUndefined;
-                    break;
-                case "WarehouseItemNatureMaterial":
-                    natureFilterValue = WarehouseItemNatureEnum.WarehouseItemNatureMaterial;
-                    break;
-                case "WarehouseItemNatureService":
-                    natureFilterValue = WarehouseItemNatureEnum.WarehouseItemNatureService;
-                    break;
-                case "WarehouseItemNatureExpense":
-                    natureFilterValue = WarehouseItemNatureEnum.WarehouseItemNatureExpense;
-                    break;
-                case "WarehouseItemNatureFixedAsset":
-                    natureFilterValue = WarehouseItemNatureEnum.WarehouseItemNatureFixedAsset;
-                    break;
-                default:
-                    natureFilterValue = WarehouseItemNatureEnum.WarehouseItemNatureUndefined;
-                    break;
+                natureFilterValue = 0;
+            }
+            else
+            {
+                int b= Int32.Parse(WarehouseItemNatureFilter);
+                natureFilterValue = (WarehouseItemNatureEnum) b;
             }
 
             if (natureFilterValue!=WarehouseItemNatureEnum.WarehouseItemNatureUndefined)
@@ -120,17 +107,22 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Materials
         }
         private void LoadFilters()
         {
-            List<SelectListItem> materialNatures = new List<SelectListItem>
-            {
-                new SelectListItem() {Value = "0", Text = "{All Natures}"},
-                new SelectListItem() {Value = WarehouseItemNatureEnum.WarehouseItemNatureMaterial.ToString(), Text = "Υλικό"},
-                new SelectListItem() {Value = WarehouseItemNatureEnum.WarehouseItemNatureService.ToString(), Text = "Υπηρεσία"},
-                new SelectListItem() {Value = WarehouseItemNatureEnum.WarehouseItemNatureExpense.ToString(), Text = "Δαπάνη"},
-                new SelectListItem() {Value = WarehouseItemNatureEnum.WarehouseItemNatureFixedAsset.ToString(), Text = "Πάγιο"}
+            var materialNatures = FiltersHelper.GetWarehouseItemNaturesList();
+
+            //List<SelectListItem> materialNatures = new List<SelectListItem>
+            //{
+            //    new SelectListItem() {Value = "0", Text = "{All Natures}"},
+            //    new SelectListItem() {Value = WarehouseItemNatureEnum.WarehouseItemNatureMaterial.ToString(), Text = "Υλικό"},
+            //    new SelectListItem() {Value = WarehouseItemNatureEnum.WarehouseItemNatureService.ToString(), Text = "Υπηρεσία"},
+            //    new SelectListItem() {Value = WarehouseItemNatureEnum.WarehouseItemNatureExpense.ToString(), Text = "Δαπάνη"},
+            //    new SelectListItem() {Value = WarehouseItemNatureEnum.WarehouseItemNatureFixedAsset.ToString(), Text = "Πάγιο"}
                 
 
-            };
+            //};
+
             ViewData["MaterialNatureValues"] = new SelectList(materialNatures, "Value", "Text");
+            var pageFilterSize = PageFilter.GetPageSizeFiltersSelectList();
+            ViewData["PageFilterSize"] = new SelectList(pageFilterSize, "Value", "Text");
         }
     }
 }

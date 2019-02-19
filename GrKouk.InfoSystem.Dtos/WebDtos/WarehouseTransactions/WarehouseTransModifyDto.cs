@@ -42,6 +42,14 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.WarehouseTransactions
         public decimal DiscountRate { get; set; }
         [Display(Name = "Unit Price")]
         public decimal UnitPrice { get; set; }
+        /// <summary>
+        /// UnitExpenses Είναι το ποσό που προέρχετε από τα επιμεριζόμενα έξοδα
+        /// που καταχωρούντε στο τιμολόγιο αγοράς και επιβαρ'υνει την κοστολόγηση του είδους
+        /// Δεν επηρεάζει τα νούμερα της κίνησης ούτε καταζχωρήται στην κίνηση.
+        /// Υπολογίζεται μόνο από την κίνηση του τιμολογίου από τις γραμμές επιμεριζόμενων εξόδων
+        /// </summary>
+        [Display(Name = "Unit Expenses")]
+        public decimal UnitExpenses { get; set; }
         [Display(Name = "Vat Amount")]
         public decimal AmountFpa { get; set; }
         [Display(Name = "Net Amount")]

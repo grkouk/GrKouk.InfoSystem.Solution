@@ -17,13 +17,40 @@ namespace GrKouk.WebRazor.Pages.MainEntities.MaterialCodes
     {
         private readonly GrKouk.WebApi.Data.ApiDbContext _context;
 
+        #region Fields
+     
+        public int ParentPageSize { get; set; }
+        public int ParentPageIndex { get; set; }
+        public string ParentSortOrder { get; set; }
+        public string ParentSearchString { get; set; }
+        public string ParentWarehouseItemNatureFilter { get; set; }
+        public bool ParentFiltersVisible { get; set; }
+        public bool ParentRowSelectorsVisible { get; set; }
+
+        #endregion
         public CreateModel(GrKouk.WebApi.Data.ApiDbContext context)
         {
             _context = context;
         }
 
-        public IActionResult OnGet()
+        public IActionResult OnGet(string parentSortOrder, string parentSearchString,  bool parentFiltersVisible
+            ,string parentWarehouseItemNatureFilter
+            , bool parentRowSelectorsVisible , int? parentPageIndex, int? parentPageSize)
         {
+            ParentFiltersVisible = parentFiltersVisible;
+            ParentRowSelectorsVisible = parentRowSelectorsVisible;
+            ParentSortOrder = parentSortOrder;
+            ParentSearchString = parentSearchString;
+            ParentWarehouseItemNatureFilter = parentWarehouseItemNatureFilter;
+            if (parentPageIndex != null)
+            {
+                ParentPageIndex =(int) parentPageIndex;
+            }
+
+            if (parentPageSize != null)
+            {
+                ParentPageSize =(int) parentPageSize;
+            }
             LoadCombos();
             return Page();
         }
