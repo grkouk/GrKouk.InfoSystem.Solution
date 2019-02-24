@@ -48,9 +48,27 @@ namespace GrKouk.WebRazor.Helpers
             IQueryable<T> source, int pageIndex, int pageSize)
         {
             var count = await source.CountAsync();
-            var items = await source.Skip(
-                    (pageIndex - 1) * pageSize)
+            var items = await source.Skip((pageIndex - 1) * pageSize)
                 .Take(pageSize).ToListAsync();
+            return new PagedList<T>(items, count, pageIndex, pageSize);
+        }
+        public static async Task<PagedList<T>> CreateForDataTableAsync(
+            IQueryable<T> source, int itemsToSkip, int pageSize)
+        {
+            List<T> items;
+            var count = await source.CountAsync();
+            if (pageSize==-1)
+            {
+                items = await source.ToListAsync();
+            }
+            else
+            {
+                 items = await source.Skip(itemsToSkip)
+                    .Take(pageSize).ToListAsync();
+
+            }
+
+            var pageIndex = (int)Math.Ceiling(itemsToSkip / (double)pageSize);
             return new PagedList<T>(items, count, pageIndex, pageSize);
         }
     }

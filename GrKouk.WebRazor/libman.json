@@ -21,6 +21,12 @@
     {
       "library": "node-uuid@1.4.8",
       "destination": "wwwroot/lib/node-uuid/"
+    },
+    {
+      "library": "datatables@1.10.19",
+      "destination": "wwwroot/lib/datatables/"
+
     }
+
   ]
 }

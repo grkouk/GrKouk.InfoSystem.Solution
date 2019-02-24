@@ -38,14 +38,16 @@ namespace GrKouk.WebRazor.Pages.MainEntities.MaterialCodes
         public int ParentPageIndex { get; set; }
         public bool FiltersVisible { get; set; } = false;
         public bool RowSelectorsVisible { get; set; } = false;
+        public string SessionId { get; set; }
         public PagedList<WarehouseItemCode> ListItems { get; set; }
 
         public async Task OnGetAsync(string sortOrder, string searchString, int transactorId, int? pageIndexKartela
-            , int? pageSizeKartela, string transactorName, bool filtersVisible, bool rowSelectorsVisible
+            , int? pageSizeKartela, string transactorName, bool filtersVisible, bool rowSelectorsVisible,string sessionId
             , int? transactorTypeFilter, int? parentPageIndex, int? parentPageSize)
         {
             LoadFilters();
             FiltersVisible = filtersVisible;
+            SessionId = sessionId;
             RowSelectorsVisible = rowSelectorsVisible;
             ParentPageSize = (int)(parentPageSize ?? 0);
             ParentPageIndex = (int)(parentPageIndex ?? 0);

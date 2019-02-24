@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using AutoMapper;
+using DataTables.AspNet.AspNetCore;
 using GrKouk.WebApi.Data;
 using GrKouk.WebRazor.Automapper;
 using Microsoft.AspNetCore.Builder;
@@ -72,6 +73,7 @@ namespace GrKouk.WebRazor
                 cfg.AddProfile(new AutoMapperProfile());
 
             });
+            services.RegisterDataTables();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

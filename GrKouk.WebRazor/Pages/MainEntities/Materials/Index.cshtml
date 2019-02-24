@@ -14,7 +14,11 @@
                asp-route-parentPageIndex="@(Model.ListItems.CurrentPage)"
                asp-route-parentSearchFilter="@Model.CurrentFilter"
                asp-route-parentWarehouseItemNatureFilter="@Model.WarehouseItemNatureFilter"
-               asp-route-parentPageSize="@Model.PageSize">Create New</a>
+               
+               asp-route-parentPageSize="@Model.PageSize"
+               asp-route-sessionId="-1"
+
+               >Create New</a>
         </li>
         <li class="nav-item">
             <a asp-page="./Isozigio" class="nav-link"
@@ -26,7 +30,9 @@
             <a asp-page="/MainEntities/MaterialCodes/index" class="nav-link"
                asp-route-materialNatureFilter="@Model.WarehouseItemNatureFilter"
                asp-route-parentPageSize="@Model.PageSize"
-               asp-route-parentPageIndex="@Model.ListItems.CurrentPage ">WarehouseItem Codes</a>
+               asp-route-parentPageIndex="@Model.ListItems.CurrentPage "
+               asp-route-sessionId="-1"
+               >WarehouseItem Codes</a>
         </li>
         <li class="nav-item">
             <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
@@ -36,13 +42,14 @@
 
 
 <form class="form-inline" asp-page="./Index" method="get">
+    <input type="hidden" id="SessionId"/>
     <div class="container">
         <div class="form-row">
 
             <div class="form-group col-md-auto">
                 <label class="small"> Search:</label>
-                <input class="form-control form-control-sm small" type="text" name="SearchString" value="@Model.CurrentFilter" />
-                <input type="submit" value="Search" class="btn btn-light btn-sm" />
+                <input class="form-control form-control-sm small" type="text" name="SearchString" value="@Model.CurrentFilter"/>
+                <input type="submit" value="Search" class="btn btn-light btn-sm"/>
             </div>
             <div class="form-group col-md-auto">
                 <a class="small" asp-page="./Index"
@@ -55,8 +62,8 @@
             <div class="form-group col-md-auto">
                 <label class="small"> WarehouseItem Nature:</label>
                 <select name="WarehouseItemNatureFilter" asp-for="WarehouseItemNatureFilter" class="form-control form-control-sm small"
-                        asp-items="ViewBag.MaterialNatureValues" onchange="this.form.submit()"></select>
-
+                        asp-items="ViewBag.MaterialNatureValues"></select>
+                @*onchange="mySubmit(this)"*@
             </div>
             <div class="form-group col-md-auto">
                 <label class="small"> Page Size:</label>
@@ -235,17 +242,68 @@
 </nav>
 
 @section Scripts {
-    <script src="https://wzrd.in/standalone/uuidv4@latest"></script>
+    @*<script src="https://wzrd.in/standalone/uuidv4@latest"></script>*@
+    <script src="~/lib/node-uuid/uuid.min.js"></script>
     <script>
+        //function mySubmit(item,e) {
+            
+        //   item.form.submit();
+        //}
         $(document).ready(function () {
             console.log("Inside Document ready event handler");
-           // var guid = uuidv4();
+            var mySubmit = (item, event) => {
+                var itemForm = item.form;
+
+                //var formData = item.form.serialize();
+                var formData = $(itemForm).serialize();
+                var formDataAr = $(itemForm).serializeArray();
+                formDataAr.push({
+                    name: 'sd',
+                    value:'Test Value'
+                });
+                $.get('', formDataAr);
+                // item.form.submit();
+            };
+
+            $('#WarehouseItemNatureFilter').on('change', function (event) {
+                mySubmit(this, event);
+
+            });
+            var guid = uuid();
+            $('#SessionId').val(guid);
+            var $alist = $('a[href*="&sessionId"]');
+            //#region CommentOut
             //var sessionVal = sessionStorage.getItem('WarehouseItemsIndex');
             //console.log('SessionVal for WarehouseItemsIndex=' + sessionVal);
             //if (sessionVal) {
             //     var filters = JSON.parse(sessionVal);
             //}
+            //#endregion
+            $.each($alist,function (key, value) {
+                var href = value.href;
+                var aParams = href.substring(0, href.length).split('&');
+                var retStr = [];
+                $.each(aParams, function (key, value) {
+                    var vPair = value.split('=');
+                    if (vPair[0] === 'sessionId') {
+                        // var s = 'sessionId' + '=False';
+                        var sessionIdValue=$('#SessionId').val();
+                        var s = `sessionId=${sessionIdValue}`;
+                        retStr.push(s);
+                    } else {
+                        retStr.push(value);
+                    }
+                });
+                console.log('href=' + href);
+                console.log('aParams=' + aParams);
+                console.log('retStr=' + retStr);
+                var newHref = retStr.join('&');
+                console.log('new Href=' + newHref);
+                value.href = newHref;
+            });
+            function myChange(e) {
 
+            }
         });
         $(window).on( 'beforeunload',function(e)
         {
@@ -292,8 +350,9 @@
                 filterValue:warehouseItemNatureFilter
             });
             var sessionVal = JSON.stringify(filtersArr);
-
+            var sessionId = $('#SessionId').val();
             sessionStorage.setItem('WarehouseItemsIndex', sessionVal);
+            sessionStorage.setItem(sessionId, sessionVal);
         });
     </script>
 }

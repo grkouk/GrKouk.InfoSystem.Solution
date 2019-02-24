@@ -4,22 +4,24 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using GrKouk.InfoSystem.Domain.Shared;
 using GrKouk.InfoSystem.Dtos;
+using GrKouk.WebApi.Data;
 using GrKouk.WebRazor.Helpers;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace GrKouk.WebRazor.Pages.Expenses
 {
-    public class IndexModel : PageModel
+    public class Index2Model : PageModel
     {
         private readonly GrKouk.WebApi.Data.ApiDbContext _context;
         private readonly IMapper _mapper;
 
 
-        public IndexModel(GrKouk.WebApi.Data.ApiDbContext context, IMapper mapper)
+        public Index2Model(GrKouk.WebApi.Data.ApiDbContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;

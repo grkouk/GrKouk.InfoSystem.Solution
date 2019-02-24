@@ -59,8 +59,9 @@
 
 <div class="collapse @filtersShow" id="filterCollapse">
     <form class="form-inline" asp-page="./Index" method="get">
-        <input type="hidden" asp-for="FiltersVisible"  />
-        <input type="hidden" asp-for="RowSelectorsVisible"  />
+        <input type="hidden" asp-for="FiltersVisible" />
+        <input type="hidden" asp-for="RowSelectorsVisible" />
+        <input type="hidden" asp-for="SessionId" />
         <div class="container">
             <div class="form-row">
 
@@ -277,6 +278,7 @@
    asp-route-pageIndex="@Model.ParentPageIndex "
    asp-route-transactorTypeFilter="@Model.TransactorTypeFilter"
    asp-route-PageSize="@Model.ParentPageSize"
+   asp-route-sessionId="@Model.SessionId"
    class="small">Back to List</a>
 
 <!-- Modal -->
@@ -404,8 +406,7 @@
                 console.log('Filters Hidden');
                 $filtersToggle.text('Show Filters');
                 //var alist = $('a[href*="&filtersVisible"]');
-                $.each($alist,
-                    function (key, value) {
+                $.each($alist,function (key, value) {
                         var href = value.href;
                         var aParams = href.substring(0, href.length).split('&');
                         var retStr = [];
@@ -502,9 +503,10 @@
             console.log('SessionVal for MaterialCodesIndex=' + sessionVal);
         });
         $(window).on( 'beforeunload',function(e)
-         {
-            //#region Variables
-            var filtersVisible = $('#filterCollapse').hasClass('show');
+        {
+            //#region CommentOut
+            @* //#region Variables
+           var filtersVisible = $('#filterCollapse').hasClass('show');
             var $rowSelectorsColumn = $('th[name=selectAllRowsColumn]');
 
             var rowSelectorsNotVisible = $rowSelectorsColumn.is(':hidden');
@@ -536,7 +538,9 @@
             });
             var sessionVal = JSON.stringify(filtersArr);
             
-            sessionStorage.setItem('MaterialCodesIndex', sessionVal);
+            sessionStorage.setItem('MaterialCodesIndex', sessionVal);*@
+            //#endregion
+           
         });
     </script>
 }

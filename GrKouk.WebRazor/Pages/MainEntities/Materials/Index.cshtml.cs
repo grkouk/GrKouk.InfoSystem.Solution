@@ -9,6 +9,7 @@ using GrKouk.InfoSystem.Domain.Shared;
 using GrKouk.InfoSystem.Dtos.WebDtos.Diaries;
 using GrKouk.InfoSystem.Dtos.WebDtos.WarehouseItems;
 using GrKouk.WebRazor.Helpers;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -30,6 +31,7 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Materials
         public int CurrentPageSize { get; set; }
         public int TotalPages { get; set; }
         public int TotalCount { get; set; }
+
         public IndexModel(GrKouk.WebApi.Data.ApiDbContext context, IMapper mapper)
         {
             _context = context;
@@ -39,9 +41,10 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Materials
         public PagedList<WarehouseItemListDto> ListItems { get; set; }
        // public IList<WarehouseItem> WarehouseItem { get;set; }
 
-        public async Task OnGetAsync(string sortOrder, string searchString, string warehouseItemNatureFilter, int? pageIndex, int? pageSize)
+        public async Task<IActionResult> OnGetAsync(string sortOrder, string searchString, string warehouseItemNatureFilter, int? pageIndex, int? pageSize, string sd)
         {
             LoadFilters();
+            
             PageSize = (int)((pageSize == null || pageSize == 0) ? 20 : pageSize);
             CurrentPageSize = PageSize;
             CurrentSort = sortOrder;
@@ -104,6 +107,8 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Materials
             var t = fullListIq.ProjectTo<WarehouseItemListDto>(_mapper.ConfigurationProvider);
             ListItems = await PagedList<WarehouseItemListDto>.CreateAsync(
                 t, pageIndex ?? 1, PageSize);
+
+            return Page();
         }
         private void LoadFilters()
         {

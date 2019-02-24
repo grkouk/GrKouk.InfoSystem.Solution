@@ -1,0 +1,151 @@
+﻿@page
+@using System.Collections.Specialized
+@model GrKouk.WebRazor.Pages.Expenses.Index2Model
+
+@{
+    ViewData["Title"] = "Diary Transactions";
+}
+@section MyCss
+    {
+    <link rel="stylesheet" type="text/css" href="/lib/datatables/css/dataTables.bootstrap4.css" />
+}
+<h4>Diary Transactions 2</h4>
+
+<p>
+    <small>
+        <a asp-page="Create">Δημιουργία</a>
+    </small>
+</p>
+
+<form class="form-inline" asp-page="./Index" method="get">
+    <div class="container">
+        <div class="form-row">
+
+           
+           
+            <div class="form-group col-md-auto">
+                <label class="small"> Period:</label>
+                <select name="DatePeriodFilter" asp-for="CurrentDatePeriod" class="form-control form-control-sm small" asp-items="ViewBag.DataFilterValues"
+                        onchange="datePeriodChanged(this)"></select>
+            </div>
+           
+
+        </div>
+    </div>
+</form>
+
+<br />
+<div class="table-responsive-sm">
+    <table class="table table-bordered table-sm" id="myTable"></table>
+</div>
+
+
+@section Scripts
+    {
+   @* <script src="~/js/moment.min.js"></script>*@
+    @*<script src="~/js/locales.min.js" charset="UTF-8"></script>*@
+    <script src="~/lib/datatables/js/jquery.dataTables.js"></script>
+    <script src="~/lib/datatables/js/dataTables.bootstrap4.js"></script>
+   <script src="~/js/moment.min.js"></script>
+   @*     <script src="~/lib/datatables/js/datetime.js"></script>*@
+    @*<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js"></script>*@
+    @* <script src="//cdn.datatables.net/plug-ins/1.10.19/sorting/datetime-moment.js"></script>*@
+
+   <script>
+       function datePeriodChanged(element) {
+           $('#myTable').DataTable().ajax.reload();
+       }
+       $(document).ready(function () {
+           // $.fn.dataTable.moment('MM/DD/YYYY');
+           $('#myTable').DataTable({
+                   //dom: '<"toolbar">frtip',
+                   //fnInitComplete: function(){
+                   //    $('div.toolbar').html('Custom tool bar!');
+                   //},
+                   processing: true,
+                   "language": {
+                       processing:
+                           '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span> '
+                   },
+
+                   serverSide: true,
+                   info: true,
+                   stateSave: true,
+                   "stateLoadParams": function (settings, data) {
+                       console.log('State loading data.start=' + data.start);
+                       data.start = 0;
+                   },
+                   lengthMenu: [[1, 5, 10, 20, 50, 100, -1], [1, 5, 10, 20, 50, 100, "All"]],
+                   ajax: {
+                       url: "/api/grkoukinfoapi/GetTblData2",
+                       data: function(d) {
+                           d.dateRange = $('#CurrentDatePeriod').val();
+                       }
+                   },
+                   columns: [
+                       {
+                           name: 'transactionDate',
+                           data: 'transactionDate',
+                           title: "Transaction Date",
+                           sortable: true,
+                           className: 'text-right',
+                           searchable: false,
+                           render: function(d) {
+                               return moment(d).format("DD/MM/YYYY");
+                           }
+
+                       },
+                       {
+                           name: 'referenceCode',
+                           data: "referenceCode",
+                           title: "Reference Code",
+                           sortable: true,
+                           searchable: true
+                       },
+                       {
+                           name: 'transactorName',
+                           data: "transactorName",
+                           title: "Transactor",
+                           sortable: true,
+                           searchable: true
+                       },
+                       {
+                           name: 'companyName',
+                           data: "companyName",
+                           title: "CompanyName",
+                           sortable: true,
+                           searchable: true
+                       },
+                       {
+                           name: 'amountTotal',
+                           data: "amountTotal",
+                           title: "AmountTotal",
+                           sortable: false,
+                           searchable: false,
+                           className: 'text-right',
+                           render:function(data, type, row) {
+                               return Number(data).toLocaleString('el-GR', {
+                                   maximumFractionDigits: 2,
+                                   style: 'currency',
+                                   currency: 'EUR'
+                               });
+                           }
+                       }
+                   ]
+                
+     
+                   //,
+                   //columnDefs: [
+                   
+                   //    {
+                   //        targets: 0
+                   //        , className: 'text-right'
+                   //    }
+                   //]
+               });
+
+       });
+
+   </script>
+}
+

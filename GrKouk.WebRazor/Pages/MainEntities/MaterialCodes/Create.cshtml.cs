@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GrKouk.InfoSystem.Definitions;
-using GrKouk.InfoSystem.Domain.FinConfig;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using GrKouk.InfoSystem.Domain.Shared;
-using GrKouk.WebApi.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace GrKouk.WebRazor.Pages.MainEntities.MaterialCodes

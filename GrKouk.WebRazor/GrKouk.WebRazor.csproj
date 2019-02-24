@@ -104,10 +104,13 @@
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.1.2" PrivateAssets="All" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.5" PrivateAssets="All" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
     <PackageReference Include="NToastNotify" Version="5.0.8" />
     </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\DataTablesLib\DataTables.AspNet.AspNetCore\DataTables.AspNet.AspNetCore.csproj" />
+    <ProjectReference Include="..\..\..\DataTablesLib\DataTables.AspNet.Core\DataTables.AspNet.Core.csproj" />
     <ProjectReference Include="..\GrKouk.InfoSystem.Definitions\GrKouk.InfoSystem.Definitions.csproj" />
     <ProjectReference Include="..\GrKouk.InfoSystem.Domain\GrKouk.InfoSystem.Domain.csproj" />
     <ProjectReference Include="..\GrKouk.InfoSystem.Dtos\GrKouk.InfoSystem.Dtos.csproj" />
