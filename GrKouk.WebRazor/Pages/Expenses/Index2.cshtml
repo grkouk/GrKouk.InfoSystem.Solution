@@ -8,6 +8,11 @@
 @section MyCss
     {
     <link rel="stylesheet" type="text/css" href="/lib/datatables/css/dataTables.bootstrap4.css" />
+    <style>
+        .dtable {display:none}
+        .dtable_custom_controls {display:none;position: absolute;z-index: 50;margin-left: 150px;margin-top:1px}
+        .dtable_custom_controls .dataTables_length {width:auto;float:none}
+    </style>
 }
 <h4>Diary Transactions 2</h4>
 
@@ -20,16 +25,15 @@
 <form class="form-inline" asp-page="./Index" method="get">
     <div class="container">
         <div class="form-row">
-
-           
-           
             <div class="form-group col-md-auto">
                 <label class="small"> Period:</label>
-                <select name="DatePeriodFilter" asp-for="CurrentDatePeriod" class="form-control form-control-sm small" asp-items="ViewBag.DataFilterValues"
-                        onchange="datePeriodChanged(this)"></select>
-            </div>
-           
+                <select name="DatePeriodFilter" asp-for="CurrentDatePeriod"
+                        class="form-control form-control-sm small"
+                        asp-items="ViewBag.DataFilterValues"
+                        onchange="datePeriodChanged(this)">
 
+                </select>
+            </div>
         </div>
     </div>
 </form>
@@ -52,97 +56,113 @@
     @* <script src="//cdn.datatables.net/plug-ins/1.10.19/sorting/datetime-moment.js"></script>*@
 
    <script>
+       $.fn.dataTable.ext.search.push(
+           function( settings, data, dataIndex ) {
+               var min = parseInt( $('#min').val(), 10 );
+               var max = parseInt( $('#max').val(), 10 );
+               var age = parseFloat( data[3] ) || 0; // use data for the age column
+ 
+               if ( ( isNaN( min ) && isNaN( max ) ) ||
+                   ( isNaN( min ) && age <= max ) ||
+                   ( min <= age   && isNaN( max ) ) ||
+                   ( min <= age   && age <= max ) )
+               {
+                   return true;
+               }
+               return false;
+           }
+       );
        function datePeriodChanged(element) {
            $('#myTable').DataTable().ajax.reload();
        }
        $(document).ready(function () {
            // $.fn.dataTable.moment('MM/DD/YYYY');
            $('#myTable').DataTable({
-                   //dom: '<"toolbar">frtip',
-                   //fnInitComplete: function(){
-                   //    $('div.toolbar').html('Custom tool bar!');
-                   //},
-                   processing: true,
-                   "language": {
-                       processing:
-                           '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span> '
-                   },
+               //dom: '<"toolbar">frtip',
+               //fnInitComplete: function(){
+               //    $('div.toolbar').html('Custom tool bar!');
+               //},
+               processing: true,
+               "language": {
+                   processing:
+                       '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span> '
+               },
 
-                   serverSide: true,
-                   info: true,
-                   stateSave: true,
-                   "stateLoadParams": function (settings, data) {
-                       console.log('State loading data.start=' + data.start);
-                       data.start = 0;
-                   },
-                   lengthMenu: [[1, 5, 10, 20, 50, 100, -1], [1, 5, 10, 20, 50, 100, "All"]],
-                   ajax: {
-                       url: "/api/grkoukinfoapi/GetTblData2",
-                       data: function(d) {
-                           d.dateRange = $('#CurrentDatePeriod').val();
+               serverSide: true,
+               info: true,
+               stateSave: true,
+               "stateLoadParams": function (settings, data) {
+                   console.log('State loading data.start=' + data.start);
+                   data.start = 0;
+               },
+               lengthMenu: [[1, 5, 10, 20, 50, 100, -1], [1, 5, 10, 20, 50, 100, "All"]],
+               ajax: {
+                   url: "/api/grkoukinfoapi/GetTblData2",
+                   data: function(d) {
+                       d.dateRange = $('#CurrentDatePeriod').val();
+                   }
+               },
+               columns: [
+                   {
+                       name: 'transactionDate',
+                       data: 'transactionDate',
+                       title: "Transaction Date",
+                       sortable: true,
+                       className: 'text-right',
+                       searchable: false,
+                       render: function(d) {
+                           return moment(d).format("DD/MM/YYYY");
                        }
-                   },
-                   columns: [
-                       {
-                           name: 'transactionDate',
-                           data: 'transactionDate',
-                           title: "Transaction Date",
-                           sortable: true,
-                           className: 'text-right',
-                           searchable: false,
-                           render: function(d) {
-                               return moment(d).format("DD/MM/YYYY");
-                           }
 
-                       },
-                       {
-                           name: 'referenceCode',
-                           data: "referenceCode",
-                           title: "Reference Code",
-                           sortable: true,
-                           searchable: true
-                       },
-                       {
-                           name: 'transactorName',
-                           data: "transactorName",
-                           title: "Transactor",
-                           sortable: true,
-                           searchable: true
-                       },
-                       {
-                           name: 'companyName',
-                           data: "companyName",
-                           title: "CompanyName",
-                           sortable: true,
-                           searchable: true
-                       },
-                       {
-                           name: 'amountTotal',
-                           data: "amountTotal",
-                           title: "AmountTotal",
-                           sortable: false,
-                           searchable: false,
-                           className: 'text-right',
-                           render:function(data, type, row) {
-                               return Number(data).toLocaleString('el-GR', {
-                                   maximumFractionDigits: 2,
-                                   style: 'currency',
-                                   currency: 'EUR'
-                               });
-                           }
+                   },
+                   {
+                       name: 'referenceCode',
+                       data: "referenceCode",
+                       title: "Reference Code",
+                       sortable: true,
+                       searchable: true
+                   },
+                   {
+                       name: 'transactorName',
+                       data: "transactorName",
+                       title: "Transactor",
+                       sortable: true,
+                       searchable: true
+                   },
+                   {
+                       name: 'companyName',
+                       data: "companyName",
+                       title: "CompanyName",
+                       sortable: true,
+                       searchable: true
+                   },
+                   {
+                       name: 'amountTotal',
+                       data: "amountTotal",
+                       title: "AmountTotal",
+                       sortable: false,
+                       searchable: false,
+                       className: 'text-right',
+                       render:function(data, type, row) {
+                           return Number(data).toLocaleString('el-GR', {
+                               maximumFractionDigits: 2,
+                               style: 'currency',
+                               currency: 'EUR'
+                           });
                        }
-                   ]
+                   }
+               ]
                 
      
-                   //,
-                   //columnDefs: [
+               //,
+               //columnDefs: [
                    
-                   //    {
-                   //        targets: 0
-                   //        , className: 'text-right'
-                   //    }
-                   //]
-               });
+               //    {
+               //        targets: 0
+               //        , className: 'text-right'
+               //    }
+               //]
+           });
 
        });
 
