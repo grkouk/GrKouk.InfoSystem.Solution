@@ -23,7 +23,7 @@ namespace GrKouk.WebRazor.Helpers
                 new SelectListItem() {Value = "30DAYS", Text = "30 Ημέρες"},
                 new SelectListItem() {Value = "60DAYS", Text = "60 Ημέρες"},
                 new SelectListItem() {Value = "360DAYS", Text = "360 Ημέρες"},
-                new SelectListItem() {Value = "PREMONTH", Text = "Προηγούμενος Μήνας"},
+                new SelectListItem() {Value = "PREMONTH", Text = "Προηγ.Μήνας"},
                 new SelectListItem() {Value = "CURYEAR", Text = "Τρέχων Ετος"}
 
             };

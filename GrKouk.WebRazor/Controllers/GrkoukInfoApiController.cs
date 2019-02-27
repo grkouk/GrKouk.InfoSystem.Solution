@@ -53,59 +53,9 @@ namespace GrKouk.WebRazor.Controllers
             return Ok();
         }
 
+
+
         [HttpGet("GetTblData")]
-        public async Task<IActionResult> GetTblData([FromQuery] IDataTablesRequest request)
-        {
-
-            IQueryable<FinDiaryTransaction> expensesIq = from s in _context.FinDiaryTransactions
-                                                         select s;
-
-            expensesIq = expensesIq.Include(f => f.Company)
-                .Include(f => f.CostCentre)
-                .Include(f => f.FinTransCategory)
-                .Include(f => f.Transactor);
-
-            var t = expensesIq.ProjectTo<FinDiaryExpenseTransactionDto>(_mapper.ConfigurationProvider);
-            var itemsToSkip = request.Start;
-
-            var pageSize = request.Length;
-
-            var listItems = await PagedList<FinDiaryExpenseTransactionDto>.CreateForDataTableAsync(t, itemsToSkip, pageSize);
-
-
-            var response = DataTablesResponse.Create(request, listItems.TotalCount, listItems.TotalCount, listItems);
-            return new DataTablesJsonResult(response, true);
-        }
-        [HttpGet("GetTblData1")]
-        public async Task<JsonResult> GetTblData1(int draw, int start, int length)
-        {
-            var rq = Request.QueryString;
-            IQueryable<FinDiaryTransaction> expensesIq = from s in _context.FinDiaryTransactions
-                                                         select s;
-
-            expensesIq = expensesIq.Include(f => f.Company)
-                .Include(f => f.CostCentre)
-                .Include(f => f.FinTransCategory)
-                .Include(f => f.Transactor);
-
-            var t = expensesIq.ProjectTo<FinDiaryExpenseTransactionDto>(_mapper.ConfigurationProvider);
-            var itemsToSkip = start;
-
-            var pageSize = length;
-
-            var listItems = await PagedList<FinDiaryExpenseTransactionDto>.CreateForDataTableAsync(t, itemsToSkip, pageSize);
-
-            DataTableData response = new DataTableData
-            {
-                Draw = draw,
-                RecordsTotal = listItems.TotalCount,
-                RecordsFiltered = listItems.TotalCount,
-                Data = listItems
-            };
-
-            return new JsonResult(response);
-        }
-        [HttpGet("GetTblData2")]
         public async Task<IActionResult> GetTblData2([FromQuery] DataTableParameters request)
         {
             List<DataOrder> orderColumns = new List<DataOrder>();
@@ -121,7 +71,7 @@ namespace GrKouk.WebRazor.Controllers
 
                     foreach (var keyValuePair in orderItem)
                     {
-                       
+
 
                         string k = keyValuePair.Key;
                         string v = keyValuePair.Value;
@@ -134,7 +84,7 @@ namespace GrKouk.WebRazor.Controllers
                                 orderColumn.Dir = v;
                                 break;
                         }
-                       
+
                     }
                     orderColumns.Add(orderColumn);
                 }
@@ -147,11 +97,11 @@ namespace GrKouk.WebRazor.Controllers
 
                 foreach (var colItem in colList)
                 {
-                   // var bCreateColumn = true;
-                    DataTableColumn colData=new DataTableColumn();
+                    // var bCreateColumn = true;
+                    DataTableColumn colData = new DataTableColumn();
                     foreach (var keyValuePair in colItem)
                     {
-                       
+
                         string k = keyValuePair.Key;
                         string v = keyValuePair.Value;
                         switch (k)
@@ -170,9 +120,9 @@ namespace GrKouk.WebRazor.Controllers
                                 break;
                         }
 
-                       // if (!ignoreCol)
+                        // if (!ignoreCol)
                         //{
-                           
+
                         //}
 
                     }
@@ -196,7 +146,7 @@ namespace GrKouk.WebRazor.Controllers
                     switch (colDef.Name.ToLower())
                     {
                         case "transactiondate":
-                            expensesIq = orderType=="desc" ? expensesIq.OrderByDescending(p => p.TransactionDate) : expensesIq.OrderBy(p => p.TransactionDate);
+                            expensesIq = orderType == "desc" ? expensesIq.OrderByDescending(p => p.TransactionDate) : expensesIq.OrderBy(p => p.TransactionDate);
                             break;
                         case "transactorname":
                             expensesIq = orderType == "desc" ? expensesIq.OrderByDescending(p => p.Transactor.Name) : expensesIq.OrderBy(p => p.Transactor.Name);
@@ -242,11 +192,81 @@ namespace GrKouk.WebRazor.Controllers
             return new JsonResult(response);
         }
 
-        //public async Task<IActionResult> GetTblData(int draw,int lenght,int start,IEnumerable<IColumn> columns,ISearch search)
-        //{
+        [HttpGet("GetIndexTblData")]
+        public async Task<IActionResult> GetIndexTblData([FromQuery] IndexDataTableRequest request)
+        {
+            IQueryable<FinDiaryTransaction> expensesIq = from s in _context.FinDiaryTransactions
+                                                         select s;
 
-        //    return Ok();
-        //}
+            expensesIq = expensesIq.Include(f => f.Company)
+                .Include(f => f.CostCentre)
+                .Include(f => f.FinTransCategory)
+                .Include(f => f.Transactor);
+            if (!String.IsNullOrEmpty(request.SortData))
+            {
+                switch (request.SortData.ToLower())
+                {
+                    case "transactiondate:asc":
+                        expensesIq = expensesIq.OrderBy(p => p.TransactionDate);
+                        break;
+                    case "transactiondate:desc":
+                        expensesIq = expensesIq.OrderByDescending(p => p.TransactionDate);
+                        break;
+                    case "transactorname:asc":
+                        expensesIq = expensesIq.OrderBy(p => p.Transactor.Name);
+                        break;
+                    case "transactorname:desc":
+                        expensesIq = expensesIq.OrderByDescending(p => p.Transactor.Name);
+                        break;
+
+                }
+            }
+
+            if (!String.IsNullOrEmpty(request.DateRange))
+            {
+                var datePeriodFilter = request.DateRange;
+                DateFilterDates dfDates = DateFilter.GetDateFilterDates(datePeriodFilter);
+                DateTime fromDate = dfDates.FromDate;
+                DateTime toDate = dfDates.ToDate;
+
+                expensesIq = expensesIq.Where(p => p.TransactionDate >= fromDate && p.TransactionDate <= toDate);
+            }
+
+            if (!String.IsNullOrEmpty(request.CompanyFilter))
+            {
+                int companyId;
+                if (Int32.TryParse(request.CompanyFilter,out companyId))
+                {
+                    if (companyId>0)
+                    {
+                        expensesIq = expensesIq.Where(p => p.CompanyId == companyId);
+                    }
+                    
+                }
+               
+
+            }
+
+            var t = expensesIq.ProjectTo<FinDiaryExpenseTransactionDto>(_mapper.ConfigurationProvider);
+            var pageIndex = request.PageIndex;
+
+            var pageSize = request.PageSize;
+
+            var listItems = await PagedList<FinDiaryExpenseTransactionDto>.CreateAsync(t, pageIndex, pageSize);
+            decimal sumAmountTotal = listItems.Sum(p => p.AmountTotal);
+
+            var response = new IndexDataTableResponse
+            {
+                TotalRecords = listItems.TotalCount,
+                TotalPages = listItems.TotalPages,
+                HasPrevious = listItems.HasPrevious,
+                HasNext = listItems.HasNext,
+                SumOfAmount = sumAmountTotal,
+                Data = listItems
+            };
+            //return new JsonResult(response);
+            return Ok(response);
+        }
     }
 
     class DataTableData

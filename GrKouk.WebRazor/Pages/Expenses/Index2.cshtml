@@ -8,10 +8,11 @@
 @section MyCss
     {
     <link rel="stylesheet" type="text/css" href="/lib/datatables/css/dataTables.bootstrap4.css" />
+    <link rel="stylesheet" type="text/css" href="/lib/Buttons/css/buttons.bootstrap4.css" />
+    <link rel="stylesheet" type="text/css" href="/lib/Responsive/css/responsive.bootstrap4.css" />
+    <link rel="stylesheet" type="text/css" href="/lib/Select/css/select.bootstrap4.css" />
     <style>
-        .dtable {display:none}
-        .dtable_custom_controls {display:none;position: absolute;z-index: 50;margin-left: 150px;margin-top:1px}
-        .dtable_custom_controls .dataTables_length {width:auto;float:none}
+        /*.rangeFilter{ float: right;}*/
     </style>
 }
 <h4>Diary Transactions 2</h4>
@@ -22,150 +23,204 @@
     </small>
 </p>
 
-<form class="form-inline" asp-page="./Index" method="get">
-    <div class="container">
-        <div class="form-row">
-            <div class="form-group col-md-auto">
-                <label class="small"> Period:</label>
-                <select name="DatePeriodFilter" asp-for="CurrentDatePeriod"
-                        class="form-control form-control-sm small"
-                        asp-items="ViewBag.DataFilterValues"
-                        onchange="datePeriodChanged(this)">
-
-                </select>
-            </div>
-        </div>
-    </div>
-</form>
-
-<br />
-<div class="table-responsive-sm">
-    <table class="table table-bordered table-sm" id="myTable"></table>
-</div>
+<table class="table table-bordered table-sm" style="width:100%" id="myTable"></table>
 
 
 @section Scripts
-    {
-   @* <script src="~/js/moment.min.js"></script>*@
-    @*<script src="~/js/locales.min.js" charset="UTF-8"></script>*@
+{
+    <script src="~/lib/JSZip/jszip.js"></script>
+    <script src="~/lib/pdfmake/pdfmake.js"></script>
+    <script src="~/lib/pdfmake/vfs_fonts.js"></script>
+
     <script src="~/lib/datatables/js/jquery.dataTables.js"></script>
     <script src="~/lib/datatables/js/dataTables.bootstrap4.js"></script>
-   <script src="~/js/moment.min.js"></script>
-   @*     <script src="~/lib/datatables/js/datetime.js"></script>*@
-    @*<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js"></script>*@
-    @* <script src="//cdn.datatables.net/plug-ins/1.10.19/sorting/datetime-moment.js"></script>*@
+    <script src="~/js/moment.min.js"></script>
+    <script src="~/lib/Buttons/js/dataTables.buttons.js"></script>
+    <script src="~/lib/Buttons/js/buttons.bootstrap4.js"></script>
+    <script src="~/lib/Buttons/js/buttons.html5.js"></script>
+    <script src="~/lib/Buttons/js/buttons.print.js"></script>
+    <script src="~/lib/Responsive/js/dataTables.responsive.js"></script>
+    <script src="~/lib/Select/js/dataTables.select.js"></script>
+    <script>
+        $.fn.outerHTML = function() {
 
-   <script>
-       $.fn.dataTable.ext.search.push(
-           function( settings, data, dataIndex ) {
-               var min = parseInt( $('#min').val(), 10 );
-               var max = parseInt( $('#max').val(), 10 );
-               var age = parseFloat( data[3] ) || 0; // use data for the age column
- 
-               if ( ( isNaN( min ) && isNaN( max ) ) ||
-                   ( isNaN( min ) && age <= max ) ||
-                   ( min <= age   && isNaN( max ) ) ||
-                   ( min <= age   && age <= max ) )
-               {
-                   return true;
-               }
-               return false;
-           }
-       );
-       function datePeriodChanged(element) {
-           $('#myTable').DataTable().ajax.reload();
-       }
-       $(document).ready(function () {
-           // $.fn.dataTable.moment('MM/DD/YYYY');
-           $('#myTable').DataTable({
-               //dom: '<"toolbar">frtip',
-               //fnInitComplete: function(){
-               //    $('div.toolbar').html('Custom tool bar!');
-               //},
-               processing: true,
-               "language": {
-                   processing:
-                       '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span> '
-               },
+            // IE, Chrome & Safari will comply with the non-standard outerHTML, all others (FF) will have a fall-back for cloning
+            return (!this.length)
+                ? this
+                : (this[0].outerHTML ||
+                (
+                    function(el) {
+                        var div = document.createElement('div');
+                        div.appendChild(el.cloneNode(true));
+                        var contents = div.innerHTML;
+                        div = null;
+                        return contents;
+                    })(this[0]));
 
-               serverSide: true,
-               info: true,
-               stateSave: true,
-               "stateLoadParams": function (settings, data) {
-                   console.log('State loading data.start=' + data.start);
-                   data.start = 0;
-               },
-               lengthMenu: [[1, 5, 10, 20, 50, 100, -1], [1, 5, 10, 20, 50, 100, "All"]],
-               ajax: {
-                   url: "/api/grkoukinfoapi/GetTblData2",
-                   data: function(d) {
-                       d.dateRange = $('#CurrentDatePeriod').val();
-                   }
-               },
-               columns: [
-                   {
-                       name: 'transactionDate',
-                       data: 'transactionDate',
-                       title: "Transaction Date",
-                       sortable: true,
-                       className: 'text-right',
-                       searchable: false,
-                       render: function(d) {
-                           return moment(d).format("DD/MM/YYYY");
-                       }
+        }
 
-                   },
-                   {
-                       name: 'referenceCode',
-                       data: "referenceCode",
-                       title: "Reference Code",
-                       sortable: true,
-                       searchable: true
-                   },
-                   {
-                       name: 'transactorName',
-                       data: "transactorName",
-                       title: "Transactor",
-                       sortable: true,
-                       searchable: true
-                   },
-                   {
-                       name: 'companyName',
-                       data: "companyName",
-                       title: "CompanyName",
-                       sortable: true,
-                       searchable: true
-                   },
-                   {
-                       name: 'amountTotal',
-                       data: "amountTotal",
-                       title: "AmountTotal",
-                       sortable: false,
-                       searchable: false,
-                       className: 'text-right',
-                       render:function(data, type, row) {
-                           return Number(data).toLocaleString('el-GR', {
-                               maximumFractionDigits: 2,
-                               style: 'currency',
-                               currency: 'EUR'
-                           });
-                       }
-                   }
-               ]
-                
-     
-               //,
-               //columnDefs: [
-                   
-               //    {
-               //        targets: 0
-               //        , className: 'text-right'
-               //    }
-               //]
-           });
+        function datePeriodChanged(element) {
+            //if (element != null) {
+            //    var docName = 'Expenses|';
+            //    sessionStorage.setItem(docName + element.id, element.value);
+            //}
+            $('#myTable').DataTable().ajax.reload();
+        }
 
-       });
+        $(document).ready(function() {
+            var dateFilterValuesList = @Html.Raw(Json.Serialize(ViewBag.DataFilterValuesJs));
+            var dateFilterKey = 'Expenses|' + 'CurrentDatePeriod';
+            var dateFilterSessionVal = sessionStorage.getItem(dateFilterKey);
+            
+           
+            //var dfVal = dateFilterSessionVal !== undefined && dateFilterSessionVal !== null
+            //    ? dateFilterSessionVal
+            //    : 'CURYEAR';
 
-   </script>
+            var $dateRange =
+                $(
+                    '<select id="CurrentDatePeriod" name="CurrentDatePeriod"  class="custom-select custom-select-sm form-control form-control-sm small" onchange="datePeriodChanged(this)"/>');
+            $.each(dateFilterValuesList,
+                function (index, item) {
+                    //var selectedAttr = item.value === dfVal ? 'selected' : 'false';
+                    $dateRange.append($('<option></option>')
+                        .attr('value', item.value)
+                       // .prop('selected', selectedAttr)
+                        .text(item.text)
+                    
+                    );
+                });
+            //var s = document.getElementById('CurrentDatePeriod');
+
+            console.log($dateRange.outerHTML());
+            $('#myTable').DataTable({
+                dom:
+                    '<"row"<"col-sm-12 col-md-auto text-left"l><"col-sm-12 col-md-3 text-left rangeFilter"><"col-sm-12 col-md-3 text-left"f><"col-sm-12 col-md-3 text-right"B>>' +
+                        '<"row"<"col-sm-12"tr>>' +
+                        '<"row"<"col-sm-5"i><"col-sm-7"p>>',
+
+                fnInitComplete: function() {
+                    $('div.rangeFilter').html($dateRange.outerHTML());
+                    //var dateFilterKey = 'Expenses|' + 'CurrentDatePeriod';
+                    //var dateFilterSessionVal = sessionStorage.getItem(dateFilterKey);
+                    //if (dateFilterSessionVal !== undefined && dateFilterSessionVal !== null) {
+                    //    $('#CurrentDatePeriod').val(dateFilterSessionVal);
+                    //    $('#myTable').DataTable().ajax.reload();
+                    //}
+                },
+                processing: true,
+                language: {
+                    processing:
+                        '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span> '
+                },
+
+                serverSide: true,
+                info: true,
+                stateSave: true,
+                buttons: [
+                    { extend: 'excel', className: 'btn  btn-sm' },
+                    { extend: 'pdf', className: 'btn  btn-sm' },
+                    { extend: 'print', className: 'btn  btn-sm' }
+                ],
+                //#region CommentOut
+                //stateSaveParams: function(settings, data) {
+                //    var $dateRangeSel = $('.rangeFilter select');
+                //    var $dateRangeSelectedOption = $dateRangeSel.find('option:selected');
+                //    var dateRangeValue = $dateRangeSelectedOption.val();
+                //    if (dateRangeValue!=null) {
+                //        data[$dateRange.attr('name')] = dateRangeValue;    
+                //    }
+
+                //    return data;
+                //},
+                //#endregion
+                //#region CommentOut
+                //stateLoadParams: function(settings, data) {
+                //    console.log('State loading data.start=' + data.start);
+                //    data.start = 0;
+                //    $.each(data, function(index, value) {
+                //        if (index == $dateRange.attr('name')) {
+                //            $('.rangeFilter select').val(value);
+
+                //        }
+                //    });
+                //},
+                //  #endregion
+                lengthMenu: [[1, 5, 10, 20, 50, 100, -1], [1, 5, 10, 20, 50, 100, "All"]],
+                ajax: {
+                    url: "/api/grkoukinfoapi/GetTblData2",
+                    data: function(d) {
+                        d.dateRange = $('#CurrentDatePeriod').val();
+                    }
+                },
+                columns: [
+                    {
+                        name: 'transactionDate',
+                        data: 'transactionDate',
+                        title: "Transaction Date",
+                        sortable: true,
+                        className: 'text-right',
+                        searchable: false,
+                        render: function(d) {
+                            return moment(d).format("DD/MM/YYYY");
+                        }
+
+                    },
+                    {
+                        name: 'referenceCode',
+                        data: "referenceCode",
+                        title: "Reference Code",
+                        sortable: true,
+                        searchable: true
+                    },
+                    {
+                        name: 'transactorName',
+                        data: "transactorName",
+                        title: "Transactor",
+                        sortable: true,
+                        searchable: true
+                    },
+                    {
+                        name: 'companyName',
+                        data: "companyName",
+                        title: "CompanyName",
+                        sortable: true,
+                        searchable: true
+                    },
+                    {
+                        name: 'amountTotal',
+                        data: "amountTotal",
+                        title: "AmountTotal",
+                        sortable: false,
+                        searchable: false,
+                        className: 'text-right',
+                        render: function(data, type, row) {
+                            return Number(data).toLocaleString('el-GR',
+                                {
+                                    maximumFractionDigits: 2,
+                                    style: 'currency',
+                                    currency: 'EUR'
+                                });
+                        }
+                    }
+                ]
+
+
+                //,
+                //columnDefs: [
+
+                //    {
+                //        targets: 0
+                //        , className: 'text-right'
+                //    }
+                //]
+            });
+            //$($dateRange).on('change', function() {
+            //    $('#myTable').DataTable().ajax.reload();
+            //});
+            console.log('End');
+        });
+
+    </script>
 }
 
