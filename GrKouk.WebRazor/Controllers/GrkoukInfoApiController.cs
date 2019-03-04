@@ -9,6 +9,7 @@ using DataTables.AspNet.AspNetCore;
 using DataTables.AspNet.Core;
 using GrKouk.InfoSystem.Domain.Shared;
 using GrKouk.InfoSystem.Dtos;
+using GrKouk.InfoSystem.Dtos.WebDtos.DiaryTransactions;
 using GrKouk.WebApi.Data;
 using GrKouk.WebRazor.Helpers;
 using Microsoft.AspNetCore.Authorization;
@@ -266,6 +267,27 @@ namespace GrKouk.WebRazor.Controllers
             };
             //return new JsonResult(response);
             return Ok(response);
+        }
+        [HttpGet("LastDiaryTransactionData")]
+        public async Task<IActionResult> GetLastDiaryTransactionDataAsync(int transactorId)
+        {
+            var trDto = await _context.FinDiaryTransactions
+                .OrderByDescending(p => p.TransactionDate)
+                .FirstOrDefaultAsync(p => p.TransactorId == transactorId);
+
+            if (trDto != null)
+            {
+                var cat = new LastDiaryTransactionsData
+                {
+                    CategoryId = trDto.FinTransCategoryId,
+                    CostCentreId = trDto.CostCentreId,
+                    RevenueCentreId = trDto.RevenueCentreId,
+                    CompanyId = trDto.CompanyId
+                };
+                return Ok(cat);
+            }
+
+            return NotFound();
         }
     }
 

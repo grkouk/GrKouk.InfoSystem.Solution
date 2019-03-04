@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using GrKouk.InfoSystem.Definitions;
-using GrKouk.InfoSystem.Domain.FinConfig;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using GrKouk.InfoSystem.Domain.Shared;
 using GrKouk.InfoSystem.Dtos;
-using GrKouk.WebApi.Data;
 using Microsoft.EntityFrameworkCore;
 using NToastNotify;
 
@@ -54,7 +50,7 @@ namespace GrKouk.WebRazor.Pages.Expenses
             _context.FinDiaryTransactions.Add(diaryTransactionToAttach);
             await _context.SaveChangesAsync();
             _toastNotification.AddSuccessToastMessage("Saved!");
-            return RedirectToPage("./Index");
+            return RedirectToPage("./Index3");
         }
 
         private void LoadCompbos()

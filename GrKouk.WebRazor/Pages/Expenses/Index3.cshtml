@@ -11,7 +11,7 @@
 <div class="container ">
     <ul class="nav small justify-content-end ">
         <li class="nav-item">
-            <a href="#" class="nav-link" id="CreateNew">Create New</a>
+            <a asp-page="Create" class="nav-link" id="CreateNew">Create New</a>
         </li>
         <li class="nav-item">
             <a class="nav-link" data-toggle="collapse" href="#filterCollapse" role="button" id="filtersToggle"
@@ -80,7 +80,7 @@
                 </div>
                 <div class="form-group col-md-auto">
                     <small>
-                        <label id="PagingInfo"> </label>
+                        <label name="PagingInfo"> </label>
 
                     </small>
                 </div>
@@ -100,11 +100,11 @@
                 </label>
             </th>
             <th class="small text-center">
-                <a href="#" id="TransDateHeader">
+                <a href="#" id="TransDateHeader" role="button">
                     Date
 
                 </a>
-                <i class=""></i>
+                <i class="fas fa-sort-numeric-down" id="TransDateHeaderIcon" name="SortIcon"></i>
             </th>
             <th class="small">
                 Reference Code
@@ -115,7 +115,7 @@
                     Transactor
                 </a>
 
-                <i class=""></i>
+                <i class="fas fa-sort-alpha-down" id="TransactorNameHeaderIcon" name="SortIcon"></i>
             </th>
             <th class="small">
                 Category
@@ -157,40 +157,47 @@
     </tbody>
 </table>
 
+<div class="row">
+    <div class="col-3">
+        <label class="small" name="PagingInfo"> </label>
+    </div>
+    <div class="col-9">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination pagination-sm justify-content-end">
+                <li class="page-item ">
+                    <a href="#" id="GoToFirst"
+                       class="page-link" aria-label="First">
+                        @*<span aria-hidden="true">;</span>*@
+                        First
+                    </a>
+                </li>
+                <li class="page-item ">
+                    <a href="#" id="GoToPrevious"
+                       class="page-link" aria-label="Previous">
+                        @*<span aria-hidden="true">&laquo;</span>*@
+                        Previous
+                    </a>
+                </li>
 
-<nav aria-label="Page navigation example">
-    <ul class="pagination pagination-sm">
-        <li class="page-item ">
-            <a href="#" id="GoToFirst"
-               class="page-link" aria-label="First">
-                @*<span aria-hidden="true">;</span>*@
-                First
-            </a>
-        </li>
-        <li class="page-item ">
-            <a href="#" id="GoToPrevious"
-               class="page-link" aria-label="Previous">
-                @*<span aria-hidden="true">&laquo;</span>*@
-                Previous
-            </a>
-        </li>
+                <li class="page-item ">
+                    <a href="#" id="GoToNext"
+                       class="page-link" aria-label="Next">
+                        @*<span aria-hidden="true">&raquo;</span>*@
+                        Next
+                    </a>
+                </li>
+                <li class="page-item  ">
+                    <a href="#" id="GoToLast"
+                       class="page-link" aria-label="Last">
+                        @*<span aria-hidden="true">;</span>*@
+                        Last
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
 
-        <li class="page-item ">
-            <a href="#" id="GoToNext"
-               class="page-link" aria-label="Next">
-                @*<span aria-hidden="true">&raquo;</span>*@
-                Next
-            </a>
-        </li>
-        <li class="page-item  ">
-            <a href="#" id="GoToLast"
-               class="page-link" aria-label="Last">
-                @*<span aria-hidden="true">;</span>*@
-                Last
-            </a>
-        </li>
-    </ul>
-</nav>
 
 <!-- Modal -->
 <div class="modal fade" id="loadMe" tabindex="-1" role="dialog" aria-labelledby="loadMeLabel">
@@ -232,6 +239,39 @@
             var $totalPages = $('#totalPages');
             var $totalRecords = $('#totalRecords');
             //#endregion
+            var reallyIsNaN = function(x) {
+                return x !== x;
+            };
+            var handleSortUi = () => {
+                
+                var curSort = $('#currentSort').val();
+
+                $('[name=SortIcon]').hide();
+                if (curSort === undefined || curSort === null || curSort.length === 0) {
+                    //hide all icons
+                    return;
+                   
+                }
+                var curSortAr = curSort.split(':');
+                switch (curSortAr[0]) {
+                    case 'transactiondate':
+                        if (curSortAr[1] === 'asc') {
+                            $('#TransDateHeaderIcon').addClass('fas fa-sort-numeric-up').show();
+                        } else {
+                            $('#TransDateHeaderIcon').addClass('fas fa-sort-numeric-down').show();
+                        }
+                        break;
+                    case 'transactorname':
+                        if (curSortAr[1] === 'asc') {
+                            $('#TransactorNameHeaderIcon').addClass('fas fa-sort-alpha-up').show();
+                        } else {
+                            $('#TransactorNameHeaderIcon').addClass('fas fa-sort-alpha-down').show();
+                        }
+                        break;
+                default:
+                }
+               
+            };
             var handleSelectedRowsUi = () => {
                 var $rowSelectors = $('input[name=checkTableRow]');
                 var $selectedRowsActionsLink = $('#ddSelectedRowsActions');
@@ -252,9 +292,12 @@
             var getTableData = (pageIndex, pageSize, sortData, dateRange, companyFilter) => {
                 //#region getTableData
                 var timeout;
+                //pageIndex = pageIndex === undefined || pageIndex === null
+                //    ? 1
+                //    : pageIndex;
+
                 var uri =
-                    `/api/GrKoukInfoApi/GetIndexTblData?pageIndex=${pageIndex}&pageSize=${pageSize}&companyFilter=${
-                        companyFilter}&dateRange=${dateRange}`;
+                    `/api/GrKoukInfoApi/GetIndexTblData?pageIndex=${pageIndex}&pageSize=${pageSize}&companyFilter=${companyFilter}&dateRange=${dateRange}&sortData=${sortData}`;
                 $.ajax({
                     contentType: 'application/json; charset=utf-8',
 
@@ -280,12 +323,12 @@
                     success: function(result) {
                         var totalRecords = result.totalRecords;
                         var totalPages = result.totalPages;
-                       
+
                         $totalPages.val(totalPages);
                         $totalRecords.val(totalRecords);
                         var pagingInfo =
                             ` Page:${pageIndex} of ${totalPages} Total Items ${totalRecords}`;
-                        $('#PagingInfo').text(pagingInfo);
+                        $('[name=PagingInfo]').text(pagingInfo);
                         var hasPrevious = result.hasPrevious;
                         var hasNext = result.hasNext;
                         if (hasPrevious) {
@@ -302,7 +345,7 @@
 
                         $.each(result.data,
                             function(index, value) {
-                                var tDate = moment(value.transactionDate).format('DD/MM/YYYY'); 
+                                var tDate = moment(value.transactionDate).format('DD/MM/YYYY');
                                 var refCode = value.referenceCode;
                                 var transName = value.transactorName;
                                 var compName = value.companyName;
@@ -311,7 +354,7 @@
                                 var urlEdit = `@Url.Page("./Edit")?id=${itemId}`;
                                 var urlInfo = `@Url.Page("./Details")?id=${itemId}`;
                                 var urlDel = `@Url.Page("./Delete")?id=${itemId}`;
-                                var actionsCol = `<td class="small">
+                                var actionsCol = `<td class="small text-center">
                                                 <a href="${urlEdit}"><i class="fas fa-edit"></i></a> |
                                                  <a href="${urlInfo}"><i class="fas fa-info-circle"></i></a> |
                                                  <a href="${urlInfo}"><i class="fas fa-trash"></i></a>
@@ -327,7 +370,7 @@
                                     $('<td>').text(transName).addClass('small'),
                                     $('<td>').text(compName).addClass('small'),
                                     $('<td>').text(compName).addClass('small'),
-                                    $('<td>').text(amountTotal).addClass('text-right'),
+                                    $('<td>').text(amountTotal).addClass('small text-right'),
                                     $(actionsCol)
                                 ).appendTo('#myTable > tbody');
 
@@ -337,6 +380,8 @@
                                 handleSelectedRowsUi();
                             });
                         //console.log();
+                        rowSelectorsUi();
+                        handleSortUi();
                     },
                     complete: function() {
                         if (timeout) {
@@ -362,20 +407,60 @@
                 });
                 //#endregion
             };
+
+            var rowSelectorsUi = () => {
+                var $selectSingleSelectors = $('td[name=selectRowColumn]');
+                var selectorsVisible = $rowSelectorsVisible.val();
+                var newSelectorsVisible =
+                    (selectorsVisible == 'True' || selectorsVisible == 'true' || selectorsVisible === true)
+                        ? 'True'
+                        : 'False';
+                if (newSelectorsVisible == 'True') {
+                    $selectAllSelector.removeAttr('hidden');
+                    $selectSingleSelectors.removeAttr('hidden');
+                    $selectAllSelector.show();
+                    $selectSingleSelectors.show();
+                    $rowSelectorsVisible.val(true);
+                    $rowSelectorsToggle.text('Hide Row Selectors');
+                    $selectedRowsActionsMenu.removeAttr('hidden');
+                    $selectedRowsActionsLink.addClass('disabled');
+                } else {
+                    $selectAllSelector.hide();
+                    $selectSingleSelectors.hide();
+                    $rowSelectorsVisible.val(false);
+                    $rowSelectorsToggle.text('Show Row Selectors');
+                    $selectedRowsActionsMenu.attr('hidden', 'true');
+                }
+            };
             var refreshTableData = () => {
-                var pageIndex = $('#pageIndex').val() == null || $('#pageIndex').val().length == 0
+                var pageIndexVal = parseInt($('#pageIndex').val());
+
+                var pageIndex = reallyIsNaN(pageIndexVal)
                     ? 1
-                    : parseInt($('#pageIndex').val());
+                    : pageIndexVal;
+                $('#pageIndex').val(pageIndex);
 
                 var pageSize = $('#PageSize').val() == null || $('#PageSize').val().length == 0
                     ? 10
                     : parseInt($('#PageSize').val());
 
-                   
+
                 var companyFilter = $('#CompanyFilter').val();
                 var datePeriod = $('#DatePeriodFilter').val();
                 var sortData = $('#currentSort').val();
                 getTableData(pageIndex, pageSize, sortData, datePeriod, companyFilter);
+
+            };
+            var gotoFirstPage = () => {
+                var curPageIndex = 1;
+                $pageIndex.val(curPageIndex);
+                refreshTableData();
+            };
+            var gotoLastPage = () => {
+                var curPageIndex = parseInt($totalPages.val());
+
+                $pageIndex.val(curPageIndex);
+                refreshTableData();
             };
             var gotoNextPage = () => {
                 var curPageIndex = parseInt($pageIndex.val());
@@ -471,15 +556,22 @@
                 var selectedRows = $rowSelectors.filter(':checked');
                 return selectedRows.length;
             };
-           
+            var handleFiltersUi = () => {
+                var filterVisible = $filtersVisible.val();
+                if (filterVisible==='True' || filterVisible==='true') {
+                    $filterCollapse.collapse('show');
+                } else {
+                    $filterCollapse.collapse('hide');
+                }
+            };
+            var showFiltersUi = () => {
+
+            };
             $deleteSelectedRowsLink.on('click',
                 () => {
                     deleteSelectedRows();
                 });
-            //$('input[name=checkTableRow]').on('change',
-            //    function() {
-            //        handleSelectedRowsUi();
-            //    });
+
 
             $filterCollapse.on('hidden.bs.collapse',
                 function() {
@@ -511,11 +603,14 @@
                     }
                 });
 
+
             var rosSelectorsToggleHandler = () => {
                 var $selectSingleSelectors = $('td[name=selectRowColumn]');
                 var selectorsVisible = $rowSelectorsVisible.val();
                 var newSelectorsVisible =
-                    (selectorsVisible == 'True' || selectorsVisible == 'true') ? 'False' : 'True';
+                    (selectorsVisible == 'True' || selectorsVisible == 'true' || selectorsVisible === true)
+                        ? 'False'
+                        : 'True';
                 if (newSelectorsVisible == 'True') {
                     $selectAllSelector.removeAttr('hidden');
                     $selectSingleSelectors.removeAttr('hidden');
@@ -540,42 +635,99 @@
 
 
             $('#DatePeriodFilter').on('change',
-                function () {
+                function() {
                     $('#pageIndex').val(1);
                     refreshTableData();
                 });
             $('#CompanyFilter').on('change',
-                function () {
+                function() {
                     $('#pageIndex').val(1);
                     refreshTableData();
                 });
             $('#PageSize').on('change',
-                function () {
+                function() {
                     $('#pageIndex').val(1);
                     refreshTableData();
                 });
-
-            $('#GoToNext').on('click', function() {
-                gotoNextPage();
+            $('#GoToLast').on('click', function() {
+                gotoLastPage();
             });
-            $('#GoToPrevious').on('click', function() {
-                gotoPreviousPage();
-            });
+            $('#GoToFirst').on('click',
+                function() {
+                    gotoFirstPage();
+                });
+            $('#GoToNext').on('click',
+                function() {
+                    gotoNextPage();
+                });
+            $('#GoToPrevious').on('click',
+                function() {
+                    gotoPreviousPage();
+                });
+            $('#TransDateHeader').on('click',
+                function() {
+                    var newSortVal = '';
+                    var curSort = $('#currentSort').val();
+                    if (curSort === undefined || curSort === null || curSort.length === 0) {
+                        curSort = 'transactiondate:desc';
+                    }
+                    var curSortAr = curSort.split(':');
+                    if (curSortAr[0] === 'transactiondate') {
+                        var newSort = curSortAr[1] === 'asc' ? 'desc' : 'asc';
+                        newSortVal = curSortAr[0] + ':' + newSort;
+                    } else {
+                        newSortVal = 'transactiondate:asc';
+                    }
+                    $('#currentSort').val(newSortVal);
+                    $('#pageIndex').val(1);
+                    refreshTableData();
 
+                });
+            $('#TransactorNameHeader').on('click',
+                function() {
+                    var newSortVal = '';
+                    var curSort = $('#currentSort').val();
+                    if (curSort === undefined || curSort === null || curSort.length === 0) {
+                        curSort = 'transactorname:desc';
+                    }
+                    var curSortAr = curSort.split(':');
+                    if (curSortAr[0] === 'transactorname') {
+                        var newSort = curSortAr[1] === 'asc' ? 'desc' : 'asc';
+                        newSortVal = curSortAr[0] + ':' + newSort;
+                    } else {
+                        newSortVal = 'transactorname:asc';
+                    }
+                    $('#currentSort').val(newSortVal);
+                    $('#pageIndex').val(1);
+                    refreshTableData();
+                });
             var storageItemJs = localStorage.getItem('ExpensesIndexView');
             if (storageItemJs === undefined || storageItemJs === null) {
                 $('#pageIndex').val(1);
                 $('#filtersVisible').val(true);
                 $('#rowSelectorsVisible').val(true);
+                // $rowSelectorsToggle.text('Hide Row Selectors');
+                // $filtersToggle.text('Hide Filters');
                 $('#DatePeriodFilter').val('CURMONTH');
                 $('#CompanyFilter').val(0);
                 $('#currentSort').val('transactiondate:desc');
             } else {
                 var storageItem = JSON.parse(storageItemJs);
                 var filtersValue = storageItem.find(x => x.filterKey === 'filtersVisible').filterValue;
+                if (filtersValue === true) {
+                    $filtersToggle.text('Hide Filters');
+                } else {
+                    $filtersToggle.text('Show Filters');
+                }
                 $('#filtersVisible').val(filtersValue);
                 filtersValue = storageItem.find(x => x.filterKey === 'rowSelectorsVisible').filterValue;
                 $('#rowSelectorsVisible').val(filtersValue);
+                //if (filtersValue === true) {
+                //    $rowSelectorsToggle.text('Hide Row Selectors');
+                //} else {
+                //    $rowSelectorsToggle.text('Show Row Selectors');
+                //}
+                // rosSelectorsToggleHandler();
                 filtersValue = storageItem.find(x => x.filterKey === 'dateRangeFilter').filterValue;
                 $('#DatePeriodFilter').val(filtersValue);
                 filtersValue = storageItem.find(x => x.filterKey === 'currentSort').filterValue;
@@ -584,11 +736,13 @@
                 $('#CompanyFilter').val(filtersValue);
                 filtersValue = storageItem.find(x => x.filterKey === 'pageSize').filterValue;
                 $('#PageSize').val(filtersValue);
+                filtersValue = storageItem.find(x => x.filterKey === 'pageIndex').filterValue;
+                $('#pageIndex').val(filtersValue);
             }
-
+            handleFiltersUi();
             refreshTableData();
 
-            rosSelectorsToggleHandler();
+            rowSelectorsUi();
         });
 
         $(window).on('beforeunload',
@@ -605,7 +759,7 @@
                 var dateRange = $('#DatePeriodFilter').val();
                 var currentSort = $('#currentSort').val();
                 var companyFilter = $('#CompanyFilter').val();
-                var pageIndex = '';
+                var pageIndex = $('#pageIndex').val();
                 var filtersArr = [];
                 //#endregion
                 filtersArr.push({
@@ -616,7 +770,10 @@
                     filterKey: 'rowSelectorsVisible',
                     filterValue: rowSelectorsVisible
                 });
-
+                filtersArr.push({
+                    filterKey: 'pageIndex',
+                    filterValue: pageIndex
+                });
                 filtersArr.push({
                     filterKey: 'pageSize',
                     filterValue: pageSize
