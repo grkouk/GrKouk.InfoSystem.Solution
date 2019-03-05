@@ -103,7 +103,7 @@
                 </a>
                 <i class="fas fa-sort-numeric-down" id="TransDateHeaderIcon" name="SortIcon"></i>
             </th>
-            <th class="small">
+            <th class="small d-none d-sm-table-cell">
                 Reference Code
 
             </th>
@@ -114,10 +114,10 @@
 
                 <i class="fas fa-sort-alpha-down" id="TransactorNameHeaderIcon" name="SortIcon"></i>
             </th>
-            <th class="small">
+            <th class="small d-none d-lg-table-cell ">
                 Category
             </th>
-            <th class="small">
+            <th class="small d-none  d-md-table-cell">
                 Company
             </th>
 
@@ -364,10 +364,10 @@
                                         ' <input type="checkbox" class="custom-control-input" name="checkTableRow">' +
                                         '<span class="custom-control-indicator"></span></label></td>'),
                                     $('<td>').text(tDate).addClass('text-right small'),
-                                    $('<td>').text(refCode).addClass('small'),
-                                    $('<td>').text(transName).addClass('small'),
-                                    $('<td>').text(categoryName).addClass('small'),
-                                    $('<td>').text(compName).addClass('small'),
+                                    $('<td>').text(refCode).addClass('small d-none d-sm-table-cell'),
+                                    $('<td>').text(transName).addClass('small '),
+                                    $('<td>').text(categoryName).addClass('small d-none d-lg-table-cell'),
+                                    $('<td>').text(compName).addClass('small d-none d-md-table-cell'),
                                     $('<td>').text(amountTotal).addClass('small text-right'),
                                     $(actionsCol)
                                 ).appendTo('#myTable > tbody');
