@@ -14,7 +14,7 @@
 <div class="container ">
     <ul class="nav small justify-content-end ">
         <li class="nav-item">
-            <a asp-page="Create" class="nav-link" id="CreateNew">Create New</a>
+            <a href="#" class="nav-link" id="CreateNew">Create New</a>
         </li>
         <li class="nav-item">
             <a class="nav-link" data-toggle="collapse" href="#filterCollapse" role="button" id="filtersToggle"
@@ -696,6 +696,11 @@
                     $('#pageIndex').val(1);
                     refreshTableData();
                 });
+            $('#CreateNew').on('click', function () {
+                var companyFilter = $('#CompanyFilter').val();
+                var uri =`@Url.Page("create")?companyFilter=${companyFilter}`;
+                window.location.href = uri;
+            });
             var storageItemJs = localStorage.getItem('BuyDocIndexView');
             if (storageItemJs === undefined || storageItemJs === null) {
                 $('#pageIndex').val(1);
