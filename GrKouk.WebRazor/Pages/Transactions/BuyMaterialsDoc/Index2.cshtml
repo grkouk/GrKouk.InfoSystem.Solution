@@ -1,13 +1,16 @@
 ﻿@page
-@model GrKouk.WebRazor.Pages.Expenses.Index3Model
+@model GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc.Index2Model
+
 @{
-    ViewData["Title"] = "Index3";
+    ViewData["Title"] = "Παραστατικά Αγορών";
 }
 @section MyCss
 {
     <link rel="stylesheet" href="~/css/custom-checkbox.css" />
 }
-<h4>Expences List</h4>
+<h4>Λίστα Αγορές Υλικών</h4>
+
+
 <div class="container ">
     <ul class="nav small justify-content-end ">
         <li class="nav-item">
@@ -39,8 +42,9 @@
     </ul>
 </div>
 
-<div class="collapse show" id="filterCollapse">
-    <form class="form-inline" asp-page="./Index3" method="get">
+
+<div class="collapse " id="filterCollapse">
+    <form class="form-inline" asp-page="./Index" method="get">
         <input type="hidden" id="filtersVisible" />
         <input type="hidden" id="rowSelectorsVisible" />
         <input type="hidden" id="currentSort" />
@@ -50,7 +54,6 @@
         <input type="hidden" id="pageIndex" />
         <div class="container">
             <div class="form-row">
-
                 <div class="form-group col-md-auto">
                     <label class="small"> Search:</label>
                     <input class="form-control form-control-sm small" type="text" name="SearchString" />
@@ -81,79 +84,79 @@
 
                     </small>
                 </div>
-
             </div>
         </div>
     </form>
 </div>
 <br />
-<table class="table table-bordered table-sm" id="myTable">
+<table class="table table-bordered table-sm m-0" id="myTable">
     <thead class="thead-light">
-        <tr>
-            <th name="selectAllRowsColumn">
-                <label class="custom-control custom-checkbox">
-                    <input type="checkbox" class="custom-control-input" name="checkAllRows">
-                    <span class="custom-control-indicator"></span>
-                </label>
-            </th>
-            <th class="small text-center">
-                <a href="#" id="TransDateHeader" role="button">
-                    Date
+    <tr>
+        <th name="selectAllRowsColumn">
+            <label class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" name="checkAllRows">
+                <span class="custom-control-indicator"></span>
+            </label>
+        </th>
+        <th class="small text-center">
+            <a href="#" id="TransDateHeader" role="button">
+                Date
 
-                </a>
-                <i class="fas fa-sort-numeric-down" id="TransDateHeaderIcon" name="SortIcon"></i>
-            </th>
-            <th class="small">
-                Reference Code
+            </a>
+            <i class="fas fa-sort-numeric-down" id="TransDateHeaderIcon" name="SortIcon"></i>
+        </th>
+        <th class="small">
+            <a href="#" id="TransactorNameHeader">
+                Transactor
+            </a>
 
-            </th>
-            <th class="small">
-                <a href="#" id="TransactorNameHeader">
-                    Transactor
-                </a>
-
-                <i class="fas fa-sort-alpha-down" id="TransactorNameHeaderIcon" name="SortIcon"></i>
-            </th>
-            <th class="small">
-                Category
-            </th>
-            <th class="small">
-                Company
-            </th>
-
-            <th class="small">
-                Amount Total
-            </th>
-
-            <th class="small">Available Actions</th>
-        </tr>
+            <i class="fas fa-sort-alpha-down" id="TransactorNameHeaderIcon" name="SortIcon"></i>
+        </th>
+       
+        <th class="small">
+            Series Code
+        </th>
+        <th class="small">
+            Ref Code)
+        </th>
+        <th class="small text-center">
+            Total Amount
+        </th>
+        <th class="small">
+            CompanyCode
+        </th>
+        <th class="small"></th>
+    </tr>
     </thead>
     <tbody>
+     
+    <tr>
+        <td name="selectRowColumn">
+            <label class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" name="checkTableRow">
+                <span class="custom-control-indicator"></span>
+            </label>
+        </td>
+        <td class="small">
+        </td>
+        <td class="small">
+        </td>
+        <td class="small">
+        </td>
 
-        <tr>
-            <td name="selectRowColumn">
-                <label class="custom-control custom-checkbox">
-                    <input type="checkbox" class="custom-control-input" name="checkTableRow">
-                    <span class="custom-control-indicator"></span>
-                </label>
-            </td>
-            <td class="text-right small"></td>
-            <td class="small"></td>
-            <td class="small"></td>
-            <td class="small"></td>
-            <td class="small"></td>
+        <td class="small">
+        </td>
+        <td class="small text-right">
+        </td>
+        <td class="small">
+        </td>
 
-            <td class="text-right small"></td>
-            <td class="text-right small"></td>
-
-            <td class="small"></td>
-
-            <td class="small"></td>
-        </tr>
-
+        <td class="small">
+        </td>
+    </tr>
+       
     </tbody>
 </table>
-
 <div class="row">
     <div class="col-3">
         <label class="small" name="PagingInfo"> </label>
@@ -194,8 +197,6 @@
         </nav>
     </div>
 </div>
-
-
 <!-- Modal -->
 <div class="modal fade" id="loadMe" tabindex="-1" role="dialog" aria-labelledby="loadMeLabel">
     <div class="modal-dialog modal-sm" role="document">
@@ -209,18 +210,17 @@
         </div>
     </div>
 </div>
-
-
 @section Scripts
 {
     <script src="~/js/moment.min.js"></script>
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             //#region variables
             var $filtersVisible = $('#filtersVisible');
             var $filterCollapse = $('#filterCollapse');
             //var $alist = $('a[href*="&filtersVisible"]');
             var $checkAllRows = $('input[name=checkAllRows]');
+            //var $rowSelectors = $('input[name=checkTableRow]');
             var $filtersToggle = $('#filtersToggle');
             var $rowSelectorsToggle = $('#rowSelectorsToggle');
             var $rowSelectorsVisible = $('#rowSelectorsVisible');
@@ -228,7 +228,6 @@
             //var $selectSingleSelectors = $('td[name=selectRowColumn]');
             var $selectedRowsActionsMenu = $('#SelectedRowsActionsMenu');
             var $selectedRowsActionsLink = $('#ddSelectedRowsActions');
-
             var $deleteSelectedRowsLink = $('#deleteSelectedRows');
 
             var $pageIndex = $('#pageIndex');
@@ -294,7 +293,7 @@
                 //    : pageIndex;
 
                 var uri =
-                    `/api/GrKoukInfoApi/GetIndexTblDataExpenses?pageIndex=${pageIndex}&pageSize=${pageSize}&companyFilter=${companyFilter}&dateRange=${dateRange}&sortData=${sortData}`;
+                    `/api/GrKoukInfoApi/GetIndexTblDataBuyDocuments?pageIndex=${pageIndex}&pageSize=${pageSize}&companyFilter=${companyFilter}&dateRange=${dateRange}&sortData=${sortData}`;
                 $.ajax({
                     contentType: 'application/json; charset=utf-8',
 
@@ -534,7 +533,7 @@
                                 },
                                 2000);
                         },
-                        error: function(e) {
+                        error: function (e) {
                             console.log(e);
 
                         }
@@ -547,7 +546,6 @@
                 var $rowSelectors = $('input[name=checkTableRow]');
                 var selectedRows = $rowSelectors.filter(':checked');
                 console.log('Selected table rows=' + selectedRows);
-
             };
             var countSelectedRows = () => {
                 var $rowSelectors = $('input[name=checkTableRow]');
@@ -699,7 +697,7 @@
                     $('#pageIndex').val(1);
                     refreshTableData();
                 });
-            var storageItemJs = localStorage.getItem('ExpensesIndexView');
+            var storageItemJs = localStorage.getItem('BuyDocIndexView');
             if (storageItemJs === undefined || storageItemJs === null) {
                 $('#pageIndex').val(1);
                 $('#filtersVisible').val(true);
@@ -795,7 +793,7 @@
 
                 var sessionVal = JSON.stringify(filtersArr);
 
-                localStorage.setItem('ExpensesIndexView', sessionVal);
+                localStorage.setItem('BuyDocIndexView', sessionVal);
                 //#endregion
 
             });

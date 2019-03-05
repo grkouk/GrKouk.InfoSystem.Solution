@@ -17,14 +17,14 @@ namespace GrKouk.WebRazor.Helpers
 
     }
 
-    public class IndexDataTableResponse
+    public class IndexDataTableResponse<T>
     {
         public int TotalRecords { get; set; }
         public int TotalPages { get; set; }
         public bool HasPrevious { get; set; }
         public bool HasNext { get; set; }
         
-        public List<FinDiaryExpenseTransactionDto> Data { get; set; }
+        public List<T> Data { get; set; }
         public decimal SumOfAmount { get; set; }
 
     }
