@@ -150,7 +150,7 @@
                                 var mainUnitId = docLine.PrimaryUnitId;
                                 var secUnitId = docLine.SecondaryUnitId;
                                 var factor = docLine.Factor;
-                                var materialName = docLine.WarehouseItemsName;
+                                var materialName = docLine.WarehouseItemName;
                                 var disRate = docLine.DiscountRate;
                                 var disAmount = docLine.DiscountRate;
                                 var vatAmount = docLine.AmountFpa;
@@ -888,6 +888,7 @@
                     success: function(result) {
                         toastr.success("Success", "Success");
                         //location.reload();
+                        window.location.href = '@Url.Page("Index2")';
                     },
                     error: function(e) {
                         var r = e.responseJSON.error;

@@ -174,7 +174,7 @@
 </div>
 
 <div>
-    <a class="small" asp-page="Index">Back to List</a>
+    <a class="small" asp-page="Index2">Back to List</a>
 </div>
 
 @section Scripts {
@@ -489,7 +489,7 @@
                     this.value = ui.item.label;
                     //Get WarehouseItem data
                     var uri = '@Configuration.GetSection("WebApiSettings")["WebApiLocal"]';
-                    var finalUri = `${uri}/materials/materialdata?materialId=${ui.item.value}`;
+                    var finalUri = `${uri}/materials/materialdata?warehouseItemId=${ui.item.value}`;
 
                     console.log(finalUri);
 
@@ -828,6 +828,7 @@
                     success: function(result) {
                         toastr.success("Success", "Success");
                         //location.reload();
+                        window.location.href = '@Url.Page("Index2")';
                     },
                     error: function (e) {
                         

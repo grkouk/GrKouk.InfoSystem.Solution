@@ -60,6 +60,7 @@ namespace GrKouk.WebRazor.Automapper
                 //.ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.Company.Name));
             CreateMap<WarehouseItem, WarehouseItemCreateDto>().ReverseMap();
             CreateMap<WarehouseItem, WarehouseItemModifyDto>().ReverseMap();
+
             CreateMap<BuyDocument, BuyDocCreateAjaxNoLinesDto>().ReverseMap();
             CreateMap<BuyDocument, BuyDocModifyAjaxNoLinesDto>().ReverseMap();
             CreateMap<BuyDocCreateAjaxNoLinesDto, BuyDocLineAjaxDto>().ReverseMap();
@@ -68,10 +69,8 @@ namespace GrKouk.WebRazor.Automapper
             CreateMap<WarehouseTransaction, WarehouseTransListDto>();
             CreateMap<WarehouseTransaction, WarehouseTransCreateDto>().ReverseMap();
             CreateMap<WarehouseTransaction, WarehouseTransModifyDto>().ReverseMap();
-            CreateMap<TransactorTransaction, TransactorTransCreateDto>()
-                .ReverseMap();
-            CreateMap<TransactorTransaction, TransactorTransModifyDto>()
-                .ReverseMap();
+            CreateMap<TransactorTransaction, TransactorTransCreateDto>().ReverseMap();
+            CreateMap<TransactorTransaction, TransactorTransModifyDto>().ReverseMap();
             CreateMap<TransactorTransaction, TransactorTransListDto>()
                 .ForMember(dest => dest.TransTransactorDocSeriesCode, opt => opt.MapFrom(src => src.TransTransactorDocSeries.Code))
                 .ForMember(dest => dest.TransTransactorDocSeriesName, opt => opt.MapFrom(src => src.TransTransactorDocSeries.Name));
@@ -87,6 +86,7 @@ namespace GrKouk.WebRazor.Automapper
             CreateMap<SellDocument, SellDocModifyAjaxNoLinesDto>().ReverseMap();
             CreateMap<SellDocument, SellDocLineAjaxDto>().ReverseMap();
             CreateMap<SellDocument, SellDocListDto>().ReverseMap();
+            CreateMap<SellDocLine, SellDocLineModifyDto>().ReverseMap();
 
             CreateMap<TransactorTransaction, SellDocCreateAjaxDto>().ReverseMap();
             CreateMap<TransactorTransaction, SellDocModifyAjaxDto>().ReverseMap();

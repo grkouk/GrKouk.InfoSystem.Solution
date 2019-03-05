@@ -107,7 +107,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc
                 }
             }
 
-            return RedirectToPage("./Index");
+            return RedirectToPage("./Index2");
         }
 
         private bool BuyMaterialsDocumentExists(int id)

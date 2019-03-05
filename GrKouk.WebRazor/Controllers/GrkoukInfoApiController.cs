@@ -11,6 +11,7 @@ using GrKouk.InfoSystem.Domain.Shared;
 using GrKouk.InfoSystem.Dtos;
 using GrKouk.InfoSystem.Dtos.WebDtos.BuyDocuments;
 using GrKouk.InfoSystem.Dtos.WebDtos.DiaryTransactions;
+using GrKouk.InfoSystem.Dtos.WebDtos.SellDocuments;
 using GrKouk.WebApi.Data;
 using GrKouk.WebRazor.Helpers;
 using Microsoft.AspNetCore.Authorization;
@@ -328,6 +329,78 @@ namespace GrKouk.WebRazor.Controllers
             decimal sumAmountTotal = listItems.Sum(p => p.TotalAmount);
 
             var response = new IndexDataTableResponse<BuyDocListDto>
+            {
+                TotalRecords = listItems.TotalCount,
+                TotalPages = listItems.TotalPages,
+                HasPrevious = listItems.HasPrevious,
+                HasNext = listItems.HasNext,
+                SumOfAmount = sumAmountTotal,
+                Data = listItems
+            };
+            //return new JsonResult(response);
+            return Ok(response);
+        }
+
+        [HttpGet("GetIndexTblDataSellDocuments")]
+        public async Task<IActionResult> GetIndexTblDataSellDocuments([FromQuery] IndexDataTableRequest request)
+        {
+            IQueryable<SellDocument> fullListIq = _context.SellDocuments;
+
+            //fullListIq = fullListIq.Include(f => f.Company)
+            //    .Include(f => f.CostCentre)
+            //    .Include(f => f.FinTransCategory)
+            //    .Include(f => f.Transactor);
+            if (!String.IsNullOrEmpty(request.SortData))
+            {
+                switch (request.SortData.ToLower())
+                {
+                    case "transactiondate:asc":
+                        fullListIq = fullListIq.OrderBy(p => p.TransDate);
+                        break;
+                    case "transactiondate:desc":
+                        fullListIq = fullListIq.OrderByDescending(p => p.TransDate);
+                        break;
+                    case "transactorname:asc":
+                        fullListIq = fullListIq.OrderBy(p => p.Transactor.Name);
+                        break;
+                    case "transactorname:desc":
+                        fullListIq = fullListIq.OrderByDescending(p => p.Transactor.Name);
+                        break;
+
+                }
+            }
+
+            if (!String.IsNullOrEmpty(request.DateRange))
+            {
+                var datePeriodFilter = request.DateRange;
+                DateFilterDates dfDates = DateFilter.GetDateFilterDates(datePeriodFilter);
+                DateTime fromDate = dfDates.FromDate;
+                DateTime toDate = dfDates.ToDate;
+
+                fullListIq = fullListIq.Where(p => p.TransDate >= fromDate && p.TransDate <= toDate);
+            }
+
+            if (!String.IsNullOrEmpty(request.CompanyFilter))
+            {
+                int companyId;
+                if (Int32.TryParse(request.CompanyFilter, out companyId))
+                {
+                    if (companyId > 0)
+                    {
+                        fullListIq = fullListIq.Where(p => p.CompanyId == companyId);
+                    }
+                }
+            }
+
+            var t = fullListIq.ProjectTo<SellDocListDto>(_mapper.ConfigurationProvider);
+            var pageIndex = request.PageIndex;
+
+            var pageSize = request.PageSize;
+
+            var listItems = await PagedList<SellDocListDto>.CreateAsync(t, pageIndex, pageSize);
+            decimal sumAmountTotal = listItems.Sum(p => p.TotalAmount);
+
+            var response = new IndexDataTableResponse<SellDocListDto>
             {
                 TotalRecords = listItems.TotalCount,
                 TotalPages = listItems.TotalPages,
