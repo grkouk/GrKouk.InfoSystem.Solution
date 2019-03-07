@@ -24,6 +24,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.WarehouseTransMng
         private readonly IToastNotification _toastNotification;
         public bool NotUpdatable;
         public bool InitialLoad = true;
+        public int CopyFromId { get; set; }
 
         public CreateModel(GrKouk.WebApi.Data.ApiDbContext context, IMapper mapper, IToastNotification toastNotification)
         {
@@ -32,7 +33,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.WarehouseTransMng
             _toastNotification = toastNotification;
         }
 
-        public IActionResult OnGet()
+        public IActionResult OnGet(int? copyFromId)
         {
             LoadCombos();
             return Page();

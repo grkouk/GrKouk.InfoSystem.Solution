@@ -20,7 +20,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc
         public int RoutedCompanyId { get; set; }
         public int RoutedSectionId { get; set; }
         public bool InitialLoad = true;
-
+        public int CopyFromId { get; set; }
         public CreateModel(GrKouk.WebApi.Data.ApiDbContext context, IMapper mapper, IToastNotification toastNotification)
         {
             _context = context;
@@ -28,7 +28,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc
             _toastNotification = toastNotification;
         }
 
-        public IActionResult OnGet(int? companyFilter,int? section)
+        public IActionResult OnGet(int? companyFilter,int? section, int? copyFromId)
         {
             RoutedCompanyId = (companyFilter ?? 0);
             RoutedSectionId = (section ?? 0);

@@ -11,6 +11,7 @@
 <div class="container">
     <form method="post">
         <div asp-validation-summary="ModelOnly" class="text-danger small"></div>
+        <input type="hidden" asp-for="@Model.CopyFromId" id="CopyFromId" />
         <div class="form-row">
 
             <div class="form-group col-md-2">
@@ -75,7 +76,7 @@
 
 
 <div>
-    <a asp-page="Index3">Back to List</a>
+    <a class="small" asp-page="Index3">Back to List</a>
 </div>
 
 @section Scripts {
@@ -119,10 +120,14 @@
                     })
                     .catch(error => console.log(error));
             });
+            var copyFromId =parseInt( $('#CopyFromId').val());
 
+            if (copyFromId===0) {
+              
+                $('#FinDiaryTransaction_AmountNet').val(0);
+                $('#FinDiaryTransaction_AmountFpa').val(0);    
+            }
             $('#FinDiaryTransaction_TransactionDate').val(new Date().toISOString().slice(0, 10));
-            $('#FinDiaryTransaction_AmountNet').val(0);
-            $('#FinDiaryTransaction_AmountFpa').val(0);
         });
     </script>
 

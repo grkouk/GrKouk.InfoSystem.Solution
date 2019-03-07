@@ -6,6 +6,7 @@
 @section MyCss
 {
     <link rel="stylesheet" href="~/css/custom-checkbox.css" />
+    <link rel="stylesheet" href="~/css/searchbar.css"/>
 }
 <h4>Expences List</h4>
 <div class="container ">
@@ -52,13 +53,12 @@
             <div class="form-row">
 
                 <div class="form-group col-md-auto">
-                    <label class="small"> Search:</label>
-                    <input class="form-control form-control-sm small" type="text" name="SearchString" />
-                    <input type="submit" value="Search" class="btn btn-light btn-sm" />
+                    <div class="searchbar">
+                        <input class="search_input" type="text" name="" placeholder="Search...">
+                        <a href="#" class="search_icon"><i class="fas fa-search fa-xs"></i></a>
+                    </div>
                 </div>
-                <div class="form-group col-md-auto">
-                    <a class="small" id="clearTextFilter" href="#">Back to full List</a>
-                </div>
+               
                 <div class="form-group col-md-auto">
                     <label class="small"> Period:</label>
                     <select name="DatePeriodFilter" id="DatePeriodFilter" class="form-control form-control-sm small"
@@ -121,11 +121,11 @@
                 Company
             </th>
 
-            <th class="small">
+            <th class="small ">
                 Amount Total
             </th>
-
-            <th class="small">Available Actions</th>
+            <th class="small d-none d-md-table-cell">Actions</th>
+            <th class="small d-table-cell d-sm-table-cell d-md-none"></th>
         </tr>
     </thead>
     <tbody>
@@ -211,7 +211,20 @@
 {
     <script src="~/js/moment.min.js"></script>
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
+            var currentCulture = '@System.Globalization.CultureInfo.CurrentCulture';
+            currentCulture = 'el-GR';
+            var formatterCurrency = new Intl.NumberFormat(currentCulture,
+                {
+                    style: 'currency',
+                    currency: 'EUR',
+                    minimumFractionDigits: 2
+                });
+            var formatterNumber = new Intl.NumberFormat(currentCulture,
+                {
+                    maximumFractionDigits: 3
+
+                });
             //#region variables
             var $filtersVisible = $('#filtersVisible');
             var $filterCollapse = $('#filterCollapse');
@@ -338,12 +351,28 @@
                                 var transName = value.transactorName;
                                 var categoryName = value.finTransCategoryName;
                                 var compName = value.companyName;
-                                var amountTotal = value.amountTotal;
+                                var amountTotal =formatterCurrency.format(value.amountTotal);
                                 var itemId = value.id;
                                 var urlEdit = `@Url.Page("./Edit")?id=${itemId}`;
                                 var urlInfo = `@Url.Page("./Details")?id=${itemId}`;
                                 var urlDel = `@Url.Page("./Delete")?id=${itemId}`;
-                                var actionsCol = `<td class="small text-center"><a href="${urlEdit}"><i class="fas fa-edit fa-lg"></i></a> |<a href="${urlInfo}"><i class="fas fa-info-circle fa-lg"></i></a> | <a href="${urlInfo}"><i class="fas fa-trash fa-lg"></i></a> </td>`;
+                                var urlNewLikeThis=`@Url.Page("./Create")?copyFromId=${itemId}`;
+                                var actionsCol = '<td class="small text-center d-none d-md-table-cell">';
+                                actionsCol += `<a href="${urlEdit}"><i class="fas fa-edit fa-lg"></i></a> |`;
+                                actionsCol += `<a href="${urlInfo}"><i class="fas fa-info-circle fa-lg"></i></a> | `;
+                                actionsCol += `<a href="${urlDel}"><i class="fas fa-trash fa-lg"></i></a> | `;
+                                actionsCol += `<a href="${urlNewLikeThis}"><i class="fas fa-clone fa-lg"></i></a> `;
+                                actionsCol += '</td>';
+                                var actionColMobile = '<td class="small text-center d-table-cell d-sm-table-cell d-md-none">';
+                                actionColMobile +='<a class=" dropdown-toggle" role="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" ';
+                                actionColMobile +='aria-expanded="false"><i class="fas fa-bars fa-lg" style="color:slategray"></i></a>';
+                                actionColMobile +=
+                                    '<div class="dropdown-menu small" aria-labelledby="dropdownMenuButton">';
+                                actionColMobile += `<a class="dropdown-item" href="${urlEdit}"><i class="fas fa-edit fa-lg"></i>  Edit</a> `;
+                                actionColMobile += `<a class="dropdown-item" href="${urlInfo}"><i class="fas fa-info-circle fa-lg"></i> Details</a> `;
+                                actionColMobile += `<a class="dropdown-item" href="${urlDel}"><i class="fas fa-trash fa-lg"></i> Delete</a> `;
+                                actionColMobile += `<a class="dropdown-item" href="${urlNewLikeThis}"><i class="fas fa-clone fa-lg"></i> Duplicate</a> `;
+                                actionColMobile += '</div></td>';
 
                                 var $tr = $('<tr>').append(
                                     $(
@@ -356,7 +385,8 @@
                                     $('<td>').text(categoryName).addClass('small d-none d-lg-table-cell'),
                                     $('<td>').text(compName).addClass('small d-none d-md-table-cell'),
                                     $('<td>').text(amountTotal).addClass('small text-right'),
-                                    $(actionsCol)
+                                    $(actionsCol),
+                                    $(actionColMobile)
                                 ).appendTo('#myTable > tbody');
 
                             });
