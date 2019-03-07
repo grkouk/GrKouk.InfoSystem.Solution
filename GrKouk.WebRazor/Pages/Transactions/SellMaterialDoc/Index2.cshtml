@@ -15,7 +15,7 @@
 <div class="container ">
     <ul class="nav small justify-content-end ">
         <li class="nav-item">
-            <a asp-page="Create" class="nav-link" id="CreateNew">Create New</a>
+            <a href="#" role="button" class="nav-link" id="CreateNew">Create New</a>
         </li>
         <li class="nav-item">
             <a class="nav-link" data-toggle="collapse" href="#filterCollapse" role="button" id="filtersToggle"
@@ -113,13 +113,13 @@
             <th class="small">
                 Series Code
             </th>
-            <th class="small">
+            <th class="small d-none d-sm-table-cell">
                 Ref Code
             </th>
             <th class="small text-center">
                 Total Amount
             </th>
-            <th class="small">
+            <th class="small d-none d-md-table-cell">
                 CompanyCode
             </th>
             <th class="small"></th>
@@ -215,18 +215,14 @@
             //#region variables
             var $filtersVisible = $('#filtersVisible');
             var $filterCollapse = $('#filterCollapse');
-            //var $alist = $('a[href*="&filtersVisible"]');
             var $checkAllRows = $('input[name=checkAllRows]');
-            //var $rowSelectors = $('input[name=checkTableRow]');
             var $filtersToggle = $('#filtersToggle');
             var $rowSelectorsToggle = $('#rowSelectorsToggle');
             var $rowSelectorsVisible = $('#rowSelectorsVisible');
             var $selectAllSelector = $('th[name=selectAllRowsColumn]');
-            //var $selectSingleSelectors = $('td[name=selectRowColumn]');
             var $selectedRowsActionsMenu = $('#SelectedRowsActionsMenu');
             var $selectedRowsActionsLink = $('#ddSelectedRowsActions');
             var $deleteSelectedRowsLink = $('#deleteSelectedRows');
-
             var $pageIndex = $('#pageIndex');
             var $pageSize = $('#PageSize');
             var $totalPages = $('#totalPages');
@@ -285,12 +281,8 @@
             var getTableData = (pageIndex, pageSize, sortData, dateRange, companyFilter) => {
                 //#region getTableData
                 var timeout;
-                //pageIndex = pageIndex === undefined || pageIndex === null
-                //    ? 1
-                //    : pageIndex;
-
-                var uri =
-                    `/api/GrKoukInfoApi/GetIndexTblDataSellDocuments?pageIndex=${pageIndex}&pageSize=${pageSize}&companyFilter=${companyFilter}&dateRange=${dateRange}&sortData=${sortData}`;
+               
+                var uri =`/api/GrKoukInfoApi/GetIndexTblDataSellDocuments?pageIndex=${pageIndex}&pageSize=${pageSize}&companyFilter=${companyFilter}&dateRange=${dateRange}&sortData=${sortData}`;
                 $.ajax({
                     contentType: 'application/json; charset=utf-8',
 
@@ -350,9 +342,9 @@
                                 var urlInfo = `@Url.Page("./Details")?id=${itemId}`;
                                 var urlDel = `@Url.Page("./Delete")?id=${itemId}`;
                                 var actionsCol = `<td class="small text-center">
-                                                <a href="${urlEdit}"><i class="fas fa-edit"></i></a> |
-                                                 <a href="${urlInfo}"><i class="fas fa-info-circle"></i></a> |
-                                                 <a href="${urlInfo}"><i class="fas fa-trash"></i></a>
+                                                <a href="${urlEdit}"><i class="fas fa-edit fa-lg"></i></a> |
+                                                 <a href="${urlInfo}"><i class="fas fa-info-circle fa-lg"></i></a> |
+                                                 <a href="${urlInfo}"><i class="fas fa-trash fa-lg"></i></a>
                                                 </td>`;
 
                                 var $tr = $('<tr>').append(
@@ -363,9 +355,9 @@
                                     $('<td>').text(tDate).addClass('text-right small'),
                                     $('<td>').text(transName).addClass('small'),
                                     $('<td>').text(seriesCode).addClass('small'),
-                                    $('<td>').text(refCode).addClass('small'),
+                                    $('<td>').text(refCode).addClass('small d-none d-sm-table-cell'),
                                     $('<td>').text(amountTotal).addClass('small text-right'),
-                                    $('<td>').text(compName).addClass('small'),
+                                    $('<td>').text(compName).addClass('small d-none d-md-table-cell'),
                                    
                                     $(actionsCol)
                                 ).appendTo('#myTable > tbody');
@@ -696,6 +688,13 @@
                     $('#pageIndex').val(1);
                     refreshTableData();
                 });
+            $('#CreateNew').on('click', function() {
+                var uri = '@Url.Page("Create")';
+                window.location.href = uri;
+            });
+
+
+
             var storageItemJs = localStorage.getItem('SellDocIndexView');
             if (storageItemJs === undefined || storageItemJs === null) {
                 $('#pageIndex').val(1);

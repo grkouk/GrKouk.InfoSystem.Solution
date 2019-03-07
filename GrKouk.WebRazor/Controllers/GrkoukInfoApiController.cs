@@ -12,6 +12,8 @@ using GrKouk.InfoSystem.Dtos;
 using GrKouk.InfoSystem.Dtos.WebDtos.BuyDocuments;
 using GrKouk.InfoSystem.Dtos.WebDtos.DiaryTransactions;
 using GrKouk.InfoSystem.Dtos.WebDtos.SellDocuments;
+using GrKouk.InfoSystem.Dtos.WebDtos.TransactorTransactions;
+using GrKouk.InfoSystem.Dtos.WebDtos.WarehouseTransactions;
 using GrKouk.WebApi.Data;
 using GrKouk.WebRazor.Helpers;
 using Microsoft.AspNetCore.Authorization;
@@ -233,15 +235,15 @@ namespace GrKouk.WebRazor.Controllers
             if (!String.IsNullOrEmpty(request.CompanyFilter))
             {
                 int companyId;
-                if (Int32.TryParse(request.CompanyFilter,out companyId))
+                if (Int32.TryParse(request.CompanyFilter, out companyId))
                 {
-                    if (companyId>0)
+                    if (companyId > 0)
                     {
                         expensesIq = expensesIq.Where(p => p.CompanyId == companyId);
                     }
-                    
+
                 }
-               
+
 
             }
 
@@ -314,10 +316,7 @@ namespace GrKouk.WebRazor.Controllers
                     {
                         fullListIq = fullListIq.Where(p => p.CompanyId == companyId);
                     }
-
                 }
-
-
             }
 
             var t = fullListIq.ProjectTo<BuyDocListDto>(_mapper.ConfigurationProvider);
@@ -412,7 +411,154 @@ namespace GrKouk.WebRazor.Controllers
             //return new JsonResult(response);
             return Ok(response);
         }
+        [HttpGet("GetIndexTblDataTransactorTrans")]
+        public async Task<IActionResult> GetIndexTblDataTransactorTrans([FromQuery] IndexDataTableRequest request)
+        {
+            IQueryable<TransactorTransaction> fullListIq = _context.TransactorTransactions;
 
+            if (!String.IsNullOrEmpty(request.SortData))
+            {
+                switch (request.SortData.ToLower())
+                {
+                    case "transactiondate:asc":
+                        fullListIq = fullListIq.OrderBy(p => p.TransDate);
+                        break;
+                    case "transactiondate:desc":
+                        fullListIq = fullListIq.OrderByDescending(p => p.TransDate);
+                        break;
+                    case "transactorname:asc":
+                        fullListIq = fullListIq.OrderBy(p => p.Transactor.Name);
+                        break;
+                    case "transactorname:desc":
+                        fullListIq = fullListIq.OrderByDescending(p => p.Transactor.Name);
+                        break;
+
+                }
+            }
+
+            if (!String.IsNullOrEmpty(request.DateRange))
+            {
+                var datePeriodFilter = request.DateRange;
+                DateFilterDates dfDates = DateFilter.GetDateFilterDates(datePeriodFilter);
+                DateTime fromDate = dfDates.FromDate;
+                DateTime toDate = dfDates.ToDate;
+
+                fullListIq = fullListIq.Where(p => p.TransDate >= fromDate && p.TransDate <= toDate);
+            }
+
+            if (!String.IsNullOrEmpty(request.CompanyFilter))
+            {
+                int companyId;
+                if (Int32.TryParse(request.CompanyFilter, out companyId))
+                {
+                    if (companyId > 0)
+                    {
+                        fullListIq = fullListIq.Where(p => p.CompanyId == companyId);
+                    }
+                }
+            }
+
+            var t = fullListIq.ProjectTo<TransactorTransListDto>(_mapper.ConfigurationProvider);
+            var pageIndex = request.PageIndex;
+
+            var pageSize = request.PageSize;
+
+            var listItems = await PagedList<TransactorTransListDto>.CreateAsync(t, pageIndex, pageSize);
+            decimal sumAmountTotal = listItems.Sum(p => p.TotalAmount);
+            decimal sumDebit = listItems.Sum(p => p.DebitAmount);
+            decimal sumCredit = listItems.Sum(p => p.CreditAmount);
+            var response = new IndexDataTableResponse<TransactorTransListDto>
+            {
+                TotalRecords = listItems.TotalCount,
+                TotalPages = listItems.TotalPages,
+                HasPrevious = listItems.HasPrevious,
+                HasNext = listItems.HasNext,
+                SumOfAmount = sumAmountTotal,
+                SumOfDebit = sumDebit,
+                SumOfCredit = sumCredit,
+                Data = listItems
+            };
+            //return new JsonResult(response);
+            return Ok(response);
+        }
+        [HttpGet("GetIndexTblDataWarehouseTrans")]
+        public async Task<IActionResult> GetIndexTblDataWarehouseTrans([FromQuery] IndexDataTableRequest request)
+        {
+            IQueryable<WarehouseTransaction> fullListIq = _context.WarehouseTransactions;
+
+            if (!String.IsNullOrEmpty(request.SortData))
+            {
+                switch (request.SortData.ToLower())
+                {
+                    case "transactiondate:asc":
+                        fullListIq = fullListIq.OrderBy(p => p.TransDate);
+                        break;
+                    case "transactiondate:desc":
+                        fullListIq = fullListIq.OrderByDescending(p => p.TransDate);
+                        break;
+                    case "transactorname:asc":
+                        fullListIq = fullListIq.OrderBy(p => p.WarehouseItem.Name);
+                        break;
+                    case "transactorname:desc":
+                        fullListIq = fullListIq.OrderByDescending(p => p.WarehouseItem.Name);
+                        break;
+
+                }
+            }
+
+            if (!String.IsNullOrEmpty(request.DateRange))
+            {
+                var datePeriodFilter = request.DateRange;
+                DateFilterDates dfDates = DateFilter.GetDateFilterDates(datePeriodFilter);
+                DateTime fromDate = dfDates.FromDate;
+                DateTime toDate = dfDates.ToDate;
+
+                fullListIq = fullListIq.Where(p => p.TransDate >= fromDate && p.TransDate <= toDate);
+            }
+
+            if (!String.IsNullOrEmpty(request.CompanyFilter))
+            {
+                int companyId;
+                if (Int32.TryParse(request.CompanyFilter, out companyId))
+                {
+                    if (companyId > 0)
+                    {
+                        fullListIq = fullListIq.Where(p => p.CompanyId == companyId);
+                    }
+                }
+            }
+
+            var t = fullListIq.ProjectTo<WarehouseTransListDto>(_mapper.ConfigurationProvider);
+            var pageIndex = request.PageIndex;
+
+            var pageSize = request.PageSize;
+
+            var listItems = await PagedList<WarehouseTransListDto>.CreateAsync(t, pageIndex, pageSize);
+            //decimal sumAmountTotal = listItems.Sum(p => p.TotalAmount);
+            //decimal sumDebit = listItems.Sum(p => p.DebitAmount);
+            //decimal sumCredit = listItems.Sum(p => p.CreditAmount);
+            decimal sumImportVolume = listItems.Sum(p => p.ImportUnits);
+            decimal sumImportValue = listItems.Sum(p => p.ImportAmount);
+            decimal sumExportVolume = listItems.Sum(p => p.ExportUnits);
+            decimal sumExportValue = listItems.Sum(p => p.ExportAmount);
+            var response = new IndexDataTableResponse<WarehouseTransListDto>
+            {
+                TotalRecords = listItems.TotalCount,
+                TotalPages = listItems.TotalPages,
+                HasPrevious = listItems.HasPrevious,
+                HasNext = listItems.HasNext,
+                SumImportVolume = sumImportVolume,
+                SumImportValue = sumImportValue,
+                SumExportVolume = sumExportVolume,
+                SumExportValue = sumExportValue,
+               // SumOfAmount = sumAmountTotal,
+               // SumOfDebit = sumDebit,
+               // SumOfCredit = sumCredit,
+                Data = listItems
+            };
+            //return new JsonResult(response);
+            return Ok(response);
+        }
         [HttpGet("LastDiaryTransactionData")]
         public async Task<IActionResult> GetLastDiaryTransactionDataAsync(int transactorId)
         {

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -10,7 +9,6 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using GrKouk.InfoSystem.Domain.Shared;
 using GrKouk.InfoSystem.Dtos.WebDtos.TransactorTransactions;
-using GrKouk.WebApi.Data;
 using NToastNotify;
 
 namespace GrKouk.WebRazor.Pages.Transactions.TransactorTransMng
@@ -162,7 +160,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.TransactorTransMng
                 }
             }
 
-            return RedirectToPage("./Index");
+            return RedirectToPage("./Index3");
 
 
         }

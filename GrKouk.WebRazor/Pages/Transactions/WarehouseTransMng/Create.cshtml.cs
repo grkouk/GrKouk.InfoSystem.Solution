@@ -235,7 +235,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.WarehouseTransMng
             }
 
 
-            return RedirectToPage("./Index");
+            return RedirectToPage("./Index3");
         }
     }
 }
