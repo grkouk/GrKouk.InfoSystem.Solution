@@ -64,6 +64,12 @@ namespace GrKouk.WebApi.Migrations
 
                     b.Property<bool>("Active");
 
+                    b.Property<string>("AllowedSectionTypes")
+                        .HasMaxLength(200);
+
+                    b.Property<string>("AllowedTransactorTypes")
+                        .HasMaxLength(200);
+
                     b.Property<string>("Code")
                         .IsRequired()
                         .HasMaxLength(15);
@@ -187,6 +193,12 @@ namespace GrKouk.WebApi.Migrations
                         .HasMaxLength(20);
 
                     b.Property<bool>("Active");
+
+                    b.Property<string>("AllowedSectionTypes")
+                        .HasMaxLength(200);
+
+                    b.Property<string>("AllowedTransactorTypes")
+                        .HasMaxLength(200);
 
                     b.Property<string>("Code")
                         .IsRequired()

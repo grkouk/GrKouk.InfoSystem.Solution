@@ -10,17 +10,7 @@ namespace GrKouk.WebApi.Data
         public ApiDbContext(DbContextOptions<ApiDbContext> options) : base(options)
         {
         }
-        //#region Old Entities
-        // public DbSet<TransSupplierDocTypeDef> TransSupplierDocTypeDefs { get; set; }
-        // public DbSet<TransSupplierDocSeriesDef> TransSupplierDocSeriesDefs { get; set; }
-        // public DbSet<TransSupplierDef> TransSupplierDefs { get; set; }
-
-        //  public DbSet<TransCustomerDocTypeDef> TransCustomerDocTypeDefs { get; set; }
-        // public DbSet<TransCustomerDocSeriesDef> TransCustomerDocSeriesDefs { get; set; }
-        // public DbSet<TransCustomerDef> TransCustomerDefs { get; set; }
-        // public DbSet<SupplierTransaction> SupplierTransactions { get; set; }
-        // public DbSet<CustomerTransaction> CustomerTransactions { get; set; }
-        //#endregion
+      
         public DbSet<Company> Companies { get; set; }
         public DbSet<Transactor> Transactors { get; set; }
         public DbSet<FinDiaryTransaction> FinDiaryTransactions { get; set; }

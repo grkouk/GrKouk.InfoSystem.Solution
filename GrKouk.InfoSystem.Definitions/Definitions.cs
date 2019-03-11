@@ -26,7 +26,9 @@ namespace GrKouk.InfoSystem.Definitions
         [Description("Εσοδο")]
         WarehouseItemNatureIncome = 4,
         [Description("Πάγιο")]
-        WarehouseItemNatureFixedAsset = 5
+        WarehouseItemNatureFixedAsset = 5,
+        [Description("Πρώτη Υλη")]
+        WarehouseItemNatureRawMaterial = 6
     }
     public enum MaterialTypeEnum
     {
