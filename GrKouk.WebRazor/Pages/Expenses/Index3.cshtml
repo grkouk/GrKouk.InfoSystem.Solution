@@ -377,7 +377,8 @@
                                 var $tr = $('<tr>').append(
                                     $(
                                         '<td name="selectRowColumn"> <label class="custom-control custom-checkbox">  ' +
-                                        ' <input type="checkbox" class="custom-control-input" name="checkTableRow">' +
+                                        ' <input type="checkbox" class="custom-control-input" name="checkTableRow"+ ' +
+                                        `data-itemId="${itemId}">` +
                                         '<span class="custom-control-indicator"></span></label></td>'),
                                     $('<td>').text(tDate).addClass('text-right small'),
                                     $('<td>').text(refCode).addClass('small d-none d-sm-table-cell'),
@@ -515,7 +516,7 @@
                         dataType: 'json',
                         type: 'POST',
                         data: idsJs,
-                        url: "/api/GrkoukInfoApi/DeleteBuyDocumentsList",
+                        url: "/api/GrkoukInfoApi/DeleteExpenseTransactionList",
                         beforeSend: function() {
                             if (timeout) {
                                 clearTimeout(timeout);
@@ -532,7 +533,10 @@
 
                         },
                         success: function(result) {
-                            console.log(success);
+                            console.log(result);
+                            toastr.success("Delete", result.message);
+                            refreshTableData();
+
                         },
                         complete: function() {
                             if (timeout) {
@@ -553,6 +557,7 @@
                         },
                         error: function(e) {
                             console.log(e);
+                            toastr.error("Error", e.responseJSON.error);
 
                         }
                     });
@@ -585,6 +590,7 @@
             $deleteSelectedRowsLink.on('click',
                 () => {
                     deleteSelectedRows();
+                   
                 });
 
 

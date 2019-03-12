@@ -1,19 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using GrKouk.InfoSystem.Domain.Shared;
 using GrKouk.InfoSystem.Dtos.WebDtos.BuyDocuments;
 using GrKouk.WebRazor.Helpers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using NToastNotify;
 
 namespace GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc
 {
+    [Authorize(Roles = "Admin")]
     public class Index2Model : PageModel
     {
         private readonly GrKouk.WebApi.Data.ApiDbContext _context;

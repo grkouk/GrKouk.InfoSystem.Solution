@@ -27,7 +27,7 @@ namespace GrKouk.WebRazor.Controllers
         public string Section { get; set; }
         public List<int> Ids { get; set; }
     }
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class GrkoukInfoApiController : ControllerBase
@@ -57,7 +57,43 @@ namespace GrKouk.WebRazor.Controllers
 
             return Ok();
         }
+        [HttpPost("DeleteExpenseTransactionList")]
+        public async Task<IActionResult> DeleteExpenseTransactionList([FromBody] IdList docIds)
+        {
+            //Thread.Sleep(1500);
+            using (var transaction = _context.Database.BeginTransaction())
+            {
+                List<FinDiaryTransaction> itemsToDelete = new List<FinDiaryTransaction>();
+                foreach (var itemId in docIds.Ids)
+                {
+                    var toRemove = _context.FinDiaryTransactions.First(x => x.Id == itemId);
+                    if (toRemove != null)
+                    {
+                        _context.FinDiaryTransactions.Remove(toRemove);
+                    }
+                }
 
+                try
+                {
+                    var toDeleteCount = _context.ChangeTracker.Entries().Count(x => x.State == EntityState.Deleted);
+                    // throw new Exception("Test error");
+                    var deletedCount=  await _context.SaveChangesAsync();
+                    transaction.Commit();
+                    string message = $"Selected:{toDeleteCount}. Actually deleted:{deletedCount} ";
+                    return Ok(new {message});
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    transaction.Rollback();
+                    //throw;
+                    return NotFound(new
+                    {
+                        Error = e.Message
+                    });
+                }
+            }
+        }
 
 
         [HttpGet("GetTblData")]
