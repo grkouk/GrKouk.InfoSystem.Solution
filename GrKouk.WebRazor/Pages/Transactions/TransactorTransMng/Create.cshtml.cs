@@ -138,7 +138,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.TransactorTransMng
 
 
 
-            return RedirectToPage("./Index3");
+            return RedirectToPage("./Index");
         }
         private void LoadCombos()
         {

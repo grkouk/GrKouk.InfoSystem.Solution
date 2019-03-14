@@ -5,6 +5,7 @@ namespace GrKouk.WebRazor.Helpers
 {
     public class KartelaLine
     {
+        public int Id { get; set; }
         [DataType(DataType.Date)]
       
         public DateTime TransDate { get; set; }

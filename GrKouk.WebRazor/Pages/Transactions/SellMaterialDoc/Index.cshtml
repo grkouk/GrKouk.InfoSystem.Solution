@@ -8,6 +8,7 @@
 @section MyCss
     {
     <link rel="stylesheet" href="~/css/custom-checkbox.css" />
+    <link rel="stylesheet" href="~/css/searchbar.css"/>
 }
 <h4>Λίστα Παραστατικών Πώλησης</h4>
 
@@ -43,8 +44,8 @@
     </ul>
 </div>
 
-<div class="collapse " id="filterCollapse">
-    <form class="form-inline" asp-page="./Index" method="get">
+<div class="collapse show" id="filterCollapse">
+    <form class="form-inline" id="FiltersForm" method="get">
         <input type="hidden" id="filtersVisible" />
         <input type="hidden" id="rowSelectorsVisible" />
         <input type="hidden" id="currentSort" />
@@ -55,13 +56,12 @@
         <div class="container">
             <div class="form-row">
                 <div class="form-group col-md-auto">
-                    <label class="small"> Search:</label>
-                    <input class="form-control form-control-sm small" type="text" name="SearchString" />
-                    <input type="submit" value="Search" class="btn btn-light btn-sm" />
+                    <div class="searchbar">
+                        <input class="search_input" type="text" name="" placeholder="Search...">
+                        <a href="#" class="search_icon"><i class="fas fa-search fa-xs"></i></a>
+                    </div>
                 </div>
-                <div class="form-group col-md-auto">
-                    <a class="small" id="clearTextFilter" href="#">Back to full List</a>
-                </div>
+
                 <div class="form-group col-md-auto">
                     <label class="small"> Period:</label>
                     <select name="DatePeriodFilter" id="DatePeriodFilter" class="form-control form-control-sm small"
@@ -213,6 +213,19 @@
     <script src="~/js/moment.min.js"></script>
     <script>
         $(document).ready(function () {
+            var currentCulture = '@System.Globalization.CultureInfo.CurrentCulture';
+            currentCulture = 'el-GR';
+            var formatterCurrency = new Intl.NumberFormat(currentCulture,
+                {
+                    style: 'currency',
+                    currency: 'EUR',
+                    minimumFractionDigits: 2
+                });
+            var formatterNumber = new Intl.NumberFormat(currentCulture,
+                {
+                    maximumFractionDigits: 3
+
+                });
             //#region variables
             var $filtersVisible = $('#filtersVisible');
             var $filterCollapse = $('#filterCollapse');
@@ -279,11 +292,11 @@
                     $checkAllRows.prop('checked', false);
                 }
             };
-            var getTableData = (pageIndex, pageSize, sortData, dateRange, companyFilter) => {
+            var getTableData = (pageIndex, pageSize, sortData, dateRange, companyFilter,searchFilter) => {
                 //#region getTableData
                 var timeout;
                
-                var uri =`/api/GrKoukInfoApi/GetIndexTblDataSellDocuments?pageIndex=${pageIndex}&pageSize=${pageSize}&companyFilter=${companyFilter}&dateRange=${dateRange}&sortData=${sortData}`;
+                var uri =`/api/GrKoukInfoApi/GetIndexTblDataSellDocuments?pageIndex=${pageIndex}&pageSize=${pageSize}&companyFilter=${companyFilter}&dateRange=${dateRange}&sortData=${sortData}&searchFilter=${searchFilter}`;
                 $.ajax({
                     contentType: 'application/json; charset=utf-8',
 
@@ -337,7 +350,7 @@
                                 var transName = value.transactorName;
                                // var categoryName = value.finTransCategoryName;
                                 var compName = value.companyCode;
-                                var amountTotal = value.totalAmount;
+                               var amountTotal =formatterCurrency.format(value.totalAmount);
                                 var itemId = value.id;
                                var urlEdit = `@Url.Page("./Edit")?id=${itemId}`;
                                 var urlInfo = `@Url.Page("./Details")?id=${itemId}`;
@@ -450,7 +463,9 @@
                 var companyFilter = $('#CompanyFilter').val();
                 var datePeriod = $('#DatePeriodFilter').val();
                 var sortData = $('#currentSort').val();
-                getTableData(pageIndex, pageSize, sortData, datePeriod, companyFilter);
+                var searchVal = $('.search_input').val();
+
+                getTableData(pageIndex, pageSize, sortData, datePeriod, companyFilter,searchVal);
 
             };
             var gotoFirstPage = () => {
@@ -519,7 +534,10 @@
 
                         },
                         success: function(result) {
-                            console.log(success);
+                            console.log(result);
+                            toastr.success("Delete", result.message);
+                            refreshTableData();
+
                         },
                         complete: function() {
                             if (timeout) {
@@ -540,6 +558,7 @@
                         },
                         error: function (e) {
                             console.log(e);
+                            toastr.error("Error", e.responseJSON.error);
 
                         }
                     });
@@ -706,9 +725,31 @@
                 var uri = '@Url.Page("Create")';
                 window.location.href = uri;
             });
+$('.search_icon').on('click',
+                function () {
+                    icon = $(this).find("svg");
+                    if (icon.hasClass('fa-search')) {
+                        icon.addClass("fa-times").removeClass("fa-search");
+                    } else {
+                        icon.addClass("fa-search").removeClass("fa-times");
+                        $('.search_input').val('');
+                    }
+                   
+                    refreshTableData();
+                });
 
+            $('#FiltersForm').on('submit', function(e) {
+                e.preventDefault();
+                var $icon = $('.search_icon').find("svg");
+                if ($icon.hasClass('fa-search')) {
+                    $icon.addClass("fa-times").removeClass("fa-search");
 
-
+                } else {
+                    $icon.addClass("fa-search").removeClass("fa-times");
+                    
+                }
+                refreshTableData();
+            });
             var storageItemJs = localStorage.getItem('SellDocIndexView');
             if (storageItemJs === undefined || storageItemJs === null) {
                 $('#pageIndex').val(1);

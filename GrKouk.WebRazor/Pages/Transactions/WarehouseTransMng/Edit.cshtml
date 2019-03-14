@@ -158,29 +158,15 @@
 
 
 <div>
-    <a class="small" asp-page="./Index3">Back to List</a>
+    <a class="small" asp-page="./Index">Back to List</a>
 </div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script>
         $(document).ready(() => {
-            //#region Initial values
-
-            //$('#matLoading').attr('hidden', true);
-            //if (!$('#IsInitialLoad').val()) {
-            //    $('#ItemVm_TransDate').val(new Date().toISOString().slice(0, 10));
-            //    $('#ItemVm_AmountNet').attr('data-actualValue', '0');
-            //    $('#ItemVm_AmountNet').val(0);
-            //    $('#ItemVm_AmountFpa').attr('data-actualValue', '0');
-            //    $('#ItemVm_AmountFpa').val(0);
-            //    $('#ItemVm_AmountDiscount').attr('data-actualValue', '0');
-            //    $('#ItemVm_AmountDiscount').val(0);
-            //    $('#SumAmount').attr('data-actualValue', '0');
-            //    $('#SumAmount').val(0);
-            //}
-            //#endregion
-            //#region
+           
+            //#region Variables
             var $initialLoad = $('#IsInitialLoad');
             var $material = $('#ItemVm_MaterialId');
             var $unitPrice = $('#ItemVm_UnitPrice');

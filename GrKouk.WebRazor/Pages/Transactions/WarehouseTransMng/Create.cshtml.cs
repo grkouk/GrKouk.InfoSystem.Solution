@@ -53,12 +53,6 @@ namespace GrKouk.WebRazor.Pages.Transactions.WarehouseTransMng
                     Text = c.GetDescription()
                 }).ToList();
 
-            //List<SelectListItem> warTransTypes = new List<SelectListItem>
-            //{
-            //    new SelectListItem() {Value = WarehouseTransactionTypeEnum.WarehouseTransactionTypeImport.ToString(), Text = "Import"},
-            //    new SelectListItem() {Value = WarehouseTransactionTypeEnum.WarehouseTransactionTypeExport.ToString(), Text = "Export"},
-               
-            //};
             ViewData["CompanyId"] = new SelectList(_context.Companies.OrderBy(p => p.Code).AsNoTracking(), "Id", "Code");
             ViewData["FiscalPeriodId"] = new SelectList(_context.FiscalPeriods.OrderBy(p=>p.Name).AsNoTracking(), "Id", "Name");
             ViewData["WarehouseItemId"] = new SelectList(_context.WarehouseItems.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
@@ -238,7 +232,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.WarehouseTransMng
             }
 
 
-            return RedirectToPage("./Index3");
+            return RedirectToPage("./Index");
         }
     }
 }

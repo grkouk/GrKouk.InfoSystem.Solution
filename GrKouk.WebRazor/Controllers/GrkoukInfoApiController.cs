@@ -310,11 +310,7 @@ namespace GrKouk.WebRazor.Controllers
         public async Task<IActionResult> GetIndexTblDataBuyDocuments([FromQuery] IndexDataTableRequest request)
         {
             IQueryable<BuyDocument> fullListIq = _context.BuyDocuments;
-
-            //fullListIq = fullListIq.Include(f => f.Company)
-            //    .Include(f => f.CostCentre)
-            //    .Include(f => f.FinTransCategory)
-            //    .Include(f => f.Transactor);
+           
             if (!String.IsNullOrEmpty(request.SortData))
             {
                 switch (request.SortData.ToLower())
@@ -601,6 +597,186 @@ namespace GrKouk.WebRazor.Controllers
             //return new JsonResult(response);
             return Ok(response);
         }
+        [HttpGet("GetIndexTblDataTransactorsBalance")]
+        public async Task<IActionResult> GetIndexTblDataTransactorsBalance([FromQuery] IndexDataTableRequest request)
+        {
+            IQueryable<TransactorTransaction> transactionsList = _context.TransactorTransactions;
+            int transactorTypeId = 0;
+            if (!String.IsNullOrEmpty(request.TransactorTypeFilter))
+            {
+               
+                if (Int32.TryParse(request.TransactorTypeFilter, out transactorTypeId))
+                {
+                    if (transactorTypeId > 0)
+                    {
+                        transactionsList = transactionsList.Where(p => p.Transactor.TransactorTypeId == transactorTypeId);
+                    }
+                }
+            }
+            if (!String.IsNullOrEmpty(request.SortData))
+            {
+                switch (request.SortData.ToLower())
+                {
+                    case "transactiondate:asc":
+                        transactionsList = transactionsList.OrderBy(p => p.TransDate);
+                        break;
+                    case "transactiondate:desc":
+                        transactionsList = transactionsList.OrderByDescending(p => p.TransDate);
+                        break;
+                    case "transactorname:asc":
+                        transactionsList = transactionsList.OrderBy(p => p.Transactor.Name);
+                        break;
+                    case "transactorname:desc":
+                        transactionsList = transactionsList.OrderByDescending(p => p.Transactor.Name);
+                        break;
+
+                }
+            }
+            #region CommentOut
+            //if (!String.IsNullOrEmpty(request.DateRange))
+            //{
+            //    var datePeriodFilter = request.DateRange;
+            //    DateFilterDates dfDates = DateFilter.GetDateFilterDates(datePeriodFilter);
+            //    DateTime fromDate = dfDates.FromDate;
+            //    DateTime toDate = dfDates.ToDate;
+
+            //    fullListIq = fullListIq.Where(p => p.TransDate >= fromDate && p.TransDate <= toDate);
+            //}
+            #endregion
+            if (!String.IsNullOrEmpty(request.CompanyFilter))
+            {
+                int companyId;
+                if (Int32.TryParse(request.CompanyFilter, out companyId))
+                {
+                    if (companyId > 0)
+                    {
+                        transactionsList = transactionsList.Where(p => p.CompanyId == companyId);
+                    }
+                }
+            }
+            if (!String.IsNullOrEmpty(request.SearchFilter))
+            {
+                transactionsList = transactionsList.Where(p => p.Transactor.Name.Contains(request.SearchFilter));
+            }
+            var dbTrans = transactionsList.ProjectTo<TransactorTransListDto>(_mapper.ConfigurationProvider);
+
+            var dbTransactions = dbTrans.GroupBy(g => new
+                    {
+                       
+                        g.CompanyCode,g.TransactorId
+                    }
+                )
+                .Select(s => new
+                {
+                    Id=s.Key.TransactorId,
+                    TransactorName = "",
+                    CompanyCode = s.Key.CompanyCode,
+                    DebitAmount = s.Sum(x => x.DebitAmount),
+                    CreditAmount = s.Sum(x => x.CreditAmount)
+                }).ToList();
+
+            var isozigioType = "FREE";
+            var transactorType = await _context.TransactorTypes.Where(c => c.Id == transactorTypeId).FirstOrDefaultAsync();
+            var isozigioName = "";
+            if (transactorType != null)
+            {
+                switch (transactorType.Code)
+                {
+                    case "SYS.DTRANSACTOR":
+                        isozigioName = "Συναλλασόμενων Ημερολογίου";
+                        isozigioType = "SUPPLIER";
+                        break;
+                    case "SYS.CUSTOMER":
+                        isozigioName = "Πελατών";
+                        isozigioType = "CUSTOMER";
+                        break;
+                    case "SYS.SUPPLIER":
+                        isozigioName = "Προμηθευτών";
+                        isozigioType = "SUPPLIER";
+                        break;
+
+                }
+
+            }
+            var listWithTotal = new List<KartelaLine>();
+
+            decimal runningTotal = 0;
+            foreach (var dbTransaction in dbTransactions)
+            {
+                switch (isozigioType)
+                {
+                    case "SUPPLIER":
+                        runningTotal = dbTransaction.CreditAmount - dbTransaction.DebitAmount;
+                        break;
+                    case "CUSTOMER":
+                        runningTotal = dbTransaction.DebitAmount - dbTransaction.CreditAmount;
+                        break;
+                    default:
+                        runningTotal = dbTransaction.CreditAmount - dbTransaction.DebitAmount;
+                        break;
+                }
+                var transactor = await _context.Transactors.Where(c => c.Id == dbTransaction.Id).FirstOrDefaultAsync();
+                string transName = "";
+
+                if (transactor!=null)
+                {
+                    transName = transactor.Name;
+                }
+                listWithTotal.Add(new KartelaLine
+                {
+                    Id=dbTransaction.Id,
+                    RunningTotal = runningTotal,
+                    TransactorName =transName,
+                    CompanyCode = dbTransaction.CompanyCode,
+                    Debit = dbTransaction.DebitAmount,
+                    Credit = dbTransaction.CreditAmount
+                });
+            }
+
+            var outList = listWithTotal.AsQueryable();
+            var pageIndex = request.PageIndex;
+
+            var pageSize = request.PageSize;
+            decimal sumCredit=0;
+            decimal sumDebit=0;
+            decimal sumDifference=0;
+
+            IQueryable<KartelaLine> fullListIq = from s in outList select s;
+
+            var listItems = PagedList<KartelaLine>.Create(fullListIq, pageIndex, pageSize);
+
+            foreach (var item in listItems)
+            {
+                sumCredit += item.Credit;
+                sumDebit += item.Debit;
+            }
+            switch (isozigioType)
+            {
+                case "SUPPLIER":
+                    sumDifference = sumCredit - sumDebit;
+                    break;
+                case "CUSTOMER":
+                    sumDifference = sumDebit - sumCredit;
+                    break;
+                default:
+                    sumDifference = sumCredit - sumDebit;
+                    break;
+            }
+            var response = new IndexDataTableResponse<KartelaLine>
+            {
+                TotalRecords = listItems.TotalCount,
+                TotalPages = listItems.TotalPages,
+                HasPrevious = listItems.HasPrevious,
+                HasNext = listItems.HasNext,
+                SumOfDebit = sumDebit,
+                SumOfCredit = sumCredit,
+                SumOfDifference = sumDifference,
+                Data = listItems
+            };
+            return Ok(response);
+        }
+
+
         [HttpGet("LastDiaryTransactionData")]
         public async Task<IActionResult> GetLastDiaryTransactionDataAsync(int transactorId)
         {

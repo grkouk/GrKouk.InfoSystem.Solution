@@ -14,6 +14,7 @@ namespace GrKouk.WebRazor.Helpers
         public string DateRange { get; set; }
         public string CompanyFilter { get; set; }
         public string MaterialNatureFilter { get; set; }
+        public string TransactorTypeFilter { get; set; }
         public string SearchFilter { get; set; }
     }
 
@@ -25,7 +26,8 @@ namespace GrKouk.WebRazor.Helpers
         public bool HasNext { get; set; }
         public decimal SumOfAmount { get; set; }
         public decimal SumOfDebit { get; set; }
-        public decimal SumOfCredit { get; set; }
+       public decimal SumOfCredit { get; set; }
+       public decimal SumOfDifference { get; set; }
         public decimal SumImportVolume { get; set; }
         public decimal SumExportVolume { get; set; }
         public decimal SumImportValue { get; set; }

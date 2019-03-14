@@ -16,12 +16,7 @@
                asp-route-PageSize="@Model.PageSize">Create New</a>
         </li>
         <li class="nav-item">
-            <a asp-page="./Isozigio" class="nav-link"
-               asp-route-transactorTypeFilter="@Model.CurrentTransactorTypeFilter"
-               asp-route-parentPageSize="@Model.PageSize"
-               asp-route-parentPageIndex="@Model.ListItems.CurrentPage "
-               asp-route-transactorId="0"
-               asp-route-transactorName="Name">Ισοζύγιο</a>
+            <a asp-page="./Isozigio2" class="nav-link">Ισοζύγιο</a>
         </li>
         @{
             if (Model.RelevantDiarys.Count > 0)
