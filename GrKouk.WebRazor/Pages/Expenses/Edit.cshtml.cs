@@ -93,7 +93,7 @@ namespace GrKouk.WebRazor.Pages.Expenses
             {
                 Console.WriteLine(ex.Message);
             }
-            return RedirectToPage("./Index3");
+            return RedirectToPage("./Index");
         }
 
         private bool FinDiaryTransactionExists(int id)

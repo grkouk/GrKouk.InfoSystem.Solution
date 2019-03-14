@@ -59,7 +59,7 @@ namespace GrKouk.WebRazor.Pages.Expenses
                 await _context.SaveChangesAsync();
             }
 
-            return RedirectToPage("./Index3");
+            return RedirectToPage("./Index");
         }
     }
 }

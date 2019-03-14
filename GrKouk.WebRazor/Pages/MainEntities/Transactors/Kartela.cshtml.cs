@@ -4,11 +4,13 @@ using System.Threading.Tasks;
 using AutoMapper;
 using GrKouk.InfoSystem.Dtos.WebDtos.TransactorTransactions;
 using GrKouk.WebRazor.Helpers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 
 namespace GrKouk.WebRazor.Pages.MainEntities.Transactors
 {
+    [Authorize(Roles = "Admin")]
     public class KartelaModel : PageModel
     {
         private readonly GrKouk.WebApi.Data.ApiDbContext _context;

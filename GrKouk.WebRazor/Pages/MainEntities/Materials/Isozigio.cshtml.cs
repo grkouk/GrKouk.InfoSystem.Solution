@@ -8,12 +8,14 @@ using GrKouk.InfoSystem.Definitions;
 using GrKouk.InfoSystem.Domain.Shared;
 using GrKouk.InfoSystem.Dtos.WebDtos.WarehouseTransactions;
 using GrKouk.WebRazor.Helpers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace GrKouk.WebRazor.Pages.MainEntities.Materials
 {
+    [Authorize(Roles = "Admin")]
     public class IsozigioModel : PageModel
     {
         private readonly GrKouk.WebApi.Data.ApiDbContext _context;

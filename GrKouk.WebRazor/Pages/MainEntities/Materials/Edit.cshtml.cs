@@ -8,6 +8,7 @@ using GrKouk.InfoSystem.Domain.FinConfig;
 using GrKouk.InfoSystem.Domain.Shared;
 using GrKouk.InfoSystem.Dtos.WebDtos.WarehouseItems;
 using GrKouk.WebRazor.Helpers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -16,6 +17,7 @@ using NToastNotify;
 
 namespace GrKouk.WebRazor.Pages.MainEntities.Materials
 {
+    [Authorize(Roles = "Admin")]
     public class EditModel : PageModel
     {
         private readonly GrKouk.WebApi.Data.ApiDbContext _context;

@@ -11,10 +11,12 @@ using GrKouk.InfoSystem.Domain.Shared;
 using Microsoft.EntityFrameworkCore;
 using GrKouk.InfoSystem.Dtos.WebDtos.WarehouseTransactions;
 using GrKouk.WebRazor.Helpers;
+using Microsoft.AspNetCore.Authorization;
 using NToastNotify;
 
 namespace GrKouk.WebRazor.Pages.Transactions.WarehouseTransMng
 {
+    [Authorize(Roles = "Admin")]
     public class CreateModel : PageModel
     {
         private const string SectionSystemCode = "SYS-WAREHOUSE-TRANS";

@@ -4,9 +4,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using GrKouk.InfoSystem.Domain.Shared;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GrKouk.WebRazor.Pages.MainEntities.MaterialCodes
 {
+    [Authorize(Roles = "Admin")]
     public class DeleteModel : PageModel
     {
         private readonly GrKouk.WebApi.Data.ApiDbContext _context;

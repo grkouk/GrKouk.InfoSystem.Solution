@@ -178,7 +178,7 @@
 </div>
 
 <div>
-    <a asp-page="Index2">Back to List</a>
+    <a asp-page="Index">Back to List</a>
 </div>
 
 @section Scripts {
@@ -818,6 +818,7 @@
                         $lineEditing.val(lineEdit);
                         $materialId.val(materialId);
                         $lookUp.val(materialName);
+                        $lookupValueValid.val('OK');
                         $q1.val(q1);
                         $q2.val(q2);
                         $vatPercent.val(fpaRate);
@@ -844,7 +845,7 @@
                     success: function(result) {
                         toastr.success("Success", "Success");
                         //location.reload();
-                        window.location.href = '@Url.Page("Index2")';
+                        window.location.href = '@Url.Page("Index")';
                     },
                     error: function(e) {
                         var r = e.responseJSON.error;

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using GrKouk.InfoSystem.Dtos.WebDtos.SellDocuments;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -11,6 +12,7 @@ using NToastNotify;
 
 namespace GrKouk.WebRazor.Pages.Transactions.SellMaterialDoc
 {
+    [Authorize(Roles = "Admin")]
     public class CreateModel : PageModel
     {
         private readonly GrKouk.WebApi.Data.ApiDbContext _context;
@@ -63,7 +65,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.SellMaterialDoc
             //_context.BuyDocuments.Add(itemToAttach);
             //await _context.SaveChangesAsync();
 
-            return RedirectToPage("./Index2");
+            return RedirectToPage("./Index");
         }
        
     }

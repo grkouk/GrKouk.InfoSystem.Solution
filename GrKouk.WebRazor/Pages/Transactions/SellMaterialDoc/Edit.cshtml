@@ -156,20 +156,29 @@
                                 var vatAmount = docLine.AmountFpa;
                                 var netAmount = docLine.AmountNet;
                                 var grosAmount = netAmount - disAmount + vatAmount;
-
+                                var q1Actual=FormattableString.Invariant($"{q1}");
+                                var q2Actual=FormattableString.Invariant($"{q2}");
+                                var unitPriceActual=FormattableString.Invariant($"{unitPrice}");
+                                var vatRateActual=FormattableString.Invariant($"{vatRate}");
+                                var factorActual=FormattableString.Invariant($"{factor}");
+                                var disRateActual=FormattableString.Invariant($"{disRate}");
+                                var disAmountActual=FormattableString.Invariant($"{disAmount}");
+                                var vatAmountActual=FormattableString.Invariant($"{vatAmount}");
+                                var netAmountActual=FormattableString.Invariant($"{netAmount}");
+                                var grosAmountActual=FormattableString.Invariant($"{grosAmount}");
 
                                 var tLine = $"<tr><td class=\"small\"> {lineCount}" +
                                             $"</td><td class=\"small\" data-materialId=\"{materialId}\" " +
-                                            $"data-factor=\"{factor}\" data-mainUnitId=\"{mainUnitId}\" data-secUnitId=\"{secUnitId}\">" +
-                                            $"{materialName} </td><td class=\"small text-right\"  data-actualValue=\"{q1}\" >" +
-                                            $" {q1Str} </td><td class=\"small text-right\"  data-actualValue=\"{q2}\" > " +
-                                            $" {q2Str} </td><td class=\"small text-right\"  data-actualValue=\"{unitPrice}\" >" +
-                                            $" {unitPrice} </td><td class=\"small text-right\"  data-actualValue=\"{disRate}\" >" +
-                                            $"{disRate} </td><td class=\"small text-right\"  data-actualValue=\"{vatRate}\" >" +
-                                            $"{vatRate} </td><td class=\"small text-right\"  data-actualValue=\"{netAmount}\" >" +
-                                            $"{netAmount} </td><td class=\"small text-right\"  data-actualValue=\"{disAmount}\" >" +
-                                            $"{disAmount} </td><td class=\"small text-right\"  data-actualValue=\"{vatAmount}\" >" +
-                                            $"{vatAmount} </td><td class=\"small text-right\"  data-actualValue=\"{grosAmount}\" >" +
+                                            $"data-factor=\"{factorActual}\" data-mainUnitId=\"{mainUnitId}\" data-secUnitId=\"{secUnitId}\">" +
+                                            $"{materialName} </td><td class=\"small text-right\"  data-actualValue=\"{q1Actual}\" >" +
+                                            $" {q1Str} </td><td class=\"small text-right\"  data-actualValue=\"{q2Actual}\" > " +
+                                            $" {q2Str} </td><td class=\"small text-right\"  data-actualValue=\"{unitPriceActual}\" >" +
+                                            $" {unitPrice} </td><td class=\"small text-right\"  data-actualValue=\"{disRateActual}\" >" +
+                                            $"{disRate} </td><td class=\"small text-right\"  data-actualValue=\"{vatRateActual}\" >" +
+                                            $"{vatRate} </td><td class=\"small text-right\"  data-actualValue=\"{netAmountActual}\" >" +
+                                            $"{netAmount} </td><td class=\"small text-right\"  data-actualValue=\"{disAmountActual}\" >" +
+                                            $"{disAmount} </td><td class=\"small text-right\"  data-actualValue=\"{vatAmountActual}\" >" +
+                                            $"{vatAmount} </td><td class=\"small text-right\"  data-actualValue=\"{grosAmountActual}\" >" +
                                             $"{grosAmount} </td>" +
                                             $"<td class=\"small\">" +
                                             $"<a data-itemId=\"0\" href=\"#\" class=\"modifyItem\"><i class=\"fas fa-edit\"></i></a></td>" +
@@ -857,15 +866,20 @@
                         var price = $(this).parents('tr').find('td:eq(4)').attr('data-actualValue');
                         var discountRate = $(this).parents('tr').find('td:eq(5)').attr('data-actualValue');
                         var fpaRate = $(this).parents('tr').find('td:eq(6)').attr('data-actualValue');
+                        var q11 = parseFloat(q1);
+                        var q22 = parseFloat(q2);
+                        var discountRateVal = parseFloat(discountRate);
+                        var fpaRateVal = parseFloat(fpaRate);
 
                         $lineEditing.val(lineEdit);
                         $materialId.val(materialId);
                         $lookUp.val(materialName);
+                        $lookupValueValid.val('OK');
                         //$price.val(price);
-                        $q1.val(q1);
-                        $q2.val(q2);
-                        $vatPercent.val(fpaRate);
-                        $discount.val(discountRate);
+                        $q1.val(q11);
+                        $q2.val(q22);
+                        $vatPercent.val(fpaRateVal);
+                        $discount.val(discountRateVal);
                         $mainUnitId.val(mainUnitId);
                         $secUnitId.val(secUnitId);
                         $factor.val(factor);
@@ -888,7 +902,7 @@
                     success: function(result) {
                         toastr.success("Success", "Success");
                         //location.reload();
-                        window.location.href = '@Url.Page("Index2")';
+                        window.location.href = '@Url.Page("Index")';
                     },
                     error: function(e) {
                         var r = e.responseJSON.error;

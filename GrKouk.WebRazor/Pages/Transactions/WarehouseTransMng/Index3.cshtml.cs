@@ -8,12 +8,14 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using GrKouk.InfoSystem.Domain.Shared;
 using GrKouk.InfoSystem.Dtos.WebDtos.WarehouseTransactions;
 using GrKouk.WebRazor.Helpers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using NToastNotify;
 
 namespace GrKouk.WebRazor.Pages.Transactions.WarehouseTransMng
 {
+    [Authorize(Roles = "Admin")]
     public class Index3Model : PageModel
     {
         private readonly GrKouk.WebApi.Data.ApiDbContext _context;

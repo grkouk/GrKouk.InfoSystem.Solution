@@ -71,7 +71,7 @@ namespace GrKouk.WebRazor.Pages.Expenses
             _context.FinDiaryTransactions.Add(diaryTransactionToAttach);
             await _context.SaveChangesAsync();
             _toastNotification.AddSuccessToastMessage("Saved!");
-            return RedirectToPage("./Index3");
+            return RedirectToPage("./Index");
         }
 
         private void LoadCompbos()

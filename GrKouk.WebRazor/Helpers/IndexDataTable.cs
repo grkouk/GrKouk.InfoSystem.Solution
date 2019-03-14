@@ -14,7 +14,7 @@ namespace GrKouk.WebRazor.Helpers
         public string DateRange { get; set; }
         public string CompanyFilter { get; set; }
         public string MaterialNatureFilter { get; set; }
-
+        public string SearchFilter { get; set; }
     }
 
     public class IndexDataTableResponse<T>

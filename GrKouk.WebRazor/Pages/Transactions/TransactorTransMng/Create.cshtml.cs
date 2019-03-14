@@ -8,11 +8,13 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using GrKouk.InfoSystem.Domain.Shared;
 using GrKouk.InfoSystem.Dtos.WebDtos.TransactorTransactions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using NToastNotify;
 
 namespace GrKouk.WebRazor.Pages.Transactions.TransactorTransMng
 {
+    [Authorize(Roles = "Admin")]
     public class CreateModel : PageModel
     {
         private const string _sectionCode = "SYS-TRANSACTOR-TRANS";

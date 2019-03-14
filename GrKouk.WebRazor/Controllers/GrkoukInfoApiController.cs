@@ -5,8 +5,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using DataTables.AspNet.AspNetCore;
-using DataTables.AspNet.Core;
 using GrKouk.InfoSystem.Domain.Shared;
 using GrKouk.InfoSystem.Dtos;
 using GrKouk.InfoSystem.Dtos.WebDtos.BuyDocuments;
@@ -43,7 +41,6 @@ namespace GrKouk.WebRazor.Controllers
         [HttpPost("DeleteBuyDocumentsList")]
         public async Task<IActionResult> DeleteBuyDocumentList([FromBody] IdList docIds)
         {
-            //Thread.Sleep(1500);
             using (var transaction = _context.Database.BeginTransaction())
             {
                 foreach (var itemId in docIds.Ids)
@@ -63,7 +60,6 @@ namespace GrKouk.WebRazor.Controllers
             //Thread.Sleep(1500);
             using (var transaction = _context.Database.BeginTransaction())
             {
-                List<FinDiaryTransaction> itemsToDelete = new List<FinDiaryTransaction>();
                 foreach (var itemId in docIds.Ids)
                 {
                     var toRemove = _context.FinDiaryTransactions.First(x => x.Id == itemId);
@@ -77,10 +73,10 @@ namespace GrKouk.WebRazor.Controllers
                 {
                     var toDeleteCount = _context.ChangeTracker.Entries().Count(x => x.State == EntityState.Deleted);
                     // throw new Exception("Test error");
-                    var deletedCount=  await _context.SaveChangesAsync();
+                    var deletedCount = await _context.SaveChangesAsync();
                     transaction.Commit();
                     string message = $"Selected:{toDeleteCount}. Actually deleted:{deletedCount} ";
-                    return Ok(new {message});
+                    return Ok(new { message });
                 }
                 catch (Exception e)
                 {
@@ -282,6 +278,12 @@ namespace GrKouk.WebRazor.Controllers
 
 
             }
+            if (!String.IsNullOrEmpty(request.SearchFilter))
+            {
+                expensesIq = expensesIq.Where(p => p.Transactor.Name.Contains(request.SearchFilter) 
+                                                   || p.ReferenceCode.Contains(request.SearchFilter)
+                                                   || p.FinTransCategory.Name.Contains(request.SearchFilter));
+            }
 
             var t = expensesIq.ProjectTo<FinDiaryExpenseTransactionDto>(_mapper.ConfigurationProvider);
             var pageIndex = request.PageIndex;
@@ -354,7 +356,11 @@ namespace GrKouk.WebRazor.Controllers
                     }
                 }
             }
-
+            if (!String.IsNullOrEmpty(request.SearchFilter))
+            {
+                fullListIq = fullListIq.Where(p => p.Transactor.Name.Contains(request.SearchFilter)
+                                                   || p.TransRefCode.Contains(request.SearchFilter));
+            }
             var t = fullListIq.ProjectTo<BuyDocListDto>(_mapper.ConfigurationProvider);
             var pageIndex = request.PageIndex;
 
@@ -587,9 +593,9 @@ namespace GrKouk.WebRazor.Controllers
                 SumImportValue = sumImportValue,
                 SumExportVolume = sumExportVolume,
                 SumExportValue = sumExportValue,
-               // SumOfAmount = sumAmountTotal,
-               // SumOfDebit = sumDebit,
-               // SumOfCredit = sumCredit,
+                // SumOfAmount = sumAmountTotal,
+                // SumOfDebit = sumDebit,
+                // SumOfCredit = sumCredit,
                 Data = listItems
             };
             //return new JsonResult(response);

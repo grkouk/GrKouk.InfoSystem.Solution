@@ -8,11 +8,13 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using GrKouk.InfoSystem.Domain.Shared;
 using GrKouk.InfoSystem.Dtos.WebDtos.TransactorTransactions;
 using GrKouk.WebRazor.Helpers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace GrKouk.WebRazor.Pages.Transactions.TransactorTransMng
 {
+    [Authorize(Roles = "Admin")]
     public class Index3Model : PageModel
     {
         private readonly GrKouk.WebApi.Data.ApiDbContext _context;

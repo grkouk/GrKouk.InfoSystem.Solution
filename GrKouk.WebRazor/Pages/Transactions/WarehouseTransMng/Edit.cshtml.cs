@@ -12,10 +12,12 @@ using Microsoft.EntityFrameworkCore;
 using GrKouk.InfoSystem.Domain.Shared;
 using GrKouk.InfoSystem.Dtos.WebDtos.WarehouseTransactions;
 using GrKouk.WebApi.Data;
+using Microsoft.AspNetCore.Authorization;
 using NToastNotify;
 
 namespace GrKouk.WebRazor.Pages.Transactions.WarehouseTransMng
 {
+    [Authorize(Roles = "Admin")]
     public class EditModel : PageModel
     {
         private readonly GrKouk.WebApi.Data.ApiDbContext _context;

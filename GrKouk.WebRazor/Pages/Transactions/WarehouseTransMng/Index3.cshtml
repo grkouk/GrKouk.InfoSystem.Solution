@@ -382,7 +382,8 @@
                                 var $tr = $('<tr>').append(
                                     $(
                                         '<td name="selectRowColumn"> <label class="custom-control custom-checkbox">  ' +
-                                        ' <input type="checkbox" class="custom-control-input" name="checkTableRow">' +
+                                        ' <input type="checkbox" class="custom-control-input" name="checkTableRow" ' +
+                                        `data-itemId="${itemId}">` +
                                         '<span class="custom-control-indicator"></span></label></td>'),
                                     $('<td>').text(tDate).addClass('text-right small'),
                                     $('<td>').text(transName).addClass('small'),
