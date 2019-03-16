@@ -24,7 +24,8 @@ namespace GrKouk.WebRazor.Helpers
                 new SelectListItem() {Value = "60DAYS", Text = "60 Ημέρες"},
                 new SelectListItem() {Value = "360DAYS", Text = "360 Ημέρες"},
                 new SelectListItem() {Value = "PREMONTH", Text = "Προηγ.Μήνας"},
-                new SelectListItem() {Value = "CURYEAR", Text = "Τρέχων Ετος"}
+                new SelectListItem() {Value = "CURYEAR", Text = "Τρέχων Ετος"},
+                new SelectListItem() {Value = "LASTYEAR", Text = "Προηγ. Ετος"}
 
             };
             return datePeriods;
@@ -73,6 +74,12 @@ namespace GrKouk.WebRazor.Helpers
                 case "CURYEAR":
                     dateFilter.FromDate = new DateTime(DateTime.Now.Year, 1, 1);
                     dateFilter.ToDate = DateTime.Now;
+                    break;
+                case "LASTYEAR":
+                    var ty = DateTime.Now.Year;
+                    ty = ty - 1;
+                    dateFilter.FromDate = new DateTime(ty, 1, 1);
+                    dateFilter.ToDate = new DateTime(ty, 12, DateTime.DaysInMonth(ty, 12));
                     break;
                 default:
                     dateFilter.FromDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);

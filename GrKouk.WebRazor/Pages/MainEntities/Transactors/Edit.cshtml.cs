@@ -36,10 +36,16 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Transactors
             {
                 return NotFound();
             }
-           ViewData["TransactorTypeId"] = new SelectList(_context.TransactorTypes, "Id", "Code");
+            LoadCombos();
+
             return Page();
         }
 
+        private void LoadCombos()
+        {
+            ViewData["TransactorTypeId"] = new SelectList(_context.TransactorTypes.OrderBy(p => p.Code).AsNoTracking(), "Id", "Code");
+            ViewData["CompanyId"] = new SelectList(_context.Companies.OrderBy(p => p.Code).AsNoTracking(), "Id", "Code");
+        }
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)

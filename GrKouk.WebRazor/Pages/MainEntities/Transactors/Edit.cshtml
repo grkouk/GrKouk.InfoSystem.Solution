@@ -17,14 +17,19 @@
                 <input asp-for="Transactor.Code" class="form-control form-control-sm" />
                 <span asp-validation-for="Transactor.Code" class="text-danger small"></span>
             </div>
-            <div class="form-group col-md-7">
+            <div class="form-group col-md-6">
                 <label asp-for="Transactor.Name" class="control-label small"></label>
                 <input asp-for="Transactor.Name" class="form-control form-control-sm" />
                 <span asp-validation-for="Transactor.Name" class="text-danger small"></span>
             </div>
-            <div class="form-group col-md-3">
+           
+            <div class="form-group col-md-2">
                 <label asp-for="Transactor.TransactorTypeId" class="control-label small"></label>
                 <select asp-for="Transactor.TransactorTypeId" class="form-control form-control-sm" asp-items="ViewBag.TransactorTypeId"></select>
+            </div>
+            <div class="form-group col-md-2">
+                <label asp-for="Transactor.CompanyId" class="control-label small"></label>
+                <select asp-for="Transactor.CompanyId" class="form-control form-control-sm " asp-items="ViewBag.CompanyId"></select>
             </div>
         </div>
         <div class="form-row">

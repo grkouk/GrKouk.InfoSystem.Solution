@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace GrKouk.WebApi.Migrations
 {
-    public partial class Initial : Migration
+    public partial class initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -362,11 +362,18 @@ namespace GrKouk.WebApi.Migrations
                     PhoneFax = table.Column<string>(maxLength: 200, nullable: true),
                     EMail = table.Column<string>(maxLength: 200, nullable: true),
                     TransactorTypeId = table.Column<int>(nullable: false),
+                    CompanyId = table.Column<int>(nullable: false),
                     Timestamp = table.Column<byte[]>(rowVersion: true, nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Transactors", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Transactors_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Transactors_TransactorTypes_TransactorTypeId",
                         column: x => x.TransactorTypeId,
@@ -1301,7 +1308,14 @@ namespace GrKouk.WebApi.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Transactors_Code",
                 table: "Transactors",
-                column: "Code");
+                column: "Code",
+                unique: true,
+                filter: "[Code] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Transactors_CompanyId",
+                table: "Transactors",
+                column: "CompanyId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Transactors_TransactorTypeId",

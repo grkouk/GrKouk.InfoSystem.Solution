@@ -11,7 +11,7 @@ namespace GrKouk.WebRazor.Helpers
     {
         public static List<SelectListItem> GetPageSizeFiltersSelectList()
         {
-            List<SelectListItem> datePeriods = new List<SelectListItem>
+            List<SelectListItem> filtersSelectList = new List<SelectListItem>
             {
                 new SelectListItem() {Value = "1", Text = "1"},
                 new SelectListItem() {Value = "5", Text = "5"},
@@ -21,7 +21,7 @@ namespace GrKouk.WebRazor.Helpers
                 new SelectListItem() {Value = "100", Text = "100"}
 
             };
-            return datePeriods;
+            return filtersSelectList;
         }
         public static List<SelectListItem> GetWarehouseItemNaturesList()
         {

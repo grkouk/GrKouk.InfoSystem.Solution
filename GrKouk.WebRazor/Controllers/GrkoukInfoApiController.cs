@@ -5,12 +5,15 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using GrKouk.InfoSystem.Definitions;
 using GrKouk.InfoSystem.Domain.Shared;
 using GrKouk.InfoSystem.Dtos;
+using GrKouk.InfoSystem.Dtos.WebDtos;
 using GrKouk.InfoSystem.Dtos.WebDtos.BuyDocuments;
 using GrKouk.InfoSystem.Dtos.WebDtos.DiaryTransactions;
 using GrKouk.InfoSystem.Dtos.WebDtos.SellDocuments;
 using GrKouk.InfoSystem.Dtos.WebDtos.TransactorTransactions;
+using GrKouk.InfoSystem.Dtos.WebDtos.WarehouseItems;
 using GrKouk.InfoSystem.Dtos.WebDtos.WarehouseTransactions;
 using GrKouk.WebApi.Data;
 using GrKouk.WebRazor.Helpers;
@@ -92,137 +95,7 @@ namespace GrKouk.WebRazor.Controllers
         }
 
 
-        [HttpGet("GetTblData")]
-        public async Task<IActionResult> GetTblData2([FromQuery] DataTableParameters request)
-        {
-            List<DataOrder> orderColumns = new List<DataOrder>();
-            List<DataTableColumn> dataTableColumns = new List<DataTableColumn>();
 
-            if (request.Order != null)
-            {
-                var orderData = request.Order;
-
-                foreach (var orderItem in orderData)
-                {
-                    var orderColumn = new DataOrder();
-
-                    foreach (var keyValuePair in orderItem)
-                    {
-
-
-                        string k = keyValuePair.Key;
-                        string v = keyValuePair.Value;
-                        switch (k)
-                        {
-                            case "column":
-                                orderColumn.Column = Int32.Parse(v);
-                                break;
-                            case "dir":
-                                orderColumn.Dir = v;
-                                break;
-                        }
-
-                    }
-                    orderColumns.Add(orderColumn);
-                }
-
-            }
-
-            if (request.Columns != null)
-            {
-                var colList = request.Columns;
-
-                foreach (var colItem in colList)
-                {
-                    // var bCreateColumn = true;
-                    DataTableColumn colData = new DataTableColumn();
-                    foreach (var keyValuePair in colItem)
-                    {
-
-                        string k = keyValuePair.Key;
-                        string v = keyValuePair.Value;
-                        switch (k)
-                        {
-                            case "name":
-                                colData.Name = v;
-                                break;
-                            case "searchable":
-                                colData.Searchable = Boolean.Parse(v);
-
-                                break;
-                            case "orderable":
-                                colData.Orderable = Boolean.Parse(v);
-                                break;
-                            default:
-                                break;
-                        }
-
-                    }
-                    dataTableColumns.Add(colData);
-                }
-            }
-            IQueryable<FinDiaryTransaction> expensesIq = from s in _context.FinDiaryTransactions
-                                                         select s;
-
-            expensesIq = expensesIq.Include(f => f.Company)
-                .Include(f => f.CostCentre)
-                .Include(f => f.FinTransCategory)
-                .Include(f => f.Transactor);
-            if (orderColumns.Count > 0)
-            {
-                foreach (var orderColumn in orderColumns)
-                {
-                    var colIdx = orderColumn.Column;
-                    var orderType = orderColumn.Dir;
-                    var colDef = dataTableColumns[colIdx];
-                    switch (colDef.Name.ToLower())
-                    {
-                        case "transactiondate":
-                            expensesIq = orderType == "desc" ? expensesIq.OrderByDescending(p => p.TransactionDate) : expensesIq.OrderBy(p => p.TransactionDate);
-                            break;
-                        case "transactorname":
-                            expensesIq = orderType == "desc" ? expensesIq.OrderByDescending(p => p.Transactor.Name) : expensesIq.OrderBy(p => p.Transactor.Name);
-                            break;
-                        case "companyname":
-                            expensesIq = orderType == "desc" ? expensesIq.OrderByDescending(p => p.Company.Name) : expensesIq.OrderBy(p => p.Company.Name);
-                            break;
-                        case "referencecode":
-                            expensesIq = orderType == "desc" ? expensesIq.OrderByDescending(p => p.ReferenceCode) : expensesIq.OrderBy(p => p.ReferenceCode);
-                            break;
-                    }
-                }
-            }
-
-            var datePeriodFilter = request.DateRange;
-            DateFilterDates dfDates = DateFilter.GetDateFilterDates(datePeriodFilter);
-            DateTime fromDate = dfDates.FromDate;
-            DateTime toDate = dfDates.ToDate;
-
-
-            expensesIq = expensesIq.Where(p => p.TransactionDate >= fromDate && p.TransactionDate <= toDate);
-
-
-
-
-            var t = expensesIq.ProjectTo<FinDiaryExpenseTransactionDto>(_mapper.ConfigurationProvider);
-            var itemsToSkip = request.Start;
-
-            var pageSize = request.Length;
-
-            var listItems = await PagedList<FinDiaryExpenseTransactionDto>.CreateForDataTableAsync(t, itemsToSkip, pageSize);
-
-
-            // var response = MyDataTablesResponse.Create(request.Draw, listItems.TotalCount, listItems.TotalCount, listItems);
-            var response = new DataTableData
-            {
-                Draw = request.Draw,
-                RecordsTotal = listItems.TotalCount,
-                RecordsFiltered = listItems.TotalCount,
-                Data = listItems
-            };
-
-            return new JsonResult(response);
-        }
 
         [HttpGet("GetIndexTblDataExpenses")]
         public async Task<IActionResult> GetIndexTblDataExpenses([FromQuery] IndexDataTableRequest request)
@@ -280,7 +153,7 @@ namespace GrKouk.WebRazor.Controllers
             }
             if (!String.IsNullOrEmpty(request.SearchFilter))
             {
-                expensesIq = expensesIq.Where(p => p.Transactor.Name.Contains(request.SearchFilter) 
+                expensesIq = expensesIq.Where(p => p.Transactor.Name.Contains(request.SearchFilter)
                                                    || p.ReferenceCode.Contains(request.SearchFilter)
                                                    || p.FinTransCategory.Name.Contains(request.SearchFilter));
             }
@@ -310,7 +183,7 @@ namespace GrKouk.WebRazor.Controllers
         public async Task<IActionResult> GetIndexTblDataBuyDocuments([FromQuery] IndexDataTableRequest request)
         {
             IQueryable<BuyDocument> fullListIq = _context.BuyDocuments;
-           
+
             if (!String.IsNullOrEmpty(request.SortData))
             {
                 switch (request.SortData.ToLower())
@@ -604,7 +477,7 @@ namespace GrKouk.WebRazor.Controllers
             int transactorTypeId = 0;
             if (!String.IsNullOrEmpty(request.TransactorTypeFilter))
             {
-               
+
                 if (Int32.TryParse(request.TransactorTypeFilter, out transactorTypeId))
                 {
                     if (transactorTypeId > 0)
@@ -661,14 +534,15 @@ namespace GrKouk.WebRazor.Controllers
             var dbTrans = transactionsList.ProjectTo<TransactorTransListDto>(_mapper.ConfigurationProvider);
 
             var dbTransactions = dbTrans.GroupBy(g => new
-                    {
-                       
-                        g.CompanyCode,g.TransactorId
-                    }
+            {
+
+                g.CompanyCode,
+                g.TransactorId
+            }
                 )
                 .Select(s => new
                 {
-                    Id=s.Key.TransactorId,
+                    Id = s.Key.TransactorId,
                     TransactorName = "",
                     CompanyCode = s.Key.CompanyCode,
                     DebitAmount = s.Sum(x => x.DebitAmount),
@@ -718,15 +592,15 @@ namespace GrKouk.WebRazor.Controllers
                 var transactor = await _context.Transactors.Where(c => c.Id == dbTransaction.Id).FirstOrDefaultAsync();
                 string transName = "";
 
-                if (transactor!=null)
+                if (transactor != null)
                 {
                     transName = transactor.Name;
                 }
                 listWithTotal.Add(new KartelaLine
                 {
-                    Id=dbTransaction.Id,
+                    Id = dbTransaction.Id,
                     RunningTotal = runningTotal,
-                    TransactorName =transName,
+                    TransactorName = transName,
                     CompanyCode = dbTransaction.CompanyCode,
                     Debit = dbTransaction.DebitAmount,
                     Credit = dbTransaction.CreditAmount
@@ -737,9 +611,9 @@ namespace GrKouk.WebRazor.Controllers
             var pageIndex = request.PageIndex;
 
             var pageSize = request.PageSize;
-            decimal sumCredit=0;
-            decimal sumDebit=0;
-            decimal sumDifference=0;
+            decimal sumCredit = 0;
+            decimal sumDebit = 0;
+            decimal sumDifference = 0;
 
             IQueryable<KartelaLine> fullListIq = from s in outList select s;
 
@@ -775,8 +649,178 @@ namespace GrKouk.WebRazor.Controllers
             };
             return Ok(response);
         }
+        [HttpGet("GetIndexTblDataTransactors")]
+        public async Task<IActionResult> GetIndexTblDataTransactors([FromQuery] IndexDataTableRequest request)
+        {
+            IQueryable<Transactor> fullListIq = _context.Transactors;
+            int transactorTypeId = 0;
+            if (!String.IsNullOrEmpty(request.TransactorTypeFilter))
+            {
+                if (Int32.TryParse(request.TransactorTypeFilter, out transactorTypeId))
+                {
+                    if (transactorTypeId > 0)
+                    {
+                        fullListIq = fullListIq.Where(p => p.TransactorTypeId == transactorTypeId);
+                    }
+                }
+            }
+            if (!String.IsNullOrEmpty(request.SortData))
+            {
+                switch (request.SortData.ToLower())
+                {
 
+                    case "transactorname:asc":
+                        fullListIq = fullListIq.OrderBy(p => p.Name);
+                        break;
+                    case "transactorname:desc":
+                        fullListIq = fullListIq.OrderByDescending(p => p.Name);
+                        break;
 
+                }
+            }
+
+            if (!String.IsNullOrEmpty(request.CompanyFilter))
+            {
+                int companyId;
+                if (Int32.TryParse(request.CompanyFilter, out companyId))
+                {
+                    if (companyId > 0)
+                    {
+                        fullListIq = fullListIq.Where(p => p.CompanyId == companyId);
+                    }
+                }
+            }
+            if (!String.IsNullOrEmpty(request.SearchFilter))
+            {
+                fullListIq = fullListIq.Where(p => p.Name.Contains(request.SearchFilter)
+                                                   || p.EMail.Contains(request.SearchFilter)
+                                                   || p.Address.Contains(request.SearchFilter)
+                                                   || p.City.Contains(request.SearchFilter)
+                                                   || p.PhoneFax.Contains(request.SearchFilter)
+                                                   || p.PhoneMobile.Contains(request.SearchFilter)
+                                                   || p.PhoneWork.Contains(request.SearchFilter));
+            }
+            var projectedList = fullListIq.ProjectTo<TransactorListDto>(_mapper.ConfigurationProvider);
+            var pageIndex = request.PageIndex;
+
+            var pageSize = request.PageSize;
+
+            var listItems = await PagedList<TransactorListDto>.CreateAsync(projectedList, pageIndex, pageSize);
+
+            var relevantDiarys = new List<SearchListItem>();
+            var dList = await _context.DiaryDefs.Where(p => p.DiaryType == DiaryTypeEnum.DiaryTypeEnumTransactors)
+                .ToListAsync();
+            if (transactorTypeId != 0)
+            {
+                var tf = transactorTypeId;
+                relevantDiarys = dList
+                    .Where(tx => Array.ConvertAll(tx.SelectedTransTypes.Split(","), int.Parse).Contains(tf))
+                    .Select(item => new SearchListItem()
+                    {
+                        Value = item.Id,
+                        Text = item.Name
+                    })
+                    .ToList();
+            }
+
+            var response = new IndexDataTableResponse<TransactorListDto>
+            {
+                TotalRecords = listItems.TotalCount,
+                TotalPages = listItems.TotalPages,
+                HasPrevious = listItems.HasPrevious,
+                HasNext = listItems.HasNext,
+                Diaries = relevantDiarys,
+                Data = listItems
+            };
+            return Ok(response);
+        }
+        [HttpGet("GetIndexTblDataWarehouseItems")]
+        public async Task<IActionResult> GetIndexTblDataWarehouseItems([FromQuery] IndexDataTableRequest request)
+        {
+            IQueryable<WarehouseItem> fullListIq = _context.WarehouseItems;
+            int warehouseItemNatureFilter = 0;
+            if (!String.IsNullOrEmpty(request.WarehouseItemNatureFilter))
+            {
+                if (Int32.TryParse(request.WarehouseItemNatureFilter, out warehouseItemNatureFilter))
+                {
+                    if (warehouseItemNatureFilter > 0)
+                    {
+                        fullListIq = fullListIq.Where(p => p.WarehouseItemNature == (WarehouseItemNatureEnum) warehouseItemNatureFilter);
+                    }
+                }
+            }
+            if (!String.IsNullOrEmpty(request.SortData))
+            {
+                switch (request.SortData.ToLower())
+                {
+
+                    case "namesort:asc":
+                        fullListIq = fullListIq.OrderBy(p => p.Name);
+                        break;
+                    case "namesort:desc":
+                        fullListIq = fullListIq.OrderByDescending(p => p.Name);
+                        break;
+                    case "categorysort:asc":
+                        fullListIq = fullListIq.OrderBy(p => p.MaterialCaterory.Name);
+                        break;
+                    case "categorysort:desc":
+                        fullListIq = fullListIq.OrderByDescending(p => p.MaterialCaterory.Name);
+                        break;
+                }
+            }
+
+            if (!String.IsNullOrEmpty(request.CompanyFilter))
+            {
+                if (Int32.TryParse(request.CompanyFilter, out var companyId))
+                {
+                    if (companyId > 0)
+                    {
+                        fullListIq = fullListIq.Where(p => p.CompanyId == companyId);
+                    }
+                }
+            }
+            if (!String.IsNullOrEmpty(request.SearchFilter))
+            {
+                fullListIq = fullListIq.Where(p => p.Name.Contains(request.SearchFilter)
+                                                   || p.Code.Contains(request.SearchFilter)
+                                                   || p.ShortDescription.Contains(request.SearchFilter)
+                                                   || p.Description.Contains(request.SearchFilter)
+                                                   || p.MaterialCaterory.Name.Contains(request.SearchFilter));
+            }
+            var projectedList = fullListIq.ProjectTo<WarehouseItemListDto>(_mapper.ConfigurationProvider);
+            var pageIndex = request.PageIndex;
+
+            var pageSize = request.PageSize;
+
+            var listItems = await PagedList<WarehouseItemListDto>.CreateAsync(projectedList, pageIndex, pageSize);
+
+            //var relevantDiarys = new List<SearchListItem>();
+            //var dList = await _context.DiaryDefs.Where(p => p.DiaryType == DiaryTypeEnum.DiaryTypeEnumTransactors)
+            //    .ToListAsync();
+            //if (warehouseItemNatureFilter != 0)
+            //{
+            //    var tf = warehouseItemNatureFilter;
+            //    relevantDiarys = dList
+            //        .Where(tx => Array.ConvertAll(tx.SelectedTransTypes.Split(","), int.Parse).Contains(tf))
+            //        .Select(item => new SearchListItem()
+            //        {
+            //            Value = item.Id,
+            //            Text = item.Name
+            //        })
+            //        .ToList();
+            //}
+
+            var response = new IndexDataTableResponse<WarehouseItemListDto>
+            {
+                TotalRecords = listItems.TotalCount,
+                TotalPages = listItems.TotalPages,
+                HasPrevious = listItems.HasPrevious,
+                HasNext = listItems.HasNext,
+               // Diaries = relevantDiarys,
+                Data = listItems
+            };
+            return Ok(response);
+        }
         [HttpGet("LastDiaryTransactionData")]
         public async Task<IActionResult> GetLastDiaryTransactionDataAsync(int transactorId)
         {

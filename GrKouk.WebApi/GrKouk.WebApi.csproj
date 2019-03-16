@@ -21,6 +21,14 @@
     <Compile Remove="Migrations\20190123060719_SellDocuments.Designer.cs" />
     <Compile Remove="Migrations\20190311172029_Initial.cs" />
     <Compile Remove="Migrations\20190311172029_Initial.Designer.cs" />
+    <Compile Remove="Migrations\20190311172132_Initial.cs" />
+    <Compile Remove="Migrations\20190311172132_Initial.Designer.cs" />
+    <Compile Remove="Migrations\20190315063041_companyIdInTransactorEntity.cs" />
+    <Compile Remove="Migrations\20190315063041_companyIdInTransactorEntity.Designer.cs" />
+    <Compile Remove="Migrations\20190315063917_companyNavigationPropertyInTransactorEntity.cs" />
+    <Compile Remove="Migrations\20190315063917_companyNavigationPropertyInTransactorEntity.Designer.cs" />
+    <Compile Remove="Migrations\20190315071532_TransactorCompany.cs" />
+    <Compile Remove="Migrations\20190315071532_TransactorCompany.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

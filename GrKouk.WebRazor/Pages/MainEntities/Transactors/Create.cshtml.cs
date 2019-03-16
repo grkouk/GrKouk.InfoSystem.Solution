@@ -25,10 +25,14 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Transactors
 
         public IActionResult OnGet()
         {
-            ViewData["TransactorTypeId"] = new SelectList(_context.TransactorTypes.OrderBy(p=>p.Code).AsNoTracking(), "Id", "Code");
+            LoadCombos();
             return Page();
         }
-
+        private void LoadCombos()
+        {
+            ViewData["TransactorTypeId"] = new SelectList(_context.TransactorTypes.OrderBy(p => p.Code).AsNoTracking(), "Id", "Code");
+            ViewData["CompanyId"] = new SelectList(_context.Companies.OrderBy(p => p.Code).AsNoTracking(), "Id", "Code");
+        }
         [BindProperty]
         public Transactor Transactor { get; set; }
 

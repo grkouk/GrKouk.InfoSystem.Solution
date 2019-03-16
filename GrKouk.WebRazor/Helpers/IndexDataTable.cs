@@ -13,7 +13,7 @@ namespace GrKouk.WebRazor.Helpers
         public string SortData { get; set; }
         public string DateRange { get; set; }
         public string CompanyFilter { get; set; }
-        public string MaterialNatureFilter { get; set; }
+        public string WarehouseItemNatureFilter { get; set; }
         public string TransactorTypeFilter { get; set; }
         public string SearchFilter { get; set; }
     }
@@ -33,6 +33,7 @@ namespace GrKouk.WebRazor.Helpers
         public decimal SumImportValue { get; set; }
         public decimal SumExportValue { get; set; }
         public List<T> Data { get; set; }
+        public List<SearchListItem> Diaries { get; set; }
 
     }
 }

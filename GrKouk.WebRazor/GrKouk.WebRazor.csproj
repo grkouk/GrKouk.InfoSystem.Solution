@@ -111,8 +111,6 @@
     </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\DataTablesLib\DataTables.AspNet.AspNetCore\DataTables.AspNet.AspNetCore.csproj" />
-    <ProjectReference Include="..\..\..\DataTablesLib\DataTables.AspNet.Core\DataTables.AspNet.Core.csproj" />
     <ProjectReference Include="..\GrKouk.InfoSystem.Definitions\GrKouk.InfoSystem.Definitions.csproj" />
     <ProjectReference Include="..\GrKouk.InfoSystem.Domain\GrKouk.InfoSystem.Domain.csproj" />
     <ProjectReference Include="..\GrKouk.InfoSystem.Dtos\GrKouk.InfoSystem.Dtos.csproj" />
