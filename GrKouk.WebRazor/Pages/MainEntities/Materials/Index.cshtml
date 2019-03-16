@@ -16,7 +16,7 @@
             <a href="#" role="button" class="nav-link" id="CreateNew">Create New</a>
         </li>
         <li class="nav-item">
-            <a asp-page="./Isozigio2" class="nav-link">Ισοζύγιο</a>
+            <a asp-page="./Isozigio" class="nav-link">Ισοζύγιο</a>
         </li>
         <li class="nav-item">
             <a asp-page="/MainEntities/MaterialCodes/index" class="nav-link">WarehouseItem Codes</a>
@@ -244,14 +244,11 @@
                 return x !== x;
             };
             var handleSortUi = () => {
-
                 var curSort = $('#currentSort').val();
-
                 $('[name=SortIcon]').hide();
                 if (curSort === undefined || curSort === null || curSort.length === 0) {
                     //hide all icons
                     return;
-
                 }
                 var curSortAr = curSort.split(':');
                 switch (curSortAr[0]) {
@@ -271,7 +268,6 @@
                         break;
                 default:
                 }
-
             };
             var handleSelectedRowsUi = () => {
                 var $rowSelectors = $('input[name=checkTableRow]');
@@ -377,7 +373,7 @@
                                     }
                                 ];
                                 var itemId = value.id;
-                               var urlEdit = `@Url.Page("./Edit")?id=${itemId}`;
+                                var urlEdit = `@Url.Page("./Edit")?id=${itemId}`;
                                 var urlInfo = `@Url.Page("./Details")?id=${itemId}`;
                                 var urlDel = `@Url.Page("./Delete")?id=${itemId}`;
                                 var urlNewLikeThis=`@Url.Page("./Create")?copyFromId=${itemId}`;
@@ -792,7 +788,7 @@
                 $('#CompanyFilter').val(0);
                 $('#TransactorTypeFilter').val(1);
                 $('#WarehouseItemNatureFilter').val(1);
-                $('#currentSort').val('transactorname:asc');
+                $('#currentSort').val('namesort:asc');
             } else {
                 var storageItem = JSON.parse(storageItemJs);
                 var filtersValue = storageItem.find(x => x.filterKey === 'filtersVisible').filterValue;

@@ -175,7 +175,6 @@ namespace GrKouk.WebRazor.Controllers
                 SumOfAmount = sumAmountTotal,
                 Data = listItems
             };
-            //return new JsonResult(response);
             return Ok(response);
         }
 
@@ -649,6 +648,183 @@ namespace GrKouk.WebRazor.Controllers
             };
             return Ok(response);
         }
+        [HttpGet("GetIndexTblDataWarehouseBalance")]
+        public async Task<IActionResult> GetIndexTblDataWarehouseBalance([FromQuery] IndexDataTableRequest request)
+        {
+            IQueryable<WarehouseTransaction> transactionsList = _context.WarehouseTransactions;
+            int warehouseItemNatureFilter = 0;
+            if (!String.IsNullOrEmpty(request.WarehouseItemNatureFilter))
+            {
+                if (Int32.TryParse(request.WarehouseItemNatureFilter, out warehouseItemNatureFilter))
+                {
+                    if (warehouseItemNatureFilter > 0)
+                    {
+                        transactionsList = transactionsList.Where(p => p.WarehouseItem.WarehouseItemNature == (WarehouseItemNatureEnum)warehouseItemNatureFilter);
+                    }
+                }
+            }
+           
+            if (!String.IsNullOrEmpty(request.SortData))
+            {
+                switch (request.SortData.ToLower())
+                {
+                    case "transactiondate:asc":
+                        transactionsList = transactionsList.OrderBy(p => p.TransDate);
+                        break;
+                    case "transactiondate:desc":
+                        transactionsList = transactionsList.OrderByDescending(p => p.TransDate);
+                        break;
+                    case "transactorname:asc":
+                        transactionsList = transactionsList.OrderBy(p => p.WarehouseItem.Name);
+                        break;
+                    case "transactorname:desc":
+                        transactionsList = transactionsList.OrderByDescending(p => p.WarehouseItem.Name);
+                        break;
+
+                }
+            }
+           
+            if (!String.IsNullOrEmpty(request.CompanyFilter))
+            {
+                if (Int32.TryParse(request.CompanyFilter, out var companyId))
+                {
+                    if (companyId > 0)
+                    {
+                        transactionsList = transactionsList.Where(p => p.CompanyId == companyId);
+                    }
+                }
+            }
+            if (!String.IsNullOrEmpty(request.SearchFilter))
+            {
+                transactionsList = transactionsList.Where(p => p.WarehouseItem.Name.Contains(request.SearchFilter));
+            }
+            var dbTrans = transactionsList.ProjectTo<WarehouseTransListDto>(_mapper.ConfigurationProvider);
+
+            var dbTransactions = dbTrans.GroupBy(g => new
+            {
+                g.CompanyCode,
+                g.WarehouseItemId
+            }
+                )
+                .Select(s => new
+                {
+                    Id = s.Key.WarehouseItemId,
+                    MaterialName = "",
+                    CompanyCode = s.Key.CompanyCode,
+                    ImportVolume = s.Sum(x => x.ImportUnits),
+                    ExportVolume = s.Sum(x => x.ExportUnits),
+                    ImportValue = s.Sum(x => x.ImportAmount),
+                    ExportValue = s.Sum(x => x.ExportAmount)
+                }).ToList();
+
+            var isozigioType = "FREE";
+            var isozigioName = "";
+
+            WarehouseItemNatureEnum natureFilterValue = (WarehouseItemNatureEnum) warehouseItemNatureFilter;
+
+            switch (natureFilterValue)
+            {
+                case WarehouseItemNatureEnum.WarehouseItemNatureUndefined:
+                    isozigioName = "";
+                    break;
+                case WarehouseItemNatureEnum.WarehouseItemNatureMaterial:
+                    isozigioName = "Υλικών";
+                    isozigioType = "SUPPLIER";
+                    break;
+                case WarehouseItemNatureEnum.WarehouseItemNatureService:
+                    isozigioName = "Υπηρεσιών";
+                    isozigioType = "SUPPLIER";
+                    break;
+                case WarehouseItemNatureEnum.WarehouseItemNatureExpense:
+                    isozigioName = "Δαπάνων";
+                    isozigioType = "SUPPLIER";
+                    break;
+                case WarehouseItemNatureEnum.WarehouseItemNatureIncome:
+                    isozigioName = "Εσόδων";
+                    isozigioType = "SUPPLIER";
+                    break;
+                case WarehouseItemNatureEnum.WarehouseItemNatureFixedAsset:
+                    isozigioName = "Παγίων";
+                    isozigioType = "SUPPLIER";
+                    break;
+                case WarehouseItemNatureEnum.WarehouseItemNatureRawMaterial:
+                    isozigioName = "Πρώτων Υλών";
+                    isozigioType = "SUPPLIER";
+                    break;
+                default:
+                    isozigioName = "";
+                    break;
+            }
+
+           
+            var listWithTotal = new List<WarehouseKartelaLine>();
+            decimal runningTotalVolume = 0;
+            decimal runningTotalValue = 0;
+            foreach (var dbTransaction in dbTransactions)
+            {
+
+                runningTotalVolume = dbTransaction.ImportVolume - dbTransaction.ExportVolume;
+                runningTotalValue = dbTransaction.ImportValue - dbTransaction.ExportValue;
+                var warehouseItem = await _context.WarehouseItems.Where(c => c.Id == dbTransaction.Id).FirstOrDefaultAsync();
+                string itemName = "";
+
+                if (warehouseItem != null)
+                {
+                    itemName = warehouseItem.Name;
+                }
+                listWithTotal.Add(new WarehouseKartelaLine
+                {
+
+                    CompanyCode = dbTransaction.CompanyCode,
+                    RunningTotalVolume = runningTotalVolume,
+                    RunningTotalValue = runningTotalValue,
+                    MaterialName = itemName,
+                    ImportVolume = dbTransaction.ImportVolume,
+                    ExportVolume = dbTransaction.ExportVolume,
+                    ImportValue = dbTransaction.ImportValue,
+                    ExportValue = dbTransaction.ExportValue
+                });
+            }
+           
+           
+
+            var outList = listWithTotal.AsQueryable();
+            var pageIndex = request.PageIndex;
+
+            var pageSize = request.PageSize;
+            decimal sumImportsVolume = 0;
+            decimal sumExportsVolume = 0;
+            decimal sumImportsValue = 0;
+            decimal sumExportsValue = 0;
+            decimal sumDifference = 0;
+
+            IQueryable<WarehouseKartelaLine> fullListIq = from s in outList select s;
+
+            var listItems = PagedList<WarehouseKartelaLine>.Create(fullListIq, pageIndex, pageSize);
+
+            foreach (var item in listItems)
+            {
+                sumImportsVolume += item.ImportVolume;
+                sumExportsVolume += item.ExportVolume;
+                sumImportsValue += item.ImportValue;
+                sumExportsValue += item.ExportValue;
+            }
+           
+            var response = new IndexDataTableResponse<WarehouseKartelaLine>
+            {
+                TotalRecords = listItems.TotalCount,
+                TotalPages = listItems.TotalPages,
+                HasPrevious = listItems.HasPrevious,
+                HasNext = listItems.HasNext,
+                SumImportValue = sumImportsVolume,
+                SumExportValue = sumExportsValue,
+                SumImportVolume = sumImportsVolume,
+                SumExportVolume = sumExportsVolume,
+                Data = listItems
+            };
+            return Ok(response);
+        }
+
         [HttpGet("GetIndexTblDataTransactors")]
         public async Task<IActionResult> GetIndexTblDataTransactors([FromQuery] IndexDataTableRequest request)
         {
