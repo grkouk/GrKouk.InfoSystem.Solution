@@ -652,14 +652,14 @@ namespace GrKouk.WebRazor.Controllers
         public async Task<IActionResult> GetIndexTblDataWarehouseBalance([FromQuery] IndexDataTableRequest request)
         {
             IQueryable<WarehouseTransaction> transactionsList = _context.WarehouseTransactions;
-            int warehouseItemNatureFilter = 0;
+            WarehouseItemNatureEnum warehouseItemNatureFilter = 0;
             if (!String.IsNullOrEmpty(request.WarehouseItemNatureFilter))
             {
-                if (Int32.TryParse(request.WarehouseItemNatureFilter, out warehouseItemNatureFilter))
+                if (Enum.TryParse(request.WarehouseItemNatureFilter, out warehouseItemNatureFilter))
                 {
                     if (warehouseItemNatureFilter > 0)
                     {
-                        transactionsList = transactionsList.Where(p => p.WarehouseItem.WarehouseItemNature == (WarehouseItemNatureEnum)warehouseItemNatureFilter);
+                        transactionsList = transactionsList.Where(p => p.WarehouseItem.WarehouseItemNature == warehouseItemNatureFilter);
                     }
                 }
             }
@@ -674,10 +674,10 @@ namespace GrKouk.WebRazor.Controllers
                     case "transactiondate:desc":
                         transactionsList = transactionsList.OrderByDescending(p => p.TransDate);
                         break;
-                    case "transactorname:asc":
+                    case "namesort:asc":
                         transactionsList = transactionsList.OrderBy(p => p.WarehouseItem.Name);
                         break;
-                    case "transactorname:desc":
+                    case "namesort:desc":
                         transactionsList = transactionsList.OrderByDescending(p => p.WarehouseItem.Name);
                         break;
 
@@ -720,9 +720,8 @@ namespace GrKouk.WebRazor.Controllers
             var isozigioType = "FREE";
             var isozigioName = "";
 
-            WarehouseItemNatureEnum natureFilterValue = (WarehouseItemNatureEnum) warehouseItemNatureFilter;
 
-            switch (natureFilterValue)
+            switch (warehouseItemNatureFilter)
             {
                 case WarehouseItemNatureEnum.WarehouseItemNatureUndefined:
                     isozigioName = "";
@@ -816,7 +815,7 @@ namespace GrKouk.WebRazor.Controllers
                 TotalPages = listItems.TotalPages,
                 HasPrevious = listItems.HasPrevious,
                 HasNext = listItems.HasNext,
-                SumImportValue = sumImportsVolume,
+                SumImportValue = sumImportsValue,
                 SumExportValue = sumExportsValue,
                 SumImportVolume = sumImportsVolume,
                 SumExportVolume = sumExportsVolume,

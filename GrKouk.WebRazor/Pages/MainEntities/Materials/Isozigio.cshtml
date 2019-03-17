@@ -97,7 +97,7 @@
                 </a>
                 <i class="fas fa-sort-alpha-down" id="NameSortHeaderIcon" name="SortIcon"></i>
             </th>
-            <th class="small text-center">
+            <th class="small text-center d-none d-md-table-cell">
                 CompanyCode
             </th>
             <th class="small text-center">
@@ -106,7 +106,7 @@
             <th class="small text-center">
                 ExportVolume
             </th>
-            <th class="small text-center">
+            <th class="small text-center d-none d-md-table-cell">
                 RunningTotalVolume
             </th>
             <th class="small text-center">
@@ -115,10 +115,11 @@
             <th class="small text-center">
                 ExportValue
             </th>
-            <th class="small text-center">
+            <th class="small text-center d-none d-md-table-cell">
                 RunningTotalValue
             </th>
-
+            <th class="small text-center d-none d-md-table-cell"></th>
+            <th class="small text-center d-table-cell d-sm-table-cell d-md-none"></th>
         </tr>
     </thead>
     <tbody>
@@ -320,7 +321,7 @@
                                     },
                                     {
                                         text: value.companyCode,
-                                        class: 'small'
+                                        class: 'small d-none d-md-table-cell'
                                     },
 
                                     {
@@ -333,7 +334,7 @@
                                     },
                                     {
                                         text: formatterNumber.format(value.runningTotalVolume),
-                                        class: 'small text-right'
+                                        class: 'small text-right d-none d-md-table-cell'
                                     },
                                     {
                                         text: formatterCurrency.format(value.importValue),
@@ -345,7 +346,7 @@
                                     },
                                     {
                                         text: formatterCurrency.format( value.runningTotalValue),
-                                        class: 'small text-right' 
+                                        class: 'small text-right d-none d-md-table-cell' 
                                     }
                                 ];
 
@@ -396,22 +397,25 @@
                                 handleSelectedRowsUi();
                             });
                         //console.log();
-                        var sumImportsVolume = formatterCurrency.format(result.sumImportsVolume);
-                        var sumExportsVolume = formatterCurrency.format(result.sumExportsVolume);
-                        var sumImportsValue = formatterCurrency.format(result.sumImportsValue);
-                        var sumExportsValue = formatterCurrency.format(result.sumExportsValue);
+                        var sumImportsVolume = formatterNumber.format(result.sumImportVolume);
+                        var sumExportsVolume = formatterNumber.format(result.sumExportVolume);
+                        var sumImportsValue = formatterCurrency.format(result.sumImportValue);
+                        var sumExportsValue = formatterCurrency.format(result.sumExportValue);
                        // var sumDifference = formatterCurrency.format(result.sumOfDifference);
                         var $summaryRow = $('<tr class="table-info">').append(
                             $('<td name="selectRowColumn"> </td>  '),
-                            $('<td>'),
                             $('<td>').text('Σύνολα Σελίδας').addClass('small font-weight-bold'),
+                            $('<td>').addClass('d-none d-md-table-cell'),
+                           
                             $('<td>').text(sumImportsVolume).addClass('small text-right font-weight-bold'),
                             $('<td>').text(sumExportsVolume).addClass('small text-right font-weight-bold'),
+                            $('<td>').addClass('d-none d-md-table-cell'),
                             $('<td>').text(sumImportsValue).addClass('small text-right font-weight-bold'),
                             $('<td>').text(sumExportsValue).addClass('small text-right font-weight-bold'),
 
                             $('<td>').text('').addClass('small d-none d-md-table-cell'),
-                            $('<td>')
+                            $('<td>').addClass('d-none d-md-table-cell'),
+                            $('<td>').addClass('d-table-cell d-sm-table-cell d-md-none')
                         ).appendTo('#myTable > tbody:last');
                         rowSelectorsUi();
                         handleSortUi();

@@ -33,14 +33,8 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Materials
         }
         private void LoadFilters()
         {
-            var materialNatures = Enum.GetValues(typeof(WarehouseItemNatureEnum))
-                .Cast<WarehouseItemNatureEnum>()
-                .Select(c => new SelectListItem()
-                {
-                    Value = c.ToString(),
-                    Text = c.GetDescription()
-                }).ToList();
-           
+            var materialNatures = FiltersHelper.GetWarehouseItemNaturesList();
+
 
             ViewData["MaterialNatureValues"] = new SelectList(materialNatures, "Value", "Text");
 
