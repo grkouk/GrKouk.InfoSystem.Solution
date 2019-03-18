@@ -13,7 +13,7 @@ namespace GrKouk.WebRazor.Helpers
         public string TransactorName { get; set; }
         public string CompanyCode { get; set; }
         public string DocSeriesCode { get; set; }
-       
+        public string RefCode { get; set; }
         public decimal Debit { get; set; }
         public decimal Credit { get; set; }
         public decimal RunningTotal { get; set; }

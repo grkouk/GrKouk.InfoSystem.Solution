@@ -740,24 +740,7 @@
                     $('#pageIndex').val(1);
                     refreshTableData();
                 });
-            $('#TransactorNameHeader').on('click',
-                function() {
-                    var newSortVal = '';
-                    var curSort = $('#currentSort').val();
-                    if (curSort === undefined || curSort === null || curSort.length === 0) {
-                        curSort = 'transactorname:desc';
-                    }
-                    var curSortAr = curSort.split(':');
-                    if (curSortAr[0] === 'transactorname') {
-                        var newSort = curSortAr[1] === 'asc' ? 'desc' : 'asc';
-                        newSortVal = curSortAr[0] + ':' + newSort;
-                    } else {
-                        newSortVal = 'transactorname:asc';
-                    }
-                    $('#currentSort').val(newSortVal);
-                    $('#pageIndex').val(1);
-                    refreshTableData();
-                });
+           
             $('#CreateNew').on('click',function() {
                     var uri = '@Url.Page("Create")';
                     window.location.href = uri;

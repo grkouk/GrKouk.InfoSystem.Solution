@@ -2,11 +2,13 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using GrKouk.InfoSystem.Dtos.WebDtos.TransactorTransactions;
 using GrKouk.WebRazor.Helpers;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using NToastNotify;
 
 namespace GrKouk.WebRazor.Pages.MainEntities.Transactors
 {
@@ -15,76 +17,49 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Transactors
     {
         private readonly GrKouk.WebApi.Data.ApiDbContext _context;
         private readonly IMapper _mapper;
+        private readonly IToastNotification _toastNotification;
 
-        public KartelaModel(GrKouk.WebApi.Data.ApiDbContext context, IMapper mapper)
-        {
-            _context = context;
-            _mapper = mapper;
-        }
-
-        public decimal sumCredit = 0;
-        public decimal sumDebit = 0;
-
-        public int PageSizeKartela { get; set; }
         public string TransactorName { get; set; }
         public int TransactorId { get; set; }
 
-        public int ParentPageSize { get; set; }
-        public int TransactorTypeFilter { get; set; }
-        public int ParentPageIndex { get; set; }
-        public PagedList<KartelaLine> ListItems { get; set; }
-        public async Task OnGetAsync(int transactorId, int? pageIndexKartela, int? pageSizeKartela, string transactorName, int? transactorTypeFilter, int? parentPageIndex, int? parentPageSize)
+        public KartelaModel(GrKouk.WebApi.Data.ApiDbContext context, IMapper mapper, IToastNotification toastNotification)
         {
-            TransactorTypeFilter = (int)(transactorTypeFilter ?? 0);
-            ParentPageSize = (int)(parentPageSize ?? 0);
-            ParentPageIndex = (int)(parentPageIndex ?? 0);
+            _context = context;
+            _mapper = mapper;
+            _toastNotification = toastNotification;
+        }
+
+       
+        public async Task<IActionResult> OnGetAsync(int transactorId)
+        {
+            var transactor = await _context.Transactors.FirstOrDefaultAsync(x => x.Id == transactorId);
+            if (transactor is null)
+            {
+                return NotFound();
+            }
+
             TransactorId = transactorId;
+            TransactorName = transactor.Name;
+            LoadFilters();
+            return Page();
+        }
+        private void LoadFilters()
+        {
 
-            TransactorName = transactorName;
-            PageSizeKartela = (int)((pageSizeKartela == null || pageSizeKartela == 0) ? 20 : pageSizeKartela);
+            var datePeriods = DateFilter.GetDateFiltersSelectList();
+            ViewData["DataFilterValues"] = new SelectList(datePeriods, "Value", "Text");
 
-            var dbTransactions = _mapper.Map<IEnumerable<TransactorTransListDto>>(await _context.TransactorTransactions
-                .Include(p => p.Transactor)
-                .Include(p => p.TransTransactorDocSeries)
-                .OrderBy(p => p.TransDate)
-                .Where(p=>p.TransactorId==TransactorId)
-                .ToListAsync());
+            var pageFilterSize = PageFilter.GetPageSizeFiltersSelectList();
+            ViewData["PageFilterSize"] = new SelectList(pageFilterSize, "Value", "Text");
 
-
-
-            var listWithTotal = new List<KartelaLine>();
-
-            decimal runningTotal = 0;
-            foreach (var dbTransaction in dbTransactions)
+            var dbCompanies = _context.Companies.OrderBy(p => p.Code).AsNoTracking();
+            List<SelectListItem> companiesList = new List<SelectListItem>();
+            companiesList.Add(new SelectListItem() { Value = 0.ToString(), Text = "{All Companies}" });
+            foreach (var company in dbCompanies)
             {
-                runningTotal = dbTransaction.CreditAmount - dbTransaction.DebitAmount + runningTotal;
-                listWithTotal.Add(new KartelaLine
-                {
-                    TransDate = dbTransaction.TransDate,
-                    DocSeriesCode = dbTransaction.TransTransactorDocSeriesCode,
-                    RunningTotal = runningTotal,
-                    TransactorName = dbTransaction.TransactorName,
-                    Debit = dbTransaction.DebitAmount,
-                    Credit = dbTransaction.CreditAmount
-                });
+                companiesList.Add(new SelectListItem() { Value = company.Id.ToString(), Text = company.Code });
             }
-
-            var outList = listWithTotal.AsQueryable();
-           
-
-            IQueryable<KartelaLine> fullListIq = from s in outList select s;
-
-            ListItems = PagedList<KartelaLine>.Create(
-                fullListIq, pageIndexKartela ?? 1, PageSizeKartela);
-
-            foreach (var item in ListItems)
-            {
-                sumCredit += item.Credit;
-                sumDebit += item.Debit;
-            }
-
-
-
+            ViewData["CompanyFilter"] = new SelectList(companiesList, "Value", "Text");
         }
     }
 }

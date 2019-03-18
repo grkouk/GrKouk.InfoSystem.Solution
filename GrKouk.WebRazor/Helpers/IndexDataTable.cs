@@ -16,6 +16,9 @@ namespace GrKouk.WebRazor.Helpers
         public string WarehouseItemNatureFilter { get; set; }
         public string TransactorTypeFilter { get; set; }
         public string SearchFilter { get; set; }
+        public int DiaryId { get; set; }
+        public int TransactorId { get; set; }
+        public int WarehouseItemId { get; set; }
     }
 
     public class IndexDataTableResponse<T>

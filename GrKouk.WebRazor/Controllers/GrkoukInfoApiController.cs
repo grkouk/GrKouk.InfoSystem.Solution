@@ -1017,6 +1017,256 @@ namespace GrKouk.WebRazor.Controllers
 
             return NotFound();
         }
+        [HttpGet("GetIndexTblDataTransactorDiary")]
+        public async Task<IActionResult> GetIndexTblDataTransactorDiary([FromQuery] IndexDataTableRequest request)
+        {
+            if (request.DiaryId<=0)
+            {
+                return BadRequest(new
+                {
+                    Error = "No valid diary id specified"
+                });
+            }
+            var diaryDef = await _context.DiaryDefs.FindAsync(request.DiaryId);
+            if (diaryDef == null)
+            {
+                return NotFound(new
+                {
+                    Error = "Diary Id not found"
+                });
+            }
+
+            IQueryable<TransactorTransaction> transactionsList = _context.TransactorTransactions;
+
+            if (diaryDef.SelectedTransTypes != null)
+            {
+                var transTypes = Array.ConvertAll(diaryDef.SelectedTransTypes.Split(","), int.Parse);
+                transactionsList = transactionsList.Where(p => transTypes.Contains(p.Transactor.TransactorTypeId));
+            }
+            if (diaryDef.SelectedDocTypes != null)
+            {
+                var docTypes = Array.ConvertAll(diaryDef.SelectedDocTypes.Split(","), int.Parse);
+                transactionsList = transactionsList.Where(p => docTypes.Contains(p.TransTransactorDocTypeId));
+            }
+           
+            if (!String.IsNullOrEmpty(request.SortData))
+            {
+                switch (request.SortData.ToLower())
+                {
+                    case "datesort:asc":
+                        transactionsList = transactionsList.OrderBy(p => p.TransDate);
+                        break;
+                    case "datesort:desc":
+                        transactionsList = transactionsList.OrderByDescending(p => p.TransDate);
+                        break;
+                    case "namesort:asc":
+                        transactionsList = transactionsList.OrderBy(p => p.Transactor.Name);
+                        break;
+                    case "namesort:desc":
+                        transactionsList = transactionsList.OrderByDescending(p => p.Transactor.Name);
+                        break;
+
+                }
+            }
+            if (!String.IsNullOrEmpty(request.DateRange))
+            {
+                var datePeriodFilter = request.DateRange;
+                DateFilterDates dfDates = DateFilter.GetDateFilterDates(datePeriodFilter);
+                DateTime fromDate = dfDates.FromDate;
+                DateTime toDate = dfDates.ToDate;
+
+                transactionsList = transactionsList.Where(p => p.TransDate >= fromDate && p.TransDate <= toDate);
+            }
+            if (!String.IsNullOrEmpty(request.CompanyFilter))
+            {
+                if (Int32.TryParse(request.CompanyFilter, out var companyId))
+                {
+                    if (companyId > 0)
+                    {
+                        transactionsList = transactionsList.Where(p => p.CompanyId == companyId);
+                    }
+                }
+            }
+            if (!String.IsNullOrEmpty(request.SearchFilter))
+            {
+                transactionsList = transactionsList.Where(p => p.Transactor.Name.Contains(request.SearchFilter));
+            }
+
+            var t = transactionsList.ProjectTo<TransactorTransListDto>(_mapper.ConfigurationProvider);
+            var pageIndex = request.PageIndex;
+
+            var pageSize = request.PageSize;
+
+            var listItems = await PagedList<TransactorTransListDto>.CreateAsync(t, pageIndex, pageSize);
+            decimal sumAmountTotal = listItems.Sum(p => p.TotalAmount);
+            decimal sumDebit = listItems.Sum(p => p.DebitAmount);
+            decimal sumCredit = listItems.Sum(p => p.CreditAmount);
+            var response = new IndexDataTableResponse<TransactorTransListDto>
+            {
+                TotalRecords = listItems.TotalCount,
+                TotalPages = listItems.TotalPages,
+                HasPrevious = listItems.HasPrevious,
+                HasNext = listItems.HasNext,
+                SumOfAmount = sumAmountTotal,
+                SumOfDebit = sumDebit,
+                SumOfCredit = sumCredit,
+                Data = listItems
+            };
+
+            return Ok(response);
+        }
+        [HttpGet("GetIndexTblDataTransactorAccountTab")]
+        public async Task<IActionResult> GetIndexTblDataTransactorAccountTab([FromQuery] IndexDataTableRequest request)
+        {
+            if (request.TransactorId <= 0)
+            {
+                return BadRequest(new
+                {
+                    Error = "No valid transactor id specified"
+                });
+            }
+
+            var transactor = await _context.Transactors.FirstOrDefaultAsync(x => x.Id == request.TransactorId);
+            if (transactor == null)
+            {
+                return NotFound(new
+                {
+                    Error = "Transactor not found"
+                });
+            }
+            var transactorType = await _context.TransactorTypes.Where(c => c.Id == transactor.TransactorTypeId).FirstOrDefaultAsync();
+
+            IQueryable<TransactorTransaction> transactionsList = _context.TransactorTransactions
+                .Where(p => p.TransactorId == request.TransactorId);
+           
+            if (!String.IsNullOrEmpty(request.SortData))
+            {
+                switch (request.SortData.ToLower())
+                {
+                    case "datesort:asc":
+                        transactionsList = transactionsList.OrderBy(p => p.TransDate);
+                        break;
+                    case "datesort:desc":
+                        transactionsList = transactionsList.OrderByDescending(p => p.TransDate);
+                        break;
+                    case "namesort:asc":
+                        transactionsList = transactionsList.OrderBy(p => p.Transactor.Name);
+                        break;
+                    case "namesort:desc":
+                        transactionsList = transactionsList.OrderByDescending(p => p.Transactor.Name);
+                        break;
+
+                }
+            }
+            #region CommentOut
+            if (!String.IsNullOrEmpty(request.DateRange))
+            {
+                var datePeriodFilter = request.DateRange;
+                DateFilterDates dfDates = DateFilter.GetDateFilterDates(datePeriodFilter);
+                DateTime fromDate = dfDates.FromDate;
+                DateTime toDate = dfDates.ToDate;
+
+                transactionsList = transactionsList.Where(p => p.TransDate >= fromDate && p.TransDate <= toDate);
+            }
+            #endregion
+            if (!String.IsNullOrEmpty(request.CompanyFilter))
+            {
+                if (Int32.TryParse(request.CompanyFilter, out var companyId))
+                {
+                    if (companyId > 0)
+                    {
+                        transactionsList = transactionsList.Where(p => p.CompanyId == companyId);
+                    }
+                }
+            }
+            if (!String.IsNullOrEmpty(request.SearchFilter))
+            {
+                transactionsList = transactionsList.Where(p => p.Transactor.Name.Contains(request.SearchFilter));
+            }
+            var dbTrans = transactionsList.ProjectTo<TransactorTransListDto>(_mapper.ConfigurationProvider);
+            var dbTransactions = await dbTrans.ToListAsync();
+           
+            var listWithTotal = new List<KartelaLine>();
+
+            decimal runningTotal = 0;
+            foreach (var dbTransaction in dbTransactions)
+            {
+                switch (transactorType.Code)
+                {
+                    case "SYS.DTRANSACTOR":
+                       
+                        break;
+                    case "SYS.CUSTOMER":
+                        runningTotal = dbTransaction.DebitAmount - dbTransaction.CreditAmount;
+                        break;
+                    case "SYS.SUPPLIER":
+                        runningTotal = dbTransaction.CreditAmount - dbTransaction.DebitAmount;
+                        break;
+                    default:
+                        runningTotal = dbTransaction.CreditAmount - dbTransaction.DebitAmount;
+                        break;
+                }
+
+
+                listWithTotal.Add(new KartelaLine
+                {
+                    TransDate = dbTransaction.TransDate,
+                    DocSeriesCode = dbTransaction.TransTransactorDocSeriesCode,
+                    RefCode = dbTransaction.TransRefCode,
+                    CompanyCode = dbTransaction.CompanyCode,
+                    RunningTotal = runningTotal,
+                    TransactorName = dbTransaction.TransactorName,
+                    Debit = dbTransaction.DebitAmount,
+                    Credit = dbTransaction.CreditAmount
+                });
+            }
+
+            var outList = listWithTotal.AsQueryable();
+            var pageIndex = request.PageIndex;
+
+            var pageSize = request.PageSize;
+            decimal sumCredit = 0;
+            decimal sumDebit = 0;
+            decimal sumDifference = 0;
+
+            IQueryable<KartelaLine> fullListIq = from s in outList select s;
+
+            var listItems = PagedList<KartelaLine>.Create(fullListIq, pageIndex, pageSize);
+
+            foreach (var item in listItems)
+            {
+                sumCredit += item.Credit;
+                sumDebit += item.Debit;
+            }
+            switch (transactorType.Code)
+            {
+                case "SYS.DTRANSACTOR":
+
+                    break;
+                case "SYS.CUSTOMER":
+                    sumDifference = sumDebit - sumCredit;
+                    break;
+                case "SYS.SUPPLIER":
+                    sumDifference = sumCredit - sumDebit;
+                    break;
+                default:
+                    sumDifference = sumCredit - sumDebit;
+                    break;
+            }
+           
+            var response = new IndexDataTableResponse<KartelaLine>
+            {
+                TotalRecords = listItems.TotalCount,
+                TotalPages = listItems.TotalPages,
+                HasPrevious = listItems.HasPrevious,
+                HasNext = listItems.HasNext,
+                SumOfDebit = sumDebit,
+                SumOfCredit = sumCredit,
+                SumOfDifference = sumDifference,
+                Data = listItems
+            };
+            return Ok(response);
+        }
     }
 
     class DataTableData
