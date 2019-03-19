@@ -665,25 +665,7 @@ namespace GrKouk.WebRazor.Controllers
                 }
             }
            
-            if (!String.IsNullOrEmpty(request.SortData))
-            {
-                switch (request.SortData.ToLower())
-                {
-                    case "transactiondate:asc":
-                        transactionsList = transactionsList.OrderBy(p => p.TransDate);
-                        break;
-                    case "transactiondate:desc":
-                        transactionsList = transactionsList.OrderByDescending(p => p.TransDate);
-                        break;
-                    case "namesort:asc":
-                        transactionsList = transactionsList.OrderBy(p => p.WarehouseItem.Name);
-                        break;
-                    case "namesort:desc":
-                        transactionsList = transactionsList.OrderByDescending(p => p.WarehouseItem.Name);
-                        break;
-
-                }
-            }
+           
            
             if (!String.IsNullOrEmpty(request.CompanyFilter))
             {
@@ -789,6 +771,31 @@ namespace GrKouk.WebRazor.Controllers
            
 
             var outList = listWithTotal.AsQueryable();
+            if (!String.IsNullOrEmpty(request.SortData))
+            {
+                switch (request.SortData.ToLower())
+                {
+                    case "companysort:asc":
+                        outList = outList.OrderBy(p => p.CompanyCode);
+                        break;
+                    case "companysort:desc":
+                        outList = outList.OrderByDescending(p => p.CompanyCode);
+                        break;
+                    case "datesort:asc":
+                        outList = outList.OrderBy(p => p.TransDate);
+                        break;
+                    case "datesort:desc":
+                        outList = outList.OrderByDescending(p => p.TransDate);
+                        break;
+                    case "namesort:asc":
+                        outList = outList.OrderBy(p => p.MaterialName);
+                        break;
+                    case "namesort:desc":
+                        outList = outList.OrderByDescending(p => p.MaterialName);
+                        break;
+
+                }
+            }
             var pageIndex = request.PageIndex;
 
             var pageSize = request.PageSize;
@@ -1264,6 +1271,138 @@ namespace GrKouk.WebRazor.Controllers
                 SumOfDebit = sumDebit,
                 SumOfCredit = sumCredit,
                 SumOfDifference = sumDifference,
+                Data = listItems
+            };
+            return Ok(response);
+        }
+        [HttpGet("GetIndexTblDataWarehouseAccountTab")]
+        public async Task<IActionResult> GetIndexTblDataWarehouseAccountTab([FromQuery] IndexDataTableRequest request)
+        {
+            if (request.WarehouseItemId <= 0)
+            {
+                return BadRequest(new
+                {
+                    Error = "No valid warehouse item id specified"
+                });
+            }
+
+            var warehouseItem = await _context.WarehouseItems.FirstOrDefaultAsync(x => x.Id == request.WarehouseItemId);
+            if (warehouseItem == null)
+            {
+                return NotFound(new
+                {
+                    Error = "warehouse Item not found"
+                });
+            }
+           // var transactorType = await _context.TransactorTypes.Where(c => c.Id == warehouseItem.TransactorTypeId).FirstOrDefaultAsync();
+
+            IQueryable<WarehouseTransaction> transactionsList = _context.WarehouseTransactions
+                .Where(p => p.WarehouseItemId == request.WarehouseItemId);
+
+            if (!String.IsNullOrEmpty(request.SortData))
+            {
+                switch (request.SortData.ToLower())
+                {
+                    case "datesort:asc":
+                        transactionsList = transactionsList.OrderBy(p => p.TransDate);
+                        break;
+                    case "datesort:desc":
+                        transactionsList = transactionsList.OrderByDescending(p => p.TransDate);
+                        break;
+                    case "namesort:asc":
+                        transactionsList = transactionsList.OrderBy(p => p.WarehouseItem.Name);
+                        break;
+                    case "namesort:desc":
+                        transactionsList = transactionsList.OrderByDescending(p => p.WarehouseItem.Name);
+                        break;
+
+                }
+            }
+           
+            if (!String.IsNullOrEmpty(request.DateRange))
+            {
+                var datePeriodFilter = request.DateRange;
+                DateFilterDates dfDates = DateFilter.GetDateFilterDates(datePeriodFilter);
+                DateTime fromDate = dfDates.FromDate;
+                DateTime toDate = dfDates.ToDate;
+
+                transactionsList = transactionsList.Where(p => p.TransDate >= fromDate && p.TransDate <= toDate);
+            }
+            if (!String.IsNullOrEmpty(request.CompanyFilter))
+            {
+                if (Int32.TryParse(request.CompanyFilter, out var companyId))
+                {
+                    if (companyId > 0)
+                    {
+                        transactionsList = transactionsList.Where(p => p.CompanyId == companyId);
+                    }
+                }
+            }
+            if (!String.IsNullOrEmpty(request.SearchFilter))
+            {
+                transactionsList = transactionsList.Where(p => p.WarehouseItem.Name.Contains(request.SearchFilter));
+            }
+            var dbTrans = transactionsList.ProjectTo<WarehouseTransListDto>(_mapper.ConfigurationProvider);
+            var dbTransactions = await dbTrans.ToListAsync();
+
+            var listWithTotal = new List<WarehouseKartelaLine>();
+
+           // decimal runningTotal = 0;
+            decimal runningTotalVolume = 0;
+            decimal runningTotalValue = 0;
+            foreach (var dbTransaction in dbTransactions)
+            {
+                runningTotalVolume = dbTransaction.ImportUnits - dbTransaction.ExportUnits + runningTotalVolume;
+                runningTotalValue = dbTransaction.ImportAmount - dbTransaction.ExportAmount + runningTotalValue;
+                listWithTotal.Add(new WarehouseKartelaLine
+                {
+                    TransDate = dbTransaction.TransDate,
+                    DocSeriesCode = dbTransaction.TransWarehouseDocSeriesCode,
+                    RefCode = dbTransaction.TransRefCode,
+                    CompanyCode = dbTransaction.CompanyCode,
+                    RunningTotalVolume = runningTotalVolume,
+                    RunningTotalValue = runningTotalValue,
+                    MaterialName = dbTransaction.WarehouseItemName,
+                    ImportVolume = dbTransaction.ImportUnits,
+                    ExportVolume = dbTransaction.ExportUnits,
+                    ImportValue = dbTransaction.ImportAmount,
+                    ExportValue = dbTransaction.ExportAmount
+                });
+            }
+
+            var outList = listWithTotal.AsQueryable();
+            var pageIndex = request.PageIndex;
+
+            var pageSize = request.PageSize;
+            decimal sumImportsVolume = 0;
+            decimal sumExportsVolume = 0;
+            decimal sumImportsValue = 0;
+            decimal sumExportsValue = 0;
+            decimal sumDifference = 0;
+
+            IQueryable<WarehouseKartelaLine> fullListIq = from s in outList select s;
+
+            var listItems = PagedList<WarehouseKartelaLine>.Create(fullListIq, pageIndex, pageSize);
+
+            foreach (var item in listItems)
+            {
+                sumImportsVolume += item.ImportVolume;
+                sumExportsVolume += item.ExportVolume;
+                sumImportsValue += item.ImportValue;
+                sumExportsValue += item.ExportValue;
+            }
+           
+
+            var response = new IndexDataTableResponse<WarehouseKartelaLine>
+            {
+                TotalRecords = listItems.TotalCount,
+                TotalPages = listItems.TotalPages,
+                HasPrevious = listItems.HasPrevious,
+                HasNext = listItems.HasNext,
+                SumImportValue = sumImportsValue,
+                SumExportValue = sumExportsValue,
+                SumImportVolume = sumImportsVolume,
+                SumExportVolume = sumExportsVolume,
                 Data = listItems
             };
             return Ok(response);

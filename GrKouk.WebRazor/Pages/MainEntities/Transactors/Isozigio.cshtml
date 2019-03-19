@@ -285,9 +285,17 @@
             var getTableData = (pageIndex, pageSize, sortData, dateRange, companyFilter,transactorTypeFilter, searchFilter) => {
                 //#region getTableData
                 var timeout;
-
-                var uri =
-                    `/api/GrKoukInfoApi/GetIndexTblDataTransactorsBalance?pageIndex=${pageIndex}&pageSize=${pageSize}&companyFilter=${companyFilter}&transactorTypeFilter=${transactorTypeFilter}&sortData=${sortData}&searchFilter=${searchFilter}`;
+                var uri = '/api/GrKoukInfoApi/GetIndexTblDataTransactorsBalance';
+                uri += `?pageIndex=${pageIndex}`;
+                uri += `&pageSize=${pageSize}`;
+                uri += `&companyFilter=${companyFilter}`;
+                uri += `&dateRange=${dateRange}`;
+                uri += `&transactorTypeFilter=${transactorTypeFilter}`;
+               // uri += `&warehouseItemNatureFilter=${warehouseItemNatureFilter}`;
+                uri += `&sortData=${sortData}`;
+                uri += `&searchFilter=${searchFilter}`;
+               // uri += `&transactorId=${transactorId}`;
+               
                 $.ajax({
                     contentType: 'application/json; charset=utf-8',
 

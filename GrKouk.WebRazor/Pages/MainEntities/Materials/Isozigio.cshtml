@@ -226,21 +226,28 @@
                 }
                 var curSortAr = curSort.split(':');
                 switch (curSortAr[0]) {
-                case 'categorysort':
-                    if (curSortAr[1] === 'asc') {
-                        $('#CategorySortHeaderIcon').addClass('fas fa-sort-numeric-up').show();
-                    } else {
-                        $('#CategorySortHeaderIcon').addClass('fas fa-sort-numeric-down').show();
-                    }
-                    break;
-                case 'namesort':
-                    if (curSortAr[1] === 'asc') {
-                        $('#NameSortHeaderIcon').addClass('fas fa-sort-alpha-up').show();
-                    } else {
-                        $('#NameSortHeaderIcon').addClass('fas fa-sort-alpha-down').show();
-                    }
-                    break;
-                default:
+                    case 'companysort':
+                        if (curSortAr[1] === 'asc') {
+                            $('#CompanySortHeaderIcon').addClass('fas fa-sort-numeric-up').show();
+                        } else {
+                            $('#CompanySortHeaderIcon').addClass('fas fa-sort-numeric-down').show();
+                        }
+                        break;
+                    case 'categorysort':
+                        if (curSortAr[1] === 'asc') {
+                            $('#CategorySortHeaderIcon').addClass('fas fa-sort-numeric-up').show();
+                        } else {
+                            $('#CategorySortHeaderIcon').addClass('fas fa-sort-numeric-down').show();
+                        }
+                        break;
+                    case 'namesort':
+                        if (curSortAr[1] === 'asc') {
+                            $('#NameSortHeaderIcon').addClass('fas fa-sort-alpha-up').show();
+                        } else {
+                            $('#NameSortHeaderIcon').addClass('fas fa-sort-alpha-down').show();
+                        }
+                        break;
+                    default:
                 }
 
             };
@@ -264,9 +271,16 @@
             var getTableData = (pageIndex, pageSize, sortData, dateRange, companyFilter,transactorTypeFilter,warehouseItemNatureFilter, searchFilter) => {
                 //#region getTableData
                 var timeout;
-
-                var uri =
-                    `/api/GrKoukInfoApi/GetIndexTblDataWarehouseBalance?pageIndex=${pageIndex}&pageSize=${pageSize}&companyFilter=${companyFilter}&transactorTypeFilter=${transactorTypeFilter}&warehouseItemNatureFilter=${warehouseItemNatureFilter}&sortData=${sortData}&searchFilter=${searchFilter}`;
+                var uri = '/api/GrKoukInfoApi/GetIndexTblDataWarehouseBalance';
+                uri += `?pageIndex=${pageIndex}`;
+                uri += `&pageSize=${pageSize}`;
+                uri += `&companyFilter=${companyFilter}`;
+                uri += `&dateRange=${dateRange}`;
+                uri += `&transactorTypeFilter=${transactorTypeFilter}`;
+                uri += `&warehouseItemNatureFilter=${warehouseItemNatureFilter}`;
+                uri += `&sortData=${sortData}`;
+                uri += `&searchFilter=${searchFilter}`;
+                // uri += `&transactorId=${transactorId}`;
                 $.ajax({
                     contentType: 'application/json; charset=utf-8',
 
