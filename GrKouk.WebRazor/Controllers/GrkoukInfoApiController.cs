@@ -20,6 +20,7 @@ using GrKouk.WebRazor.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Remotion.Linq.Parsing.Structure.IntermediateModel;
 
 namespace GrKouk.WebRazor.Controllers
 {
@@ -1298,6 +1299,8 @@ namespace GrKouk.WebRazor.Controllers
 
             IQueryable<WarehouseTransaction> transactionsList = _context.WarehouseTransactions
                 .Where(p => p.WarehouseItemId == request.WarehouseItemId);
+            IQueryable<WarehouseTransaction> transListBeforePeriod = _context.WarehouseTransactions
+                .Where(p => p.WarehouseItemId == request.WarehouseItemId);
 
             if (!String.IsNullOrEmpty(request.SortData))
             {
@@ -1318,15 +1321,19 @@ namespace GrKouk.WebRazor.Controllers
 
                 }
             }
-           
+
+            DateTime beforePeriodDate=DateTime.Today;
             if (!String.IsNullOrEmpty(request.DateRange))
             {
                 var datePeriodFilter = request.DateRange;
                 DateFilterDates dfDates = DateFilter.GetDateFilterDates(datePeriodFilter);
                 DateTime fromDate = dfDates.FromDate;
+                beforePeriodDate = fromDate.AddDays(-1);
                 DateTime toDate = dfDates.ToDate;
 
                 transactionsList = transactionsList.Where(p => p.TransDate >= fromDate && p.TransDate <= toDate);
+                transListBeforePeriod = transListBeforePeriod.Where(p => p.TransDate < fromDate );
+
             }
             if (!String.IsNullOrEmpty(request.CompanyFilter))
             {
@@ -1335,21 +1342,58 @@ namespace GrKouk.WebRazor.Controllers
                     if (companyId > 0)
                     {
                         transactionsList = transactionsList.Where(p => p.CompanyId == companyId);
+                        transListBeforePeriod = transListBeforePeriod.Where(p => p.CompanyId == companyId);
                     }
                 }
             }
-            if (!String.IsNullOrEmpty(request.SearchFilter))
-            {
-                transactionsList = transactionsList.Where(p => p.WarehouseItem.Name.Contains(request.SearchFilter));
-            }
+           
             var dbTrans = transactionsList.ProjectTo<WarehouseTransListDto>(_mapper.ConfigurationProvider);
             var dbTransactions = await dbTrans.ToListAsync();
+           
+            var dbTransBeforePeriod = transListBeforePeriod.ProjectTo<WarehouseTransListDto>(_mapper.ConfigurationProvider);
 
+            //Create before period line
+            var bl1 =  new
+            {
+                ImportVolume = dbTransBeforePeriod.Sum(x=>x.ImportUnits),
+                ExportVolume = dbTransBeforePeriod.Sum(x => x.ExportUnits),
+                
+                ImportValue = dbTransBeforePeriod.Sum(x => x.ImportAmount),
+                ExportValue = dbTransBeforePeriod.Sum(x => x.ExportAmount)
+            };
+            var beforePeriod = new WarehouseKartelaLine();
+            
+            if (Math.Abs(bl1.ImportVolume)>Math.Abs(bl1.ExportVolume))
+            {
+                beforePeriod.ImportVolume = bl1.ImportVolume - bl1.ExportVolume;
+                beforePeriod.ExportVolume = 0;
+            }
+            else
+            {
+                beforePeriod.ImportVolume = 0;
+                beforePeriod.ExportVolume = bl1.ExportVolume - bl1.ImportVolume;
+            }
+            if  (Math.Abs( bl1.ImportValue) >Math.Abs( bl1.ExportValue))
+            {
+                beforePeriod.ImportValue = bl1.ImportValue - bl1.ExportValue;
+                beforePeriod.ExportValue = 0;
+            }
+            else
+            {
+                beforePeriod.ImportValue = 0;
+                beforePeriod.ExportValue = bl1.ExportValue - bl1.ImportValue;
+            }
+            beforePeriod.RunningTotalVolume = bl1.ImportVolume - bl1.ExportVolume;
+            beforePeriod.RunningTotalValue = bl1.ImportValue - bl1.ExportValue;
+            beforePeriod.TransDate = beforePeriodDate;
+            beforePeriod.DocSeriesCode = "Εκ.Μεταφ.";
+            beforePeriod.MaterialName = "";
+           
             var listWithTotal = new List<WarehouseKartelaLine>();
-
+            listWithTotal.Add(beforePeriod);
            // decimal runningTotal = 0;
-            decimal runningTotalVolume = 0;
-            decimal runningTotalValue = 0;
+            decimal runningTotalVolume = beforePeriod.RunningTotalVolume;
+            decimal runningTotalValue = beforePeriod.RunningTotalValue;
             foreach (var dbTransaction in dbTransactions)
             {
                 runningTotalVolume = dbTransaction.ImportUnits - dbTransaction.ExportUnits + runningTotalVolume;
@@ -1369,6 +1413,7 @@ namespace GrKouk.WebRazor.Controllers
                     ExportValue = dbTransaction.ExportAmount
                 });
             }
+           
 
             var outList = listWithTotal.AsQueryable();
             var pageIndex = request.PageIndex;
@@ -1381,7 +1426,10 @@ namespace GrKouk.WebRazor.Controllers
             decimal sumDifference = 0;
 
             IQueryable<WarehouseKartelaLine> fullListIq = from s in outList select s;
-
+            if (!String.IsNullOrEmpty(request.SearchFilter))
+            {
+                fullListIq = fullListIq.Where(p => p.MaterialName.Contains(request.SearchFilter));
+            }
             var listItems = PagedList<WarehouseKartelaLine>.Create(fullListIq, pageIndex, pageSize);
 
             foreach (var item in listItems)
