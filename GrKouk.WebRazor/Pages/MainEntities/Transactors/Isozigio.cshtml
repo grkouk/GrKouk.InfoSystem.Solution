@@ -93,13 +93,16 @@
             </label>
         </th>
         <th class="small">
-            <a href="#" id="TransactorNameHeader">
+            <a href="#" id="NameSortHeader">
                 Transactor
             </a>
-            <i class="fas fa-sort-alpha-down" id="TransactorNameHeaderIcon" name="SortIcon"></i>
+            <i class="fas fa-sort-alpha-down" id="NameSortHeaderIcon" name="SortIcon"></i>
         </th>
         <th class="small text-center d-none d-md-table-cell">
-            Company 
+            <a href="#" id="CompanySortHeader">
+                Company
+            </a>
+            <i class="fas fa-sort-alpha-down" id="CompanySortHeaderIcon" name="SortIcon"></i>
         </th>
         <th class="small text-center">
             Debit
@@ -244,18 +247,18 @@
                 }
                 var curSortAr = curSort.split(':');
                 switch (curSortAr[0]) {
-                case 'transactiondate':
+                case 'companysort':
                     if (curSortAr[1] === 'asc') {
-                        $('#TransDateHeaderIcon').addClass('fas fa-sort-numeric-up').show();
+                        $('#CompanySortHeaderIcon').addClass('fas fa-sort-numeric-up').show();
                     } else {
-                        $('#TransDateHeaderIcon').addClass('fas fa-sort-numeric-down').show();
+                        $('#CompanySortHeaderIcon').addClass('fas fa-sort-numeric-down').show();
                     }
                     break;
-                case 'transactorname':
+                case 'namesort':
                     if (curSortAr[1] === 'asc') {
-                        $('#TransactorNameHeaderIcon').addClass('fas fa-sort-alpha-up').show();
+                        $('#NameSortHeaderIcon').addClass('fas fa-sort-alpha-up').show();
                     } else {
-                        $('#TransactorNameHeaderIcon').addClass('fas fa-sort-alpha-down').show();
+                        $('#NameSortHeaderIcon').addClass('fas fa-sort-alpha-down').show();
                     }
                     break;
                 default:
@@ -716,38 +719,38 @@
                 function() {
                     gotoPreviousPage();
                 });
-            $('#TransDateHeader').on('click',
+            $('#CompanySortHeader').on('click',
                 function() {
                     var newSortVal = '';
                     var curSort = $('#currentSort').val();
                     if (curSort === undefined || curSort === null || curSort.length === 0) {
-                        curSort = 'transactiondate:desc';
+                        curSort = 'companysort:desc';
                     }
                     var curSortAr = curSort.split(':');
-                    if (curSortAr[0] === 'transactiondate') {
+                    if (curSortAr[0] === 'companysort') {
                         var newSort = curSortAr[1] === 'asc' ? 'desc' : 'asc';
                         newSortVal = curSortAr[0] + ':' + newSort;
                     } else {
-                        newSortVal = 'transactiondate:asc';
+                        newSortVal = 'companysort:asc';
                     }
                     $('#currentSort').val(newSortVal);
                     $('#pageIndex').val(1);
                     refreshTableData();
 
                 });
-            $('#TransactorNameHeader').on('click',
+            $('#NameSortHeader').on('click',
                 function() {
                     var newSortVal = '';
                     var curSort = $('#currentSort').val();
                     if (curSort === undefined || curSort === null || curSort.length === 0) {
-                        curSort = 'transactorname:desc';
+                        curSort = 'namesort:desc';
                     }
                     var curSortAr = curSort.split(':');
-                    if (curSortAr[0] === 'transactorname') {
+                    if (curSortAr[0] === 'namesort') {
                         var newSort = curSortAr[1] === 'asc' ? 'desc' : 'asc';
                         newSortVal = curSortAr[0] + ':' + newSort;
                     } else {
-                        newSortVal = 'transactorname:asc';
+                        newSortVal = 'namesort:asc';
                     }
                     $('#currentSort').val(newSortVal);
                     $('#pageIndex').val(1);

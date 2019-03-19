@@ -485,25 +485,7 @@ namespace GrKouk.WebRazor.Controllers
                     }
                 }
             }
-            if (!String.IsNullOrEmpty(request.SortData))
-            {
-                switch (request.SortData.ToLower())
-                {
-                    case "transactiondate:asc":
-                        transactionsList = transactionsList.OrderBy(p => p.TransDate);
-                        break;
-                    case "transactiondate:desc":
-                        transactionsList = transactionsList.OrderByDescending(p => p.TransDate);
-                        break;
-                    case "transactorname:asc":
-                        transactionsList = transactionsList.OrderBy(p => p.Transactor.Name);
-                        break;
-                    case "transactorname:desc":
-                        transactionsList = transactionsList.OrderByDescending(p => p.Transactor.Name);
-                        break;
-
-                }
-            }
+           
             #region CommentOut
             //if (!String.IsNullOrEmpty(request.DateRange))
             //{
@@ -607,6 +589,25 @@ namespace GrKouk.WebRazor.Controllers
             }
 
             var outList = listWithTotal.AsQueryable();
+            if (!String.IsNullOrEmpty(request.SortData))
+            {
+                switch (request.SortData.ToLower())
+                {
+                    case "companysort:asc":
+                        outList = outList.OrderBy(p => p.CompanyCode);
+                        break;
+                    case "companysort:desc":
+                        outList = outList.OrderByDescending(p => p.CompanyCode);
+                        break;
+                    case "namesort:asc":
+                        outList = outList.OrderBy(p => p.TransactorName);
+                        break;
+                    case "namesort:desc":
+                        outList = outList.OrderByDescending(p => p.TransactorName);
+                        break;
+
+                }
+            }
             var pageIndex = request.PageIndex;
 
             var pageSize = request.PageSize;
