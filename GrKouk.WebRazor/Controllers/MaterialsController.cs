@@ -147,8 +147,7 @@ namespace GrKouk.WebRazor.Controllers
             IQueryable<WarehouseItem> fullListIq = _context.WarehouseItems;
             if (sessionCompanyId != null)
             {
-                int companyId;
-                bool isInt = int.TryParse(sessionCompanyId, out companyId);
+                bool isInt = int.TryParse(sessionCompanyId, out var companyId);
                 if (isInt)
                 {
                     if (companyId>1)

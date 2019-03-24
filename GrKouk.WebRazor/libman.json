@@ -25,8 +25,14 @@
     {
       "library": "datatables@1.10.19",
       "destination": "wwwroot/lib/datatables/"
-
+    },
+    {
+      "library": "bootstrap4-duallistbox@4.0.1",
+      "destination": "wwwroot/lib/bootstrap4-duallistbox/"
+    },
+    {
+      "library": "cleave.js@1.4.10",
+      "destination": "wwwroot/lib/cleave.js/"
     }
-
   ]
 }

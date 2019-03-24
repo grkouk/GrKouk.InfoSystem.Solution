@@ -49,6 +49,9 @@ namespace GrKouk.WebApi.Data
         public DbSet<SellDocument> SellDocuments { get; set; }
         public DbSet<WarehouseItemCode> WarehouseItemsCodes { get; set; }
         public DbSet<DiaryDef> DiaryDefs { get; set; }
+        public DbSet<CashRegCategory> CashRegCategories { get; set; }
+        public DbSet<ClientProfile> ClientProfiles { get; set; }
+        public DbSet<CrCatWarehouseItem> CrCatWarehouseItems { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -160,6 +163,7 @@ namespace GrKouk.WebApi.Data
                 entity.HasOne(bd => bd.Company)
                     .WithMany()
                     .OnDelete(DeleteBehavior.Restrict);
+               
                 entity.HasOne(bd => bd.MaterialCaterory)
                     .WithMany()
                     .OnDelete(DeleteBehavior.Restrict);
@@ -359,6 +363,15 @@ namespace GrKouk.WebApi.Data
                     .WithMany()
                     .OnDelete(DeleteBehavior.Restrict);
             });
+            modelBuilder.Entity<ClientProfile>(entity =>
+            {
+               
+                entity.HasIndex(p => p.Code);
+
+                entity.HasOne(p => p.Company)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
 
             modelBuilder.Entity<WarehouseItemCode>(entity =>
             {
@@ -371,6 +384,18 @@ namespace GrKouk.WebApi.Data
                 entity.HasIndex(p => p.Code);
 
                 entity.HasOne(p => p.WarehouseItem)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+            modelBuilder.Entity<CrCatWarehouseItem>(entity =>
+            {
+                entity.HasOne(p => p.ClientProfile)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(p => p.WarehouseItem)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(p => p.CashRegCategory)
                     .WithMany()
                     .OnDelete(DeleteBehavior.Restrict);
             });

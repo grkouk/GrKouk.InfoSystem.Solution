@@ -512,7 +512,7 @@
                 $amountSum.attr('data-actualValue', sumGross);
             };
             var autoCompleteNameDef = {
-                 source: '/api/materials/SearchForMaterials',
+                source: '/api/materials/SearchWarehouseItemsForSale',
                 minLength: 2,
                 maxShowItems:10,
                 select: function(event, ui) {
@@ -521,7 +521,7 @@
                     this.value = ui.item.label;
                     //Get WarehouseItem data
                     var uri = '@Configuration.GetSection("WebApiSettings")["WebApiLocal"]';
-                    var finalUri = `${uri}/materials/materialdata?warehouseItemIdId=${ui.item.value}`;
+                    var finalUri = `${uri}/materials/materialdata?warehouseItemId=${ui.item.value}`;
 
                     console.log(finalUri);
 

@@ -102,11 +102,11 @@
                 <select asp-for="WarehouseItemVm.MaterialType" class="form-control form-control-sm small" asp-items="ViewBag.MaterialType"></select>
                 <span asp-validation-for="WarehouseItemVm.MaterialType" class="text-danger small"></span>
             </div>
-            <div class="form-group col-md-6">
+            <div class="form-group col-md-3">
                 <label asp-for="WarehouseItemVm.MaterialCategoryId" class="control-label small"></label>
                 <select asp-for="WarehouseItemVm.MaterialCategoryId" class="form-control form-control-sm small" asp-items="ViewBag.MaterialCategoryId"></select>
             </div>
-
+           
             <div class="form-group col-md-3">
                 <label asp-for="WarehouseItemVm.CompanyId" class="control-label small"></label>
                 <select asp-for="WarehouseItemVm.CompanyId" class="form-control form-control-sm small" asp-items="ViewBag.CompanyId"></select>
@@ -124,7 +124,7 @@
 
 
 <div>
-    <a asp-page="Index">Back to List</a>
+    <a class="small" asp-page="Index">Back to List</a>
 </div>
 
 @section Scripts {

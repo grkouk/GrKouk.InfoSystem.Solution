@@ -1355,7 +1355,7 @@ namespace GrKouk.WebRazor.Controllers
             //Create before period line
             var bl1 =  new
             {
-                ImportVolume = dbTransBeforePeriod.Sum(x=>x.ImportUnits),
+                ImportVolume = dbTransBeforePeriod.Sum(x => x.ImportUnits),
                 ExportVolume = dbTransBeforePeriod.Sum(x => x.ExportUnits),
                 
                 ImportValue = dbTransBeforePeriod.Sum(x => x.ImportAmount),
@@ -1426,10 +1426,16 @@ namespace GrKouk.WebRazor.Controllers
             decimal sumDifference = 0;
 
             IQueryable<WarehouseKartelaLine> fullListIq = from s in outList select s;
-            if (!String.IsNullOrEmpty(request.SearchFilter))
-            {
-                fullListIq = fullListIq.Where(p => p.MaterialName.Contains(request.SearchFilter));
-            }
+            //if (!String.IsNullOrEmpty(request.SearchFilter))
+            //{
+            //    fullListIq = fullListIq.Where(p => 
+            //        //p.MaterialName.Contains(request.SearchFilter)
+            //     p.RefCode.Contains(request.SearchFilter)
+            //    //|| p.CompanyCode.Contains(request.SearchFilter)
+            //    //|| p.TransDate.ToString().Contains(request.SearchFilter)
+            //    //|| p.DocSeriesCode.Contains(request.SearchFilter)
+            //        );
+            //}
             var listItems = PagedList<WarehouseKartelaLine>.Create(fullListIq, pageIndex, pageSize);
 
             foreach (var item in listItems)

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using GrKouk.InfoSystem.Domain.Shared;
 using GrKouk.InfoSystem.Dtos;
+using GrKouk.InfoSystem.Dtos.MobileDtos;
 using GrKouk.InfoSystem.Dtos.WebDtos;
 
 namespace GrKouk.WebApi.AutoMapper
@@ -35,6 +36,7 @@ namespace GrKouk.WebApi.AutoMapper
             CreateMap<FinDiaryTransaction, FinDiaryTransactionCreateDto>().ReverseMap();
             CreateMap<FinDiaryTransaction, FinDiaryTransactionModifyDto>().ReverseMap();
             CreateMap<FinDiaryTransaction, FinDiaryExpenceTransModifyDto>().ReverseMap();
+            CreateMap<WarehouseItem, ProductSyncDto>();
         }
     }
 }

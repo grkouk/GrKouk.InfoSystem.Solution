@@ -83,6 +83,7 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Materials
             ViewData["MaterialCategoryId"] = new SelectList(_context.MaterialCategories.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
             ViewData["SecondaryMeasureUnitId"] = new SelectList(_context.MeasureUnits.OrderBy(p => p.Code).AsNoTracking(), "Id", "Code");
             ViewData["MaterialType"] = new SelectList(materialTypes, "Value", "Text");
+           // ViewData["CashRegCategoryId"] = new SelectList(_context.CashRegCategories.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
         }
         public async Task<IActionResult> OnPostAsync()
         {

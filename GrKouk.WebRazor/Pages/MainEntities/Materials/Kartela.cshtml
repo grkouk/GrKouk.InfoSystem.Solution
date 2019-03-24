@@ -764,11 +764,23 @@
                     } else {
                         icon.addClass("fa-search").removeClass("fa-times");
                         $('.search_input').val('');
+                        $('td').css("background-color",''); 
                     }
 
                     refreshTableData();
                 });
-
+            $('.search_input').keyup(function() {
+                $('td').css("background-color", ''); 
+                icon = $('.search_icon').find("svg");
+                var value = $(this).val();
+                if (value != null && value.length > 0) {
+                    $('td:contains("' + value + '")').css("background-color", 'bisque');
+                    icon.addClass("fa-times").removeClass("fa-search");
+                } else {
+                    icon.addClass("fa-search").removeClass("fa-times");
+                }
+               
+            });
             $('#FiltersForm').on('submit',function(e) {
                     e.preventDefault();
                     var $icon = $('.search_icon').find("svg");

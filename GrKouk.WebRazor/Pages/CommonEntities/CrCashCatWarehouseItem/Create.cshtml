@@ -1,0 +1,63 @@
+﻿@page
+@model GrKouk.WebRazor.Pages.CommonEntities.CrCashCatWarehouseItem.CreateModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+@section MyCss
+{
+    <link rel="stylesheet" type="text/css" href="~/lib/bootstrap4-duallistbox/bootstrap-duallistbox.min.css" />
+}
+<h2>Create</h2>
+
+<h4>ItemVm</h4>
+<hr />
+<div class="container">
+    <form method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-row">
+
+
+            <div class="form-group col-md-3">
+                <label asp-for="ItemVm.ClientProfileId" class="control-label small"></label>
+                <select asp-for="ItemVm.ClientProfileId" class="form-control form-control-sm small" asp-items="ViewBag.ClientProfileId"></select>
+                <span asp-validation-for="ItemVm.ClientProfileId" class="text-danger small"></span>
+            </div>
+
+            <div class="form-group col-md-3">
+                <label asp-for="ItemVm.CashRegCategoryId" class="control-label small"></label>
+                <select asp-for="ItemVm.CashRegCategoryId" class="form-control form-control-sm" asp-items="ViewBag.CashRegCategoryId"></select>
+            </div>
+        </div>
+        <div class="form-row">
+          
+            <div class="form-group col-md-12">
+                <label asp-for="ItemVm.WarehouseItemId" class="control-label small"></label>
+                <select name="ProductsListBox" class="form-control form-control-sm" asp-items="ViewBag.WarehouseItemId"></select>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary btn-sm" />
+            </div>
+        </div>
+    </form>
+</div>
+
+
+<div>
+    <a class="small" asp-page="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/lib/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            var demo = $('[name=ProductsListBox]').bootstrapDualListbox({
+                nonSelectedListLabel: 'Non-selected',
+                selectedListLabel: 'Selected'
+            });
+        });
+    </script>
+}
