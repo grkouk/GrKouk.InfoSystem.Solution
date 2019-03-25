@@ -163,7 +163,7 @@ namespace GrKouk.WebApi.Data
                 entity.HasOne(bd => bd.Company)
                     .WithMany()
                     .OnDelete(DeleteBehavior.Restrict);
-               
+
                 entity.HasOne(bd => bd.MaterialCaterory)
                     .WithMany()
                     .OnDelete(DeleteBehavior.Restrict);
@@ -365,7 +365,7 @@ namespace GrKouk.WebApi.Data
             });
             modelBuilder.Entity<ClientProfile>(entity =>
             {
-               
+
                 entity.HasIndex(p => p.Code);
 
                 entity.HasOne(p => p.Company)
@@ -389,6 +389,13 @@ namespace GrKouk.WebApi.Data
             });
             modelBuilder.Entity<CrCatWarehouseItem>(entity =>
             {
+                entity.HasIndex(p => new
+                {
+                    p.ClientProfileId,
+                    p.CashRegCategoryId,
+                    p.WarehouseItemId
+                })
+                    .IsUnique();
                 entity.HasOne(p => p.ClientProfile)
                     .WithMany()
                     .OnDelete(DeleteBehavior.Restrict);

@@ -10,6 +10,7 @@ using GrKouk.InfoSystem.Domain.Shared;
 using GrKouk.InfoSystem.Dtos;
 using GrKouk.InfoSystem.Dtos.WebDtos;
 using GrKouk.InfoSystem.Dtos.WebDtos.BuyDocuments;
+using GrKouk.InfoSystem.Dtos.WebDtos.CashRegister;
 using GrKouk.InfoSystem.Dtos.WebDtos.DiaryTransactions;
 using GrKouk.InfoSystem.Dtos.WebDtos.SellDocuments;
 using GrKouk.InfoSystem.Dtos.WebDtos.TransactorTransactions;
@@ -28,6 +29,14 @@ namespace GrKouk.WebRazor.Controllers
     {
         public string Section { get; set; }
         public List<int> Ids { get; set; }
+    }
+
+    public class CashCategoriesProductsRequest
+    {
+        public int ClientProfileId { get; set; }
+        public int CashRegCategoryId { get; set; }
+        public List<int> ProductIdList { get; set; }
+
     }
     [Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
@@ -486,7 +495,7 @@ namespace GrKouk.WebRazor.Controllers
                     }
                 }
             }
-           
+
             #region CommentOut
             //if (!String.IsNullOrEmpty(request.DateRange))
             //{
@@ -665,9 +674,9 @@ namespace GrKouk.WebRazor.Controllers
                     }
                 }
             }
-           
-           
-           
+
+
+
             if (!String.IsNullOrEmpty(request.CompanyFilter))
             {
                 if (Int32.TryParse(request.CompanyFilter, out var companyId))
@@ -739,7 +748,7 @@ namespace GrKouk.WebRazor.Controllers
                     break;
             }
 
-           
+
             var listWithTotal = new List<WarehouseKartelaLine>();
             decimal runningTotalVolume = 0;
             decimal runningTotalValue = 0;
@@ -768,8 +777,8 @@ namespace GrKouk.WebRazor.Controllers
                     ExportValue = dbTransaction.ExportValue
                 });
             }
-           
-           
+
+
 
             var outList = listWithTotal.AsQueryable();
             if (!String.IsNullOrEmpty(request.SortData))
@@ -817,7 +826,7 @@ namespace GrKouk.WebRazor.Controllers
                 sumImportsValue += item.ImportValue;
                 sumExportsValue += item.ExportValue;
             }
-           
+
             var response = new IndexDataTableResponse<WarehouseKartelaLine>
             {
                 TotalRecords = listItems.TotalCount,
@@ -929,7 +938,7 @@ namespace GrKouk.WebRazor.Controllers
                 {
                     if (warehouseItemNatureFilter > 0)
                     {
-                        fullListIq = fullListIq.Where(p => p.WarehouseItemNature == (WarehouseItemNatureEnum) warehouseItemNatureFilter);
+                        fullListIq = fullListIq.Where(p => p.WarehouseItemNature == (WarehouseItemNatureEnum)warehouseItemNatureFilter);
                     }
                 }
             }
@@ -1000,7 +1009,7 @@ namespace GrKouk.WebRazor.Controllers
                 TotalPages = listItems.TotalPages,
                 HasPrevious = listItems.HasPrevious,
                 HasNext = listItems.HasNext,
-               // Diaries = relevantDiarys,
+                // Diaries = relevantDiarys,
                 Data = listItems
             };
             return Ok(response);
@@ -1029,7 +1038,7 @@ namespace GrKouk.WebRazor.Controllers
         [HttpGet("GetIndexTblDataTransactorDiary")]
         public async Task<IActionResult> GetIndexTblDataTransactorDiary([FromQuery] IndexDataTableRequest request)
         {
-            if (request.DiaryId<=0)
+            if (request.DiaryId <= 0)
             {
                 return BadRequest(new
                 {
@@ -1057,7 +1066,7 @@ namespace GrKouk.WebRazor.Controllers
                 var docTypes = Array.ConvertAll(diaryDef.SelectedDocTypes.Split(","), int.Parse);
                 transactionsList = transactionsList.Where(p => docTypes.Contains(p.TransTransactorDocTypeId));
             }
-           
+
             if (!String.IsNullOrEmpty(request.SortData))
             {
                 switch (request.SortData.ToLower())
@@ -1147,7 +1156,7 @@ namespace GrKouk.WebRazor.Controllers
 
             IQueryable<TransactorTransaction> transactionsList = _context.TransactorTransactions
                 .Where(p => p.TransactorId == request.TransactorId);
-           
+
             if (!String.IsNullOrEmpty(request.SortData))
             {
                 switch (request.SortData.ToLower())
@@ -1194,7 +1203,7 @@ namespace GrKouk.WebRazor.Controllers
             }
             var dbTrans = transactionsList.ProjectTo<TransactorTransListDto>(_mapper.ConfigurationProvider);
             var dbTransactions = await dbTrans.ToListAsync();
-           
+
             var listWithTotal = new List<KartelaLine>();
 
             decimal runningTotal = 0;
@@ -1203,7 +1212,7 @@ namespace GrKouk.WebRazor.Controllers
                 switch (transactorType.Code)
                 {
                     case "SYS.DTRANSACTOR":
-                       
+
                         break;
                     case "SYS.CUSTOMER":
                         runningTotal = dbTransaction.DebitAmount - dbTransaction.CreditAmount;
@@ -1262,7 +1271,7 @@ namespace GrKouk.WebRazor.Controllers
                     sumDifference = sumCredit - sumDebit;
                     break;
             }
-           
+
             var response = new IndexDataTableResponse<KartelaLine>
             {
                 TotalRecords = listItems.TotalCount,
@@ -1295,7 +1304,7 @@ namespace GrKouk.WebRazor.Controllers
                     Error = "warehouse Item not found"
                 });
             }
-           // var transactorType = await _context.TransactorTypes.Where(c => c.Id == warehouseItem.TransactorTypeId).FirstOrDefaultAsync();
+            // var transactorType = await _context.TransactorTypes.Where(c => c.Id == warehouseItem.TransactorTypeId).FirstOrDefaultAsync();
 
             IQueryable<WarehouseTransaction> transactionsList = _context.WarehouseTransactions
                 .Where(p => p.WarehouseItemId == request.WarehouseItemId);
@@ -1322,7 +1331,7 @@ namespace GrKouk.WebRazor.Controllers
                 }
             }
 
-            DateTime beforePeriodDate=DateTime.Today;
+            DateTime beforePeriodDate = DateTime.Today;
             if (!String.IsNullOrEmpty(request.DateRange))
             {
                 var datePeriodFilter = request.DateRange;
@@ -1332,7 +1341,7 @@ namespace GrKouk.WebRazor.Controllers
                 DateTime toDate = dfDates.ToDate;
 
                 transactionsList = transactionsList.Where(p => p.TransDate >= fromDate && p.TransDate <= toDate);
-                transListBeforePeriod = transListBeforePeriod.Where(p => p.TransDate < fromDate );
+                transListBeforePeriod = transListBeforePeriod.Where(p => p.TransDate < fromDate);
 
             }
             if (!String.IsNullOrEmpty(request.CompanyFilter))
@@ -1346,24 +1355,24 @@ namespace GrKouk.WebRazor.Controllers
                     }
                 }
             }
-           
+
             var dbTrans = transactionsList.ProjectTo<WarehouseTransListDto>(_mapper.ConfigurationProvider);
             var dbTransactions = await dbTrans.ToListAsync();
-           
+
             var dbTransBeforePeriod = transListBeforePeriod.ProjectTo<WarehouseTransListDto>(_mapper.ConfigurationProvider);
 
             //Create before period line
-            var bl1 =  new
+            var bl1 = new
             {
                 ImportVolume = dbTransBeforePeriod.Sum(x => x.ImportUnits),
                 ExportVolume = dbTransBeforePeriod.Sum(x => x.ExportUnits),
-                
+
                 ImportValue = dbTransBeforePeriod.Sum(x => x.ImportAmount),
                 ExportValue = dbTransBeforePeriod.Sum(x => x.ExportAmount)
             };
             var beforePeriod = new WarehouseKartelaLine();
-            
-            if (Math.Abs(bl1.ImportVolume)>Math.Abs(bl1.ExportVolume))
+
+            if (Math.Abs(bl1.ImportVolume) > Math.Abs(bl1.ExportVolume))
             {
                 beforePeriod.ImportVolume = bl1.ImportVolume - bl1.ExportVolume;
                 beforePeriod.ExportVolume = 0;
@@ -1373,7 +1382,7 @@ namespace GrKouk.WebRazor.Controllers
                 beforePeriod.ImportVolume = 0;
                 beforePeriod.ExportVolume = bl1.ExportVolume - bl1.ImportVolume;
             }
-            if  (Math.Abs( bl1.ImportValue) >Math.Abs( bl1.ExportValue))
+            if (Math.Abs(bl1.ImportValue) > Math.Abs(bl1.ExportValue))
             {
                 beforePeriod.ImportValue = bl1.ImportValue - bl1.ExportValue;
                 beforePeriod.ExportValue = 0;
@@ -1388,10 +1397,10 @@ namespace GrKouk.WebRazor.Controllers
             beforePeriod.TransDate = beforePeriodDate;
             beforePeriod.DocSeriesCode = "Εκ.Μεταφ.";
             beforePeriod.MaterialName = "";
-           
+
             var listWithTotal = new List<WarehouseKartelaLine>();
             listWithTotal.Add(beforePeriod);
-           // decimal runningTotal = 0;
+            // decimal runningTotal = 0;
             decimal runningTotalVolume = beforePeriod.RunningTotalVolume;
             decimal runningTotalValue = beforePeriod.RunningTotalValue;
             foreach (var dbTransaction in dbTransactions)
@@ -1413,7 +1422,7 @@ namespace GrKouk.WebRazor.Controllers
                     ExportValue = dbTransaction.ExportAmount
                 });
             }
-           
+
 
             var outList = listWithTotal.AsQueryable();
             var pageIndex = request.PageIndex;
@@ -1445,7 +1454,7 @@ namespace GrKouk.WebRazor.Controllers
                 sumImportsValue += item.ImportValue;
                 sumExportsValue += item.ExportValue;
             }
-           
+
 
             var response = new IndexDataTableResponse<WarehouseKartelaLine>
             {
@@ -1460,6 +1469,136 @@ namespace GrKouk.WebRazor.Controllers
                 Data = listItems
             };
             return Ok(response);
+        }
+        [HttpGet("GetIndexTblDataCashRegCategoryProductItems")]
+        public async Task<IActionResult> GetIndexTblDataCashRegCategoryProductItems([FromQuery] IndexDataTableRequest request)
+        {
+            IQueryable<CrCatWarehouseItem> fullListIq = _context.CrCatWarehouseItems;
+
+            if (!String.IsNullOrEmpty(request.CashRegCategoryFilter))
+            {
+                if (Int32.TryParse(request.CashRegCategoryFilter, out var cashRegCategoryId))
+                {
+                    if (cashRegCategoryId > 0)
+                    {
+                        fullListIq = fullListIq.Where(p => p.CashRegCategoryId == cashRegCategoryId);
+                    }
+                }
+            }
+            if (!String.IsNullOrEmpty(request.ClientProfileFilter))
+            {
+                if (Int32.TryParse(request.ClientProfileFilter, out var clientProfileId))
+                {
+                    if (clientProfileId > 0)
+                    {
+                        fullListIq = fullListIq.Where(p => p.ClientProfileId == clientProfileId);
+                    }
+                }
+            }
+            if (!String.IsNullOrEmpty(request.CompanyFilter))
+            {
+                if (Int32.TryParse(request.CompanyFilter, out var companyId))
+                {
+                    if (companyId > 0)
+                    {
+                        fullListIq = fullListIq.Where(p => p.ClientProfile.CompanyId == companyId);
+                    }
+                }
+            }
+            if (!String.IsNullOrEmpty(request.SortData))
+            {
+                switch (request.SortData.ToLower())
+                {
+
+                    case "namesort:asc":
+                        fullListIq = fullListIq.OrderBy(p => p.WarehouseItem.Name);
+                        break;
+                    case "namesort:desc":
+                        fullListIq = fullListIq.OrderByDescending(p => p.WarehouseItem.Name);
+                        break;
+                    case "categorysort:asc":
+                        fullListIq = fullListIq.OrderBy(p => p.CashRegCategory.Name);
+                        break;
+                    case "categorysort:desc":
+                        fullListIq = fullListIq.OrderByDescending(p => p.CashRegCategory.Name);
+                        break;
+                }
+            }
+
+           
+            if (!String.IsNullOrEmpty(request.SearchFilter))
+            {
+                fullListIq = fullListIq.Where(p => p.WarehouseItem.Name.Contains(request.SearchFilter)
+                                                   || p.ClientProfile.Name.Contains(request.SearchFilter)
+                                                   || p.CashRegCategory.Name.Contains(request.SearchFilter)
+                                                   || p.ClientProfile.Company.Code.Contains(request.SearchFilter)
+                                                   );
+            }
+            var projectedList = fullListIq.ProjectTo<CashRegCatProductListDto>(_mapper.ConfigurationProvider);
+            var pageIndex = request.PageIndex;
+
+            var pageSize = request.PageSize;
+
+            var listItems = await PagedList<CashRegCatProductListDto>.CreateAsync(projectedList, pageIndex, pageSize);
+            var response = new IndexDataTableResponse<CashRegCatProductListDto>
+            {
+                TotalRecords = listItems.TotalCount,
+                TotalPages = listItems.TotalPages,
+                HasPrevious = listItems.HasPrevious,
+                HasNext = listItems.HasNext,
+                Data = listItems
+            };
+            return Ok(response);
+        }
+        [HttpPost("AssignProductsToCashCategory")]
+        public async Task<IActionResult> AssignProductsToCashCategory([FromBody] CashCategoriesProductsRequest request)
+        {
+            //Thread.Sleep(1500);
+            if (request.ProductIdList == null)
+            {
+                return BadRequest(new { Message = "Nothing to add" });
+            }
+
+            using (var transaction = _context.Database.BeginTransaction())
+            {
+                foreach (var itemId in request.ProductIdList)
+                {
+                    var b = await _context.CrCatWarehouseItems.SingleOrDefaultAsync(p =>
+                        p.ClientProfileId == request.ClientProfileId &&
+                        p.CashRegCategoryId == request.CashRegCategoryId &&
+                        p.WarehouseItemId == itemId);
+                    if (b == null)
+                    {
+                        var itemToAdd = new CrCatWarehouseItem()
+                        {
+                            ClientProfileId = request.ClientProfileId,
+                            CashRegCategoryId = request.CashRegCategoryId,
+                            WarehouseItemId = itemId
+                        };
+                        await _context.CrCatWarehouseItems.AddAsync(itemToAdd);
+                    }
+                }
+
+                try
+                {
+                    var toAddCount = _context.ChangeTracker.Entries().Count(x => x.State == EntityState.Added);
+                    // throw new Exception("Test error");
+                    var addedCount = await _context.SaveChangesAsync();
+                    transaction.Commit();
+                    string message = $"Procedure completed";
+                    return Ok(new { message });
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    transaction.Rollback();
+                    //throw;
+                    return NotFound(new
+                    {
+                        Error = e.Message
+                    });
+                }
+            }
         }
     }
 

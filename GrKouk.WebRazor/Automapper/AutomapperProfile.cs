@@ -8,6 +8,7 @@ using GrKouk.InfoSystem.Domain.Shared;
 using GrKouk.InfoSystem.Dtos;
 using GrKouk.InfoSystem.Dtos.WebDtos;
 using GrKouk.InfoSystem.Dtos.WebDtos.BuyDocuments;
+using GrKouk.InfoSystem.Dtos.WebDtos.CashRegister;
 using GrKouk.InfoSystem.Dtos.WebDtos.CustomerTransactions;
 using GrKouk.InfoSystem.Dtos.WebDtos.Diaries;
 using GrKouk.InfoSystem.Dtos.WebDtos.SellDocuments;
@@ -93,6 +94,8 @@ namespace GrKouk.WebRazor.Automapper
             CreateMap<TransactorTransCreateDto, SellDocModifyAjaxDto>().ReverseMap();
             CreateMap<DiaryDto, DiaryDef>().ReverseMap();
             CreateMap<DiaryModifyDto, DiaryDef>().ReverseMap();
+            CreateMap<CrCatWarehouseItem, CashRegCatProductListDto>()
+                .ForMember(dest => dest.CompanyCode, opt => opt.MapFrom(src => src.ClientProfile.Company.Code));
 
             //CreateMap<BuyDocTypeDef, DiaryDocTypeItem>()
             //    .ForMember(dest => dest.Value, opt => opt.MapFrom(src => src.Id))
