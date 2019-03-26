@@ -119,6 +119,7 @@
   <ItemGroup>
     <Folder Include="Areas\Identity\Services\" />
     <Folder Include="wwwroot\lib\multiselectListbox\" />
+    <Folder Include="wwwroot\productImages\" />
   </ItemGroup>
 
 </Project>

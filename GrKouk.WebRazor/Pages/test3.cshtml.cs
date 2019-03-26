@@ -1,36 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using GrKouk.WebApi.Data;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace GrKouk.WebRazor.Controllers
+namespace GrKouk.WebRazor.Pages
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class PictureController : ControllerBase
+    public class test3Model : PageModel
     {
         private readonly ApiDbContext _context;
         private readonly IHostingEnvironment _hostingEnvironment;
 
-        public PictureController(ApiDbContext context,IHostingEnvironment hostingEnvironment )
+        public test3Model(ApiDbContext context, IHostingEnvironment hostingEnvironment)
         {
             _context = context;
             _hostingEnvironment = hostingEnvironment;
         }
-        [HttpPost]
-        [AllowAnonymous]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> UploadFilesAjax()
+        public void OnGet()
         {
-            //< init >
 
+        }
+        public async Task<IActionResult> OnPostAsync()
+        {
             long uploadedSize = 0;
 
             string pathForUploadedFiles = _hostingEnvironment.WebRootPath + "\\productImages\\";
@@ -59,12 +54,13 @@ namespace GrKouk.WebRazor.Controllers
                     await uploadedFile.CopyToAsync(stream);
                 }
             }
+            return new JsonResult(listFiles);
+        }
 
-            //------</ @Loop: Uploaded Files >------
-
-
-
-            return new JsonResult (listFiles);
+        public async Task<IActionResult> OnPostDelete()
+        {
+            var uploaded_files = Request.Form.Files;
+            return new JsonResult("Ok");
         }
     }
 }
