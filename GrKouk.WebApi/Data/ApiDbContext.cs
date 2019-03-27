@@ -1,4 +1,5 @@
 ﻿using GrKouk.InfoSystem.Domain.FinConfig;
+using GrKouk.InfoSystem.Domain.MediaEntities;
 using GrKouk.InfoSystem.Domain.Shared;
 
 using Microsoft.EntityFrameworkCore;
@@ -52,6 +53,8 @@ namespace GrKouk.WebApi.Data
         public DbSet<CashRegCategory> CashRegCategories { get; set; }
         public DbSet<ClientProfile> ClientProfiles { get; set; }
         public DbSet<CrCatWarehouseItem> CrCatWarehouseItems { get; set; }
+        public DbSet<MediaEntry> MediaEntries { get; set; }
+        public DbSet<ProductMedia> ProductMedia { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -405,6 +408,22 @@ namespace GrKouk.WebApi.Data
                 entity.HasOne(p => p.CashRegCategory)
                     .WithMany()
                     .OnDelete(DeleteBehavior.Restrict);
+            });
+            modelBuilder.Entity<ProductMedia>(entity =>
+            {
+                entity.HasIndex(p => new
+                    {
+                        p.ProductId,
+                        p.MediaEntryId
+                    })
+                    .IsUnique();
+                entity.HasOne(p => p.Product)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(p => p.MediaEntry)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+
             });
 
         }

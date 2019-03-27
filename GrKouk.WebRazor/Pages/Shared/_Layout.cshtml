@@ -33,7 +33,7 @@
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
                     <a class="nav-link" asp-page="/Index">Home</a>
-                    <a class="nav-link" asp-page="/Test3">Image Uploader</a>
+                    @*<a class="nav-link" asp-page="/Test3">Image Uploader</a>*@
                 </li>
                
                 @if (User.IsInRole("Admin"))
@@ -64,6 +64,8 @@
                             Configuration
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                            <a class="dropdown-item" asp-page="/MediaMng/index">Media</a>
+                            <a class="dropdown-item" asp-page="/MediaMng/index">Media</a>
                             <a class="dropdown-item" asp-page="/commonentities/CashRegCategories/index">Cash Register Categories</a>
                             <a class="dropdown-item" asp-page="/commonentities/ClientProfiles/index">Client Profiles</a>
                             <a class="dropdown-item" asp-page="/commonentities/CrCashCatWarehouseItem/index">Cash Cat Wareh Item</a>

@@ -1,7 +1,8 @@
 ﻿@page
-@model GrKouk.WebRazor.Pages.test3Model
+@model GrKouk.WebRazor.Pages.MediaMng.CreateModel
+
 @{
-    ViewData["Title"] = "test3";
+    ViewData["Title"] = "Create";
 }
 @section MyCss
 {
@@ -9,14 +10,18 @@
     <link href="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css" rel="stylesheet">
     @*<link href="https://unpkg.com/filepond-plugin-image-edit/dist/filepond-plugin-image-edit.css" rel="stylesheet">*@
 }
-<h2>test3</h2>
+
+<h2>Create</h2>
+
+<h4>MediaEntry</h4>
+<hr />
 
 <div class="container">
     <form method="post" enctype="multipart/form-data">
         <div class="form-row">
             <input type="file" class="col-3 my-pond" name="filepond" />
         </div>
-</form>
+    </form>
 </div>
 @section Scripts
 {
@@ -59,7 +64,7 @@
                 styleButtonProcessItemPosition: 'right bottom',
                 server: {
                     process: {
-                        url: 'test3',
+                        url: 'create',
                         method: 'POST',
                         headers: {
                             'RequestVerificationToken': $('[name=__RequestVerificationToken]').val()
@@ -69,17 +74,11 @@
                         onerror: null,
                         ondata: null
                     },
-                    load: 'test3',
+                    load: 'create',
                     fetch: null,
                     revert: null
                 }
             });
-
-
-
-
-
-
         });
     </script>
 }

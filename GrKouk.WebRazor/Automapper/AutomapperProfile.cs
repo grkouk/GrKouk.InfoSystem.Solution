@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using GrKouk.InfoSystem.Domain.FinConfig;
+using GrKouk.InfoSystem.Domain.MediaEntities;
 using GrKouk.InfoSystem.Domain.Shared;
 using GrKouk.InfoSystem.Dtos;
 using GrKouk.InfoSystem.Dtos.WebDtos;
@@ -11,6 +12,7 @@ using GrKouk.InfoSystem.Dtos.WebDtos.BuyDocuments;
 using GrKouk.InfoSystem.Dtos.WebDtos.CashRegister;
 using GrKouk.InfoSystem.Dtos.WebDtos.CustomerTransactions;
 using GrKouk.InfoSystem.Dtos.WebDtos.Diaries;
+using GrKouk.InfoSystem.Dtos.WebDtos.Media;
 using GrKouk.InfoSystem.Dtos.WebDtos.SellDocuments;
 using GrKouk.InfoSystem.Dtos.WebDtos.TransactorTransactions;
 using GrKouk.InfoSystem.Dtos.WebDtos.WarehouseItems;
@@ -96,7 +98,7 @@ namespace GrKouk.WebRazor.Automapper
             CreateMap<DiaryModifyDto, DiaryDef>().ReverseMap();
             CreateMap<CrCatWarehouseItem, CashRegCatProductListDto>()
                 .ForMember(dest => dest.CompanyCode, opt => opt.MapFrom(src => src.ClientProfile.Company.Code));
-
+            CreateMap<MediaEntry, MediaEntryDto>();
             //CreateMap<BuyDocTypeDef, DiaryDocTypeItem>()
             //    .ForMember(dest => dest.Value, opt => opt.MapFrom(src => src.Id))
             //    .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Name));

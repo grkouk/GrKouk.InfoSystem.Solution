@@ -166,4 +166,10 @@ namespace GrKouk.InfoSystem.Definitions
         [Description("Decrease")]
         InfoEntityActionEnumDecrease = 3,
     }
+    public enum PictureEntityEnum
+    {
+        [Description("Product")]
+        PictureEntityEnumProduct = 1
+        
+    }
 }
