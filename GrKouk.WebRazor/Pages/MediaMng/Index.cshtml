@@ -6,6 +6,8 @@
 }
 @section MyCss
 {
+
+    <link rel="stylesheet" href="~/css/search-modal.css" />
     <link rel="stylesheet" href="~/css/custom-checkbox.css" />
     <link rel="stylesheet" href="~/css/searchbar.css" />
 }
@@ -73,7 +75,6 @@
         </div>
     </form>
 </div>
-
 
 <br />
 <table class="table table-bordered table-sm" id="myTable">
@@ -156,7 +157,7 @@
 </div>
 
 <!-- Modal Image Viewer -->
-<div class="modal fade" id="imageViewer" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="imageViewer" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
     <div class="modal-dialog " role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -166,7 +167,7 @@
                 </button>
             </div>
             <div class="modal-body text-center">
-                <img id="imageControl" src="" style="height:400px;width:400px;"/>
+                <img id="imageControl" src="" style="height:400px;width:400px;" />
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -176,9 +177,86 @@
     </div>
 </div>
 
+<!-- Modal product selector -->
+<div class="modal fade" id="productSelector" tabindex="-1" role="dialog" aria-labelledby="productModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" style="overflow-y: scroll; max-height:85%;  margin-top: 50px; margin-bottom:50px;" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="container-fluid">
+                    <div class="form-row">
+                        <div class="col-12">
+                            <h5 class="modal-title" id="productModalLabel">Products</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-12">
+                            <form class="form-inline">
+                                <input class="form-control form-control-sm" name="productSearch" placeholder="Search text" type="text" />
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body ">
+                <div class="container-fluid">
+                    
+                    <div class="row">
+                        <div class="col-12">
+                            <table class="table table-bordered table-sm" id="productsList">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th class="small">
+                                            Product
+                                        </th>
+
+                                        <th class="small">
+                                            col 2
+                                        </th>
+                                        <th></th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    @for (int i = 0; i < 100; i++)
+                                    {
+                                        <tr>
+                                            <td>Col 1 sdjhfkjshdfkshdf ksh dfkshf </td>
+                                            <td>Col 2 </td>
+                                            <td>Col 3 </td>
+                                            <td>Col 4 </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 @section Scripts {
+   
     <script>
-        $(document).ready(function () {
+    $(document).ready(function () {
+        
             var currentCulture = '@System.Globalization.CultureInfo.CurrentCulture';
            // currentCulture = 'el-GR';
             var formatterCurrency = new Intl.NumberFormat(currentCulture,
@@ -327,10 +405,11 @@
                                 var urlNewLikeThis = `@Url.Page("./Create")?copyFromId=${itemId}`;
                                 var urlKartela = `@Url.Page("./Kartela")?warehouseItemId=${itemId}`;
                                 var actionsCol = '<td class="small text-center d-none d-md-table-cell">';
-                                actionsCol += `<a href="${urlEdit}"><i class="fas fa-edit fa-lg" style="color:slategray"></i></a> |`;
-                                actionsCol += `<a href="${urlInfo}"><i class="fas fa-info-circle fa-lg" style="color:slategray"></i></a> | `;
+                                actionsCol += `<a href="#" data-izimodal-open="#productIziModal" data-izimodal-transitionin="fadeInDown" ><i class="fas fa-info-circle fa-lg" style="color:slategray"></i></a> | `;
+                                actionsCol += `<a href="#" role="button" data-toggle="modal" data-target="#productSelector"><i class="fas fa-info-circle fa-lg" style="color:slategray"></i></a> | `;
+                               // actionsCol += `<a href="${urlInfo}"><i class="fas fa-info-circle fa-lg" style="color:slategray"></i></a> | `;
                                 actionsCol += `<a href="${urlDel}"><i class="fas fa-trash fa-lg" style="color:slategray"></i></a> | `;
-                                actionsCol += `<a href="${urlNewLikeThis}"><i class="fas fa-clone fa-lg" style="color:slategray"></i> | </a> `;
+
                                 actionsCol += '<a class=" dropdown-toggle" role="button" id="dropdownMenuButton"';
                                 actionsCol += 'data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">';
                                 actionsCol += '<i class="fas fa-bars" style="color:slategray"></i></a>';
@@ -343,8 +422,6 @@
                                 actionColMobile +='<a class=" dropdown-toggle" role="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" ';
                                 actionColMobile +='aria-expanded="false"><i class="fas fa-bars fa-lg" style="color:slategray"></i></a>';
                                 actionColMobile +='<div class="dropdown-menu small" aria-labelledby="dropdownMenuButton">';
-                                actionColMobile += `<a class="dropdown-item" href="${urlEdit}">`;
-                                actionColMobile +=  '<i class="fas fa-edit fa-lg" style = "color:slategray" ></i> Edit</a>';
                                 actionColMobile += `<a class="dropdown-item" href="${urlInfo}">`;
                                 actionColMobile += '<i class="fas fa-info-circle fa-lg" style = "color:slategray" ></i> Details</a>';
                                 actionColMobile += `<a class="dropdown-item" href="${urlDel}">`;
