@@ -5,13 +5,13 @@
     ViewData["Title"] = "WarehouseItems List";
 }
 @section MyCss
-{
+    {
 
     <link rel="stylesheet" href="~/css/search-modal.css" />
     <link rel="stylesheet" href="~/css/custom-checkbox.css" />
     <link rel="stylesheet" href="~/css/searchbar.css" />
 }
-<h4>Cash register Categories Products </h4>
+<h4>Media Index </h4>
 <div class="container ">
     <ul class="nav small justify-content-end ">
         <li class="nav-item">
@@ -194,7 +194,7 @@
                     <div class="form-row">
                         <div class="col-12">
                             <form class="form-inline">
-                                <input class="form-control form-control-sm" name="productSearch" placeholder="Search text" type="text" />
+                                <input class="form-control form-control-sm" name="productSearchText" placeholder="Search text" type="text" />
                             </form>
                         </div>
 
@@ -203,7 +203,6 @@
             </div>
             <div class="modal-body ">
                 <div class="container-fluid">
-                    
                     <div class="row">
                         <div class="col-12">
                             <table class="table table-bordered table-sm" id="productsList">
@@ -212,7 +211,6 @@
                                         <th class="small">
                                             Product
                                         </th>
-
                                         <th class="small">
                                             col 2
                                         </th>
@@ -220,28 +218,11 @@
                                         <th></th>
                                     </tr>
                                 </thead>
-                                <tbody>
-
-                                    @for (int i = 0; i < 100; i++)
-                                    {
-                                        <tr>
-                                            <td>Col 1 sdjhfkjshdfkshdf ksh dfkshf </td>
-                                            <td>Col 2 </td>
-                                            <td>Col 3 </td>
-                                            <td>Col 4 </td>
-                                        </tr>
-                                    }
-                                </tbody>
+                                <tbody></tbody>
                             </table>
                         </div>
-
                     </div>
-
-
                 </div>
-
-
-
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -253,10 +234,10 @@
 
 
 @section Scripts {
-   
+
     <script>
     $(document).ready(function () {
-        
+
             var currentCulture = '@System.Globalization.CultureInfo.CurrentCulture';
            // currentCulture = 'el-GR';
             var formatterCurrency = new Intl.NumberFormat(currentCulture,
@@ -332,7 +313,8 @@
                     $checkAllRows.prop('checked', false);
                 }
             };
-            var getTableData = (pageIndex, pageSize, sortData, dateRange, companyFilter,cashRegCategoryFilter,clientProfileFilter, searchFilter) => {
+
+        var getTableData = (pageIndex, pageSize, sortData, dateRange, companyFilter, cashRegCategoryFilter, clientProfileFilter, searchFilter) => {
                 //#region getTableData
                 var timeout;
                 var uri = '/api/GrKoukInfoApi/GetIndexTblDataMediaEntryItems';
@@ -660,7 +642,6 @@
                     deleteSelectedRows();
                 });
 
-
             $filterCollapse.on('hidden.bs.collapse',
                 function() {
                     console.log('Filters Hidden');
@@ -715,7 +696,117 @@
                     $rowSelectorsToggle.text('Show Row Selectors');
                     $selectedRowsActionsMenu.attr('hidden', 'true');
                 }
-            };
+        };
+        //---------------------
+        var getProductsSelectorList = (searchFilter, pageSize) => {
+            console.log("Inside getProductsSelectorList");
+            console.log("searchFilter is " + searchFilter);
+                  var timeout;
+                 var pageIndex = 1;
+
+                var uri = '/api/GrKoukInfoApi/GetIndexTblDataWarehouseItems';
+                uri += `?pageIndex=${pageIndex}`;
+                uri += `&pageSize=${pageSize}`;
+
+                uri += `&searchFilter=${searchFilter}`;
+                $.ajax({
+                    contentType: 'application/json; charset=utf-8',
+
+                    dataType: 'json',
+                    type: 'GET',
+
+                    url: uri,
+                    beforeSend: function() {
+                        //if (timeout) {
+                        //    clearTimeout(timeout);
+                        //}
+                        //timeout = setTimeout(function() {
+                        //        $("#loadMe").modal({
+                        //            backdrop: "static",
+                        //            keyboard: false,
+                        //            show: true
+                        //        });
+                        //    },
+                        //    1000);
+                    },
+                    success: function(result) {
+
+                        $('#productsList > tbody').empty();
+
+                        $.each(result.data,
+                            function (index, value) {
+                                let cols = [
+                                    {
+                                        text: value.code,
+                                        class: 'small'
+                                    },
+                                    {
+                                        text: value.name,
+                                        class: 'small'
+                                    },
+                                    {
+                                        text: value.materialCateroryName,
+                                        class: 'small'
+                                    },
+                                    {
+                                        text: value.warehouseItemNatureName,
+                                        class: 'small'
+                                    },
+
+                                    {
+                                        text: value.companyCode,
+                                        class: 'small'
+                                    }
+                                ];
+                                var itemId = value.id;
+                                //#region actionColumns
+                                var urlDel = `@Url.Page("./Delete")?id=${itemId}`;
+
+                                //#endregion
+                                var $tr = $('<tr>');
+
+
+                                cols.forEach(function(item) {
+                                    var $tdCol = $('<td>').text(item.text).addClass(item.class);
+                                    $tr.append($tdCol);
+
+                                });
+                                var actionsCol = '<td class="small text-center d-none d-md-table-cell">';
+                                actionsCol += `<a href="${urlDel}" data-itemId="${itemId}"><i class="fas fa-trash fa-lg" style="color:slategray"></i></a> | `;
+
+                                actionsCol += '</td>';
+
+                                $tr.append(actionsCol);
+                                $tr.appendTo('#productsList > tbody');
+
+                            });
+                    },
+                    complete: function() {
+                        //if (timeout) {
+                        //    clearTimeout(timeout);
+                        //}
+                        //$("#loadMe").modal("hide");
+                        //setTimeout(function() {
+                        //        console.log('Checking for open modals');
+                        //        var isOpen = $('#loadMe').hasClass('show');
+                        //        if (isOpen) {
+                        //            console.log('There is an open Modal');
+                        //            $("#loadMe").modal("hide");
+                        //        } else {
+                        //            console.log('No open modal');
+                        //        }
+                        //    },
+                        //    2000);
+                    },
+                    error: function(e) {
+                        console.log(e);
+
+                    }
+                });
+        };
+
+
+            //-------------------------
             $rowSelectorsToggle.on('click',
                 function() {
                     rosSelectorsToggleHandler();
@@ -828,6 +919,27 @@
                 var $modal = $(this);
                 $modal.find('.modal-title').text('Image');
                 $modal.find('#imageControl').attr("src",imageUrl);
+            });
+        $('#productSelector').on('show.bs.modal', function (event) {
+            getProductsSelectorList('',10);
+        });
+
+            var timeKey;
+        $('[name=productSearchText]').on('keyup', function (event) {
+            console.log("Inside keyUp evnet");
+            var searchText = $('[name=productSearchText]').val();
+            if (searchText.length == 0) {
+                console.log("search text lenght 0 returning");
+                return;
+            }
+            if (timeKey) {
+                console.log("Clear timeKey");
+                 clearTimeout(timeKey) ;
+            }
+            timeKey = setTimeout(function () {
+                console.log("Will execute get request in 1 sec!");
+                    getProductsSelectorList(searchText,100);
+                },1000);
             });
             var storageItemJs = localStorage.getItem('MediaEntryIndexView');
             if (storageItemJs === undefined || storageItemJs === null) {
