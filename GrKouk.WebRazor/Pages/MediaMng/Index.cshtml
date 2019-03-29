@@ -397,18 +397,9 @@
 
                                         actionsCol += `<a href="#" data-mediaid="${itemId}" role="button" data-toggle="modal" data-target="#productSelector"><i class="fas fa-info-circle fa-lg" style="color:slategray"></i></a> | `;
                                         // actionsCol += `<a href="${urlInfo}"><i class="fas fa-info-circle fa-lg" style="color:slategray"></i></a> | `;
-                                        actionsCol += `<a href="${urlDel}"><i class="fas fa-trash fa-lg" style="color:slategray"></i></a> | `;
+                                        actionsCol += `<a href="${urlDel}"><i class="fas fa-trash fa-lg" style="color:slategray"></i></a>  `;
 
-                                        actionsCol +=
-                                            '<a class=" dropdown-toggle" role="button" id="dropdownMenuButton"';
-                                        actionsCol +=
-                                            'data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">';
-                                        actionsCol += '<i class="fas fa-bars" style="color:slategray"></i></a>';
-                                        actionsCol +=
-                                            ' <div class="dropdown-menu small" aria-labelledby="dropdownMenuButton">';
-                                        actionsCol += `<a href="${urlKartela}" class="dropdown-item">Καρτέλα</a>`;
-                                        actionsCol += ' <a class="dropdown-item" href="#">Something else here</a>';
-                                        actionsCol += ' </div>';
+                                     
                                         actionsCol += '</td>';
                                         var actionColMobile =
                                             '<td class="small text-center d-table-cell d-sm-table-cell d-md-none">';
@@ -418,18 +409,14 @@
                                             'aria-expanded="false"><i class="fas fa-bars fa-lg" style="color:slategray"></i></a>';
                                         actionColMobile +=
                                             '<div class="dropdown-menu small" aria-labelledby="dropdownMenuButton">';
-                                        actionColMobile += `<a class="dropdown-item" href="${urlInfo}">`;
-                                        actionColMobile +=
-                                            '<i class="fas fa-info-circle fa-lg" style = "color:slategray" ></i> Details</a>';
+                                        actionColMobile += `<a class="dropdown-item" href="#" data-mediaid="${itemId}" role="button" data-toggle="modal" data-target="#productSelector">`;
+                                        actionColMobile += '<i class="fas fa-info-circle fa-lg" style="color:slategray"></i>Details</a>';
                                         actionColMobile += `<a class="dropdown-item" href="${urlDel}">`;
-                                        actionColMobile +=
-                                            '<i class="fas fa-trash fa-lg" style = "color:slategray" ></i> Delete</a>';
-                                        actionColMobile += `<a class="dropdown-item" href="${urlKartela}">`;
-                                        actionColMobile +=
-                                            '<i class="fas fa-receipt fa-lg" style = "color:slategray" ></i> Καρτέλα</a>';
-                                        actionColMobile += `<a class="dropdown-item" href="${urlNewLikeThis}">`;
-                                        actionColMobile +=
-                                            '<i class="fas fa-clone fa-lg" style="color:slategray"></i> Duplicate</a>';
+                                        actionColMobile +='<i class="fas fa-trash fa-lg" style = "color:slategray" ></i> Delete</a>';
+                                       // actionColMobile += `<a class="dropdown-item" href="${urlKartela}">`;
+                                       // actionColMobile +='<i class="fas fa-receipt fa-lg" style = "color:slategray" ></i> Καρτέλα</a>';
+                                       // actionColMobile += `<a class="dropdown-item" href="${urlNewLikeThis}">`;
+                                       // actionColMobile +='<i class="fas fa-clone fa-lg" style="color:slategray"></i> Duplicate</a>';
                                         actionColMobile += '</div></td>';
                                         //#endregion
                                         var $tr = $('<tr>');
