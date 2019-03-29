@@ -19,9 +19,14 @@
 <div class="container">
     <form method="post" enctype="multipart/form-data">
         <div class="form-row">
-            <input type="file" class="col-3 my-pond" name="filepond" />
+            <div class="col-sm-12 col-md-10 col-lg-8">
+                <input type="file" class="my-pond" name="filepond"/>
+            </div>
         </div>
     </form>
+</div>
+<div>
+    <a class="small" asp-page="Index">Back to List</a>
 </div>
 @section Scripts
 {
@@ -52,10 +57,10 @@
 
             // Turn input element into a pond
             $('.my-pond').filepond({
-                imagePreviewHeight: 170,
+                imagePreviewHeight: 250,
                 imageCropAspectRatio: '1:1',
-                imageResizeTargetWidth: 200,
-                imageResizeTargetHeight: 200,
+                imageResizeTargetWidth: 400,
+                imageResizeTargetHeight: 400,
                 //stylePanelLayout: 'compact circle',
                 styleLoadIndicatorPosition: 'center bottom',
                 styleProgressIndicatorPosition: 'right bottom',

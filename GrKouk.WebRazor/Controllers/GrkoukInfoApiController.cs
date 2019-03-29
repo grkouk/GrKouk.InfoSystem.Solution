@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
@@ -33,6 +35,11 @@ namespace GrKouk.WebRazor.Controllers
         public List<int> Ids { get; set; }
     }
 
+    public class MediaListProductRequest
+    {
+        public int ProductId { get; set; }
+        public List<int> MediaIds { get; set; }
+    }
     public class CashCategoriesProductsRequest
     {
         public int ClientProfileId { get; set; }
@@ -105,9 +112,6 @@ namespace GrKouk.WebRazor.Controllers
                 }
             }
         }
-
-
-
 
         [HttpGet("GetIndexTblDataExpenses")]
         public async Task<IActionResult> GetIndexTblDataExpenses([FromQuery] IndexDataTableRequest request)
@@ -988,7 +992,17 @@ namespace GrKouk.WebRazor.Controllers
             var pageSize = request.PageSize;
 
             var listItems = await PagedList<WarehouseItemListDto>.CreateAsync(projectedList, pageIndex, pageSize);
-
+            foreach (var productItem in listItems)
+            {
+                var productMedia = await _context.ProductMedia
+                    .Include(p=>p.MediaEntry)
+                    .SingleOrDefaultAsync(p => p.ProductId == productItem.Id);
+                if (productMedia!=null)
+                {
+                    productItem.Url = Url.Content("~/productimages/" + productMedia.MediaEntry.MediaFile);
+                }
+                
+            }
             //var relevantDiarys = new List<SearchListItem>();
             //var dList = await _context.DiaryDefs.Where(p => p.DiaryType == DiaryTypeEnum.DiaryTypeEnumTransactors)
             //    .ToListAsync();
@@ -1582,7 +1596,7 @@ namespace GrKouk.WebRazor.Controllers
             var listItems = await PagedList<MediaEntryDto>.CreateAsync(projectedList, pageIndex, pageSize);
             foreach (var mediaItem in listItems)
             {
-                mediaItem.Url = Url.Content("productimages/" + mediaItem.MediaFile);
+                mediaItem.Url = Url.Content("~/productimages/" + mediaItem.MediaFile);
             }
             var response = new IndexDataTableResponse<MediaEntryDto>
             {
@@ -1594,8 +1608,6 @@ namespace GrKouk.WebRazor.Controllers
             };
             return Ok(response);
         }
-
-
 
         [HttpPost("AssignProductsToCashCategory")]
         public async Task<IActionResult> AssignProductsToCashCategory([FromBody] CashCategoriesProductsRequest request)
@@ -1633,6 +1645,73 @@ namespace GrKouk.WebRazor.Controllers
                     var addedCount = await _context.SaveChangesAsync();
                     transaction.Commit();
                     string message = $"Procedure completed";
+                    return Ok(new { message });
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    transaction.Rollback();
+                    //throw;
+                    return NotFound(new
+                    {
+                        Error = e.Message
+                    });
+                }
+            }
+        }
+        [HttpPost("AssignMediaToProduct")]
+        public async Task<IActionResult> AssignMediaToProduct([FromBody] MediaListProductRequest request)
+        {
+            int requested = 0;
+            int allreadyAssigned = 0;
+
+           // Thread.Sleep(1500);
+            if (request.MediaIds == null)
+            {
+                return BadRequest(new { Message = "Nothing to add" });
+            }
+            if (request.ProductId == 0)
+            {
+                return BadRequest(new { Message = "Nothing to add" });
+            }
+
+            requested = request.MediaIds.Count;
+
+            using (var transaction = _context.Database.BeginTransaction())
+            {
+                foreach (var mediaItemId in request.MediaIds)
+                {
+                    var b = await _context.ProductMedia.SingleOrDefaultAsync(p =>
+                        p.MediaEntryId == mediaItemId &&
+                        p.ProductId == request.ProductId );
+                    if (b == null)
+                    {
+                        var itemToAdd = new ProductMedia()
+                        {
+                            ProductId = request.ProductId,
+                            MediaEntryId = mediaItemId
+                        };
+                        await _context.ProductMedia.AddAsync(itemToAdd);
+                    }
+                    else
+                    {
+                        allreadyAssigned += 1;
+                    }
+                }
+
+                try
+                {
+                    var toAddCount = _context.ChangeTracker.Entries().Count(x => x.State == EntityState.Added);
+                    // throw new Exception("Test error");
+                    var addedCount = await _context.SaveChangesAsync();
+                    transaction.Commit();
+                    var ms = new StringBuilder()
+                        .Append("Η αντιστοίχιση εικόνων ολοκληρώθηκε")
+                        .Append($"</br>Στάλθηκαν:       {requested} εικόνες")
+                        .Append($"</br>Αντιστοιχισμένες:{allreadyAssigned} εικόνες")
+                        .Append($"</br>Επιτυχής :       {addedCount} εικόνες");
+
+                    string message = ms.ToString();
                     return Ok(new { message });
                 }
                 catch (Exception e)

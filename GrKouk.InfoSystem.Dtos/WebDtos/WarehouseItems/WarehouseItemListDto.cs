@@ -6,8 +6,7 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.WarehouseItems
     public class WarehouseItemListDto
     {
         public int Id { get; set; }
-
-
+        public string Url { get; set; }
         public string Code { get; set; }
 
 

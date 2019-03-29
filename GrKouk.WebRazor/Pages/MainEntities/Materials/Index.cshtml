@@ -7,7 +7,7 @@
 @section MyCss
 {
     <link rel="stylesheet" href="~/css/custom-checkbox.css" />
-<link rel="stylesheet" href="~/css/searchbar.css" />
+    <link rel="stylesheet" href="~/css/searchbar.css" />
 }
 <h4>WarehouseItems List</h4>
 <div class="container ">
@@ -30,7 +30,6 @@
                 </a>
             </div>
         </li>
-
 
         <li class="nav-item">
             <a class="nav-link" data-toggle="collapse" href="#filterCollapse" role="button" id="filtersToggle"
@@ -114,6 +113,9 @@
                 </label>
             </th>
             <th class="small">
+                Image
+            </th>
+            <th class="small">
                 Code
             </th>
             <th class="small">
@@ -122,32 +124,32 @@
                 </a>
                 <i class="fas fa-sort-alpha-down" id="NameSortHeaderIcon" name="SortIcon"></i>
             </th>
-            <th class="small">
+            <th class="small d-none d-md-table-cell">
                 <a href="#" id="CategorySortHeader">
                     Category
                 </a>
                 <i class="fas fa-sort-alpha-down" id="CategorySortHeaderIcon" name="SortIcon"></i>
-                
+
             </th>
 
-            <th class="small">
+            <th class="small d-none d-md-table-cell">
                 Type
             </th>
             <th class="small">
                 Nature
             </th>
-            <th class="small">
+            <th class="small d-none d-md-table-cell">
                 FpaDefName
             </th>
             <th class="small">
                 Company
             </th>
-            <th class="small">
+            <th class="small d-none d-md-table-cell">
                 Active
             </th>
 
-            <th ></th>
-            <th ></th>
+            <th class="small d-none d-md-table-cell">Actions</th>
+            <th class="small d-table-cell d-sm-table-cell d-md-none"></th>
         </tr>
     </thead>
     <tbody>
@@ -193,7 +195,26 @@
         </nav>
     </div>
 </div>
+<!-- Modal Image Viewer -->
+<div class="modal fade" id="imageViewer" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
+    <div class="modal-dialog " role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="imageModalLabel">Image</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-center">
+                <img id="imageControl" src="" style="height:400px;width:400px;" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
 
+            </div>
+        </div>
+    </div>
+</div>
 <!-- Modal -->
 <div class="modal fade" id="loadMe" tabindex="-1" role="dialog" aria-labelledby="loadMeLabel">
     <div class="modal-dialog modal-sm" role="document">
@@ -209,7 +230,7 @@
 </div>
 
 @section Scripts {
-<script>
+    <script>
         $(document).ready(function () {
             var currentCulture = '@System.Globalization.CultureInfo.CurrentCulture';
            // currentCulture = 'el-GR';
@@ -349,11 +370,11 @@
                                     },
                                     {
                                         text: value.materialCateroryName,
-                                        class: 'small'
+                                        class: 'small d-none d-md-table-cell'
                                     },
                                     {
                                         text: value.materialTypeName,
-                                        class: 'small'
+                                        class: 'small d-none d-md-table-cell'
                                     },
                                     {
                                         text: value.warehouseItemNatureName,
@@ -361,7 +382,7 @@
                                     },
                                 {
                                     text: value.fpaDefName,
-                                        class: 'small'
+                                        class: 'small d-none d-md-table-cell'
                                 },
                                     {
                                         text: value.companyCode,
@@ -369,7 +390,7 @@
                                     },
                                     {
                                         text: value.active,
-                                        class: 'small'
+                                        class: 'small d-none d-md-table-cell'
                                     }
                                 ];
                                 var itemId = value.id;
@@ -407,17 +428,25 @@
                                 actionColMobile += '<i class="fas fa-clone fa-lg" style="color:slategray"></i> Duplicate</a>';
                                 actionColMobile += '</div></td>';
                                 var $tr = $('<tr>');
-                                
+
                                 var $td = $(
                                     '<td name="selectRowColumn"> <label class="custom-control custom-checkbox">  ' +
                                     ' <input type="checkbox" class="custom-control-input" name="checkTableRow" ' +
                                     `data-itemId="${itemId}">` +
                                     '<span class="custom-control-indicator"></span></label></td>');
                                 $tr.append($td);
+                                var imageCol = '<td>';
+                                imageCol +=
+                                    '<a href="#" role="button" data-toggle="modal" data-target="#imageViewer" ';
+                                imageCol += `data-imageurl="${value.url}">`;
+                                imageCol += `<img src="${value.url}" style="height:50px;width:50px;" />`;
+                                imageCol += '</a>';
+                                imageCol += '</td>';
+                                $tr.append(imageCol);
                                 cols.forEach(function(item) {
                                     var $tdCol = $('<td>').text(item.text).addClass(item.class);
                                     $tr.append($tdCol);
-                                   
+
                                 });
                                 $tr.append(actionsCol);
                                 $tr.append(actionColMobile);
@@ -451,7 +480,6 @@
                     },
                     error: function(e) {
                         console.log(e);
-
                     }
                 });
                 //#endregion
@@ -790,6 +818,14 @@
                 }
                 refreshTableData();
             });
+            $('#imageViewer').on('show.bs.modal',
+                function(event) {
+                    var button = $(event.relatedTarget);
+                    var imageUrl = button.data('imageurl');
+                    var $modal = $(this);
+                    $modal.find('.modal-title').text('Image');
+                    $modal.find('#imageControl').attr("src", imageUrl);
+                });
             var storageItemJs = localStorage.getItem('WarehouseItemsIndexView');
             if (storageItemJs === undefined || storageItemJs === null) {
                 $('#pageIndex').val(1);
@@ -891,5 +927,5 @@
                 //#endregion
 
             });
-</script>
+    </script>
 }
