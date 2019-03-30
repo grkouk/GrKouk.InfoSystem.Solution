@@ -7,9 +7,9 @@
 @section MyCss
     {
 
-<link rel="stylesheet" href="~/css/search-modal.css" />
-<link rel="stylesheet" href="~/css/custom-checkbox.css" />
-<link rel="stylesheet" href="~/css/searchbar.css" />
+    <link rel="stylesheet" href="~/css/search-modal.css" />
+    <link rel="stylesheet" href="~/css/custom-checkbox.css" />
+    <link rel="stylesheet" href="~/css/searchbar.css" />
 }
 <h4>Media Index </h4>
 <div class="container ">
@@ -142,19 +142,7 @@
     </div>
 </div>
 
-<!-- Modal -->
-<div class="modal fade" id="loadMe" tabindex="-1" role="dialog" aria-labelledby="loadMeLabel">
-    <div class="modal-dialog modal-sm" role="document">
-        <div class="modal-content">
-            <div class="modal-body text-center">
-                <div class="loader"></div>
-                <div>
-                    <p>Executing request. <br><br><small>Please wait...</small></p>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+
 
 <!-- Modal Image Viewer -->
 <div class="modal fade" id="imageViewer" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
@@ -197,10 +185,10 @@
                     <div class="form-row">
                         <div class="col-10">
                             @*<form class="form-inline">
-                                *@
-                                <input class="form-control form-control-sm" name="productSearchText" placeholder="Search text" type="text" />
-                                @*
-                            </form>*@
+                            *@
+                            <input class="form-control form-control-sm" name="productSearchText" placeholder="Search text" type="text" />
+                            @*
+                                </form>*@
                         </div>
 
                     </div>
@@ -236,7 +224,19 @@
         </div>
     </div>
 </div>
-
+<!-- Modal -->
+<div class="modal fade modal-topmost" id="loadMe" tabindex="-1" role="dialog" aria-labelledby="loadMeLabel">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-body text-center">
+                <div class="loader"></div>
+                <div>
+                    <p>Executing request. <br><br><small>Please wait...</small></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 @section Scripts {
 
@@ -399,7 +399,7 @@
                                         // actionsCol += `<a href="${urlInfo}"><i class="fas fa-info-circle fa-lg" style="color:slategray"></i></a> | `;
                                         actionsCol += `<a href="${urlDel}"><i class="fas fa-trash fa-lg" style="color:slategray"></i></a>  `;
 
-                                     
+
                                         actionsCol += '</td>';
                                         var actionColMobile =
                                             '<td class="small text-center d-table-cell d-sm-table-cell d-md-none">';
@@ -745,7 +745,7 @@
                         },
                         success: function(result) {
                             console.log(result);
-                            toastr.success("Delete", result.message);
+                            toastr.success("Assign Media", result.message);
                             refreshTableData();
 
                         },
@@ -768,7 +768,7 @@
                         },
                         error: function(e) {
                             console.log(e);
-                            toastr.error("Error", e.responseJSON.error);
+                            toastr.error("Assign Media", e.responseJSON.error);
 
                         }
                     });
@@ -849,7 +849,7 @@
             var getProductsSelectorList = (mediaIds,searchFilter, pageSize) =>{
                 console.log("Inside getProductsSelectorList");
                 console.log("searchFilter is " + searchFilter);
-               
+
                 var timeout;
                 var pageIndex = 1;
                 var uri = '/api/GrKoukInfoApi/GetIndexTblDataWarehouseItems';
@@ -953,13 +953,13 @@
                                     if (mediaIds.length==1) {
                                         assignMediaToProduct(mediaIds[0], productId);
                                     }
-                                   
+
                                     $('#productSelector').modal('hide');
                                     console.log("Passed array with length " + mediaIds.length);
-                                    
+
                                 } else {
                                     console.log("No media selected");
-                                    
+
                                 }
                             });
                     },

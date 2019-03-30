@@ -13,10 +13,7 @@
 <div class="container ">
     <ul class="nav small justify-content-end ">
         <li class="nav-item">
-            <a href="#" role="button" class="btn btn-sm btn-outline-secondary" id="CreateNew">Create New</a>
-            @*<button class="btn btn-sm btn-outline-secondary " type="button" id="CreateNew">
-                Create New
-            </button>*@
+            <a href="#" role="button" class="btn btn-sm btn-outline-secondary " id="CreateNew">Create New</a>
 
         </li>
         <li class="nav-item">
@@ -26,10 +23,7 @@
         <li class="nav-item dropdown ">
             <a class="btn btn-sm btn-outline-secondary dropdown-toggle" role="button" id="ddDiarys" data-toggle="dropdown"
                aria-haspopup="true" aria-expanded="false">Ημερολόγια</a>
-            @*<button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="ddDiarys"
-                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Ημερολόγια
-            </button>*@
+          
             <div class="dropdown-menu small " name="diaryDropDownMenu">
                 <h6 class="dropdown-header">Σχετικά Ημερολόγια</h6>
                 <a  class="dropdown-item small diaryLink" >
@@ -262,14 +256,11 @@
 
             };
             var handleSortUi = () => {
-
                 var curSort = $('#currentSort').val();
-
                 $('[name=SortIcon]').hide();
                 if (curSort === undefined || curSort === null || curSort.length === 0) {
                     //hide all icons
                     return;
-
                 }
                 var curSortAr = curSort.split(':');
                 switch (curSortAr[0]) {
@@ -289,7 +280,6 @@
                     break;
                 default:
                 }
-
             };
             var handleSelectedRowsUi = () => {
                 var $rowSelectors = $('input[name=checkTableRow]');

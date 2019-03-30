@@ -936,6 +936,7 @@ namespace GrKouk.WebRazor.Controllers
         [HttpGet("GetIndexTblDataWarehouseItems")]
         public async Task<IActionResult> GetIndexTblDataWarehouseItems([FromQuery] IndexDataTableRequest request)
         {
+            //Thread.Sleep(10000);
             IQueryable<WarehouseItem> fullListIq = _context.WarehouseItems;
             int warehouseItemNatureFilter = 0;
             if (!String.IsNullOrEmpty(request.WarehouseItemNatureFilter))
@@ -1000,6 +1001,10 @@ namespace GrKouk.WebRazor.Controllers
                 if (productMedia!=null)
                 {
                     productItem.Url = Url.Content("~/productimages/" + productMedia.MediaEntry.MediaFile);
+                }
+                else
+                {
+                    productItem.Url = Url.Content("~/productimages/" + "noimage.jpg");
                 }
                 
             }
