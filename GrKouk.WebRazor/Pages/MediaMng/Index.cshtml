@@ -231,7 +231,7 @@
             <div class="modal-body text-center">
                 <div class="loader"></div>
                 <div>
-                    <p>Executing request. <br><br><small>Please wait...</small></p>
+                    <p>Executing request. <br><small>Please wait...</small></p>
                 </div>
             </div>
         </div>
@@ -784,7 +784,6 @@
 
                 if (idsToDelete.length > 0) {
                     var idsJs = JSON.stringify({
-                        //ToDo: Change this
                         productId: productId,
                         mediaIds: idsToDelete
                     });
@@ -802,7 +801,6 @@
                                 clearTimeout(timeout);
                             }
                             timeout = setTimeout(function() {
-
                                     $("#loadMe").modal({
                                         backdrop: "static", //remove ability to close modal with click
                                         keyboard: false, //remove option to close with keyboard
@@ -810,7 +808,6 @@
                                     });
                                 },
                                 1000);
-
                         },
                         success: function(result) {
                             console.log(result);
@@ -838,12 +835,9 @@
                         error: function(e) {
                             console.log(e);
                             toastr.error("Assign Media error", e.responseJSON.error);
-
                         }
                     });
-
                 }
-
             };
 
             var getProductsSelectorList = (mediaIds,searchFilter, pageSize) =>{
