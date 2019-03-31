@@ -723,7 +723,6 @@
 
                     $.ajax({
                         contentType: 'application/json; charset=utf-8',
-
                         dataType: 'json',
                         type: 'POST',
                         data: idsJs,
@@ -741,7 +740,6 @@
                                     });
                                 },
                                 1000);
-
                         },
                         success: function(result) {
                             console.log(result);
@@ -769,12 +767,9 @@
                         error: function(e) {
                             console.log(e);
                             toastr.error("Assign Media", e.responseJSON.error);
-
                         }
                     });
-
                 }
-
             };
             var assignMediaToProduct = (mediaId, productId) => {
 
@@ -878,7 +873,7 @@
                             {
                                 header: 'Code',
                                 text: '',
-                                class: 'small'
+                                class: 'small d-none d-md-table-cell'
                             },
                             {
                                 header: 'Product',
@@ -888,7 +883,7 @@
                             {
                                 header: 'Category',
                                 text: '',
-                                class: 'small'
+                                class: 'small d-none d-sm-table-cell'
                             },
                             {
                                 header: 'Nature',
@@ -925,7 +920,7 @@
                                     $tr.append($tdCol);
 
                                 });
-                                var actionsCol = '<td class="small text-center d-none d-md-table-cell">';
+                                var actionsCol = '<td class="small text-center">';
                                 actionsCol += '<button type="button" class="btn btn-outline-info btn-sm" ';
                                 actionsCol += `data-itemId="${itemId}"`;
                                 actionsCol += 'name="selectItem">';
