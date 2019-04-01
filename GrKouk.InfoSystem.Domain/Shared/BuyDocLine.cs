@@ -34,6 +34,7 @@ namespace GrKouk.InfoSystem.Domain.Shared
         public decimal FpaRate { get; set; }
         public decimal DiscountRate { get; set; }
         public decimal UnitPrice { get; set; }
+        public decimal UnitExpenses { get; set; }
         public decimal AmountFpa { get; set; }
         public decimal AmountNet { get; set; }
         public decimal AmountDiscount { get; set; }
