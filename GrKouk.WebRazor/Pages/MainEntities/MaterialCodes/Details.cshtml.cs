@@ -27,11 +27,6 @@ namespace GrKouk.WebRazor.Pages.MainEntities.MaterialCodes
 
         public async Task<IActionResult> OnGetAsync(WarehouseItemCodeTypeEnum id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
             WarehouseItemCode = await _context.WarehouseItemsCodes
                 .Include(m => m.WarehouseItem).FirstOrDefaultAsync(m => m.CodeType == id);
 

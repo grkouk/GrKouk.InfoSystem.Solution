@@ -106,8 +106,7 @@ namespace GrKouk.InfoSystem.ViewModels
 
         private async void ItemTappedCmd(SearchListItem itemTapped)
         {
-            var p = new NavigationParameters();
-            p.Add("CompanySelected", itemTapped);
+            var p = new NavigationParameters {{"CompanySelected", itemTapped}};
 
             await NavigationService.GoBackAsync(p);
         }

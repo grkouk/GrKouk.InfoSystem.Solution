@@ -23,14 +23,6 @@ namespace GrKouk.WebRazor.Pages.MainEntities.MaterialCodes
 
         public async Task<IActionResult> OnGetAsync(WarehouseItemCodeTypeEnum codeType, int materialId, string code )
         {
-            if (codeType == null)
-            {
-                return NotFound();
-            }
-            if (materialId == null)
-            {
-                return NotFound();
-            }
             if (code == null)
             {
                 return NotFound();
@@ -47,14 +39,6 @@ namespace GrKouk.WebRazor.Pages.MainEntities.MaterialCodes
 
         public async Task<IActionResult> OnPostAsync(WarehouseItemCodeTypeEnum codeType, int materialId, string code)
         {
-            if (codeType == null)
-            {
-                return NotFound();
-            }
-            if (materialId == null)
-            {
-                return NotFound();
-            }
             if (code == null)
             {
                 return NotFound();

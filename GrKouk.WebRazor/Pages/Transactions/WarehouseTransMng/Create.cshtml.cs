@@ -115,7 +115,6 @@ namespace GrKouk.WebRazor.Pages.Transactions.WarehouseTransMng
             {
                 case WarehouseItemNatureEnum.WarehouseItemNatureUndefined:
                     throw new ArgumentOutOfRangeException();
-                    break;
                 case WarehouseItemNatureEnum.WarehouseItemNatureMaterial:
                     transToAttach.InventoryAction = transWarehouseDef.MaterialInventoryAction;
                     transToAttach.InventoryValueAction = transWarehouseDef.MaterialInventoryValueAction;

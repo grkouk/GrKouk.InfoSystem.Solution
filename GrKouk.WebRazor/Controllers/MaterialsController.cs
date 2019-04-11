@@ -684,7 +684,6 @@ namespace GrKouk.WebRazor.Controllers
                         {
                             case WarehouseItemNatureEnum.WarehouseItemNatureUndefined:
                                 throw new ArgumentOutOfRangeException();
-                                break;
                             case WarehouseItemNatureEnum.WarehouseItemNatureMaterial:
                                 warehouseTrans.InventoryAction = transWarehouseDef.MaterialInventoryAction;
                                 warehouseTrans.InventoryValueAction = transWarehouseDef.MaterialInventoryValueAction;
@@ -1063,7 +1062,6 @@ namespace GrKouk.WebRazor.Controllers
                         {
                             case WarehouseItemNatureEnum.WarehouseItemNatureUndefined:
                                 throw new ArgumentOutOfRangeException();
-                                break;
                             case WarehouseItemNatureEnum.WarehouseItemNatureMaterial:
                                 warehouseTrans.InventoryAction = transWarehouseDef.MaterialInventoryAction;
                                 warehouseTrans.InventoryValueAction = transWarehouseDef.MaterialInventoryValueAction;
@@ -1459,7 +1457,6 @@ namespace GrKouk.WebRazor.Controllers
                         {
                             case WarehouseItemNatureEnum.WarehouseItemNatureUndefined:
                                 throw new ArgumentOutOfRangeException();
-                                break;
                             case WarehouseItemNatureEnum.WarehouseItemNatureMaterial:
                                 warehouseTrans.InventoryAction = transWarehouseDef.MaterialInventoryAction;
                                 warehouseTrans.InventoryValueAction = transWarehouseDef.MaterialInventoryValueAction;
@@ -1826,7 +1823,6 @@ namespace GrKouk.WebRazor.Controllers
                         {
                             case WarehouseItemNatureEnum.WarehouseItemNatureUndefined:
                                 throw new ArgumentOutOfRangeException();
-                                break;
                             case WarehouseItemNatureEnum.WarehouseItemNatureMaterial:
                                 warehouseTrans.InventoryAction = transWarehouseDef.MaterialInventoryAction;
                                 warehouseTrans.InventoryValueAction = transWarehouseDef.MaterialInventoryValueAction;
