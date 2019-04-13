@@ -714,6 +714,12 @@ namespace GrKouk.WebRazor.Controllers
                                 warehouseTrans.InvoicedVolumeAction = 0;
                                 warehouseTrans.InvoicedValueAction = 0;
                                 break;
+                            case WarehouseItemNatureEnum.WarehouseItemNatureRawMaterial:
+                                warehouseTrans.InventoryAction = transWarehouseDef.RawMaterialInventoryAction;
+                                warehouseTrans.InventoryValueAction = transWarehouseDef.RawMaterialInventoryValueAction;
+                                warehouseTrans.InvoicedVolumeAction = 0;
+                                warehouseTrans.InvoicedValueAction = 0;
+                                break;
                             default:
                                 throw new ArgumentOutOfRangeException();
                         }
@@ -1091,6 +1097,12 @@ namespace GrKouk.WebRazor.Controllers
                                 warehouseTrans.InventoryValueAction = transWarehouseDef.FixedAssetInventoryValueAction;
                                 warehouseTrans.InvoicedVolumeAction = InventoryActionEnum.InventoryActionEnumNoChange;
                                 warehouseTrans.InvoicedValueAction = InventoryValueActionEnum.InventoryValueActionEnumNoChange;
+                                break;
+                            case WarehouseItemNatureEnum.WarehouseItemNatureRawMaterial:
+                                warehouseTrans.InventoryAction = transWarehouseDef.RawMaterialInventoryAction;
+                                warehouseTrans.InventoryValueAction = transWarehouseDef.RawMaterialInventoryValueAction;
+                                warehouseTrans.InvoicedVolumeAction = 0;
+                                warehouseTrans.InvoicedValueAction = 0;
                                 break;
                             default:
                                 throw new ArgumentOutOfRangeException();
@@ -1478,6 +1490,10 @@ namespace GrKouk.WebRazor.Controllers
                                 warehouseTrans.InventoryAction = transWarehouseDef.FixedAssetInventoryAction;
                                 warehouseTrans.InventoryValueAction = transWarehouseDef.FixedAssetInventoryValueAction;
                                 break;
+                            case WarehouseItemNatureEnum.WarehouseItemNatureRawMaterial:
+                                warehouseTrans.InventoryAction = transWarehouseDef.RawMaterialInventoryAction;
+                                warehouseTrans.InventoryValueAction = transWarehouseDef.RawMaterialInventoryValueAction;
+                                break;
                             default:
                                 throw new ArgumentOutOfRangeException();
                         }
@@ -1843,6 +1859,10 @@ namespace GrKouk.WebRazor.Controllers
                             case WarehouseItemNatureEnum.WarehouseItemNatureFixedAsset:
                                 warehouseTrans.InventoryAction = transWarehouseDef.FixedAssetInventoryAction;
                                 warehouseTrans.InventoryValueAction = transWarehouseDef.FixedAssetInventoryValueAction;
+                                break;
+                            case WarehouseItemNatureEnum.WarehouseItemNatureRawMaterial:
+                                warehouseTrans.InventoryAction = transWarehouseDef.RawMaterialInventoryAction;
+                                warehouseTrans.InventoryValueAction = transWarehouseDef.RawMaterialInventoryValueAction;
                                 break;
                             default:
                                 throw new ArgumentOutOfRangeException();

@@ -8,9 +8,9 @@
     <Description>GrKouk Information System</Description>
     <Copyright>George Koukoudis</Copyright>
     <Configurations>Debug;Release;DebugWeb;RlsWeb</Configurations>
-    <Version>1.4.0</Version>
-    <AssemblyVersion>1.4.0.0</AssemblyVersion>
-    <FileVersion>1.4.0.0</FileVersion>
+    <Version>1.4.2</Version>
+    <AssemblyVersion>1.4.2.0</AssemblyVersion>
+    <FileVersion>1.4.2.0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
