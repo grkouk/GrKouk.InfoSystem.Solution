@@ -41,6 +41,7 @@ namespace GrKouk.InfoSystem.Domain.Shared
         [Required]
         public int CompanyId { get; set; }
         public virtual Company Company { get; set; }
+        
         [Timestamp]
         public byte[] Timestamp { get; set; }
         public virtual ICollection<SellDocLine> SellDocLines

@@ -55,6 +55,7 @@ namespace GrKouk.WebApi.Data
         public DbSet<CrCatWarehouseItem> CrCatWarehouseItems { get; set; }
         public DbSet<MediaEntry> MediaEntries { get; set; }
         public DbSet<ProductMedia> ProductMedia { get; set; }
+        public DbSet<PaymentMethod> PaymentMethods { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

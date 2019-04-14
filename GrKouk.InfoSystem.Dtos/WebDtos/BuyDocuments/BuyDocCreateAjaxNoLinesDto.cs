@@ -19,5 +19,6 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.BuyDocuments
         public string Etiology { get; set; }
        
         public int CompanyId { get; set; }
+        public int PaymentMethodId { get; set; }
     }
 }
