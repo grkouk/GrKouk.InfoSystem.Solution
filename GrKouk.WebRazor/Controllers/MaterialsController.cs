@@ -433,11 +433,34 @@ namespace GrKouk.WebRazor.Controllers
         public async Task<IActionResult> PostMaterialBuyDoc([FromBody] BuyDocCreateAjaxDto data)
         {
             const string sectionCode = "SYS-BUY-MATERIALS-SCN";
-            bool noSupplierTrans = false;
+           // bool noSupplierTrans = false;
             bool noWarehouseTrans = false;
-            var transToAttachNoLines = _mapper.Map<BuyDocCreateAjaxNoLinesDto>(data);
-            var transToAttach = _mapper.Map<BuyDocument>(transToAttachNoLines);
-            var dateOfTrans = data.TransDate;
+
+
+            BuyDocCreateAjaxNoLinesDto transToAttachNoLines;
+            BuyDocument transToAttach;
+            DateTime dateOfTrans;
+
+            if (data == null)
+            {
+                return BadRequest(new
+                {
+                    error = "Empty request data"
+                });
+            }
+            try
+            {
+                 transToAttachNoLines = _mapper.Map<BuyDocCreateAjaxNoLinesDto>(data);
+                 transToAttach = _mapper.Map<BuyDocument>(transToAttachNoLines);
+                 dateOfTrans = data.TransDate;
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new
+                {
+                    error = e.Message
+                });
+            }
             using (var transaction = _context.Database.BeginTransaction())
             {
 
@@ -512,7 +535,12 @@ namespace GrKouk.WebRazor.Controllers
                 {
                     Console.WriteLine(e);
                     transaction.Rollback();
-                    throw;
+                    string msg = e.InnerException.Message;
+                    return BadRequest(new
+                    {
+                        error = e.Message + " " + msg
+                    });
+
                 }
                 var docId = _context.Entry(transToAttach).Entity.Id;
 
@@ -584,7 +612,11 @@ namespace GrKouk.WebRazor.Controllers
                     {
                         Console.WriteLine(e);
                         transaction.Rollback();
-                        throw;
+                        string msg = e.InnerException.Message;
+                        return BadRequest(new
+                        {
+                            error = e.Message + " " + msg
+                        });
                     }
                 }
                 int warehouseSeriesId=0;
@@ -621,6 +653,7 @@ namespace GrKouk.WebRazor.Controllers
                     if (material is null)
                     {
                         //Handle error
+                        transaction.Rollback();
                         ModelState.AddModelError(string.Empty, "Doc Line error null WarehouseItem");
                         return NotFound(new
                         {
@@ -693,32 +726,32 @@ namespace GrKouk.WebRazor.Controllers
                             case WarehouseItemNatureEnum.WarehouseItemNatureService:
                                 warehouseTrans.InventoryAction = transWarehouseDef.ServiceInventoryAction;
                                 warehouseTrans.InventoryValueAction = transWarehouseDef.ServiceInventoryValueAction;
-                                warehouseTrans.InvoicedVolumeAction = 0;
-                                warehouseTrans.InvoicedValueAction = 0;
+                                warehouseTrans.InvoicedVolumeAction = transWarehouseDef.MaterialInvoicedVolumeAction;
+                                warehouseTrans.InvoicedValueAction = transWarehouseDef.MaterialInvoicedValueAction;
                                 break;
                             case WarehouseItemNatureEnum.WarehouseItemNatureExpense:
                                 warehouseTrans.InventoryAction = transWarehouseDef.ExpenseInventoryAction;
                                 warehouseTrans.InventoryValueAction = transWarehouseDef.ExpenseInventoryValueAction;
-                                warehouseTrans.InvoicedVolumeAction = 0;
-                                warehouseTrans.InvoicedValueAction = 0;
+                                warehouseTrans.InvoicedVolumeAction = transWarehouseDef.MaterialInvoicedVolumeAction;
+                                warehouseTrans.InvoicedValueAction = transWarehouseDef.MaterialInvoicedValueAction;
                                 break;
                             case WarehouseItemNatureEnum.WarehouseItemNatureIncome:
                                 warehouseTrans.InventoryAction = transWarehouseDef.IncomeInventoryAction;
                                 warehouseTrans.InventoryValueAction = transWarehouseDef.IncomeInventoryValueAction;
-                                warehouseTrans.InvoicedVolumeAction = 0;
-                                warehouseTrans.InvoicedValueAction = 0;
+                                warehouseTrans.InvoicedVolumeAction = transWarehouseDef.MaterialInvoicedVolumeAction;
+                                warehouseTrans.InvoicedValueAction = transWarehouseDef.MaterialInvoicedValueAction;
                                 break;
                             case WarehouseItemNatureEnum.WarehouseItemNatureFixedAsset:
                                 warehouseTrans.InventoryAction = transWarehouseDef.FixedAssetInventoryAction;
                                 warehouseTrans.InventoryValueAction = transWarehouseDef.FixedAssetInventoryValueAction;
-                                warehouseTrans.InvoicedVolumeAction = 0;
-                                warehouseTrans.InvoicedValueAction = 0;
+                                warehouseTrans.InvoicedVolumeAction = transWarehouseDef.MaterialInvoicedVolumeAction;
+                                warehouseTrans.InvoicedValueAction = transWarehouseDef.MaterialInvoicedValueAction;
                                 break;
                             case WarehouseItemNatureEnum.WarehouseItemNatureRawMaterial:
                                 warehouseTrans.InventoryAction = transWarehouseDef.RawMaterialInventoryAction;
                                 warehouseTrans.InventoryValueAction = transWarehouseDef.RawMaterialInventoryValueAction;
-                                warehouseTrans.InvoicedVolumeAction = 0;
-                                warehouseTrans.InvoicedValueAction = 0;
+                                warehouseTrans.InvoicedVolumeAction = transWarehouseDef.MaterialInvoicedVolumeAction;
+                                warehouseTrans.InvoicedValueAction = transWarehouseDef.MaterialInvoicedValueAction;
                                 break;
                             default:
                                 throw new ArgumentOutOfRangeException();
@@ -820,7 +853,12 @@ namespace GrKouk.WebRazor.Controllers
                 catch (Exception e)
                 {
                     Console.WriteLine(e);
-                    throw;
+                    transaction.Rollback();
+                    string msg = e.InnerException.Message;
+                    return BadRequest(new
+                    {
+                        error = e.Message + " " + msg
+                    });
                 }
             }
 
@@ -832,10 +870,31 @@ namespace GrKouk.WebRazor.Controllers
         {
             const string sectionCode = "SYS-BUY-MATERIALS-SCN";
             bool noWarehouseTrans;
-          
-            var transToAttachNoLines = _mapper.Map<BuyDocModifyAjaxNoLinesDto>(data);
-            var transToAttach = _mapper.Map<BuyDocument>(transToAttachNoLines);
-            var dateOfTrans = data.TransDate;
+
+            BuyDocModifyAjaxNoLinesDto transToAttachNoLines;
+            BuyDocument transToAttach;
+            DateTime dateOfTrans;
+            if (data == null)
+            {
+                return BadRequest(new
+                {
+                    error = "Empty request data"
+                });
+            }
+            try
+            {
+                transToAttachNoLines = _mapper.Map<BuyDocModifyAjaxNoLinesDto>(data);
+                transToAttach = _mapper.Map<BuyDocument>(transToAttachNoLines);
+                dateOfTrans = data.TransDate;
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new
+                {
+                    error = e.Message
+                });
+            }
+           
             using (var transaction = _context.Database.BeginTransaction())
             {
 
@@ -886,9 +945,7 @@ namespace GrKouk.WebRazor.Controllers
 
                 await _context.Entry(docSeries).Reference(t => t.BuyDocTypeDef).LoadAsync();
                 var docTypeDef = docSeries.BuyDocTypeDef;
-                //await _context.Entry(docTypeDef)
-                //      .Reference(t => t.TransSupplierDef)
-                //      .LoadAsync();
+               
                 await _context.Entry(docTypeDef).Reference(t => t.TransTransactorDef)
                     .LoadAsync();
                 await _context.Entry(docTypeDef).Reference(t => t.TransWarehouseDef)
@@ -920,58 +977,70 @@ namespace GrKouk.WebRazor.Controllers
                             error = "Default series for transactor transaction not found"
                         });
                     }
-                    var spTransactorCreateDto = _mapper.Map<TransactorTransCreateDto>(data);
-                    //Ετσι δεν μεταφέρει το Id απο το data
-                    var sTransactorTransaction = _mapper.Map<TransactorTransaction>(spTransactorCreateDto);
 
-                    sTransactorTransaction.TransactorId = data.TransactorId;
-                    sTransactorTransaction.SectionId = section.Id;
-                    sTransactorTransaction.TransTransactorDocTypeId = transTransactorDefaultSeries.TransTransactorDocTypeDefId;
-                    sTransactorTransaction.TransTransactorDocSeriesId = transTransactorDefaultSeries.Id;
-                    sTransactorTransaction.FiscalPeriodId = fiscalPeriod.Id;
-                    sTransactorTransaction.CreatorId = docId;
-
-                    switch (transTransactorDef.FinancialTransAction)
+                    try
                     {
-                        case InfoSystem.Definitions.FinActionsEnum.FinActionsEnumNoChange:
-                            sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumNoChange;
-                            sTransactorTransaction.TransDiscountAmount = 0;
-                            sTransactorTransaction.TransFpaAmount = 0;
-                            sTransactorTransaction.TransNetAmount = 0;
-                            break;
-                        case InfoSystem.Definitions.FinActionsEnum.FinActionsEnumDebit:
-                            sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumDebit;
-                            sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount;
-                            sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa;
-                            sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet;
-                            break;
-                        case InfoSystem.Definitions.FinActionsEnum.FinActionsEnumCredit:
-                            sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumCredit;
-                            sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount;
-                            sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa;
-                            sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet;
-                            break;
-                        case InfoSystem.Definitions.FinActionsEnum.FinActionsEnumNegativeDebit:
-                            sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumNegativeDebit;
-                            sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount * -1;
-                            sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa * -1;
-                            sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet * -1;
-                            break;
-                        case InfoSystem.Definitions.FinActionsEnum.FinActionsEnumNegativeCredit:
-                            sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumNegativeCredit;
-                            sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount * -1;
-                            sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa * -1;
-                            sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet * -1;
-                            break;
-                        default:
-                            break;
+                        var spTransactorCreateDto = _mapper.Map<TransactorTransCreateDto>(data);
+                        //Ετσι δεν μεταφέρει το Id απο το data
+                        var sTransactorTransaction = _mapper.Map<TransactorTransaction>(spTransactorCreateDto);
+
+                        sTransactorTransaction.TransactorId = data.TransactorId;
+                        sTransactorTransaction.SectionId = section.Id;
+                        sTransactorTransaction.TransTransactorDocTypeId = transTransactorDefaultSeries.TransTransactorDocTypeDefId;
+                        sTransactorTransaction.TransTransactorDocSeriesId = transTransactorDefaultSeries.Id;
+                        sTransactorTransaction.FiscalPeriodId = fiscalPeriod.Id;
+                        sTransactorTransaction.CreatorId = docId;
+
+                        switch (transTransactorDef.FinancialTransAction)
+                        {
+                            case FinActionsEnum.FinActionsEnumNoChange:
+                                sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumNoChange;
+                                sTransactorTransaction.TransDiscountAmount = 0;
+                                sTransactorTransaction.TransFpaAmount = 0;
+                                sTransactorTransaction.TransNetAmount = 0;
+                                break;
+                            case FinActionsEnum.FinActionsEnumDebit:
+                                sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumDebit;
+                                sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount;
+                                sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa;
+                                sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet;
+                                break;
+                            case FinActionsEnum.FinActionsEnumCredit:
+                                sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumCredit;
+                                sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount;
+                                sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa;
+                                sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet;
+                                break;
+                            case FinActionsEnum.FinActionsEnumNegativeDebit:
+                                sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumNegativeDebit;
+                                sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount * -1;
+                                sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa * -1;
+                                sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet * -1;
+                                break;
+                            case FinActionsEnum.FinActionsEnumNegativeCredit:
+                                sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumNegativeCredit;
+                                sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount * -1;
+                                sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa * -1;
+                                sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet * -1;
+                                break;
+                            default:
+                                break;
+                        }
+                        _context.TransactorTransactions.Add(sTransactorTransaction);
                     }
-                    _context.TransactorTransactions.Add(sTransactorTransaction);
-                   
+                    catch (Exception e)
+                    {
+                        transaction.Rollback();
+                        string msg = e.InnerException.Message;
+                        return BadRequest(new
+                        {
+                            error = e.Message + " " + msg
+                        });
+
+                    }
+
                 }
-                //--------------------------------------
                
-                //-------------------------------------
 
                 int warehouseSeriesId = 0;
                 int warehouseTypeId = 0;
@@ -1006,6 +1075,7 @@ namespace GrKouk.WebRazor.Controllers
                     if (material is null)
                     {
                         //Handle error
+                        transaction.Rollback();
                         ModelState.AddModelError(string.Empty, "Doc Line error null WarehouseItem");
                         return NotFound(new
                         {
@@ -1036,7 +1106,20 @@ namespace GrKouk.WebRazor.Controllers
                     warehouseItemLine.BuyDocumentId = docId;
                     warehouseItemLine.Etiology = transToAttach.Etiology;
                     //_context.Entry(transToAttach).Entity
-                    transToAttach.BuyDocLines.Add(warehouseItemLine);
+
+                    try
+                    {
+                        transToAttach.BuyDocLines.Add(warehouseItemLine);
+                    }
+                    catch (Exception e)
+                    {
+                        transaction.Rollback();
+                        string msg = e.InnerException.Message;
+                        return BadRequest(new
+                        {
+                            error = e.Message + " " + msg
+                        });
+                    }
                     #endregion
 
                     if (!noWarehouseTrans)
@@ -1077,32 +1160,32 @@ namespace GrKouk.WebRazor.Controllers
                             case WarehouseItemNatureEnum.WarehouseItemNatureService:
                                 warehouseTrans.InventoryAction = transWarehouseDef.ServiceInventoryAction;
                                 warehouseTrans.InventoryValueAction = transWarehouseDef.ServiceInventoryValueAction;
-                                warehouseTrans.InvoicedVolumeAction = InventoryActionEnum.InventoryActionEnumNoChange;
-                                warehouseTrans.InvoicedValueAction = InventoryValueActionEnum.InventoryValueActionEnumNoChange;
+                                warehouseTrans.InvoicedVolumeAction = transWarehouseDef.MaterialInvoicedVolumeAction;
+                                warehouseTrans.InvoicedValueAction = transWarehouseDef.MaterialInvoicedValueAction;
                                 break;
                             case WarehouseItemNatureEnum.WarehouseItemNatureExpense:
                                 warehouseTrans.InventoryAction = transWarehouseDef.ExpenseInventoryAction;
                                 warehouseTrans.InventoryValueAction = transWarehouseDef.ExpenseInventoryValueAction;
-                                warehouseTrans.InvoicedVolumeAction = InventoryActionEnum.InventoryActionEnumNoChange;
-                                warehouseTrans.InvoicedValueAction = InventoryValueActionEnum.InventoryValueActionEnumNoChange;
+                                warehouseTrans.InvoicedVolumeAction = transWarehouseDef.MaterialInvoicedVolumeAction;
+                                warehouseTrans.InvoicedValueAction = transWarehouseDef.MaterialInvoicedValueAction;
                                 break;
                             case WarehouseItemNatureEnum.WarehouseItemNatureIncome:
                                 warehouseTrans.InventoryAction = transWarehouseDef.IncomeInventoryAction;
                                 warehouseTrans.InventoryValueAction = transWarehouseDef.IncomeInventoryValueAction;
-                                warehouseTrans.InvoicedVolumeAction = InventoryActionEnum.InventoryActionEnumNoChange;
-                                warehouseTrans.InvoicedValueAction = InventoryValueActionEnum.InventoryValueActionEnumNoChange;
+                                warehouseTrans.InvoicedVolumeAction = transWarehouseDef.MaterialInvoicedVolumeAction;
+                                warehouseTrans.InvoicedValueAction = transWarehouseDef.MaterialInvoicedValueAction;
                                 break;
                             case WarehouseItemNatureEnum.WarehouseItemNatureFixedAsset:
                                 warehouseTrans.InventoryAction = transWarehouseDef.FixedAssetInventoryAction;
                                 warehouseTrans.InventoryValueAction = transWarehouseDef.FixedAssetInventoryValueAction;
-                                warehouseTrans.InvoicedVolumeAction = InventoryActionEnum.InventoryActionEnumNoChange;
-                                warehouseTrans.InvoicedValueAction = InventoryValueActionEnum.InventoryValueActionEnumNoChange;
+                                warehouseTrans.InvoicedVolumeAction = transWarehouseDef.MaterialInvoicedVolumeAction;
+                                warehouseTrans.InvoicedValueAction = transWarehouseDef.MaterialInvoicedValueAction;
                                 break;
                             case WarehouseItemNatureEnum.WarehouseItemNatureRawMaterial:
                                 warehouseTrans.InventoryAction = transWarehouseDef.RawMaterialInventoryAction;
                                 warehouseTrans.InventoryValueAction = transWarehouseDef.RawMaterialInventoryValueAction;
-                                warehouseTrans.InvoicedVolumeAction = 0;
-                                warehouseTrans.InvoicedValueAction = 0;
+                                warehouseTrans.InvoicedVolumeAction = transWarehouseDef.MaterialInvoicedVolumeAction;
+                                warehouseTrans.InvoicedValueAction = transWarehouseDef.MaterialInvoicedValueAction;
                                 break;
                             default:
                                 throw new ArgumentOutOfRangeException();
@@ -1188,8 +1271,20 @@ namespace GrKouk.WebRazor.Controllers
                                 throw new ArgumentOutOfRangeException();
                         }
 
-                        _context.WarehouseTransactions.Add(warehouseTrans);
-
+                      
+                        try
+                        {
+                            _context.WarehouseTransactions.Add(warehouseTrans);
+                        }
+                        catch (Exception e)
+                        {
+                            transaction.Rollback();
+                            string msg = e.InnerException.Message;
+                            return BadRequest(new
+                            {
+                                error = e.Message + " " + msg
+                            });
+                        }
                         #endregion
                     }
 
@@ -1203,8 +1298,13 @@ namespace GrKouk.WebRazor.Controllers
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e);
-                    throw;
+
+                    transaction.Rollback();
+                    string msg = e.InnerException.Message;
+                    return BadRequest(new
+                    {
+                        error = e.Message + " " + msg
+                    });
                 }
             }
 
@@ -1221,11 +1321,34 @@ namespace GrKouk.WebRazor.Controllers
 
             var sessionCompanyId = HttpContext.Session.GetString("CompanyId");
 
-            bool noSupplierTrans = false;
+           // bool noSupplierTrans = false;
             bool noWarehouseTrans = false;
-            var transToAttachNoLines = _mapper.Map<SellDocCreateAjaxNoLinesDto>(data);
-            var transToAttach = _mapper.Map<SellDocument>(transToAttachNoLines);
-            var dateOfTrans = data.TransDate;
+
+            SellDocCreateAjaxNoLinesDto transToAttachNoLines;
+            SellDocument transToAttach;
+            DateTime dateOfTrans;
+
+            if (data == null)
+            {
+                return BadRequest(new
+                {
+                    error = "Empty request data"
+                });
+            }
+            try
+            {
+                transToAttachNoLines = _mapper.Map<SellDocCreateAjaxNoLinesDto>(data);
+                transToAttach = _mapper.Map<SellDocument>(transToAttachNoLines);
+                dateOfTrans = data.TransDate;
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new
+                {
+                    error = e.Message
+                });
+            }
+            
             using (var transaction = _context.Database.BeginTransaction())
             {
 
@@ -1297,7 +1420,11 @@ namespace GrKouk.WebRazor.Controllers
                 {
                     Console.WriteLine(e);
                     transaction.Rollback();
-                    throw;
+                    string msg = e.InnerException.Message;
+                    return BadRequest(new
+                    {
+                        error = e.Message + " " + msg
+                    });
                 }
                 var docId = _context.Entry(transToAttach).Entity.Id;
 
@@ -1326,31 +1453,31 @@ namespace GrKouk.WebRazor.Controllers
 
                     switch (transTransactorDef.FinancialTransAction)
                     {
-                        case InfoSystem.Definitions.FinActionsEnum.FinActionsEnumNoChange:
+                        case FinActionsEnum.FinActionsEnumNoChange:
                             sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumNoChange;
                             sTransactorTransaction.TransDiscountAmount = 0;
                             sTransactorTransaction.TransFpaAmount = 0;
                             sTransactorTransaction.TransNetAmount = 0;
                             break;
-                        case InfoSystem.Definitions.FinActionsEnum.FinActionsEnumDebit:
+                        case FinActionsEnum.FinActionsEnumDebit:
                             sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumDebit;
                             sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount;
                             sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa;
                             sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet;
                             break;
-                        case InfoSystem.Definitions.FinActionsEnum.FinActionsEnumCredit:
+                        case FinActionsEnum.FinActionsEnumCredit:
                             sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumCredit;
                             sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount;
                             sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa;
                             sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet;
                             break;
-                        case InfoSystem.Definitions.FinActionsEnum.FinActionsEnumNegativeDebit:
+                        case FinActionsEnum.FinActionsEnumNegativeDebit:
                             sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumNegativeDebit;
                             sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount * -1;
                             sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa * -1;
                             sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet * -1;
                             break;
-                        case InfoSystem.Definitions.FinActionsEnum.FinActionsEnumNegativeCredit:
+                        case FinActionsEnum.FinActionsEnumNegativeCredit:
                             sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumNegativeCredit;
                             sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount * -1;
                             sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa * -1;
@@ -1367,9 +1494,12 @@ namespace GrKouk.WebRazor.Controllers
                     }
                     catch (Exception e)
                     {
-                        Console.WriteLine(e);
                         transaction.Rollback();
-                        throw;
+                        string msg = e.InnerException.Message;
+                        return BadRequest(new
+                        {
+                            error = e.Message + " " + msg
+                        });
                     }
                 }
                 int warehouseSeriesId = 0;
@@ -1406,6 +1536,7 @@ namespace GrKouk.WebRazor.Controllers
                     if (material is null)
                     {
                         //Handle error
+                        transaction.Rollback();
                         ModelState.AddModelError(string.Empty, "Doc Line error null WarehouseItem");
                         return NotFound(new
                         {
@@ -1472,27 +1603,39 @@ namespace GrKouk.WebRazor.Controllers
                             case WarehouseItemNatureEnum.WarehouseItemNatureMaterial:
                                 warehouseTrans.InventoryAction = transWarehouseDef.MaterialInventoryAction;
                                 warehouseTrans.InventoryValueAction = transWarehouseDef.MaterialInventoryValueAction;
+                                warehouseTrans.InvoicedVolumeAction = transWarehouseDef.MaterialInvoicedVolumeAction;
+                                warehouseTrans.InvoicedValueAction = transWarehouseDef.MaterialInvoicedValueAction;
 
                                 break;
                             case WarehouseItemNatureEnum.WarehouseItemNatureService:
                                 warehouseTrans.InventoryAction = transWarehouseDef.ServiceInventoryAction;
                                 warehouseTrans.InventoryValueAction = transWarehouseDef.ServiceInventoryValueAction;
+                                warehouseTrans.InvoicedVolumeAction = transWarehouseDef.MaterialInvoicedVolumeAction;
+                                warehouseTrans.InvoicedValueAction = transWarehouseDef.MaterialInvoicedValueAction;
                                 break;
                             case WarehouseItemNatureEnum.WarehouseItemNatureExpense:
                                 warehouseTrans.InventoryAction = transWarehouseDef.ExpenseInventoryAction;
                                 warehouseTrans.InventoryValueAction = transWarehouseDef.ExpenseInventoryValueAction;
+                                warehouseTrans.InvoicedVolumeAction = transWarehouseDef.MaterialInvoicedVolumeAction;
+                                warehouseTrans.InvoicedValueAction = transWarehouseDef.MaterialInvoicedValueAction;
                                 break;
                             case WarehouseItemNatureEnum.WarehouseItemNatureIncome:
                                 warehouseTrans.InventoryAction = transWarehouseDef.IncomeInventoryAction;
                                 warehouseTrans.InventoryValueAction = transWarehouseDef.IncomeInventoryValueAction;
+                                warehouseTrans.InvoicedVolumeAction = transWarehouseDef.MaterialInvoicedVolumeAction;
+                                warehouseTrans.InvoicedValueAction = transWarehouseDef.MaterialInvoicedValueAction;
                                 break;
                             case WarehouseItemNatureEnum.WarehouseItemNatureFixedAsset:
                                 warehouseTrans.InventoryAction = transWarehouseDef.FixedAssetInventoryAction;
                                 warehouseTrans.InventoryValueAction = transWarehouseDef.FixedAssetInventoryValueAction;
+                                warehouseTrans.InvoicedVolumeAction = transWarehouseDef.MaterialInvoicedVolumeAction;
+                                warehouseTrans.InvoicedValueAction = transWarehouseDef.MaterialInvoicedValueAction;
                                 break;
                             case WarehouseItemNatureEnum.WarehouseItemNatureRawMaterial:
                                 warehouseTrans.InventoryAction = transWarehouseDef.RawMaterialInventoryAction;
                                 warehouseTrans.InventoryValueAction = transWarehouseDef.RawMaterialInventoryValueAction;
+                                warehouseTrans.InvoicedVolumeAction = transWarehouseDef.MaterialInvoicedVolumeAction;
+                                warehouseTrans.InvoicedValueAction = transWarehouseDef.MaterialInvoicedValueAction;
                                 break;
                             default:
                                 throw new ArgumentOutOfRangeException();
@@ -1593,8 +1736,12 @@ namespace GrKouk.WebRazor.Controllers
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e);
-                    throw;
+                    transaction.Rollback();
+                    string msg = e.InnerException.Message;
+                    return BadRequest(new
+                    {
+                        error = e.Message + " " + msg
+                    });
                 }
             }
 
@@ -1607,9 +1754,30 @@ namespace GrKouk.WebRazor.Controllers
             const string sectionCode = "SYS-SELL-COMBINED-SCN";
             bool noWarehouseTrans;
 
-            var transToAttachNoLines = _mapper.Map<SellDocModifyAjaxNoLinesDto>(data);
-            var transToAttach = _mapper.Map<SellDocument>(transToAttachNoLines);
-            var dateOfTrans = data.TransDate;
+            SellDocModifyAjaxNoLinesDto transToAttachNoLines;
+            SellDocument transToAttach;
+            DateTime dateOfTrans;
+            if (data == null)
+            {
+                return BadRequest(new
+                {
+                    error = "Empty request data"
+                });
+            }
+            try
+            {
+                transToAttachNoLines = _mapper.Map<SellDocModifyAjaxNoLinesDto>(data);
+                transToAttach = _mapper.Map<SellDocument>(transToAttachNoLines);
+                dateOfTrans = data.TransDate;
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new
+                {
+                    error = e.Message
+                });
+            }
+            
             using (var transaction = _context.Database.BeginTransaction())
             {
 
@@ -1777,6 +1945,7 @@ namespace GrKouk.WebRazor.Controllers
                     if (material is null)
                     {
                         //Handle error
+                        transaction.Rollback();
                         ModelState.AddModelError(string.Empty, "Doc Line error null WarehouseItem");
                         return NotFound(new
                         {
@@ -1842,27 +2011,38 @@ namespace GrKouk.WebRazor.Controllers
                             case WarehouseItemNatureEnum.WarehouseItemNatureMaterial:
                                 warehouseTrans.InventoryAction = transWarehouseDef.MaterialInventoryAction;
                                 warehouseTrans.InventoryValueAction = transWarehouseDef.MaterialInventoryValueAction;
-
+                                warehouseTrans.InvoicedVolumeAction = transWarehouseDef.MaterialInvoicedVolumeAction;
+                                warehouseTrans.InvoicedValueAction = transWarehouseDef.MaterialInvoicedValueAction;
                                 break;
                             case WarehouseItemNatureEnum.WarehouseItemNatureService:
                                 warehouseTrans.InventoryAction = transWarehouseDef.ServiceInventoryAction;
                                 warehouseTrans.InventoryValueAction = transWarehouseDef.ServiceInventoryValueAction;
+                                warehouseTrans.InvoicedVolumeAction = transWarehouseDef.MaterialInvoicedVolumeAction;
+                                warehouseTrans.InvoicedValueAction = transWarehouseDef.MaterialInvoicedValueAction;
                                 break;
                             case WarehouseItemNatureEnum.WarehouseItemNatureExpense:
                                 warehouseTrans.InventoryAction = transWarehouseDef.ExpenseInventoryAction;
                                 warehouseTrans.InventoryValueAction = transWarehouseDef.ExpenseInventoryValueAction;
+                                warehouseTrans.InvoicedVolumeAction = transWarehouseDef.MaterialInvoicedVolumeAction;
+                                warehouseTrans.InvoicedValueAction = transWarehouseDef.MaterialInvoicedValueAction;
                                 break;
                             case WarehouseItemNatureEnum.WarehouseItemNatureIncome:
                                 warehouseTrans.InventoryAction = transWarehouseDef.IncomeInventoryAction;
                                 warehouseTrans.InventoryValueAction = transWarehouseDef.IncomeInventoryValueAction;
+                                warehouseTrans.InvoicedVolumeAction = transWarehouseDef.MaterialInvoicedVolumeAction;
+                                warehouseTrans.InvoicedValueAction = transWarehouseDef.MaterialInvoicedValueAction;
                                 break;
                             case WarehouseItemNatureEnum.WarehouseItemNatureFixedAsset:
                                 warehouseTrans.InventoryAction = transWarehouseDef.FixedAssetInventoryAction;
                                 warehouseTrans.InventoryValueAction = transWarehouseDef.FixedAssetInventoryValueAction;
+                                warehouseTrans.InvoicedVolumeAction = transWarehouseDef.MaterialInvoicedVolumeAction;
+                                warehouseTrans.InvoicedValueAction = transWarehouseDef.MaterialInvoicedValueAction;
                                 break;
                             case WarehouseItemNatureEnum.WarehouseItemNatureRawMaterial:
                                 warehouseTrans.InventoryAction = transWarehouseDef.RawMaterialInventoryAction;
                                 warehouseTrans.InventoryValueAction = transWarehouseDef.RawMaterialInventoryValueAction;
+                                warehouseTrans.InvoicedVolumeAction = transWarehouseDef.MaterialInvoicedVolumeAction;
+                                warehouseTrans.InvoicedValueAction = transWarehouseDef.MaterialInvoicedValueAction;
                                 break;
                             default:
                                 throw new ArgumentOutOfRangeException();
@@ -1954,8 +2134,6 @@ namespace GrKouk.WebRazor.Controllers
                     }
 
                 }
-
-
                 try
                 {
                     await _context.SaveChangesAsync();
@@ -1963,8 +2141,12 @@ namespace GrKouk.WebRazor.Controllers
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e);
-                    throw;
+                    transaction.Rollback();
+                    string msg = e.InnerException.Message;
+                    return BadRequest(new
+                    {
+                        error = e.Message + " " + msg
+                    });
                 }
             }
 

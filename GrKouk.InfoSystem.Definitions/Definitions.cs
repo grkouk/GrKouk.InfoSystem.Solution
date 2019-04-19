@@ -172,4 +172,14 @@ namespace GrKouk.InfoSystem.Definitions
         PictureEntityEnumProduct = 1
         
     }
+
+    public enum SeriesAutoPayoffEnum
+    {
+        [Description("No Payoff")]
+        SeriesAutoPayoffEnumNoPayoff = 0,
+        [Description("Auto Payoff")]
+        SeriesAutoPayoffEnumAuto = 1,
+        [Description("Question")]
+        SeriesAutoPayoffEnumNoQuestion = 2
+    }
 }

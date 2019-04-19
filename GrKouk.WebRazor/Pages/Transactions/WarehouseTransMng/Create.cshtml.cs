@@ -136,6 +136,10 @@ namespace GrKouk.WebRazor.Pages.Transactions.WarehouseTransMng
                     transToAttach.InventoryAction = transWarehouseDef.FixedAssetInventoryAction;
                     transToAttach.InventoryValueAction = transWarehouseDef.FixedAssetInventoryValueAction;
                     break;
+                case WarehouseItemNatureEnum.WarehouseItemNatureRawMaterial:
+                    transToAttach.InventoryAction = transWarehouseDef.RawMaterialInventoryAction;
+                    transToAttach.InventoryValueAction = transWarehouseDef.RawMaterialInventoryValueAction;
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }

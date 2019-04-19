@@ -36,5 +36,18 @@ namespace GrKouk.WebRazor.Helpers
             materialNatures[0].Text = "{All Natures}";
             return materialNatures;
         }
+        public static List<SelectListItem> GetSeriesPayoffWayList()
+        {
+            var materialNatures = Enum.GetValues(typeof(WarehouseItemNatureEnum))
+                .Cast<WarehouseItemNatureEnum>()
+                .Select(c => new SelectListItem()
+                {
+                    Value = ((int)c).ToString(),
+                    Text = c.GetDescription()
+                }).ToList();
+            //Αλλαγή του στοιχείου 0 από απροσδιόριστο σε {Ολές οι φύσεις είδους}
+            materialNatures[0].Text = "{All }";
+            return materialNatures;
+        }
     }
 }

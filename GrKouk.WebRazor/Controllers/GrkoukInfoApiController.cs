@@ -16,6 +16,7 @@ using GrKouk.InfoSystem.Dtos.WebDtos.BuyDocuments;
 using GrKouk.InfoSystem.Dtos.WebDtos.CashRegister;
 using GrKouk.InfoSystem.Dtos.WebDtos.DiaryTransactions;
 using GrKouk.InfoSystem.Dtos.WebDtos.Media;
+using GrKouk.InfoSystem.Dtos.WebDtos.ProductRecipies;
 using GrKouk.InfoSystem.Dtos.WebDtos.SellDocuments;
 using GrKouk.InfoSystem.Dtos.WebDtos.TransactorTransactions;
 using GrKouk.InfoSystem.Dtos.WebDtos.WarehouseItems;
@@ -265,7 +266,61 @@ namespace GrKouk.WebRazor.Controllers
             //return new JsonResult(response);
             return Ok(response);
         }
+        [HttpGet("GetIndexTblDataProductionRecipes")]
+        public async Task<IActionResult> GetIndexTblDataProductionRecipes([FromQuery] IndexDataTableRequest request)
+        {
+            IQueryable<ProductRecipe> fullListIq = _context.ProductRecipes;
 
+            if (!String.IsNullOrEmpty(request.SortData))
+            {
+                switch (request.SortData.ToLower())
+                {
+                    
+                    case "transactorname:asc":
+                        fullListIq = fullListIq.OrderBy(p => p.Product.Name);
+                        break;
+                    case "transactorname:desc":
+                        fullListIq = fullListIq.OrderByDescending(p => p.Product.Name);
+                        break;
+
+                }
+            }
+
+            if (!String.IsNullOrEmpty(request.CompanyFilter))
+            {
+                if (Int32.TryParse(request.CompanyFilter, out var companyId))
+                {
+                    if (companyId > 0)
+                    {
+                        fullListIq = fullListIq.Where(p => p.CompanyId == companyId);
+                    }
+                }
+            }
+            if (!String.IsNullOrEmpty(request.SearchFilter))
+            {
+                fullListIq = fullListIq.Where(p => p.Product.Name.Contains(request.SearchFilter)
+                                                   || p.Company.Name.Contains(request.SearchFilter));
+            }
+            var t = fullListIq.ProjectTo<ProductRecipeDto>(_mapper.ConfigurationProvider);
+            var pageIndex = request.PageIndex;
+
+            var pageSize = request.PageSize;
+
+            var listItems = await PagedList<ProductRecipeDto>.CreateAsync(t, pageIndex, pageSize);
+           // decimal sumAmountTotal = listItems.Sum(p => p.TotalAmount);
+
+            var response = new IndexDataTableResponse<ProductRecipeDto>
+            {
+                TotalRecords = listItems.TotalCount,
+                TotalPages = listItems.TotalPages,
+                HasPrevious = listItems.HasPrevious,
+                HasNext = listItems.HasNext,
+               // SumOfAmount = sumAmountTotal,
+                Data = listItems
+            };
+            //return new JsonResult(response);
+            return Ok(response);
+        }
         [HttpGet("GetIndexTblDataSellDocuments")]
         public async Task<IActionResult> GetIndexTblDataSellDocuments([FromQuery] IndexDataTableRequest request)
         {
@@ -716,41 +771,41 @@ namespace GrKouk.WebRazor.Controllers
                     ExportValue = s.Sum(x => x.ExportAmount)
                 }).ToList();
 
-            var isozigioType = "FREE";
-            var isozigioName = "";
+            //var isozigioType = "FREE";
+            //var isozigioName = "";
 
 
             switch (warehouseItemNatureFilter)
             {
                 case WarehouseItemNatureEnum.WarehouseItemNatureUndefined:
-                    isozigioName = "";
+                    //isozigioName = "";
                     break;
                 case WarehouseItemNatureEnum.WarehouseItemNatureMaterial:
-                    isozigioName = "Υλικών";
-                    isozigioType = "SUPPLIER";
+                    //isozigioName = "Υλικών";
+                    //isozigioType = "SUPPLIER";
                     break;
                 case WarehouseItemNatureEnum.WarehouseItemNatureService:
-                    isozigioName = "Υπηρεσιών";
-                    isozigioType = "SUPPLIER";
+                    //isozigioName = "Υπηρεσιών";
+                   // isozigioType = "SUPPLIER";
                     break;
                 case WarehouseItemNatureEnum.WarehouseItemNatureExpense:
-                    isozigioName = "Δαπάνων";
-                    isozigioType = "SUPPLIER";
+                    //isozigioName = "Δαπάνων";
+                    //isozigioType = "SUPPLIER";
                     break;
                 case WarehouseItemNatureEnum.WarehouseItemNatureIncome:
-                    isozigioName = "Εσόδων";
-                    isozigioType = "SUPPLIER";
+                    //isozigioName = "Εσόδων";
+                    //isozigioType = "SUPPLIER";
                     break;
                 case WarehouseItemNatureEnum.WarehouseItemNatureFixedAsset:
-                    isozigioName = "Παγίων";
-                    isozigioType = "SUPPLIER";
+                    //isozigioName = "Παγίων";
+                    //isozigioType = "SUPPLIER";
                     break;
                 case WarehouseItemNatureEnum.WarehouseItemNatureRawMaterial:
-                    isozigioName = "Πρώτων Υλών";
-                    isozigioType = "SUPPLIER";
+                    //isozigioName = "Πρώτων Υλών";
+                    //isozigioType = "SUPPLIER";
                     break;
                 default:
-                    isozigioName = "";
+                    //isozigioName = "";
                     break;
             }
 
@@ -819,7 +874,7 @@ namespace GrKouk.WebRazor.Controllers
             decimal sumExportsVolume = 0;
             decimal sumImportsValue = 0;
             decimal sumExportsValue = 0;
-            decimal sumDifference = 0;
+           // decimal sumDifference = 0;
 
             IQueryable<WarehouseKartelaLine> fullListIq = from s in outList select s;
 
@@ -1453,7 +1508,7 @@ namespace GrKouk.WebRazor.Controllers
             decimal sumExportsVolume = 0;
             decimal sumImportsValue = 0;
             decimal sumExportsValue = 0;
-            decimal sumDifference = 0;
+          //  decimal sumDifference = 0;
 
             IQueryable<WarehouseKartelaLine> fullListIq = from s in outList select s;
             //if (!String.IsNullOrEmpty(request.SearchFilter))

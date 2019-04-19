@@ -13,6 +13,7 @@ using GrKouk.InfoSystem.Dtos.WebDtos.CashRegister;
 using GrKouk.InfoSystem.Dtos.WebDtos.CustomerTransactions;
 using GrKouk.InfoSystem.Dtos.WebDtos.Diaries;
 using GrKouk.InfoSystem.Dtos.WebDtos.Media;
+using GrKouk.InfoSystem.Dtos.WebDtos.ProductRecipies;
 using GrKouk.InfoSystem.Dtos.WebDtos.SellDocuments;
 using GrKouk.InfoSystem.Dtos.WebDtos.TransactorTransactions;
 using GrKouk.InfoSystem.Dtos.WebDtos.WarehouseItems;
@@ -99,6 +100,9 @@ namespace GrKouk.WebRazor.Automapper
             CreateMap<CrCatWarehouseItem, CashRegCatProductListDto>()
                 .ForMember(dest => dest.CompanyCode, opt => opt.MapFrom(src => src.ClientProfile.Company.Code));
             CreateMap<MediaEntry, MediaEntryDto>();
+            CreateMap<ProductRecipe, ProductRecipeDto>()
+                .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product.Name));
+
             //CreateMap<BuyDocTypeDef, DiaryDocTypeItem>()
             //    .ForMember(dest => dest.Value, opt => opt.MapFrom(src => src.Id))
             //    .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Name));

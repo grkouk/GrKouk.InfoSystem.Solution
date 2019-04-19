@@ -43,7 +43,7 @@ namespace GrKouk.InfoSystem.Domain.Shared
         public int CompanyId { get; set; }
         public virtual Company Company { get; set; }
         public int PaymentMethodId { get; set; }
-        public PaymentMethod PaymentMethod { get; set; }
+        public virtual PaymentMethod PaymentMethod { get; set; }
 
         [Timestamp]
         public byte[] Timestamp { get; set; }

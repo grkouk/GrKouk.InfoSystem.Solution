@@ -15,9 +15,6 @@ namespace GrKouk.InfoSystem.Domain.Shared
 
         public int WarehouseItemId { get; set; }
         public virtual WarehouseItem WarehouseItem { get; set; }
-
-       
-
         public int PrimaryUnitId { get; set; }
         //public virtual MeasureUnit PrimaryUnit { get; set; }
         public int SecondaryUnitId { get; set; }

@@ -39,6 +39,12 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.WarehouseItems
                     case WarehouseItemNatureEnum.WarehouseItemNatureFixedAsset:
                         ret = "{Πάγ}";
                         break;
+                    case WarehouseItemNatureEnum.WarehouseItemNatureIncome:
+                        ret = "{Εσο}";
+                        break;
+                    case WarehouseItemNatureEnum.WarehouseItemNatureRawMaterial:
+                        ret = "{ΠρΥλ}";
+                        break;
                     default:
                         ret = "{{Απρ}}";
                         break;

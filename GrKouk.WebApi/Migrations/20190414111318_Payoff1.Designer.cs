@@ -4,14 +4,16 @@ using GrKouk.WebApi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace GrKouk.WebApi.Migrations
 {
     [DbContext(typeof(ApiDbContext))]
-    partial class ApiDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190414111318_Payoff1")]
+    partial class Payoff1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -151,25 +153,6 @@ namespace GrKouk.WebApi.Migrations
                         .IsUnique();
 
                     b.ToTable("FpaKategories");
-                });
-
-            modelBuilder.Entity("GrKouk.InfoSystem.Domain.FinConfig.GlobalSettings", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("CompanyId");
-
-                    b.Property<int>("ProductProduceSeriesId");
-
-                    b.Property<int>("RawMaterialConsumeSeriesId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CompanyId");
-
-                    b.ToTable("GlobalSettings");
                 });
 
             modelBuilder.Entity("GrKouk.InfoSystem.Domain.FinConfig.PaymentMethod", b =>
@@ -940,77 +923,6 @@ namespace GrKouk.WebApi.Migrations
                     b.ToTable("MeasureUnits");
                 });
 
-            modelBuilder.Entity("GrKouk.InfoSystem.Domain.Shared.ProductRecipe", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("CompanyId");
-
-                    b.Property<float>("Factor");
-
-                    b.Property<int>("PrimaryUnitId");
-
-                    b.Property<int>("ProductId");
-
-                    b.Property<double>("Quantity1");
-
-                    b.Property<double>("Quantity2");
-
-                    b.Property<int>("SecondaryUnitId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CompanyId");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("ProductRecipes");
-                });
-
-            modelBuilder.Entity("GrKouk.InfoSystem.Domain.Shared.ProductRecipeLine", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<decimal>("AmountNet");
-
-                    b.Property<string>("Etiology")
-                        .HasMaxLength(500);
-
-                    b.Property<float>("Factor");
-
-                    b.Property<int>("PrimaryUnitId");
-
-                    b.Property<int>("ProductId");
-
-                    b.Property<int>("ProductRecipeId");
-
-                    b.Property<int?>("ProductRecipeId1");
-
-                    b.Property<double>("Quantity1");
-
-                    b.Property<double>("Quantity2");
-
-                    b.Property<int>("SecondaryUnitId");
-
-                    b.Property<decimal>("UnitExpenses");
-
-                    b.Property<decimal>("UnitPrice");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProductId");
-
-                    b.HasIndex("ProductRecipeId");
-
-                    b.HasIndex("ProductRecipeId1");
-
-                    b.ToTable("ProductRecipeLines");
-                });
-
             modelBuilder.Entity("GrKouk.InfoSystem.Domain.Shared.RevenueCentre", b =>
                 {
                     b.Property<int>("Id")
@@ -1521,14 +1433,6 @@ namespace GrKouk.WebApi.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 
-            modelBuilder.Entity("GrKouk.InfoSystem.Domain.FinConfig.GlobalSettings", b =>
-                {
-                    b.HasOne("GrKouk.InfoSystem.Domain.Shared.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
             modelBuilder.Entity("GrKouk.InfoSystem.Domain.FinConfig.SellDocSeriesDef", b =>
                 {
                     b.HasOne("GrKouk.InfoSystem.Domain.Shared.Company", "Company")
@@ -1761,36 +1665,6 @@ namespace GrKouk.WebApi.Migrations
                         .WithMany()
                         .HasForeignKey("TransactorId")
                         .OnDelete(DeleteBehavior.Restrict);
-                });
-
-            modelBuilder.Entity("GrKouk.InfoSystem.Domain.Shared.ProductRecipe", b =>
-                {
-                    b.HasOne("GrKouk.InfoSystem.Domain.Shared.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("GrKouk.InfoSystem.Domain.Shared.WarehouseItem", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Restrict);
-                });
-
-            modelBuilder.Entity("GrKouk.InfoSystem.Domain.Shared.ProductRecipeLine", b =>
-                {
-                    b.HasOne("GrKouk.InfoSystem.Domain.Shared.WarehouseItem", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("GrKouk.InfoSystem.Domain.Shared.ProductRecipe", "ProductRecipe")
-                        .WithMany()
-                        .HasForeignKey("ProductRecipeId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("GrKouk.InfoSystem.Domain.Shared.ProductRecipe")
-                        .WithMany("ProductRecipeLines")
-                        .HasForeignKey("ProductRecipeId1");
                 });
 
             modelBuilder.Entity("GrKouk.InfoSystem.Domain.Shared.SellDocLine", b =>

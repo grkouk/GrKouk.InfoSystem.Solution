@@ -93,6 +93,12 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.WarehouseItems
                     case WarehouseItemNatureEnum.WarehouseItemNatureFixedAsset:
                         ret = "Πάγιο";
                         break;
+                    case WarehouseItemNatureEnum.WarehouseItemNatureIncome:
+                        ret = "Εσοδο";
+                        break;
+                    case WarehouseItemNatureEnum.WarehouseItemNatureRawMaterial:
+                        ret = "Πρώτη Υλη";
+                        break;
                     default:
                         ret = "Απροσδιόριστο";
                         break;

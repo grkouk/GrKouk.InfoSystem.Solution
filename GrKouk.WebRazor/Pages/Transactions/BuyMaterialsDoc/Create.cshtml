@@ -51,13 +51,17 @@
                 </div>
             </div>
             <div class="form-row">
-                <div class="form-group col-md-8">
+                <div class="form-group col-md-6">
                     <label asp-for="ItemVm.TransactorId" class="control-label small"></label>
                     <select asp-for="ItemVm.TransactorId" class="form-control form-control-sm small" asp-items="ViewBag.TransactorId"></select>
                 </div>
-                <div class="form-group col-md-4">
+                <div class="form-group col-md-3">
                     <label asp-for="ItemVm.CompanyId" class="control-label" small></label>
                     <select asp-for="ItemVm.CompanyId" class="form-control form-control-sm small" asp-items="ViewBag.CompanyId"></select>
+                </div>
+                <div class="form-group col-md-3">
+                    <label asp-for="ItemVm.PaymentMethodId" class="control-label" small></label>
+                    <select asp-for="ItemVm.PaymentMethodId" class="form-control form-control-sm small" asp-items="ViewBag.PaymentMethodId"></select>
                 </div>
             </div>
 
@@ -833,7 +837,8 @@
                         window.location.href = '@Url.Page("Index")';
                     },
                     error: function (e) {
-                        
+                        console.log('Error saving ');
+                        console.log(e );
                         var r = e.responseJSON.error;
                         toastr.error(r, "saveData");
                     }
@@ -886,6 +891,7 @@
                     transRefCode: $("#ItemVm_TransRefCode").val(),
                     transactorId: $("#ItemVm_TransactorId").val(),
                     companyId: $("#ItemVm_CompanyId").val(),
+                    paymentMethodId: $("#ItemVm_PaymentMethodId").val(),
                     buyDocSeriesId: $("#ItemVm_BuyDocSeriesId").val(),
                     Etiology: $("#ItemVm_Etiology").val(),
                     amountFpa: $("#ItemVm_AmountFpa").attr('data-actualValue'),

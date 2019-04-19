@@ -56,6 +56,9 @@ namespace GrKouk.WebApi.Data
         public DbSet<MediaEntry> MediaEntries { get; set; }
         public DbSet<ProductMedia> ProductMedia { get; set; }
         public DbSet<PaymentMethod> PaymentMethods { get; set; }
+        public DbSet<ProductRecipeLine> ProductRecipeLines { get; set; }
+        public DbSet<ProductRecipe> ProductRecipes { get; set; }
+        public DbSet<GlobalSettings> GlobalSettings { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -425,6 +428,26 @@ namespace GrKouk.WebApi.Data
                     .WithMany()
                     .OnDelete(DeleteBehavior.Restrict);
 
+            });
+
+            modelBuilder.Entity<ProductRecipeLine>(entity =>
+            {
+                entity.HasOne(p => p.Product)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(p => p.ProductRecipe)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<ProductRecipe>(entity =>
+            {
+                entity.HasOne(p => p.Product)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(p => p.Company)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
             });
 
         }

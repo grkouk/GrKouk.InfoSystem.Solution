@@ -77,6 +77,7 @@ namespace GrKouk.WebRazor.Pages.CommonEntities.CrCashCatWarehouseItem
             ViewData["CashRegCategoryId"] = new SelectList(_context.CashRegCategories.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
             ViewData["ClientProfileId"] = new SelectList(_context.ClientProfiles.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
             ViewData["WarehouseItemId"] = new SelectList(_context.WarehouseItems.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
+           
         }
         private bool CrCatWarehouseItemExists(int id)
         {

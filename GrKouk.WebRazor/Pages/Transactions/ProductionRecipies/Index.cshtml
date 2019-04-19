@@ -1,36 +1,22 @@
 ﻿@page
-@model GrKouk.WebRazor.Pages.MainEntities.Materials.IndexModel
+@model GrKouk.WebRazor.Pages.Transactions.ProductionRecipies.IndexModel
 
 @{
-    ViewData["Title"] = "WarehouseItems List";
+    ViewData["Title"] = "Συνταγές Παραγωγής";
 }
 @section MyCss
 {
     <link rel="stylesheet" href="~/css/custom-checkbox.css" />
-    <link rel="stylesheet" href="~/css/searchbar.css" />
+    <link rel="stylesheet" href="~/css/searchbar.css"/>
 }
-<h4>WarehouseItems List</h4>
+<h4>Λίστα Συνταγών Παραγωγής</h4>
+
+
 <div class="container ">
     <ul class="nav small justify-content-end ">
         <li class="nav-item">
             <a href="#" role="button" class="nav-link" id="CreateNew">Create New</a>
         </li>
-        <li class="nav-item">
-            <a asp-page="./Isozigio" class="nav-link">Ισοζύγιο</a>
-        </li>
-        <li class="nav-item">
-            <a asp-page="/MainEntities/MaterialCodes/index" class="nav-link">WarehouseItem Codes</a>
-        </li>
-        <li class="nav-item dropdown ">
-            <a class="nav-link dropdown-toggle " role="button" id="ddDiarys" data-toggle="dropdown"
-               aria-haspopup="true" aria-expanded="false">Ημερολόγια</a>
-            <div class="dropdown-menu small">
-                <h6 class="dropdown-header">Σχετικά Ημερολόγια</h6>
-                <a asp-page="./RunDiary" class="dropdown-item small">
-                </a>
-            </div>
-        </li>
-
         <li class="nav-item">
             <a class="nav-link" data-toggle="collapse" href="#filterCollapse" role="button" id="filtersToggle"
                aria-expanded="false" aria-controls="filterCollapse">
@@ -45,7 +31,7 @@
             <a class="nav-link dropdown-toggle disabled" role="button" id="ddSelectedRowsActions" data-toggle="dropdown"
                aria-haspopup="true" aria-expanded="false">Actions</a>
             <div class="dropdown-menu small">
-
+                <a class="dropdown-item" href="#" id="deleteSelectedRows">Delete Selected</a>
                 <a class="dropdown-item" href="#">Another action</a>
                 <a class="dropdown-item" href="#">Something else here</a>
                 <div class="dropdown-divider"></div>
@@ -55,6 +41,7 @@
         </li>
     </ul>
 </div>
+
 <div class="collapse show" id="filterCollapse">
     <form class="form-inline" id="FiltersForm" method="get">
         <input type="hidden" id="filtersVisible" />
@@ -74,10 +61,9 @@
                 </div>
 
                 <div class="form-group col-md-auto">
-                    <label class="small"> WarehouseItem Nature:</label>
-                    <select id="WarehouseItemNatureFilter" class="form-control form-control-sm small"
-                            asp-items="ViewBag.MaterialNatureValues"></select>
-
+                    <label class="small"> Period:</label>
+                    <select name="DatePeriodFilter" id="DatePeriodFilter" class="form-control form-control-sm small"
+                            asp-items="ViewBag.DataFilterValues"></select>
                 </div>
                 <div class="form-group col-md-auto">
                     <label class="small">Company:</label>
@@ -100,65 +86,72 @@
         </div>
     </form>
 </div>
-
-
 <br />
-<table class="table table-bordered table-sm" id="myTable">
+<table class="table table-bordered table-sm m-0" id="myTable">
     <thead class="thead-light">
-        <tr>
-            <th name="selectAllRowsColumn">
-                <label class="custom-control custom-checkbox">
-                    <input type="checkbox" class="custom-control-input" name="checkAllRows">
-                    <span class="custom-control-indicator"></span>
-                </label>
-            </th>
-            <th class="small">
-                Image
-            </th>
-            <th class="small">
-                Code
-            </th>
-            <th class="small">
-                <a href="#" id="NameSortHeader">
-                    Item
-                </a>
-                <i class="fas fa-sort-alpha-down" id="NameSortHeaderIcon" name="SortIcon"></i>
-            </th>
-            <th class="small d-none d-md-table-cell">
-                <a href="#" id="CategorySortHeader">
-                    Category
-                </a>
-                <i class="fas fa-sort-alpha-down" id="CategorySortHeaderIcon" name="SortIcon"></i>
-
-            </th>
-
-            <th class="small d-none d-md-table-cell">
-                Type
-            </th>
-            <th class="small">
-                Nature
-            </th>
-            <th class="small d-none d-md-table-cell">
-                FpaDefName
-            </th>
-            <th class="small">
-                Company
-            </th>
-            <th class="small d-none d-md-table-cell">
-                Active
-            </th>
-
-            <th class="small d-none d-md-table-cell">Actions</th>
-            <th class="small d-table-cell d-sm-table-cell d-md-none"></th>
-        </tr>
+    <tr>
+        <th name="selectAllRowsColumn">
+            <label class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" name="checkAllRows">
+                <span class="custom-control-indicator"></span>
+            </label>
+        </th>
+        <th class="small text-center">
+            <a href="#" id="TransDateHeader" role="button">
+                Date
+            </a>
+            <i class="fas fa-sort-numeric-down" id="TransDateHeaderIcon" name="SortIcon"></i>
+        </th>
+        <th class="small">
+            <a href="#" id="TransactorNameHeader">
+                Transactor
+            </a>
+            <i class="fas fa-sort-alpha-down" id="TransactorNameHeaderIcon" name="SortIcon"></i>
+        </th>
+        <th class="small">
+            Series Code
+        </th>
+        <th class="small d-none d-sm-table-cell">
+            Ref Code
+        </th>
+        <th class="small text-center">
+            Total Amount
+        </th>
+        <th class="small d-none d-md-table-cell">
+            CompanyCode
+        </th>
+        <th class="small"></th>
+    </tr>
     </thead>
     <tbody>
-        <tr></tr>
+     
+    <tr>
+        <td name="selectRowColumn">
+            <label class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" name="checkTableRow">
+                <span class="custom-control-indicator"></span>
+            </label>
+        </td>
+        <td class="small">
+        </td>
+        <td class="small">
+        </td>
+        <td class="small">
+        </td>
 
+        <td class="small">
+        </td>
+        <td class="small text-right">
+        </td>
+        <td class="small">
+        </td>
 
+        <td class="small">
+        </td>
+    </tr>
+       
     </tbody>
 </table>
-
 <div class="row">
     <div class="col-3">
         <label class="small" name="PagingInfo"> </label>
@@ -169,12 +162,14 @@
                 <li class="page-item ">
                     <a href="#" id="GoToFirst"
                        class="page-link" aria-label="First">
+                        @*<span aria-hidden="true">;</span>*@
                         First
                     </a>
                 </li>
                 <li class="page-item ">
                     <a href="#" id="GoToPrevious"
                        class="page-link" aria-label="Previous">
+                        @*<span aria-hidden="true">&laquo;</span>*@
                         Previous
                     </a>
                 </li>
@@ -182,37 +177,19 @@
                 <li class="page-item ">
                     <a href="#" id="GoToNext"
                        class="page-link" aria-label="Next">
+                        @*<span aria-hidden="true">&raquo;</span>*@
                         Next
                     </a>
                 </li>
                 <li class="page-item  ">
                     <a href="#" id="GoToLast"
                        class="page-link" aria-label="Last">
+                        @*<span aria-hidden="true">;</span>*@
                         Last
                     </a>
                 </li>
             </ul>
         </nav>
-    </div>
-</div>
-<!-- Modal Image Viewer -->
-<div class="modal fade" id="imageViewer" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
-    <div class="modal-dialog " role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="imageModalLabel">Image</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body text-center">
-                <img id="imageControl" src="" style="height:400px;width:400px;" />
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary btn-sm" data-dismiss="modal">Close</button>
-
-            </div>
-        </div>
     </div>
 </div>
 <!-- Modal -->
@@ -228,12 +205,13 @@
         </div>
     </div>
 </div>
-
-@section Scripts {
+@section Scripts
+{
+    <script src="~/js/moment.min.js"></script>
     <script>
         $(document).ready(function () {
             var currentCulture = '@System.Globalization.CultureInfo.CurrentCulture';
-           // currentCulture = 'el-GR';
+            currentCulture = 'el-GR';
             var formatterCurrency = new Intl.NumberFormat(currentCulture,
                 {
                     style: 'currency',
@@ -265,30 +243,34 @@
                 return x !== x;
             };
             var handleSortUi = () => {
+                
                 var curSort = $('#currentSort').val();
+
                 $('[name=SortIcon]').hide();
                 if (curSort === undefined || curSort === null || curSort.length === 0) {
                     //hide all icons
                     return;
+                   
                 }
                 var curSortAr = curSort.split(':');
                 switch (curSortAr[0]) {
-                    case 'categorysort':
+                    case 'transactiondate':
                         if (curSortAr[1] === 'asc') {
-                            $('#CategorySortHeaderIcon').addClass('fas fa-sort-numeric-up').show();
+                            $('#TransDateHeaderIcon').addClass('fas fa-sort-numeric-up').show();
                         } else {
-                            $('#CategorySortHeaderIcon').addClass('fas fa-sort-numeric-down').show();
+                            $('#TransDateHeaderIcon').addClass('fas fa-sort-numeric-down').show();
                         }
                         break;
-                    case 'namesort':
+                    case 'transactorname':
                         if (curSortAr[1] === 'asc') {
-                            $('#NameSortHeaderIcon').addClass('fas fa-sort-alpha-up').show();
+                            $('#TransactorNameHeaderIcon').addClass('fas fa-sort-alpha-up').show();
                         } else {
-                            $('#NameSortHeaderIcon').addClass('fas fa-sort-alpha-down').show();
+                            $('#TransactorNameHeaderIcon').addClass('fas fa-sort-alpha-down').show();
                         }
                         break;
                 default:
                 }
+               
             };
             var handleSelectedRowsUi = () => {
                 var $rowSelectors = $('input[name=checkTableRow]');
@@ -307,11 +289,19 @@
                     $checkAllRows.prop('checked', false);
                 }
             };
-            var getTableData = (pageIndex, pageSize, sortData, dateRange, companyFilter,transactorTypeFilter,warehouseItemNatureFilter, searchFilter) => {
+            var getTableData = (pageIndex, pageSize, sortData, dateRange, companyFilter,searchFilter) => {
                 //#region getTableData
                 var timeout;
-
-                var uri =`/api/GrKoukInfoApi/GetIndexTblDataWarehouseItems?pageIndex=${pageIndex}&pageSize=${pageSize}&companyFilter=${companyFilter}&warehouseItemNatureFilter=${warehouseItemNatureFilter}&sortData=${sortData}&searchFilter=${searchFilter}`;
+               
+                var uri = '/api/GrKoukInfoApi/GetIndexTblDataProductionRecipes';
+                uri += `?pageIndex=${pageIndex}`;
+                uri += `&pageSize=${pageSize}`;
+                uri += `&companyFilter=${companyFilter}`;
+                //uri += `&dateRange=${dateRange}`;
+                // uri += `&cashRegCategoryFilter=${cashRegCategoryFilter}`;
+                // uri += `&clientProfileFilter=${clientProfileFilter}`;
+                uri += `&sortData=${sortData}`;
+                uri += `&searchFilter=${searchFilter}`;
                 $.ajax({
                     contentType: 'application/json; charset=utf-8',
 
@@ -355,102 +345,72 @@
                         } else {
                             $('#GoToLast, #GoToNext').parent().addClass('disabled');
                         }
-                        $('#myTable > tbody').empty();
 
+                        $('#myTable > tbody').empty();
+                        $('#myTable > thead').empty();
+                        let colDefs = [
+                            {
+                                header: 'Code',
+                                text: '',
+                                class: 'small d-none d-md-table-cell'
+                            },
+                            {
+                                header: 'Product',
+                                text: '',
+                                class: 'small'
+                            },
+                            {
+                                header: 'Company',
+                                text: '',
+                                class: 'small'
+                            }
+                        ];
+                        var $trHead = $('<tr>');
+                        colDefs.forEach(function(item) {
+                            var $tdColHead = $('<th>').text(item.header).addClass(item.class);
+                            $trHead.append($tdColHead);
+                        });
+                        $trHead.append($('<th>'));
+                        $trHead.appendTo('#myTable > thead');
                         $.each(result.data,
                             function (index, value) {
-                                let cols = [
-                                    {
-                                        text: value.code,
-                                        class: 'small'
-                                    },
-                                    {
-                                        text: value.name,
-                                        class: 'small'
-                                    },
-                                    {
-                                        text: value.materialCateroryName,
-                                        class: 'small d-none d-md-table-cell'
-                                    },
-                                    {
-                                        text: value.materialTypeName,
-                                        class: 'small d-none d-md-table-cell'
-                                    },
-                                    {
-                                        text: value.warehouseItemNatureName,
-                                        class: 'small'
-                                    },
-                                    {
-                                        text: value.fpaDefName,
-                                        class: 'small d-none d-md-table-cell'
-                                    },
-                                    {
-                                        text: value.companyCode,
-                                        class: 'small'
-                                    },
-                                    {
-                                        text: value.active,
-                                        class: 'small d-none d-md-table-cell'
-                                    }
-                                ];
+                                colDefs[0].text = value.code;
+                                colDefs[1].text = value.name;
+                                //colDefs[2].text = value.materialCateroryName;
+                                //colDefs[3].text = value.warehouseItemNatureName;
+                                colDefs[2].text = value.companyCode;
+
                                 var itemId = value.id;
-                                var urlEdit = `@Url.Page("./Edit")?id=${itemId}`;
-                                var urlInfo = `@Url.Page("./Details")?id=${itemId}`;
-                                var urlDel = `@Url.Page("./Delete")?id=${itemId}`;
-                                var urlNewLikeThis = `@Url.Page("./Create")?copyFromId=${itemId}`;
-                                var urlKartela = `@Url.Page("./Kartela")?warehouseItemId=${itemId}`;
-                                var actionsCol = '<td class="small text-center d-none d-md-table-cell">';
-                                actionsCol += `<a href="${urlEdit}"><i class="fas fa-edit fa-lg" style="color:slategray"></i></a> |`;
-                                actionsCol += `<a href="${urlInfo}"><i class="fas fa-info-circle fa-lg" style="color:slategray"></i></a> | `;
-                                actionsCol += `<a href="${urlDel}"><i class="fas fa-trash fa-lg" style="color:slategray"></i></a> | `;
-                                actionsCol += `<a href="${urlNewLikeThis}"><i class="fas fa-clone fa-lg" style="color:slategray"></i> | </a> `;
-                                actionsCol += '<a class=" dropdown-toggle" role="button" id="dropdownMenuButton"';
-                                actionsCol += 'data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">';
-                                actionsCol += '<i class="fas fa-bars" style="color:slategray"></i></a>';
-                                actionsCol += ' <div class="dropdown-menu small" aria-labelledby="dropdownMenuButton">';
-                                actionsCol += `<a href="${urlKartela}" class="dropdown-item">Καρτέλα</a>`;
-                                actionsCol += ' <a class="dropdown-item" href="#">Something else here</a>';
-                                actionsCol += ' </div>';
-                                actionsCol += '</td>';
-                                var actionColMobile ='<td class="small text-center d-table-cell d-sm-table-cell d-md-none">';
-                                actionColMobile +='<a class=" dropdown-toggle" role="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" ';
-                                actionColMobile +='aria-expanded="false"><i class="fas fa-bars fa-lg" style="color:slategray"></i></a>';
-                                actionColMobile +='<div class="dropdown-menu small" aria-labelledby="dropdownMenuButton">';
-                                actionColMobile += `<a class="dropdown-item" href="${urlEdit}">`;
-                                actionColMobile +=  '<i class="fas fa-edit fa-lg" style = "color:slategray" ></i> Edit</a>';
-                                actionColMobile += `<a class="dropdown-item" href="${urlInfo}">`;
-                                actionColMobile += '<i class="fas fa-info-circle fa-lg" style = "color:slategray" ></i> Details</a>';
-                                actionColMobile += `<a class="dropdown-item" href="${urlDel}">`;
-                                actionColMobile += '<i class="fas fa-trash fa-lg" style = "color:slategray" ></i> Delete</a>';
-                                actionColMobile += `<a class="dropdown-item" href="${urlKartela}">`;
-                                actionColMobile += '<i class="fas fa-receipt fa-lg" style = "color:slategray" ></i> Καρτέλα</a>' ;
-                                actionColMobile += `<a class="dropdown-item" href="${urlNewLikeThis}">`;
-                                actionColMobile += '<i class="fas fa-clone fa-lg" style="color:slategray"></i> Duplicate</a>';
-                                actionColMobile += '</div></td>';
                                 var $tr = $('<tr>');
 
-                                var $td = $(
-                                    '<td name="selectRowColumn"> <label class="custom-control custom-checkbox">  ' +
-                                    ' <input type="checkbox" class="custom-control-input" name="checkTableRow" ' +
-                                    `data-itemId="${itemId}">` +
-                                    '<span class="custom-control-indicator"></span></label></td>');
-                                $tr.append($td);
-                                var imageCol = '<td>';
-                                imageCol +=
-                                    '<a href="#" role="button" data-toggle="modal" data-target="#imageViewer" ';
-                                imageCol += `data-imageurl="${value.url}">`;
-                                imageCol += `<img src="${value.url}" style="height:50px;width:50px;" />`;
-                                imageCol += '</a>';
-                                imageCol += '</td>';
-                                $tr.append(imageCol);
-                                cols.forEach(function(item) {
+                                colDefs.forEach(function(item) {
                                     var $tdCol = $('<td>').text(item.text).addClass(item.class);
                                     $tr.append($tdCol);
 
                                 });
+                                var urlEdit = `@Url.Page("./Edit")?id=${itemId}`;
+                                var urlInfo = `@Url.Page("./Details")?id=${itemId}`;
+                                var urlDel = `@Url.Page("./Delete")?id=${itemId}`;
+                                var urlNewLikeThis=`@Url.Page("./Create")?copyFromId=${itemId}`;
+                                var actionsCol = '<td class="small text-center d-none d-md-table-cell">';
+                                actionsCol += `<a href="${urlEdit}"><i class="fas fa-edit fa-lg" style="color:slategray"></i></a> |`;
+                                actionsCol += `<a href="${urlInfo}"><i class="fas fa-info-circle fa-lg" style="color:slategray"></i></a> | `;
+                                actionsCol += `<a href="${urlDel}"><i class="fas fa-trash fa-lg" style="color:slategray"></i></a> | `;
+                                actionsCol += `<a href="${urlNewLikeThis}"><i class="fas fa-clone fa-lg" style="color:slategray"></i></a> `;
+                                actionsCol += '</td>';
+                                var actionColMobile = '<td class="small text-center d-table-cell d-sm-table-cell d-md-none">';
+                                actionColMobile +='<a class=" dropdown-toggle" role="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" ';
+                                actionColMobile +='aria-expanded="false"><i class="fas fa-bars fa-lg" style="color:slategray"></i></a>';
+                                actionColMobile +=
+                                    '<div class="dropdown-menu small" aria-labelledby="dropdownMenuButton">';
+                                actionColMobile += `<a class="dropdown-item" href="${urlEdit}"><i class="fas fa-edit fa-lg" style="color:slategray"></i>  Edit</a> `;
+                                actionColMobile += `<a class="dropdown-item" href="${urlInfo}"><i class="fas fa-info-circle fa-lg" style="color:slategray"></i> Details</a> `;
+                                actionColMobile += `<a class="dropdown-item" href="${urlDel}"><i class="fas fa-trash fa-lg" style="color:slategray"></i> Delete</a> `;
+                                actionColMobile += `<a class="dropdown-item" href="${urlNewLikeThis}"><i class="fas fa-clone fa-lg" style="color:slategray"></i> Duplicate</a> `;
+                                actionColMobile += '</div></td>';
                                 $tr.append(actionsCol);
-                                $tr.append(actionColMobile);
                                 $tr.appendTo('#myTable > tbody');
+                                
 
                             });
                         $('input[name=checkTableRow]').on('change',
@@ -480,6 +440,7 @@
                     },
                     error: function(e) {
                         console.log(e);
+
                     }
                 });
                 //#endregion
@@ -523,12 +484,11 @@
 
 
                 var companyFilter = $('#CompanyFilter').val();
-                //var datePeriod = $('#DatePeriodFilter').val();
+                var datePeriod = $('#DatePeriodFilter').val();
                 var sortData = $('#currentSort').val();
                 var searchVal = $('.search_input').val();
-                //var transactorTypeFilter = $('#TransactorTypeFilter').val();
-                var warehouseItemNatureFilter = $('#WarehouseItemNatureFilter').val();
-                getTableData(pageIndex, pageSize, sortData, '', companyFilter,'',warehouseItemNatureFilter,searchVal);
+
+                getTableData(pageIndex, pageSize, sortData, datePeriod, companyFilter,searchVal);
 
             };
             var gotoFirstPage = () => {
@@ -580,7 +540,7 @@
                         dataType: 'json',
                         type: 'POST',
                         data: idsJs,
-                        url: "/api/GrkoukInfoApi/DeletesellDocumentsList",
+                        url: "/api/GrkoukInfoApi/DellDocuList",
                         beforeSend: function() {
                             if (timeout) {
                                 clearTimeout(timeout);
@@ -727,11 +687,6 @@
                     $('#pageIndex').val(1);
                     refreshTableData();
                 });
-            $('#WarehouseItemNatureFilter').on('change',
-                function() {
-                    $('#pageIndex').val(1);
-                    refreshTableData();
-                });
             $('#PageSize').on('change',
                 function() {
                     $('#pageIndex').val(1);
@@ -752,38 +707,38 @@
                 function() {
                     gotoPreviousPage();
                 });
-            $('#CategorySortHeader').on('click',
+            $('#TransDateHeader').on('click',
                 function() {
                     var newSortVal = '';
                     var curSort = $('#currentSort').val();
                     if (curSort === undefined || curSort === null || curSort.length === 0) {
-                        curSort = 'categorysort:desc';
+                        curSort = 'transactiondate:desc';
                     }
                     var curSortAr = curSort.split(':');
-                    if (curSortAr[0] === 'categorysort') {
+                    if (curSortAr[0] === 'transactiondate') {
                         var newSort = curSortAr[1] === 'asc' ? 'desc' : 'asc';
                         newSortVal = curSortAr[0] + ':' + newSort;
                     } else {
-                        newSortVal = 'categorysort:asc';
+                        newSortVal = 'transactiondate:asc';
                     }
                     $('#currentSort').val(newSortVal);
                     $('#pageIndex').val(1);
                     refreshTableData();
 
                 });
-            $('#NameSortHeader').on('click',
+            $('#TransactorNameHeader').on('click',
                 function() {
                     var newSortVal = '';
                     var curSort = $('#currentSort').val();
                     if (curSort === undefined || curSort === null || curSort.length === 0) {
-                        curSort = 'namesort:desc';
+                        curSort = 'transactorname:desc';
                     }
                     var curSortAr = curSort.split(':');
-                    if (curSortAr[0] === 'namesort') {
+                    if (curSortAr[0] === 'transactorname') {
                         var newSort = curSortAr[1] === 'asc' ? 'desc' : 'asc';
                         newSortVal = curSortAr[0] + ':' + newSort;
                     } else {
-                        newSortVal = 'namesort:asc';
+                        newSortVal = 'transactorname:asc';
                     }
                     $('#currentSort').val(newSortVal);
                     $('#pageIndex').val(1);
@@ -793,7 +748,7 @@
                 var uri = '@Url.Page("Create")';
                 window.location.href = uri;
             });
-            $('.search_icon').on('click',
+$('.search_icon').on('click',
                 function () {
                     icon = $(this).find("svg");
                     if (icon.hasClass('fa-search')) {
@@ -802,7 +757,7 @@
                         icon.addClass("fa-search").removeClass("fa-times");
                         $('.search_input').val('');
                     }
-
+                   
                     refreshTableData();
                 });
 
@@ -814,19 +769,11 @@
 
                 } else {
                     $icon.addClass("fa-search").removeClass("fa-times");
-
+                    
                 }
                 refreshTableData();
             });
-            $('#imageViewer').on('show.bs.modal',
-                function(event) {
-                    var button = $(event.relatedTarget);
-                    var imageUrl = button.data('imageurl');
-                    var $modal = $(this);
-                    $modal.find('.modal-title').text('Image');
-                    $modal.find('#imageControl').attr("src", imageUrl);
-                });
-            var storageItemJs = localStorage.getItem('WarehouseItemsIndexView');
+            var storageItemJs = localStorage.getItem('ProductRecipesView');
             if (storageItemJs === undefined || storageItemJs === null) {
                 $('#pageIndex').val(1);
                 $('#filtersVisible').val(true);
@@ -835,9 +782,7 @@
                 // $filtersToggle.text('Hide Filters');
                 $('#DatePeriodFilter').val('CURMONTH');
                 $('#CompanyFilter').val(0);
-                $('#TransactorTypeFilter').val(1);
-                $('#WarehouseItemNatureFilter').val(1);
-                $('#currentSort').val('namesort:asc');
+                $('#currentSort').val('transactiondate:desc');
             } else {
                 var storageItem = JSON.parse(storageItemJs);
                 var filtersValue = storageItem.find(x => x.filterKey === 'filtersVisible').filterValue;
@@ -849,6 +794,14 @@
                 $('#filtersVisible').val(filtersValue);
                 filtersValue = storageItem.find(x => x.filterKey === 'rowSelectorsVisible').filterValue;
                 $('#rowSelectorsVisible').val(filtersValue);
+                //if (filtersValue === true) {
+                //    $rowSelectorsToggle.text('Hide Row Selectors');
+                //} else {
+                //    $rowSelectorsToggle.text('Show Row Selectors');
+                //}
+                // rosSelectorsToggleHandler();
+                filtersValue = storageItem.find(x => x.filterKey === 'dateRangeFilter').filterValue;
+                $('#DatePeriodFilter').val(filtersValue);
                 filtersValue = storageItem.find(x => x.filterKey === 'currentSort').filterValue;
                 $('#currentSort').val(filtersValue);
                 filtersValue = storageItem.find(x => x.filterKey === 'companyFilter').filterValue;
@@ -857,10 +810,6 @@
                 $('#PageSize').val(filtersValue);
                 filtersValue = storageItem.find(x => x.filterKey === 'pageIndex').filterValue;
                 $('#pageIndex').val(filtersValue);
-                filtersValue = storageItem.find(x => x.filterKey === 'transactorTypeFilter').filterValue;
-                $('#TransactorTypeFilter').val(filtersValue);
-                filtersValue = storageItem.find(x => x.filterKey === 'warehouseItemNatureFilter').filterValue;
-                $('#WarehouseItemNatureFilter').val(filtersValue);
             }
             handleFiltersUi();
             refreshTableData();
@@ -879,12 +828,10 @@
                 var rowSelectorsVisible = (rowSelectorsNotVisible) ? false : true;
 
                 var pageSize = $('#PageSize').val();
-               // var dateRange = $('#DatePeriodFilter').val();
+                var dateRange = $('#DatePeriodFilter').val();
                 var currentSort = $('#currentSort').val();
                 var companyFilter = $('#CompanyFilter').val();
                 var pageIndex = $('#pageIndex').val();
-                var transactorTypeFilter = $('#TransactorTypeFilter').val();
-                var warehouseItemNatureFilter = $('#WarehouseItemNatureFilter').val();
                 var filtersArr = [];
                 //#endregion
                 filtersArr.push({
@@ -903,7 +850,10 @@
                     filterKey: 'pageSize',
                     filterValue: pageSize
                 });
-
+                filtersArr.push({
+                    filterKey: 'dateRangeFilter',
+                    filterValue: dateRange
+                });
                 filtersArr.push({
                     filterKey: 'currentSort',
                     filterValue: currentSort
@@ -912,18 +862,14 @@
                     filterKey: 'companyFilter',
                     filterValue: companyFilter
                 });
-                filtersArr.push({
-                    filterKey: 'transactorTypeFilter',
-                    filterValue: transactorTypeFilter
-                });
-                filtersArr.push({
-                    filterKey: 'warehouseItemNatureFilter',
-                    filterValue: warehouseItemNatureFilter
-                });
+                //var storageItem = new {
+                //    itemName: 'dateRangeFilter',
+                //    filters:filtersArr
+                //};
 
                 var sessionVal = JSON.stringify(filtersArr);
 
-                localStorage.setItem('WarehouseItemsIndexView', sessionVal);
+                localStorage.setItem('ProductRecipesView', sessionVal);
                 //#endregion
 
             });

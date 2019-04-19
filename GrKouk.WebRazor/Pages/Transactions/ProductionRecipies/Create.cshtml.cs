@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using NToastNotify;
 
-namespace GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc
+namespace GrKouk.WebRazor.Pages.Transactions.ProductionRecipies
 {
     [Authorize(Roles = "Admin")]
     public class CreateModel : PageModel
@@ -53,7 +53,6 @@ namespace GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc
             ViewData["CompanyId"] = new SelectList(_context.Companies.OrderBy(p=>p.Code).AsNoTracking(), "Id", "Code");
             ViewData["BuyDocSeriesId"] = new SelectList(_context.BuyDocSeriesDefs.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
             ViewData["TransactorId"] = new SelectList(supplierList, "Id", "Name");
-            ViewData["PaymentMethodId"] = new SelectList(_context.PaymentMethods.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
         }
 
         [BindProperty]
