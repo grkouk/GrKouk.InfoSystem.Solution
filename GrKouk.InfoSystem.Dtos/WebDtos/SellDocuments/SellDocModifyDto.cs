@@ -42,7 +42,7 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.SellDocuments
         [MaxLength(500)] public string Etiology { get; set; }
         public int CompanyId { get; set; }
         public string CompanyCode { get; set; }
-
+        public int PaymentMethodId { get; set; }
         [Timestamp] public byte[] Timestamp { get; set; }
 
         public virtual ICollection<SellDocLineModifyDto> SellDocLines

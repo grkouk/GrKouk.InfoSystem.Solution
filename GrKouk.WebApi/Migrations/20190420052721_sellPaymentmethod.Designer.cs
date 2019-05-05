@@ -4,14 +4,16 @@ using GrKouk.WebApi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace GrKouk.WebApi.Migrations
 {
     [DbContext(typeof(ApiDbContext))]
-    partial class ApiDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190420052721_sellPaymentmethod")]
+    partial class sellPaymentmethod
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -178,13 +180,9 @@ namespace GrKouk.WebApi.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("AutoPayoffWay");
-
                     b.Property<int>("DaysOverdue");
 
                     b.Property<string>("Name");
-
-                    b.Property<int?>("PayoffSeriesId");
 
                     b.HasKey("Id");
 
@@ -1151,8 +1149,6 @@ namespace GrKouk.WebApi.Migrations
 
                     b.HasIndex("FiscalPeriodId");
 
-                    b.HasIndex("PaymentMethodId");
-
                     b.HasIndex("SectionId");
 
                     b.HasIndex("SellDocSeriesId");
@@ -1829,11 +1825,6 @@ namespace GrKouk.WebApi.Migrations
                         .WithMany()
                         .HasForeignKey("FiscalPeriodId")
                         .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("GrKouk.InfoSystem.Domain.FinConfig.PaymentMethod", "PaymentMethod")
-                        .WithMany()
-                        .HasForeignKey("PaymentMethodId")
-                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("GrKouk.InfoSystem.Domain.Shared.Section", "Section")
                         .WithMany()

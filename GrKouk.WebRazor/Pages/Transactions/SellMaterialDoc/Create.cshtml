@@ -42,19 +42,7 @@
                     <input asp-for="ItemVm.TransDate" class="form-control form-control-sm " autofocus />
                     <span asp-validation-for="ItemVm.TransDate" class="text-danger small"></span>
                 </div>
-                
-                <div class="form-group col-md-2">
-                    <label asp-for="ItemVm.CompanyId" class="control-label small"></label>
-                    <select asp-for="ItemVm.CompanyId" class="form-control form-control-sm " asp-items="ViewBag.CompanyId"></select>
-                </div>
-               
-            </div>
-            <div class="form-row">
-                <div class="form-group col-md-5">
-                    <label asp-for="ItemVm.TransactorId" class="control-label small"></label>
-                    <select asp-for="ItemVm.TransactorId" class="form-control form-control-sm " asp-items="ViewBag.TransactorId"></select>
-                </div>
-                <div class="form-group col-md-4">
+                <div class="form-group col-md-7">
                     <label asp-for="ItemVm.SellDocSeriesId" class="control-label small"></label>
                     <select asp-for="ItemVm.SellDocSeriesId" class="form-control form-control-sm " asp-items="ViewBag.SellDocSeriesId"></select>
                 </div>
@@ -63,6 +51,22 @@
                     <input asp-for="ItemVm.TransRefCode" class="form-control form-control-sm " />
                     <span asp-validation-for="ItemVm.TransRefCode" class="text-danger small"></span>
 
+                </div>
+              
+               
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label asp-for="ItemVm.TransactorId" class="control-label small"></label>
+                    <select asp-for="ItemVm.TransactorId" class="form-control form-control-sm " asp-items="ViewBag.TransactorId"></select>
+                </div>
+                <div class="form-group col-md-3">
+                    <label asp-for="ItemVm.CompanyId" class="control-label small"></label>
+                    <select asp-for="ItemVm.CompanyId" class="form-control form-control-sm " asp-items="ViewBag.CompanyId"></select>
+                </div>
+                <div class="form-group col-md-3">
+                    <label asp-for="ItemVm.PaymentMethodId" class="control-label" small></label>
+                    <select asp-for="ItemVm.PaymentMethodId" class="form-control form-control-sm small" asp-items="ViewBag.PaymentMethodId"></select>
                 </div>
             </div>
 
@@ -902,6 +906,7 @@
                     transactorId: $("#ItemVm_TransactorId").val(),
                     companyId: $("#ItemVm_CompanyId").val(),
                     sellDocSeriesId: $("#ItemVm_SellDocSeriesId").val(),
+                    paymentMethodId: $("#ItemVm_PaymentMethodId").val(),
                     Etiology: $("#ItemVm_Etiology").val(),
                     amountFpa: $("#ItemVm_AmountFpa").attr('data-actualValue'),
                     amountNet: $("#ItemVm_AmountNet").attr('data-actualValue'),

@@ -993,10 +993,9 @@ namespace GrKouk.WebRazor.Controllers
         {
             //Thread.Sleep(10000);
             IQueryable<WarehouseItem> fullListIq = _context.WarehouseItems;
-            int warehouseItemNatureFilter = 0;
             if (!String.IsNullOrEmpty(request.WarehouseItemNatureFilter))
             {
-                if (Int32.TryParse(request.WarehouseItemNatureFilter, out warehouseItemNatureFilter))
+                if (Int32.TryParse(request.WarehouseItemNatureFilter, out var warehouseItemNatureFilter))
                 {
                     if (warehouseItemNatureFilter > 0)
                     {
@@ -1042,12 +1041,22 @@ namespace GrKouk.WebRazor.Controllers
                                                    || p.Description.Contains(request.SearchFilter)
                                                    || p.MaterialCaterory.Name.Contains(request.SearchFilter));
             }
-            var projectedList = fullListIq.ProjectTo<WarehouseItemListDto>(_mapper.ConfigurationProvider);
-            var pageIndex = request.PageIndex;
 
-            var pageSize = request.PageSize;
+            PagedList<WarehouseItemListDto> listItems;
+            try
+            {
+                var projectedList = fullListIq.ProjectTo<WarehouseItemListDto>(_mapper.ConfigurationProvider);
+                var pageIndex = request.PageIndex;
 
-            var listItems = await PagedList<WarehouseItemListDto>.CreateAsync(projectedList, pageIndex, pageSize);
+                var pageSize = request.PageSize;
+
+                listItems = await PagedList<WarehouseItemListDto>.CreateAsync(projectedList, pageIndex, pageSize);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
             foreach (var productItem in listItems)
             {
                 var productMedia = await _context.ProductMedia

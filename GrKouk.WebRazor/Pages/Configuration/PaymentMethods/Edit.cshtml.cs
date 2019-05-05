@@ -1,30 +1,29 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GrKouk.InfoSystem.Definitions;
-using GrKouk.InfoSystem.Domain.FinConfig;
-using GrKouk.WebRazor.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using NToastNotify;
+using GrKouk.InfoSystem.Domain.FinConfig;
+using GrKouk.WebApi.Data;
+using GrKouk.WebRazor.Helpers;
 
-namespace GrKouk.WebRazor.Pages.Configuration.BuyDocSeriesDefinitions
+namespace GrKouk.WebRazor.Pages.Configuration.PaymentMethods
 {
     public class EditModel : PageModel
     {
         private readonly GrKouk.WebApi.Data.ApiDbContext _context;
-        private readonly IToastNotification toastNotification;
 
-        public EditModel(GrKouk.WebApi.Data.ApiDbContext context, IToastNotification toastNotification)
+        public EditModel(GrKouk.WebApi.Data.ApiDbContext context)
         {
             _context = context;
-            this.toastNotification = toastNotification;
         }
 
         [BindProperty]
-        public BuyDocSeriesDef BuyDocSeriesDef { get; set; }
+        public PaymentMethod PaymentMethod { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -32,19 +31,16 @@ namespace GrKouk.WebRazor.Pages.Configuration.BuyDocSeriesDefinitions
             {
                 return NotFound();
             }
+           
+            PaymentMethod = await _context.PaymentMethods.FirstOrDefaultAsync(m => m.Id == id);
 
-            BuyDocSeriesDef = await _context.BuyDocSeriesDefs
-                .Include(b => b.BuyDocTypeDef)
-                .Include(b => b.Company).FirstOrDefaultAsync(m => m.Id == id);
-
-            if (BuyDocSeriesDef == null)
+            if (PaymentMethod == null)
             {
                 return NotFound();
             }
             LoadCombos();
             return Page();
         }
-
         private void LoadCombos()
         {
             var seriesAutoPayOffList = Enum.GetValues(typeof(SeriesAutoPayoffEnum))
@@ -55,11 +51,7 @@ namespace GrKouk.WebRazor.Pages.Configuration.BuyDocSeriesDefinitions
                     Text = c.GetDescription()
                 }).ToList();
             ViewData["AutoPayoffWay"] = new SelectList(seriesAutoPayOffList, "Value", "Text");
-            ViewData["BuyDocTypeDefId"] = new SelectList(_context.BuyDocTypeDefs.OrderBy(p=>p.Name).AsNoTracking(), "Id", "Name");
-            ViewData["CompanyId"] = new SelectList(_context.Companies.OrderBy(p => p.Code).AsNoTracking(), "Id", "Code");
-            ViewData["PayoffSeriesId"] = new SelectList(_context.TransTransactorDocSeriesDefs.OrderBy(s => s.Name).AsNoTracking(), "Id", "Name");
         }
-
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
@@ -67,16 +59,15 @@ namespace GrKouk.WebRazor.Pages.Configuration.BuyDocSeriesDefinitions
                 return Page();
             }
 
-            _context.Attach(BuyDocSeriesDef).State = EntityState.Modified;
+            _context.Attach(PaymentMethod).State = EntityState.Modified;
 
             try
             {
                 await _context.SaveChangesAsync();
-                toastNotification.AddSuccessToastMessage("Saved");
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!BuyMaterialDocSeriesDefExists(BuyDocSeriesDef.Id))
+                if (!PaymentMethodExists(PaymentMethod.Id))
                 {
                     return NotFound();
                 }
@@ -89,9 +80,9 @@ namespace GrKouk.WebRazor.Pages.Configuration.BuyDocSeriesDefinitions
             return RedirectToPage("./Index");
         }
 
-        private bool BuyMaterialDocSeriesDefExists(int id)
+        private bool PaymentMethodExists(int id)
         {
-            return _context.BuyDocSeriesDefs.Any(e => e.Id == id);
+            return _context.PaymentMethods.Any(e => e.Id == id);
         }
     }
 }

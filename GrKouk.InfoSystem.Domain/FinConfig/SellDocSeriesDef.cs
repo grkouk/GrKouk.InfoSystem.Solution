@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using GrKouk.InfoSystem.Definitions;
 using GrKouk.InfoSystem.Domain.Shared;
 
 namespace GrKouk.InfoSystem.Domain.FinConfig
@@ -29,6 +30,10 @@ namespace GrKouk.InfoSystem.Domain.FinConfig
 
         public int CompanyId { get; set; }
         public virtual Company Company { get; set; }
-
+        /// <summary>
+        /// Τρόπος αυτόματης εξόφλησης σειράς παραστατικού
+        /// </summary>
+        public SeriesAutoPayoffEnum AutoPayoffWay { get; set; }
+        public int? PayoffSeriesId { get; set; }
     }
 }

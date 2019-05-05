@@ -8,9 +8,9 @@
     <Description>GrKouk Information System</Description>
     <Copyright>George Koukoudis</Copyright>
     <Configurations>Debug;Release;DebugWeb;RlsWeb</Configurations>
-    <Version>1.4.2</Version>
-    <AssemblyVersion>1.4.2.0</AssemblyVersion>
-    <FileVersion>1.4.2.0</FileVersion>
+    <Version>1.4.5</Version>
+    <AssemblyVersion>1.4.5.0</AssemblyVersion>
+    <FileVersion>1.4.5.0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -105,7 +105,7 @@
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="6.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.1.2" PrivateAssets="All" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.5" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.9" PrivateAssets="All" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
     <PackageReference Include="NToastNotify" Version="5.0.8" />
     </ItemGroup>
@@ -118,7 +118,6 @@
 
   <ItemGroup>
     <Folder Include="Areas\Identity\Services\" />
-    <Folder Include="Pages\Configuration\PaymentMethods\" />
     <Folder Include="wwwroot\lib\multiselectListbox\" />
     <Folder Include="wwwroot\lib\iziModal\" />
     <Folder Include="wwwroot\productImages\" />
