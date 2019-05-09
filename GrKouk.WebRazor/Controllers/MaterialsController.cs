@@ -349,7 +349,7 @@ namespace GrKouk.WebRazor.Controllers
                     error = "No Series Found"
                 });
             }
-           // SaleSeriesInSession(seriesId.ToString());
+
             await _context.Entry(salesSeriesDef)
                 .Reference(p => p.SellDocTypeDef)
                 .LoadAsync();

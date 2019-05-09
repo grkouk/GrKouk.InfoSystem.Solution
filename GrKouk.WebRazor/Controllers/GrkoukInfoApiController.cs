@@ -999,7 +999,8 @@ namespace GrKouk.WebRazor.Controllers
                 {
                     if (warehouseItemNatureFilter > 0)
                     {
-                        fullListIq = fullListIq.Where(p => p.WarehouseItemNature == (WarehouseItemNatureEnum)warehouseItemNatureFilter);
+                        var flt = (WarehouseItemNatureEnum) warehouseItemNatureFilter;
+                        fullListIq = fullListIq.Where(p => p.WarehouseItemNature == flt);
                     }
                 }
             }
@@ -1054,8 +1055,12 @@ namespace GrKouk.WebRazor.Controllers
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
-                throw;
+                string msg = e.InnerException.Message;
+                return BadRequest(new
+                {
+                    error = e.Message + " " + msg
+                });
+               
             }
             foreach (var productItem in listItems)
             {
