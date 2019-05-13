@@ -1305,13 +1305,13 @@ namespace GrKouk.WebRazor.Controllers
 
                         break;
                     case "SYS.CUSTOMER":
-                        runningTotal = dbTransaction.DebitAmount - dbTransaction.CreditAmount;
+                        runningTotal = dbTransaction.DebitAmount - dbTransaction.CreditAmount+runningTotal;
                         break;
                     case "SYS.SUPPLIER":
-                        runningTotal = dbTransaction.CreditAmount - dbTransaction.DebitAmount;
+                        runningTotal = dbTransaction.CreditAmount - dbTransaction.DebitAmount+runningTotal;
                         break;
                     default:
-                        runningTotal = dbTransaction.CreditAmount - dbTransaction.DebitAmount;
+                        runningTotal = dbTransaction.CreditAmount - dbTransaction.DebitAmount+runningTotal;
                         break;
                 }
 
