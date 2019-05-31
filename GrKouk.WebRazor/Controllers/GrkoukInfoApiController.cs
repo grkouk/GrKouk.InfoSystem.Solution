@@ -1077,22 +1077,7 @@ namespace GrKouk.WebRazor.Controllers
                 }
                 
             }
-            //var relevantDiarys = new List<SearchListItem>();
-            //var dList = await _context.DiaryDefs.Where(p => p.DiaryType == DiaryTypeEnum.DiaryTypeEnumTransactors)
-            //    .ToListAsync();
-            //if (warehouseItemNatureFilter != 0)
-            //{
-            //    var tf = warehouseItemNatureFilter;
-            //    relevantDiarys = dList
-            //        .Where(tx => Array.ConvertAll(tx.SelectedTransTypes.Split(","), int.Parse).Contains(tf))
-            //        .Select(item => new SearchListItem()
-            //        {
-            //            Value = item.Id,
-            //            Text = item.Name
-            //        })
-            //        .ToList();
-            //}
-
+            
             var response = new IndexDataTableResponse<WarehouseItemListDto>
             {
                 TotalRecords = listItems.TotalCount,

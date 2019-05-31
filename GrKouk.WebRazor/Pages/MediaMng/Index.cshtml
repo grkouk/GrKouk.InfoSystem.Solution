@@ -1092,19 +1092,23 @@
                     $modal.find('.modal-title').text('Image');
                     $modal.find('#imageControl').attr("src", imageUrl);
                 });
+            var mediaArr = [];
             $('#productSelector').on('show.bs.modal',
                 function (event) {
                     var button = $(event.relatedTarget);
                     var mediaId = button.data('mediaid');
-                    var arr = [];
-                    arr.push(mediaId);
-                    getProductsSelectorList(arr,'', 10);
+                    mediaArr.length = 0;
+                    //var arr = [];
+                    //arr.push(mediaId);
+                    
+                    mediaArr.push(mediaId);
+                    getProductsSelectorList(mediaArr,'', 10);
                 });
 
             var timeKey;
             $('[name=productSearchText]').on('keypress',
                 function(event) {
-                    console.log("Inside keyUp evnet");
+                    console.log("Inside keyUp event");
                     var searchText = $('[name=productSearchText]').val();
                     if (searchText.length == 0) {
                         console.log("search text lenght 0 returning");
@@ -1116,7 +1120,7 @@
                     }
                     timeKey = setTimeout(function() {
                             console.log("Will execute get request in 1 sec!");
-                            getProductsSelectorList( '',searchText, 100);
+                            getProductsSelectorList( mediaArr,searchText, 100);
                         },
                         1000);
                 });
