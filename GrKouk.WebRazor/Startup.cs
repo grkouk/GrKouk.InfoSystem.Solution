@@ -29,6 +29,24 @@ namespace GrKouk.WebRazor
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //services.AddCors(options =>
+            //{
+            //    options.AddPolicy("AllowAllOrigins",
+            //        builder =>
+            //        {
+            //            builder.AllowAnyOrigin()
+            //                .AllowAnyMethod()
+            //                .AllowAnyHeader()
+            //                .AllowCredentials()
+            //                .WithExposedHeaders("X-Pagination");
+            //        });
+            //    //options.AddPolicy("AllowSpecificOrigins",
+            //    //    builder =>
+            //    //    {
+            //    //        builder.WithOrigins( "http://potos.tours",
+            //    //            "http://thassos-rent-a-bike.com").AllowAnyMethod().AllowAnyHeader();
+            //    //    });
+            //});
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
@@ -108,6 +126,7 @@ namespace GrKouk.WebRazor
             });
             app.UseNToastNotify();
             app.UseSession();
+           // app.UseCors("AllowAllOrigins");
             app.UseMvc();
         }
     }

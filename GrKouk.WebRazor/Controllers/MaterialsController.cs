@@ -865,7 +865,7 @@ namespace GrKouk.WebRazor.Controllers
             return Ok(new { });
         }
 
-        [HttpPut("MaterialBuyDocUpdate")]
+        [HttpPost("MaterialBuyDocUpdate")]
         public async Task<IActionResult> PutMaterialBuyDoc([FromBody] BuyDocModifyAjaxDto data)
         {
             const string sectionCode = "SYS-BUY-MATERIALS-SCN";
@@ -1748,7 +1748,7 @@ namespace GrKouk.WebRazor.Controllers
             return Ok(new { });
         }
 
-        [HttpPut("SalesDocUpdate")]
+        [HttpPost("SalesDocUpdate")]
         public async Task<IActionResult> PutSalesDoc([FromBody] SellDocModifyAjaxDto data)
         {
             const string sectionCode = "SYS-SELL-COMBINED-SCN";
