@@ -275,7 +275,7 @@ namespace GrKouk.WebRazor.Controllers
             {
                 switch (request.SortData.ToLower())
                 {
-                    
+
                     case "transactorname:asc":
                         fullListIq = fullListIq.OrderBy(p => p.Product.Name);
                         break;
@@ -307,7 +307,7 @@ namespace GrKouk.WebRazor.Controllers
             var pageSize = request.PageSize;
 
             var listItems = await PagedList<ProductRecipeDto>.CreateAsync(t, pageIndex, pageSize);
-           // decimal sumAmountTotal = listItems.Sum(p => p.TotalAmount);
+            // decimal sumAmountTotal = listItems.Sum(p => p.TotalAmount);
 
             var response = new IndexDataTableResponse<ProductRecipeDto>
             {
@@ -315,7 +315,7 @@ namespace GrKouk.WebRazor.Controllers
                 TotalPages = listItems.TotalPages,
                 HasPrevious = listItems.HasPrevious,
                 HasNext = listItems.HasNext,
-               // SumOfAmount = sumAmountTotal,
+                // SumOfAmount = sumAmountTotal,
                 Data = listItems
             };
             //return new JsonResult(response);
@@ -786,7 +786,7 @@ namespace GrKouk.WebRazor.Controllers
                     break;
                 case WarehouseItemNatureEnum.WarehouseItemNatureService:
                     //isozigioName = "Υπηρεσιών";
-                   // isozigioType = "SUPPLIER";
+                    // isozigioType = "SUPPLIER";
                     break;
                 case WarehouseItemNatureEnum.WarehouseItemNatureExpense:
                     //isozigioName = "Δαπάνων";
@@ -874,7 +874,7 @@ namespace GrKouk.WebRazor.Controllers
             decimal sumExportsVolume = 0;
             decimal sumImportsValue = 0;
             decimal sumExportsValue = 0;
-           // decimal sumDifference = 0;
+            // decimal sumDifference = 0;
 
             IQueryable<WarehouseKartelaLine> fullListIq = from s in outList select s;
 
@@ -999,7 +999,7 @@ namespace GrKouk.WebRazor.Controllers
                 {
                     if (warehouseItemNatureFilter > 0)
                     {
-                        var flt = (WarehouseItemNatureEnum) warehouseItemNatureFilter;
+                        var flt = (WarehouseItemNatureEnum)warehouseItemNatureFilter;
                         fullListIq = fullListIq.Where(p => p.WarehouseItemNature == flt);
                     }
                 }
@@ -1060,24 +1060,35 @@ namespace GrKouk.WebRazor.Controllers
                 {
                     error = e.Message + " " + msg
                 });
-               
+
             }
             foreach (var productItem in listItems)
             {
-                var productMedia = await _context.ProductMedia
-                    .Include(p=>p.MediaEntry)
-                    .SingleOrDefaultAsync(p => p.ProductId == productItem.Id);
-                if (productMedia!=null)
+
+                ProductMedia productMedia;
+
+                try
                 {
-                    productItem.Url = Url.Content("~/productimages/" + productMedia.MediaEntry.MediaFile);
+                    productMedia = await _context.ProductMedia
+                        .Include(p => p.MediaEntry)
+                        .SingleOrDefaultAsync(p => p.ProductId == productItem.Id);
+                    if (productMedia != null)
+                    {
+                        productItem.Url = Url.Content("~/productimages/" + productMedia.MediaEntry.MediaFile);
+                    }
+                    else
+                    {
+                        productItem.Url = Url.Content("~/productimages/" + "noimage.jpg");
+                    }
                 }
-                else
+                catch (Exception e)
                 {
+                    Console.WriteLine(e);
                     productItem.Url = Url.Content("~/productimages/" + "noimage.jpg");
                 }
-                
+
             }
-            
+
             var response = new IndexDataTableResponse<WarehouseItemListDto>
             {
                 TotalRecords = listItems.TotalCount,
@@ -1290,13 +1301,13 @@ namespace GrKouk.WebRazor.Controllers
 
                         break;
                     case "SYS.CUSTOMER":
-                        runningTotal = dbTransaction.DebitAmount - dbTransaction.CreditAmount+runningTotal;
+                        runningTotal = dbTransaction.DebitAmount - dbTransaction.CreditAmount + runningTotal;
                         break;
                     case "SYS.SUPPLIER":
-                        runningTotal = dbTransaction.CreditAmount - dbTransaction.DebitAmount+runningTotal;
+                        runningTotal = dbTransaction.CreditAmount - dbTransaction.DebitAmount + runningTotal;
                         break;
                     default:
-                        runningTotal = dbTransaction.CreditAmount - dbTransaction.DebitAmount+runningTotal;
+                        runningTotal = dbTransaction.CreditAmount - dbTransaction.DebitAmount + runningTotal;
                         break;
                 }
 
@@ -1507,7 +1518,7 @@ namespace GrKouk.WebRazor.Controllers
             decimal sumExportsVolume = 0;
             decimal sumImportsValue = 0;
             decimal sumExportsValue = 0;
-          //  decimal sumDifference = 0;
+            //  decimal sumDifference = 0;
 
             IQueryable<WarehouseKartelaLine> fullListIq = from s in outList select s;
             //if (!String.IsNullOrEmpty(request.SearchFilter))
@@ -1600,7 +1611,7 @@ namespace GrKouk.WebRazor.Controllers
                 }
             }
 
-           
+
             if (!String.IsNullOrEmpty(request.SearchFilter))
             {
                 fullListIq = fullListIq.Where(p => p.WarehouseItem.Name.Contains(request.SearchFilter)
@@ -1640,7 +1651,7 @@ namespace GrKouk.WebRazor.Controllers
                     case "namesort:desc":
                         fullListIq = fullListIq.OrderByDescending(p => p.MediaFile);
                         break;
-                   
+
                 }
             }
             if (!String.IsNullOrEmpty(request.SearchFilter))
@@ -1724,7 +1735,7 @@ namespace GrKouk.WebRazor.Controllers
             int requested = 0;
             int allreadyAssigned = 0;
 
-           // Thread.Sleep(1500);
+            // Thread.Sleep(1500);
             if (request.MediaIds == null)
             {
                 return BadRequest(new { Message = "Nothing to add" });
@@ -1742,7 +1753,7 @@ namespace GrKouk.WebRazor.Controllers
                 {
                     var b = await _context.ProductMedia.SingleOrDefaultAsync(p =>
                         p.MediaEntryId == mediaItemId &&
-                        p.ProductId == request.ProductId );
+                        p.ProductId == request.ProductId);
                     if (b == null)
                     {
                         var itemToAdd = new ProductMedia()
