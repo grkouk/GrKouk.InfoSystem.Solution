@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GrKouk.InfoSystem.Domain.Shared
 {
@@ -29,6 +30,7 @@ namespace GrKouk.InfoSystem.Domain.Shared
         public double Quontity2 { get; set; }
         public decimal FpaRate { get; set; }
         public decimal DiscountRate { get; set; }
+        [Column(TypeName = "decimal(18, 4)")]
         public decimal UnitPrice { get; set; }
         public decimal AmountFpa { get; set; }
         public decimal AmountNet { get; set; }
