@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace GrKouk.InfoSystem.Domain.Shared
@@ -31,9 +32,11 @@ namespace GrKouk.InfoSystem.Domain.Shared
         [Required]
         public int BuyDocTypeId { get; set; }
         public virtual BuyDocTypeDef BuyDocType { get; set; }
-
+        [Column(TypeName = "decimal(18, 4)")]
         public decimal AmountFpa { get; set; }
+        [Column(TypeName = "decimal(18, 4)")]
         public decimal AmountNet { get; set; }
+        [Column(TypeName = "decimal(18, 4)")]
         public decimal AmountDiscount { get; set; }
 
         [MaxLength(500)]

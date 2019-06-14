@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using GrKouk.InfoSystem.Definitions;
 using GrKouk.InfoSystem.Domain.FinConfig;
 
@@ -32,14 +33,19 @@ namespace GrKouk.InfoSystem.Domain.Shared
         public FinActionsEnum FinancialAction { get; set; }
 
         public decimal FpaRate { get; set; }
+        
         public decimal DiscountRate { get; set; }
-
+        [Column(TypeName = "decimal(18, 4)")]
         public decimal AmountFpa { get; set; }
+        [Column(TypeName = "decimal(18, 4)")]
         public decimal AmountNet { get; set; }
+        [Column(TypeName = "decimal(18, 4)")]
         public decimal AmountDiscount { get; set; }
-
+        [Column(TypeName = "decimal(18, 4)")]
         public decimal TransFpaAmount { get; set; }
+        [Column(TypeName = "decimal(18, 4)")]
         public decimal TransNetAmount { get; set; }
+        [Column(TypeName = "decimal(18, 4)")]
         public decimal TransDiscountAmount { get; set; }
 
         [MaxLength(500)]

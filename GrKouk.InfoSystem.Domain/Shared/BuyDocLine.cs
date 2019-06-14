@@ -32,9 +32,13 @@ namespace GrKouk.InfoSystem.Domain.Shared
         public decimal DiscountRate { get; set; }
         [Column(TypeName = "decimal(18, 4)")]
         public decimal UnitPrice { get; set; }
+        [Column(TypeName = "decimal(18, 4)")]
         public decimal UnitExpenses { get; set; }
+        [Column(TypeName = "decimal(18, 4)")]
         public decimal AmountFpa { get; set; }
+        [Column(TypeName = "decimal(18, 4)")]
         public decimal AmountNet { get; set; }
+        [Column(TypeName = "decimal(18, 4)")]
         public decimal AmountDiscount { get; set; }
         [MaxLength(500)]
         public string Etiology { get; set; }
