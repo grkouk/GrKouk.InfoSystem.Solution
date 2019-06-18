@@ -253,7 +253,9 @@ namespace GrKouk.WebRazor.Controllers
 
             var listItems = await PagedList<BuyDocListDto>.CreateAsync(t, pageIndex, pageSize);
             decimal sumAmountTotal = listItems.Sum(p => p.TotalAmount);
-
+            //decimal sumAmountTotal = listItems.Sum(p => p.TotalAmount);
+            //decimal sumDebit = listItems.Sum(p => p.DebitAmount);
+            //decimal sumCredit = listItems.Sum(p => p.CreditAmount);
             var response = new IndexDataTableResponse<BuyDocListDto>
             {
                 TotalRecords = listItems.TotalCount,

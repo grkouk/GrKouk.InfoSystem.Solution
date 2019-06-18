@@ -395,6 +395,20 @@
                                 handleSelectedRowsUi();
                             });
                         //console.log();
+                        var sumAmount = formatterCurrency.format(result.sumOfAmount);
+                      
+                        var $summaryRow = $('<tr class="table-info">').append(
+                            $('<td name="selectRowColumn"> </td>  '),
+                            $('<td>'),
+                           
+                            $('<td>').text('Σύνολα Σελίδας').addClass('small font-weight-bold'),
+                            $('<td>').text('').addClass('small'),
+                            $('<td>').text('').addClass('small d-none d-sm-table-cell'),
+                            $('<td>').text(sumAmount).addClass('small text-right font-weight-bold'),
+                           
+                            $('<td>').text('').addClass('small d-none d-md-table-cell'),
+                            $('<td>')
+                        ).appendTo('#myTable > tbody:last');
                         rowSelectorsUi();
                         handleSortUi();
                     },
