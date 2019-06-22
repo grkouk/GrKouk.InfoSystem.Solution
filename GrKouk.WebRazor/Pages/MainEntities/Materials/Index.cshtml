@@ -264,6 +264,60 @@
             var reallyIsNaN = function(x) {
                 return x !== x;
             };
+            var unlinkProductImages = (productId) => {
+                console.log("Inside unlinkProductImages");
+                 var timeout;
+
+                var uri =`/api/GrKoukInfoApi/UnlinkProductImages?productId=${productId}`;
+                $.ajax({
+                    contentType: 'application/json; charset=utf-8',
+
+                    dataType: 'json',
+                    type: 'GET',
+
+                    url: uri,
+                    beforeSend: function() {
+                        if (timeout) {
+                            clearTimeout(timeout);
+                        }
+                        timeout = setTimeout(function() {
+
+                                $("#loadMe").modal({
+                                    backdrop: "static", //remove ability to close modal with click
+                                    keyboard: false, //remove option to close with keyboard
+                                    show: true //Display loader!
+                                });
+                            },
+                            1000);
+
+                    },
+                    success: function(result) {
+                        toastr.success("Unlink Product Images", result.message);
+                        refreshTableData();
+                    },
+                    complete: function() {
+                        if (timeout) {
+                            clearTimeout(timeout);
+                        }
+                        $("#loadMe").modal("hide");
+                        setTimeout(function() {
+                                console.log('Checking for open modals');
+                                var isOpen = $('#loadMe').hasClass('show');
+                                if (isOpen) {
+                                    console.log('There is an open Modal');
+                                    $("#loadMe").modal("hide");
+                                } else {
+                                    console.log('No open modal');
+                                }
+                            },
+                            2000);
+                    },
+                    error: function(e) {
+                        console.log(e);
+                        toastr.error("Error", e.responseJSON.error);
+                    }
+                });
+            }
             var handleSortUi = () => {
                 var curSort = $('#currentSort').val();
                 $('[name=SortIcon]').hide();
@@ -399,6 +453,7 @@
                                 var urlDel = `@Url.Page("./Delete")?id=${itemId}`;
                                 var urlNewLikeThis = `@Url.Page("./Create")?copyFromId=${itemId}`;
                                 var urlKartela = `@Url.Page("./Kartela")?warehouseItemId=${itemId}`;
+                                var urlUnlinkImages = `@Url.Page("./Kartela")?warehouseItemId=${itemId}`;
                                 var actionsCol = '<td class="small text-center d-none d-md-table-cell">';
                                 actionsCol += `<a href="${urlEdit}"><i class="fas fa-edit fa-lg" style="color:slategray"></i></a> |`;
                                 actionsCol += `<a href="${urlInfo}"><i class="fas fa-info-circle fa-lg" style="color:slategray"></i></a> | `;
@@ -409,7 +464,10 @@
                                 actionsCol += '<i class="fas fa-bars" style="color:slategray"></i></a>';
                                 actionsCol += ' <div class="dropdown-menu small" aria-labelledby="dropdownMenuButton">';
                                 actionsCol += `<a href="${urlKartela}" class="dropdown-item">Καρτέλα</a>`;
-                                actionsCol += ' <a class="dropdown-item" href="#">Something else here</a>';
+                                actionsCol += '<a name="UnlinkImageLink" class="dropdown-item" href="#"';
+                                actionsCol += ` data-itemId="${itemId}" `;
+                                actionsCol += ">Unlink Images";
+                                actionsCol += "</a>";
                                 actionsCol += ' </div>';
                                 actionsCol += '</td>';
                                 var actionColMobile ='<td class="small text-center d-table-cell d-sm-table-cell d-md-none">';
@@ -457,6 +515,16 @@
                             function() {
                                 handleSelectedRowsUi();
                             });
+                        $('a[name=UnlinkImageLink]').on('click',
+                            function () {
+                                
+                                var sid = this.dataset.itemid;
+                                var id = parseInt(sid);
+                                var productId = id;
+                                unlinkProductImages(productId);
+                                return false;
+                            });
+
                         //console.log();
                         rowSelectorsUi();
                         handleSortUi();

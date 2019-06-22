@@ -61,6 +61,48 @@ namespace GrKouk.WebRazor.Controllers
             _context = context;
             _mapper = mapper;
         }
+        [HttpGet("UnlinkProductImages")]
+        public async Task<IActionResult> UnlinkProductImages(int ProductId)
+        {
+            string message="";
+            using (var transaction = _context.Database.BeginTransaction())
+            {
+                var mediaToDelete = await _context.ProductMedia.Where(p => p.ProductId == ProductId).ToListAsync();
+                if (mediaToDelete.Count>0)
+                {
+                    foreach (var mediaItem in mediaToDelete)
+                    {
+                        _context.ProductMedia.Remove(mediaItem);
+                    }
+
+                    try
+                    {
+                        var mediaUnlinked =  await _context.SaveChangesAsync();
+                        var ms = new StringBuilder()
+                            .Append("Unlinking media successful")
+                            .Append($"</br>Unlinked: {mediaUnlinked} media");
+
+                        message = ms.ToString();
+                      
+                        transaction.Commit();
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e);
+                        transaction.Rollback();
+                        var ms = new StringBuilder()
+                            .Append("Unlinking media unsuccessful")
+                            .Append($"</br> {e.Message}");
+                        message = ms.ToString();
+                       
+                    }
+                }
+                
+               
+            }
+
+            return Ok(new { message=message  });
+        }
         [HttpPost("DeleteBuyDocumentsList")]
         public async Task<IActionResult> DeleteBuyDocumentList([FromBody] IdList docIds)
         {
