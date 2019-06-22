@@ -179,7 +179,7 @@ namespace GrKouk.WebRazor.Controllers
             }
 
             fullListIq = fullListIq.Where(p => p.Active);
-            fullListIq = fullListIq.Where(p => p.Name.Contains(term));
+            fullListIq = fullListIq.Where(p => p.Name.Contains(term) || p.Code.Contains(term));
             var materials = await fullListIq
                 .ProjectTo<WarehouseItemSearchListDto>(_mapper.ConfigurationProvider)
                 .Select(p => new { label = p.Label, value = p.Id }).ToListAsync();
@@ -231,7 +231,7 @@ namespace GrKouk.WebRazor.Controllers
                 }
             }
 
-            fullListIq = fullListIq.Where(p => p.Name.Contains(term));
+            fullListIq = fullListIq.Where(p => p.Name.Contains(term) || p.Code.Contains(term));
             //var materials = await _context.WarehouseItems.Where(p => p.Name.Contains(term) )
             //    .ProjectTo<WarehouseItemSearchListDto>(_mapper.ConfigurationProvider)
             //    .Select(p => new { label = p.Label, value = p.Id }).ToListAsync();

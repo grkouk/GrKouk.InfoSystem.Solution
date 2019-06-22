@@ -59,7 +59,7 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.WarehouseItems
         {
             get
             {
-               var r= $"{this.Name} {this.WarehouseItemNatureName}";
+               var r= $"{this.Name} {{{this.Code}}} {this.WarehouseItemNatureName}";
                return r;
             }
         }
