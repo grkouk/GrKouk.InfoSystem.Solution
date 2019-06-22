@@ -619,7 +619,108 @@ namespace GrKouk.WebRazor.Controllers
                         });
                     }
                 }
-                int warehouseSeriesId=0;
+
+                //Αυτόματη εξόφληση
+                var paymentMethod =
+                   await _context.PaymentMethods.FirstOrDefaultAsync(p => p.Id == transToAttach.PaymentMethodId);
+                if (paymentMethod is null)
+                {
+                    transaction.Rollback();
+                    ModelState.AddModelError(string.Empty, "Δεν βρέθηκε ο τρόπος πληρωμής");
+                    return NotFound(new
+                    {
+                        error = "Δεν βρέθηκε ο τρόπος πληρωμής"
+                    });
+                }
+                if (paymentMethod.AutoPayoffWay == SeriesAutoPayoffEnum.SeriesAutoPayoffEnumAuto)
+                {
+                    var autoPaySeriesId = transToAttach.BuyDocSeries.PayoffSeriesId;
+                    if (autoPaySeriesId > 0)
+                    {
+                        var transTransactorPayOffSeries = await
+                         _context.TransTransactorDocSeriesDefs.FirstOrDefaultAsync(p =>
+                             p.Id == autoPaySeriesId);
+                        if (transTransactorPayOffSeries == null)
+                        {
+                            transaction.Rollback();
+                            ModelState.AddModelError(string.Empty, "AutoPayOff series not found");
+                            return NotFound(new
+                            {
+                                error = "AutoPayOff series not found"
+                            });
+                        }
+                        var sTransactorTransaction = _mapper.Map<TransactorTransaction>(data);
+                        sTransactorTransaction.TransactorId = data.TransactorId;
+                        sTransactorTransaction.SectionId = section.Id;
+                        sTransactorTransaction.TransTransactorDocTypeId = transTransactorPayOffSeries.TransTransactorDocTypeDefId;
+                        sTransactorTransaction.TransTransactorDocSeriesId = transTransactorPayOffSeries.Id;
+                        sTransactorTransaction.FiscalPeriodId = fiscalPeriod.Id;
+                        sTransactorTransaction.Etiology = "AutoPayOff";
+                        sTransactorTransaction.CreatorId = docId;
+                        await _context.Entry(transTransactorPayOffSeries)
+                            .Reference(t => t.TransTransactorDocTypeDef)
+                            .LoadAsync();
+                        var transTransactorDocTypeDef = transTransactorPayOffSeries.TransTransactorDocTypeDef;
+
+                        await _context.Entry(transTransactorDocTypeDef)
+                            .Reference(t => t.TransTransactorDef)
+                            .LoadAsync();
+                        var transPaymentTransactorDef = transTransactorDocTypeDef.TransTransactorDef;
+                        switch (transPaymentTransactorDef.FinancialTransAction)
+                        {
+                            case FinActionsEnum.FinActionsEnumNoChange:
+                                sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumNoChange;
+                                sTransactorTransaction.TransDiscountAmount = 0;
+                                sTransactorTransaction.TransFpaAmount = 0;
+                                sTransactorTransaction.TransNetAmount = 0;
+                                break;
+                            case FinActionsEnum.FinActionsEnumDebit:
+                                sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumDebit;
+                                sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount;
+                                sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa;
+                                sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet;
+                                break;
+                            case FinActionsEnum.FinActionsEnumCredit:
+                                sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumCredit;
+                                sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount;
+                                sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa;
+                                sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet;
+                                break;
+                            case FinActionsEnum.FinActionsEnumNegativeDebit:
+                                sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumNegativeDebit;
+                                sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount * -1;
+                                sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa * -1;
+                                sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet * -1;
+                                break;
+                            case FinActionsEnum.FinActionsEnumNegativeCredit:
+                                sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumNegativeCredit;
+                                sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount * -1;
+                                sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa * -1;
+                                sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet * -1;
+                                break;
+                            default:
+                                break;
+                        }
+                        _context.TransactorTransactions.Add(sTransactorTransaction);
+                        try
+                        {
+                            await _context.SaveChangesAsync();
+
+                        }
+                        catch (Exception e)
+                        {
+                            transaction.Rollback();
+                            string msg = e.InnerException.Message;
+                            return BadRequest(new
+                            {
+                                error = e.Message + " " + msg
+                            });
+                        }
+                    }
+
+                }
+
+                int warehouseSeriesId =0;
                 int warehouseTypeId=0;
 
                 if (transWarehouseDef.DefaultDocSeriesId > 0)
@@ -1040,7 +1141,109 @@ namespace GrKouk.WebRazor.Controllers
                     }
 
                 }
-               
+                //Αυτόματη εξόφληση
+                var paymentMethod =
+                   await _context.PaymentMethods.FirstOrDefaultAsync(p => p.Id == transToAttach.PaymentMethodId);
+                if (paymentMethod is null)
+                {
+                    transaction.Rollback();
+                    ModelState.AddModelError(string.Empty, "Δεν βρέθηκε ο τρόπος πληρωμής");
+                    return NotFound(new
+                    {
+                        error = "Δεν βρέθηκε ο τρόπος πληρωμής"
+                    });
+                }
+                if (paymentMethod.AutoPayoffWay == SeriesAutoPayoffEnum.SeriesAutoPayoffEnumAuto)
+                {
+                    var autoPaySeriesId = transToAttach.BuyDocSeries.PayoffSeriesId;
+                    if (autoPaySeriesId > 0)
+                    {
+                        var transTransactorPayOffSeries = await
+                         _context.TransTransactorDocSeriesDefs.FirstOrDefaultAsync(p =>
+                             p.Id == autoPaySeriesId);
+                        if (transTransactorPayOffSeries == null)
+                        {
+                            transaction.Rollback();
+                            ModelState.AddModelError(string.Empty, "AutoPayOff series not found");
+                            return NotFound(new
+                            {
+                                error = "AutoPayOff series not found"
+                            });
+                        }
+                        var spTransactorCreateDto = _mapper.Map<TransactorTransCreateDto>(data);
+                        //Ετσι δεν μεταφέρει το Id απο το data
+                        var sTransactorTransaction = _mapper.Map<TransactorTransaction>(spTransactorCreateDto);
+                       
+                        sTransactorTransaction.TransactorId = data.TransactorId;
+                        sTransactorTransaction.SectionId = section.Id;
+                        sTransactorTransaction.TransTransactorDocTypeId = transTransactorPayOffSeries.TransTransactorDocTypeDefId;
+                        sTransactorTransaction.TransTransactorDocSeriesId = transTransactorPayOffSeries.Id;
+                        sTransactorTransaction.FiscalPeriodId = fiscalPeriod.Id;
+                        sTransactorTransaction.Etiology = "AutoPayOff";
+                        sTransactorTransaction.CreatorId = docId;
+                        await _context.Entry(transTransactorPayOffSeries)
+                            .Reference(t => t.TransTransactorDocTypeDef)
+                            .LoadAsync();
+                        var transTransactorDocTypeDef = transTransactorPayOffSeries.TransTransactorDocTypeDef;
+
+                        await _context.Entry(transTransactorDocTypeDef)
+                            .Reference(t => t.TransTransactorDef)
+                            .LoadAsync();
+                        var transPaymentTransactorDef = transTransactorDocTypeDef.TransTransactorDef;
+                        switch (transPaymentTransactorDef.FinancialTransAction)
+                        {
+                            case FinActionsEnum.FinActionsEnumNoChange:
+                                sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumNoChange;
+                                sTransactorTransaction.TransDiscountAmount = 0;
+                                sTransactorTransaction.TransFpaAmount = 0;
+                                sTransactorTransaction.TransNetAmount = 0;
+                                break;
+                            case FinActionsEnum.FinActionsEnumDebit:
+                                sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumDebit;
+                                sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount;
+                                sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa;
+                                sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet;
+                                break;
+                            case FinActionsEnum.FinActionsEnumCredit:
+                                sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumCredit;
+                                sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount;
+                                sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa;
+                                sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet;
+                                break;
+                            case FinActionsEnum.FinActionsEnumNegativeDebit:
+                                sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumNegativeDebit;
+                                sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount * -1;
+                                sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa * -1;
+                                sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet * -1;
+                                break;
+                            case FinActionsEnum.FinActionsEnumNegativeCredit:
+                                sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumNegativeCredit;
+                                sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount * -1;
+                                sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa * -1;
+                                sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet * -1;
+                                break;
+                            default:
+                                break;
+                        }
+                        _context.TransactorTransactions.Add(sTransactorTransaction);
+                        try
+                        {
+                            await _context.SaveChangesAsync();
+
+                        }
+                        catch (Exception e)
+                        {
+                            transaction.Rollback();
+                            string msg = e.InnerException.Message;
+                            return BadRequest(new
+                            {
+                                error = e.Message + " " + msg
+                            });
+                        }
+                    }
+
+                }
+
 
                 int warehouseSeriesId = 0;
                 int warehouseTypeId = 0;
@@ -1502,6 +1705,106 @@ namespace GrKouk.WebRazor.Controllers
                         });
                     }
                 }
+                //Αυτόματη εξόφληση
+                var paymentMethod =
+                    await _context.PaymentMethods.FirstOrDefaultAsync(p => p.Id == transToAttach.PaymentMethodId);
+                if (paymentMethod is null)
+                {
+                    transaction.Rollback();
+                    ModelState.AddModelError(string.Empty, "Δεν βρέθηκε ο τρόπος πληρωμής");
+                    return NotFound(new
+                    {
+                        error = "Δεν βρέθηκε ο τρόπος πληρωμής"
+                    });
+                }
+                if (paymentMethod.AutoPayoffWay==SeriesAutoPayoffEnum.SeriesAutoPayoffEnumAuto)
+                {
+                    var autoPaySeriesId = transToAttach.SellDocSeries.PayoffSeriesId;
+                    if (autoPaySeriesId >0)
+                    {
+                        var transTransactorPayOffSeries = await
+                         _context.TransTransactorDocSeriesDefs.FirstOrDefaultAsync(p =>
+                             p.Id == autoPaySeriesId);
+                        if (transTransactorPayOffSeries == null)
+                        {
+                            transaction.Rollback();
+                            ModelState.AddModelError(string.Empty, "AutoPayOff series not found");
+                            return NotFound(new
+                            {
+                                error = "AutoPayOff series not found"
+                            });
+                        }
+                        var sTransactorTransaction = _mapper.Map<TransactorTransaction>(data);
+                        sTransactorTransaction.TransactorId = data.TransactorId;
+                        sTransactorTransaction.SectionId = section.Id;
+                        sTransactorTransaction.TransTransactorDocTypeId = transTransactorPayOffSeries.TransTransactorDocTypeDefId;
+                        sTransactorTransaction.TransTransactorDocSeriesId = transTransactorPayOffSeries.Id;
+                        sTransactorTransaction.FiscalPeriodId = fiscalPeriod.Id;
+                        sTransactorTransaction.Etiology = "AutoPayOff";
+                        sTransactorTransaction.CreatorId = docId;
+                        await _context.Entry(transTransactorPayOffSeries)
+                            .Reference(t => t.TransTransactorDocTypeDef)
+                            .LoadAsync();
+                        var transTransactorDocTypeDef = transTransactorPayOffSeries.TransTransactorDocTypeDef;
+
+                        await _context.Entry(transTransactorDocTypeDef)
+                            .Reference(t => t.TransTransactorDef)
+                            .LoadAsync();
+                        var transPaymentTransactorDef = transTransactorDocTypeDef.TransTransactorDef;
+                        switch (transPaymentTransactorDef.FinancialTransAction)
+                        {
+                            case FinActionsEnum.FinActionsEnumNoChange:
+                                sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumNoChange;
+                                sTransactorTransaction.TransDiscountAmount = 0;
+                                sTransactorTransaction.TransFpaAmount = 0;
+                                sTransactorTransaction.TransNetAmount = 0;
+                                break;
+                            case FinActionsEnum.FinActionsEnumDebit:
+                                sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumDebit;
+                                sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount;
+                                sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa;
+                                sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet;
+                                break;
+                            case FinActionsEnum.FinActionsEnumCredit:
+                                sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumCredit;
+                                sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount;
+                                sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa;
+                                sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet;
+                                break;
+                            case FinActionsEnum.FinActionsEnumNegativeDebit:
+                                sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumNegativeDebit;
+                                sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount * -1;
+                                sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa * -1;
+                                sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet * -1;
+                                break;
+                            case FinActionsEnum.FinActionsEnumNegativeCredit:
+                                sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumNegativeCredit;
+                                sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount * -1;
+                                sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa * -1;
+                                sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet * -1;
+                                break;
+                            default:
+                                break;
+                        }
+                        _context.TransactorTransactions.Add(sTransactorTransaction);
+                        try
+                        {
+                            await _context.SaveChangesAsync();
+
+                        }
+                        catch (Exception e)
+                        {
+                            transaction.Rollback();
+                            string msg = e.InnerException.Message;
+                            return BadRequest(new
+                            {
+                                error = e.Message + " " + msg
+                            });
+                        }
+                    }
+
+                }
+
                 int warehouseSeriesId = 0;
                 int warehouseTypeId = 0;
 
@@ -1910,7 +2213,107 @@ namespace GrKouk.WebRazor.Controllers
                     _context.TransactorTransactions.Add(sTransactorTransaction);
 
                 }
-               
+                //Αυτόματη εξόφληση
+                var paymentMethod =
+                   await _context.PaymentMethods.FirstOrDefaultAsync(p => p.Id == transToAttach.PaymentMethodId);
+                if (paymentMethod is null)
+                {
+                    transaction.Rollback();
+                    ModelState.AddModelError(string.Empty, "Δεν βρέθηκε ο τρόπος πληρωμής");
+                    return NotFound(new
+                    {
+                        error = "Δεν βρέθηκε ο τρόπος πληρωμής"
+                    });
+                }
+                if (paymentMethod.AutoPayoffWay == SeriesAutoPayoffEnum.SeriesAutoPayoffEnumAuto)
+                {
+                    var autoPaySeriesId = transToAttach.SellDocSeries.PayoffSeriesId;
+                    if (autoPaySeriesId > 0)
+                    {
+                        var transTransactorPayOffSeries = await
+                         _context.TransTransactorDocSeriesDefs.FirstOrDefaultAsync(p =>
+                             p.Id == autoPaySeriesId);
+                        if (transTransactorPayOffSeries == null)
+                        {
+                            transaction.Rollback();
+                            ModelState.AddModelError(string.Empty, "AutoPayOff series not found");
+                            return NotFound(new
+                            {
+                                error = "AutoPayOff series not found"
+                            });
+                        }
+                        var spTransactorCreateDto = _mapper.Map<TransactorTransCreateDto>(data);
+                        //Ετσι δεν μεταφέρει το Id απο το data
+                        var sTransactorTransaction = _mapper.Map<TransactorTransaction>(spTransactorCreateDto);
+                        sTransactorTransaction.TransactorId = data.TransactorId;
+                        sTransactorTransaction.SectionId = section.Id;
+                        sTransactorTransaction.TransTransactorDocTypeId = transTransactorPayOffSeries.TransTransactorDocTypeDefId;
+                        sTransactorTransaction.TransTransactorDocSeriesId = transTransactorPayOffSeries.Id;
+                        sTransactorTransaction.FiscalPeriodId = fiscalPeriod.Id;
+                        sTransactorTransaction.Etiology = "AutoPayOff";
+                        sTransactorTransaction.CreatorId = docId;
+                        await _context.Entry(transTransactorPayOffSeries)
+                            .Reference(t => t.TransTransactorDocTypeDef)
+                            .LoadAsync();
+                        var transTransactorDocTypeDef = transTransactorPayOffSeries.TransTransactorDocTypeDef;
+
+                        await _context.Entry(transTransactorDocTypeDef)
+                            .Reference(t => t.TransTransactorDef)
+                            .LoadAsync();
+                        var transPaymentTransactorDef = transTransactorDocTypeDef.TransTransactorDef;
+                        switch (transPaymentTransactorDef.FinancialTransAction)
+                        {
+                            case FinActionsEnum.FinActionsEnumNoChange:
+                                sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumNoChange;
+                                sTransactorTransaction.TransDiscountAmount = 0;
+                                sTransactorTransaction.TransFpaAmount = 0;
+                                sTransactorTransaction.TransNetAmount = 0;
+                                break;
+                            case FinActionsEnum.FinActionsEnumDebit:
+                                sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumDebit;
+                                sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount;
+                                sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa;
+                                sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet;
+                                break;
+                            case FinActionsEnum.FinActionsEnumCredit:
+                                sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumCredit;
+                                sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount;
+                                sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa;
+                                sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet;
+                                break;
+                            case FinActionsEnum.FinActionsEnumNegativeDebit:
+                                sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumNegativeDebit;
+                                sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount * -1;
+                                sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa * -1;
+                                sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet * -1;
+                                break;
+                            case FinActionsEnum.FinActionsEnumNegativeCredit:
+                                sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumNegativeCredit;
+                                sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount * -1;
+                                sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa * -1;
+                                sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet * -1;
+                                break;
+                            default:
+                                break;
+                        }
+                        _context.TransactorTransactions.Add(sTransactorTransaction);
+                        try
+                        {
+                            await _context.SaveChangesAsync();
+
+                        }
+                        catch (Exception e)
+                        {
+                            transaction.Rollback();
+                            string msg = e.InnerException.Message;
+                            return BadRequest(new
+                            {
+                                error = e.Message + " " + msg
+                            });
+                        }
+                    }
+
+                }
 
                 int warehouseSeriesId = 0;
                 int warehouseTypeId = 0;
