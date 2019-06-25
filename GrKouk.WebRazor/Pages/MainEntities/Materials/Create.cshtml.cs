@@ -22,7 +22,7 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Materials
         private readonly GrKouk.WebApi.Data.ApiDbContext _context;
         private readonly IMapper _mapper;
         private readonly IToastNotification _toastNotification;
-
+        public int CopyFromId { get; set; }
         public CreateModel(GrKouk.WebApi.Data.ApiDbContext context, IMapper mapper, IToastNotification toastNotification)
         {
             _context = context;
@@ -30,9 +30,31 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Materials
             _toastNotification = toastNotification;
         }
 
-        public IActionResult OnGet()
+        public async Task<IActionResult> OnGetAsync(int? copyFromId)
         {
             LoadCombos();
+            CopyFromId = 0;
+            if (copyFromId != null)
+            {
+                CopyFromId = (int)copyFromId;
+                var materialToModify = await _context.WarehouseItems
+                    .Include(m => m.BuyMeasureUnit)
+                    .Include(m => m.Company)
+                    .Include(m => m.FpaDef)
+                    .Include(m => m.MainMeasureUnit)
+                    .Include(m => m.MaterialCaterory)
+                    .Include(m => m.SecondaryMeasureUnit).FirstOrDefaultAsync(m => m.Id == CopyFromId);
+
+                if (materialToModify == null)
+                {
+                    return NotFound();
+                }
+
+                WarehouseItemVm = _mapper.Map<WarehouseItemCreateDto>(materialToModify);
+
+            }
+
+
             return Page();
         }
 

@@ -40,7 +40,7 @@ namespace GrKouk.WebRazor.Pages.Expenses
                     .Include(f => f.CostCentre)
                     .Include(f => f.FinTransCategory)
                     .Include(f => f.RevenueCentre)
-                    .Include(f => f.Transactor).FirstOrDefaultAsync(m => m.Id == copyFromId);
+                    .Include(f => f.Transactor).FirstOrDefaultAsync(m => m.Id == CopyFromId);
 
                 if (diaryTransactionToModify != null)
                 {

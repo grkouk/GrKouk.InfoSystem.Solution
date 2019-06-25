@@ -984,7 +984,18 @@ namespace GrKouk.WebRazor.Controllers
                 {
                     if (companyId > 0)
                     {
-                        fullListIq = fullListIq.Where(p => p.CompanyId == companyId);
+                        var allCompaniesEntity = await _context.Companies.SingleOrDefaultAsync(s => s.Code=="ALLCOMP");
+                        if (allCompaniesEntity != null)
+                        {
+                            var allCompaniesId = allCompaniesEntity.Id;
+                            fullListIq = fullListIq.Where(p => p.CompanyId == companyId || p.CompanyId==allCompaniesId);
+                        }
+                        else
+                        {
+                            fullListIq = fullListIq.Where(p => p.CompanyId == companyId);
+                        }
+
+                        
                     }
                 }
             }
@@ -1074,7 +1085,18 @@ namespace GrKouk.WebRazor.Controllers
                 {
                     if (companyId > 0)
                     {
-                        fullListIq = fullListIq.Where(p => p.CompanyId == companyId);
+                        var allCompaniesEntity = await _context.Companies.SingleOrDefaultAsync(s => s.Code == "ALLCOMP");
+                        if (allCompaniesEntity != null)
+                        {
+                            var allCompaniesId = allCompaniesEntity.Id;
+                            fullListIq = fullListIq.Where(p => p.CompanyId == companyId || p.CompanyId == allCompaniesId);
+                        }
+                        else
+                        {
+                            fullListIq = fullListIq.Where(p => p.CompanyId == companyId);
+                        }
+
+                        
                     }
                 }
             }
