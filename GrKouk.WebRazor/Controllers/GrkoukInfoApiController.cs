@@ -1308,7 +1308,8 @@ namespace GrKouk.WebRazor.Controllers
 
             IQueryable<TransactorTransaction> transactionsList = _context.TransactorTransactions
                 .Where(p => p.TransactorId == request.TransactorId);
-
+            IQueryable<TransactorTransaction> transListBeforePeriod = _context.TransactorTransactions
+                .Where(p => p.TransactorId == request.TransactorId);
             if (!String.IsNullOrEmpty(request.SortData))
             {
                 switch (request.SortData.ToLower())
@@ -1328,17 +1329,20 @@ namespace GrKouk.WebRazor.Controllers
 
                 }
             }
-            #region CommentOut
+
+            DateTime beforePeriodDate = DateTime.Today;
             if (!String.IsNullOrEmpty(request.DateRange))
             {
                 var datePeriodFilter = request.DateRange;
                 DateFilterDates dfDates = DateFilter.GetDateFilterDates(datePeriodFilter);
                 DateTime fromDate = dfDates.FromDate;
+                beforePeriodDate = fromDate.AddDays(-1);
                 DateTime toDate = dfDates.ToDate;
 
                 transactionsList = transactionsList.Where(p => p.TransDate >= fromDate && p.TransDate <= toDate);
+                transListBeforePeriod = transListBeforePeriod.Where(p => p.TransDate < fromDate);
+
             }
-            #endregion
             if (!String.IsNullOrEmpty(request.CompanyFilter))
             {
                 if (Int32.TryParse(request.CompanyFilter, out var companyId))
@@ -1346,6 +1350,7 @@ namespace GrKouk.WebRazor.Controllers
                     if (companyId > 0)
                     {
                         transactionsList = transactionsList.Where(p => p.CompanyId == companyId);
+                        transListBeforePeriod = transListBeforePeriod.Where(p => p.CompanyId == companyId);
                     }
                 }
             }
@@ -1355,10 +1360,46 @@ namespace GrKouk.WebRazor.Controllers
             }
             var dbTrans = transactionsList.ProjectTo<TransactorTransListDto>(_mapper.ConfigurationProvider);
             var dbTransactions = await dbTrans.ToListAsync();
+            //-----------------------------------------------
+            var dbTransBeforePeriod = transListBeforePeriod.ProjectTo<TransactorTransListDto>(_mapper.ConfigurationProvider);
+
+            //Create before period line
+            var bl1 = new
+            {
+
+                Debit = dbTransBeforePeriod.Sum(x => x.DebitAmount),
+                Credit = dbTransBeforePeriod.Sum(x => x.CreditAmount),
+            };
+            var beforePeriod = new KartelaLine();
+
+            beforePeriod.Credit = bl1.Credit;
+            beforePeriod.Debit = bl1.Debit;
+            switch (transactorType.Code)
+            {
+                case "SYS.DTRANSACTOR":
+
+                    break;
+                case "SYS.CUSTOMER":
+                    beforePeriod.RunningTotal = bl1.Debit - bl1.Credit;
+                    break;
+                case "SYS.SUPPLIER":
+                    beforePeriod.RunningTotal = bl1.Credit - bl1.Debit ;
+                    break;
+                default:
+                    beforePeriod.RunningTotal = bl1.Credit - bl1.Debit ;
+                    break;
+            }
+            beforePeriod.TransDate = beforePeriodDate;
+            beforePeriod.DocSeriesCode = "Εκ.Μεταφ.";
+            beforePeriod.TransactorName = "";
 
             var listWithTotal = new List<KartelaLine>();
+            listWithTotal.Add(beforePeriod);
 
-            decimal runningTotal = 0;
+            //----------------------------------------------------
+           
+
+            decimal runningTotal = beforePeriod.RunningTotal;
             foreach (var dbTransaction in dbTransactions)
             {
                 switch (transactorType.Code)

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using GrKouk.InfoSystem.Domain.Shared;
 using Microsoft.AspNetCore.Authorization;
@@ -6,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using NToastNotify;
 
 namespace GrKouk.WebRazor.Pages.MainEntities.Transactors
 {
@@ -13,10 +15,12 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Transactors
     public class EditModel : PageModel
     {
         private readonly GrKouk.WebApi.Data.ApiDbContext _context;
+        private readonly IToastNotification _toastNotification;
 
-        public EditModel(GrKouk.WebApi.Data.ApiDbContext context)
+        public EditModel(GrKouk.WebApi.Data.ApiDbContext context, IToastNotification toastNotification)
         {
             _context = context;
+            _toastNotification = toastNotification;
         }
 
         [BindProperty]
@@ -58,6 +62,7 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Transactors
             try
             {
                 await _context.SaveChangesAsync();
+                _toastNotification.AddSuccessToastMessage("Modifications saved!");
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -67,8 +72,12 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Transactors
                 }
                 else
                 {
-                    throw;
+                    _toastNotification.AddErrorToastMessage("Not saved concurrency exception.");
                 }
+            }
+            catch (Exception e)
+            {
+                _toastNotification.AddErrorToastMessage(e.Message);
             }
 
             return RedirectToPage("./Index");

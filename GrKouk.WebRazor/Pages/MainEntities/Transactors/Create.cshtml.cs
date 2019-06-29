@@ -52,8 +52,8 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Transactors
             }
             catch (Exception e)
             {
+                _toastNotification.AddErrorToastMessage(e.Message);
                 Console.WriteLine(e);
-                throw;
             }
 
             return RedirectToPage("./Index");
