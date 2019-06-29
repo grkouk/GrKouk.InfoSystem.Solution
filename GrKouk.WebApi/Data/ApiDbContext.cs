@@ -59,6 +59,8 @@ namespace GrKouk.WebApi.Data
         public DbSet<ProductRecipeLine> ProductRecipeLines { get; set; }
         public DbSet<ProductRecipe> ProductRecipes { get; set; }
         public DbSet<GlobalSettings> GlobalSettings { get; set; }
+        public DbSet<BuyDocTransPaymentMapping> BuyDocTransPaymentMappings { get; set; }
+        public DbSet<SellDocTransPaymentMapping> SellDocTransPaymentMappings { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -429,7 +431,36 @@ namespace GrKouk.WebApi.Data
                     .OnDelete(DeleteBehavior.Restrict);
 
             });
-
+            modelBuilder.Entity<BuyDocTransPaymentMapping>(entity =>
+            {
+                entity.HasIndex(p => new
+                    {
+                        p.BuyDocumentId,
+                        p.TransactorTransactionId
+                    })
+                    .IsUnique();
+                entity.HasOne(p => p.BuyDocument)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(p => p.TransactorTransaction)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+            modelBuilder.Entity<SellDocTransPaymentMapping>(entity =>
+            {
+                entity.HasIndex(p => new
+                    {
+                        p.SellDocumentId,
+                        p.TransactorTransactionId
+                    })
+                    .IsUnique();
+                entity.HasOne(p => p.SellDocument)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(p => p.TransactorTransaction)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
             modelBuilder.Entity<ProductRecipeLine>(entity =>
             {
                 entity.HasOne(p => p.Product)
