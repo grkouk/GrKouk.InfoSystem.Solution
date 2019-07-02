@@ -480,7 +480,24 @@ namespace GrKouk.WebApi.Data
                     .WithMany()
                     .OnDelete(DeleteBehavior.Restrict);
             });
-
+            modelBuilder.Entity<BuyDocTransPaymentMapping>(entity =>
+            {
+                entity.HasOne(p => p.BuyDocument)
+                    .WithMany(p=>p.PaymentMappings)
+                    .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(p => p.TransactorTransaction)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+            modelBuilder.Entity<SellDocTransPaymentMapping>(entity =>
+            {
+                entity.HasOne(p => p.SellDocument)
+                    .WithMany(p => p.PaymentMappings)
+                    .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(p => p.TransactorTransaction)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
         }
     }
 }

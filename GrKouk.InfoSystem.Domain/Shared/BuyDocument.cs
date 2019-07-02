@@ -10,7 +10,7 @@ namespace GrKouk.InfoSystem.Domain.Shared
     public class BuyDocument
     {
         private ICollection<BuyDocLine> _buyDocLines;
-
+        private ICollection<BuyDocTransPaymentMapping> _paymentMappings;
         public int Id { get; set; }
         [Required]
         [DataType(DataType.Date)]
@@ -52,8 +52,13 @@ namespace GrKouk.InfoSystem.Domain.Shared
         public byte[] Timestamp { get; set; }
         public virtual ICollection<BuyDocLine> BuyDocLines
         {
-            get { return _buyDocLines ?? (_buyDocLines = new List<BuyDocLine>()); }
-            set { _buyDocLines = value; }
+            get => _buyDocLines ?? (_buyDocLines = new List<BuyDocLine>());
+            set => _buyDocLines = value;
+        }
+        public virtual ICollection<BuyDocTransPaymentMapping> PaymentMappings
+        {
+            get => _paymentMappings ?? (_paymentMappings = new List<BuyDocTransPaymentMapping>());
+            set => _paymentMappings = value;
         }
     }
 }

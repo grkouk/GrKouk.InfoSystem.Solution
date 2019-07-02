@@ -8,7 +8,8 @@ namespace GrKouk.InfoSystem.Domain.Shared
     public class BuyDocTransPaymentMapping
     {
         public int Id { get; set; }
-        public int BuyDocumentId { get; set; }
+        //[ForeignKey("BuyDocument")]
+        public int BuyDocumentId { get; set; } 
         public BuyDocument BuyDocument { get; set; }
 
         public int TransactorTransactionId { get; set; }
