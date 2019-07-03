@@ -20,6 +20,8 @@ namespace GrKouk.WebRazor.Pages.Transactions.SellMaterialDoc
         private readonly IToastNotification _toastNotification;
         public string SeekType { get; set; }
         public bool InitialLoad = true;
+        public int RoutedCompanyId { get; set; }
+        public int RoutedSectionId { get; set; }
         public int CopyFromId { get; set; }
 
         public CreateModel(GrKouk.WebApi.Data.ApiDbContext context, IMapper mapper, IToastNotification toastNotification)
@@ -29,8 +31,49 @@ namespace GrKouk.WebRazor.Pages.Transactions.SellMaterialDoc
             _toastNotification = toastNotification;
         }
 
-        public IActionResult OnGet(int? copyFromId)
+        public async Task<IActionResult> OnGetAsync(int? companyFilter, int? section, int? copyFromId)
         {
+            RoutedCompanyId = (companyFilter ?? 0);
+            RoutedSectionId = (section ?? 0);
+            CopyFromId = (copyFromId ?? 0);
+            if (CopyFromId > 0)
+            {
+                var sellMatDoc = await _context.SellDocuments
+                    .Include(b => b.Company)
+                    .Include(b => b.FiscalPeriod)
+                    .Include(b => b.SellDocSeries)
+                    .Include(b => b.SellDocType)
+                    .Include(b => b.Section)
+
+                    .Include(b => b.Transactor)
+                    .Include(b => b.SellDocLines)
+                    .ThenInclude(m => m.WarehouseItem)
+                    .FirstOrDefaultAsync(m => m.Id == CopyFromId);
+               
+                if (sellMatDoc == null)
+                {
+                    return NotFound();
+                }
+                //ItemVm = _mapper.Map<BuyDocCreateAjaxDto>(buyMatDoc);
+                CopyFromItemVm = _mapper.Map<SellDocModifyDto>(sellMatDoc);
+                if (CopyFromItemVm != null)
+                {
+                    ItemVm = new SellDocCreateAjaxDto()
+                    {
+                        AmountDiscount = CopyFromItemVm.AmountDiscount,
+                        AmountFpa = CopyFromItemVm.AmountFpa,
+                        AmountNet = CopyFromItemVm.AmountNet,
+                        SellDocSeriesId = CopyFromItemVm.SellDocSeriesId,
+                        CompanyId = CopyFromItemVm.CompanyId,
+                        Etiology = CopyFromItemVm.Etiology,
+                        PaymentMethodId = CopyFromItemVm.PaymentMethodId,
+                        TransactorId = CopyFromItemVm.TransactorId
+                    };
+                }
+               
+
+               
+            }
             LoadCombos();
             return Page();
         }
@@ -54,7 +97,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.SellMaterialDoc
 
         [BindProperty]
         public SellDocCreateAjaxDto ItemVm { get; set; }
-
+        public SellDocModifyDto CopyFromItemVm { get; set; }
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)

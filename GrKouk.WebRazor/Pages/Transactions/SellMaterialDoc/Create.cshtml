@@ -23,6 +23,7 @@
     <form method="post" id="transForm">
         <fieldset id="thisForm">
             <div asp-validation-summary="ModelOnly" class="text-danger small"></div>
+            <input type="hidden" asp-for="@Model.CopyFromId" id="CopyFromId" />
             <input type="hidden" asp-for="@Model.InitialLoad" id="IsInitialLoad" />
             <input type="hidden" id="MaterialId" />
             <input type="hidden" id="MaterialLastPrice" />
@@ -52,8 +53,8 @@
                     <span asp-validation-for="ItemVm.TransRefCode" class="text-danger small"></span>
 
                 </div>
-              
-               
+
+
             </div>
             <div class="form-row">
                 <div class="form-group col-md-6">
@@ -139,7 +140,66 @@
 
                         </tr>
                     </thead>
-                    <tbody></tbody>
+                    <tbody>
+                        @{
+                            var lineCount = 0;
+                            if (Model.CopyFromItemVm != null)
+                            {
+                                foreach (var docLine in Model.CopyFromItemVm.SellDocLines)
+                                {
+                                    lineCount++;
+                                    var materialId = docLine.WarehouseItemId;
+                                    var q1 = docLine.Quontity1;
+                                    var q1Str = $@"{q1:N2}";
+                                    var q2 = docLine.Quontity2;
+                                    var q2Str = $@"{q2:N2}";
+                                    var unitPrice = docLine.UnitPrice;
+                                    var vatRate = docLine.FpaRate;
+                                    var mainUnitId = docLine.PrimaryUnitId;
+                                    var secUnitId = docLine.SecondaryUnitId;
+                                    var factor = docLine.Factor;
+                                    var materialName = docLine.WarehouseItemName;
+                                    var disRate = docLine.DiscountRate;
+                                    var disAmount = docLine.DiscountRate;
+                                    var vatAmount = docLine.AmountFpa;
+                                    var netAmount = docLine.AmountNet;
+                                    var grosAmount = netAmount - disAmount + vatAmount;
+                                    var q1Actual = FormattableString.Invariant($"{q1}");
+                                    var q2Actual = FormattableString.Invariant($"{q2}");
+                                    var unitPriceActual = FormattableString.Invariant($"{unitPrice}");
+                                    var vatRateActual = FormattableString.Invariant($"{vatRate}");
+                                    var factorActual = FormattableString.Invariant($"{factor}");
+                                    var disRateActual = FormattableString.Invariant($"{disRate}");
+                                    var disAmountActual = FormattableString.Invariant($"{disAmount}");
+                                    var vatAmountActual = FormattableString.Invariant($"{vatAmount}");
+                                    var netAmountActual = FormattableString.Invariant($"{netAmount}");
+                                    var grosAmountActual = FormattableString.Invariant($"{grosAmount}");
+
+                                    var tLine = $"<tr><td class=\"small\"> {lineCount}" +
+                                                $"</td><td class=\"small\" data-materialId=\"{materialId}\" " +
+                                                $"data-factor=\"{factorActual}\" data-mainUnitId=\"{mainUnitId}\" data-secUnitId=\"{secUnitId}\">" +
+                                                $"{materialName} </td><td class=\"small text-right\"  data-actualValue=\"{q1Actual}\" >" +
+                                                $" {q1Str} </td><td class=\"small text-right\"  data-actualValue=\"{q2Actual}\" > " +
+                                                $" {q2Str} </td><td class=\"small text-right\"  data-actualValue=\"{unitPriceActual}\" >" +
+                                                $" {unitPrice} </td><td class=\"small text-right\"  data-actualValue=\"{disRateActual}\" >" +
+                                                $"{disRate} </td><td class=\"small text-right\"  data-actualValue=\"{vatRateActual}\" >" +
+                                                $"{vatRate} </td><td class=\"small text-right\"  data-actualValue=\"{netAmountActual}\" >" +
+                                                $"{netAmount} </td><td class=\"small text-right\"  data-actualValue=\"{disAmountActual}\" >" +
+                                                $"{disAmount} </td><td class=\"small text-right\"  data-actualValue=\"{vatAmountActual}\" >" +
+                                                $"{vatAmount} </td><td class=\"small text-right\"  data-actualValue=\"{grosAmountActual}\" >" +
+                                                $"{grosAmount} </td>" +
+                                                $"<td class=\"small\">" +
+                                                $"<a data-itemId=\"0\" href=\"#\" class=\"modifyItem\"><i class=\"fas fa-edit\"></i></a></td>" +
+                                                $"<td class=\"small\">" +
+                                                $"<a data-itemId=\"0\" href=\"#\" class=\"deleteItem\"><i class=\"fas fa-trash\"></i></a></td></tr>";
+                                    @Html.Raw(tLine)
+                                    ;
+                                }
+                            }
+
+
+                        }
+                    </tbody>
                 </table>
             </div>
             <div class="form-row">
@@ -245,16 +305,7 @@
             //#endregion
 
             //#region Initial values
-            $materialCounter.val(0);
-            $transDate.val(new Date().toISOString().slice(0, 10));
-            $amountNet.attr('data-actualValue', '0');
-            $amountNet.val(0);
-            $amountFpa.attr('data-actualValue', '0');
-            $amountFpa.val(0);
-            $amountDiscount.attr('data-actualValue', '0');
-            $amountDiscount.val(0);
-            $amountSum.attr('data-actualValue', '0');
-            $amountSum.val(0);
+           
             //#endregion
             var priceChanged = () => {
                 var priceValue =parseFloat( $price.val());
@@ -927,7 +978,23 @@
                     });
             });
             //-------------
+            $transDate.val(new Date().toISOString().slice(0, 10));
+            var copyFromId =parseInt( $('#CopyFromId').val());
 
+            if (copyFromId === 0) {
+                $materialCounter.val(0);
+
+                $amountNet.attr('data-actualValue', '0');
+                $amountNet.val(0);
+                $amountFpa.attr('data-actualValue', '0');
+                $amountFpa.val(0);
+                $amountDiscount.attr('data-actualValue', '0');
+                $amountDiscount.val(0);
+                $amountSum.attr('data-actualValue', '0');
+                $amountSum.val(0);
+            } else {
+                updateCounter();
+            }
             if ($initialLoad.val()=='True') {
                 console.log("Initial load is true setting initial values");
                 seriesChanged();
