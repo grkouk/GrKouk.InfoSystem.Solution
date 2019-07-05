@@ -7,7 +7,7 @@
 @section MyCss
 {
     <link rel="stylesheet" href="~/css/custom-checkbox.css" />
-    <link rel="stylesheet" href="~/css/searchbar.css"/>
+    <link rel="stylesheet" href="~/css/searchbar.css" />
 }
 <h4>Λίστα Αγορές Υλικών</h4>
 
@@ -32,7 +32,7 @@
                aria-haspopup="true" aria-expanded="false">Actions</a>
             <div class="dropdown-menu small">
                 <a class="dropdown-item" href="#" id="deleteSelectedRows">Delete Selected</a>
-                <a class="dropdown-item" href="#">Another action</a>
+                <a class="dropdown-item" href="#">*Αντιστοίχιση Παραστατικών</a>
                 <a class="dropdown-item" href="#">Something else here</a>
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="#">Separated link</a>
@@ -89,67 +89,60 @@
 <br />
 <table class="table table-bordered table-sm m-0" id="myTable">
     <thead class="thead-light">
-    <tr>
-        <th name="selectAllRowsColumn">
-            <label class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input" name="checkAllRows">
-                <span class="custom-control-indicator"></span>
-            </label>
-        </th>
-        <th class="small text-center">
-            <a href="#" id="TransDateHeader" role="button">
-                Date
-            </a>
-            <i class="fas fa-sort-numeric-down" id="TransDateHeaderIcon" name="SortIcon"></i>
-        </th>
-        <th class="small">
-            <a href="#" id="TransactorNameHeader">
-                Transactor
-            </a>
-            <i class="fas fa-sort-alpha-down" id="TransactorNameHeaderIcon" name="SortIcon"></i>
-        </th>
-        <th class="small">
-            Series Code
-        </th>
-        <th class="small d-none d-sm-table-cell">
-            Ref Code
-        </th>
-        <th class="small text-center">
-            Total Amount
-        </th>
-        <th class="small d-none d-md-table-cell">
-            CompanyCode
-        </th>
-        <th class="small"></th>
-    </tr>
+        <tr>
+            <th name="selectAllRowsColumn">
+                <label class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" name="checkAllRows">
+                    <span class="custom-control-indicator"></span>
+                </label>
+            </th>
+            <th class="small text-center">
+                <a href="#" id="TransDateHeader" role="button">
+                    Date
+                </a>
+                <i class="fas fa-sort-numeric-down" id="TransDateHeaderIcon" name="SortIcon"></i>
+            </th>
+            <th class="small">
+                <a href="#" id="TransactorNameHeader">
+                    Transactor
+                </a>
+                <i class="fas fa-sort-alpha-down" id="TransactorNameHeaderIcon" name="SortIcon"></i>
+            </th>
+            <th class="small">
+                Series Code
+            </th>
+            <th class="small d-none d-sm-table-cell">
+                Ref Code
+            </th>
+            <th class="small text-center">
+                Total Amount
+            </th>
+            <th class="small d-none d-md-table-cell">
+                CompanyCode
+            </th>
+            <th class="small"></th>
+        </tr>
     </thead>
     <tbody>
-     
-    <tr>
-        <td name="selectRowColumn">
-            <label class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input" name="checkTableRow">
-                <span class="custom-control-indicator"></span>
-            </label>
-        </td>
-        <td class="small">
-        </td>
-        <td class="small">
-        </td>
-        <td class="small">
-        </td>
 
-        <td class="small">
-        </td>
-        <td class="small text-right">
-        </td>
-        <td class="small">
-        </td>
+        <tr>
+            <td name="selectRowColumn">
+                <label class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" name="checkTableRow">
+                    <span class="custom-control-indicator"></span>
+                </label>
+            </td>
+            <td class="small"></td>
+            <td class="small"></td>
+            <td class="small"></td>
 
-        <td class="small">
-        </td>
-    </tr>
-       
+            <td class="small"></td>
+            <td class="small text-right"></td>
+            <td class="small"></td>
+
+            <td class="small"></td>
+        </tr>
+
     </tbody>
 </table>
 <div class="row">
@@ -192,6 +185,66 @@
         </nav>
     </div>
 </div>
+<!-- Modal product selector -->
+<div class="modal fade" id="productSelector" tabindex="-1" role="dialog" aria-labelledby="productModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" style="overflow-y: scroll; max-height:85%;  margin-top: 50px; margin-bottom:50px;" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="container-fluid">
+                    <div class="form-row">
+                        <div class="col-6">
+                            <p class="modal-title font-weight-bold" id="productModalLabel">Products</p>
+                        </div>
+                        <div class="col-6 text-right">
+
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-10">
+                            @*<form class="form-inline">
+                            *@
+                            <input class="form-control form-control-sm" name="productSearchText" placeholder="Search text" type="text" />
+                            @*
+                                </form>*@
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body ">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-12">
+                            <table class="table table-bordered table-sm" id="productsList">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th class="small">
+                                            Product
+                                        </th>
+                                        <th class="small">
+                                            col 2
+                                        </th>
+                                        <th></th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Modal -->
 <div class="modal fade" id="loadMe" tabindex="-1" role="dialog" aria-labelledby="loadMeLabel">
     <div class="modal-dialog modal-sm" role="document">
@@ -243,14 +296,14 @@
                 return x !== x;
             };
             var handleSortUi = () => {
-                
+
                 var curSort = $('#currentSort').val();
 
                 $('[name=SortIcon]').hide();
                 if (curSort === undefined || curSort === null || curSort.length === 0) {
                     //hide all icons
                     return;
-                   
+
                 }
                 var curSortAr = curSort.split(':');
                 switch (curSortAr[0]) {
@@ -270,7 +323,7 @@
                         break;
                 default:
                 }
-               
+
             };
             var handleSelectedRowsUi = () => {
                 var $rowSelectors = $('input[name=checkTableRow]');
@@ -292,7 +345,7 @@
             var getTableData = (pageIndex, pageSize, sortData, dateRange, companyFilter,searchFilter) => {
                 //#region getTableData
                 var timeout;
-               
+
                 var uri =`/api/GrKoukInfoApi/GetIndexTblDataBuyDocuments?pageIndex=${pageIndex}&pageSize=${pageSize}&companyFilter=${companyFilter}&dateRange=${dateRange}&sortData=${sortData}&searchFilter=${searchFilter}`;
                 $.ajax({
                     contentType: 'application/json; charset=utf-8',
@@ -352,12 +405,20 @@
                                 var urlEdit = `@Url.Page("./Edit")?id=${itemId}`;
                                 var urlInfo = `@Url.Page("./Details")?id=${itemId}`;
                                 var urlDel = `@Url.Page("./Delete")?id=${itemId}`;
-                                var urlNewLikeThis=`@Url.Page("./Create")?copyFromId=${itemId}`;
+                                var urlNewLikeThis = `@Url.Page("./Create")?copyFromId=${itemId}`;
+                                var urlKartela = `@Url.Page("./Kartela")?transactorId=${itemId}`;
                                 var actionsCol = '<td class="small text-center d-none d-md-table-cell">';
                                 actionsCol += `<a href="${urlEdit}"><i class="fas fa-edit fa-lg" style="color:slategray"></i></a> |`;
                                 actionsCol += `<a href="${urlInfo}"><i class="fas fa-info-circle fa-lg" style="color:slategray"></i></a> | `;
                                 actionsCol += `<a href="${urlDel}"><i class="fas fa-trash fa-lg" style="color:slategray"></i></a> | `;
-                                actionsCol += `<a href="${urlNewLikeThis}"><i class="fas fa-clone fa-lg" style="color:slategray"></i></a> `;
+                                actionsCol += `<a href="${urlNewLikeThis}"><i class="fas fa-clone fa-lg" style="color:slategray"></i>|</a> `;
+                                actionsCol += '<a class=" dropdown-toggle" role="button" id="dropdownMenuButton"';
+                                actionsCol += 'data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">';
+                                actionsCol += '<i class="fas fa-bars" style="color:slategray"></i></a>';
+                                actionsCol += ' <div class="dropdown-menu small" aria-labelledby="dropdownMenuButton">';
+                                actionsCol += `<a href="${urlKartela}" class="dropdown-item">Καρτέλα</a>`;
+                                actionsCol += ' <a class="dropdown-item" href="#">Something else here</a>';
+                                actionsCol += ' </div>';
                                 actionsCol += '</td>';
                                 var actionColMobile = '<td class="small text-center d-table-cell d-sm-table-cell d-md-none">';
                                 actionColMobile +='<a class=" dropdown-toggle" role="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" ';
@@ -382,7 +443,7 @@
                                     $('<td>').text(refCode).addClass('small d-none d-sm-table-cell'),
                                     $('<td>').text(amountTotal).addClass('small text-right'),
                                     $('<td>').text(compName).addClass('small d-none d-md-table-cell'),
-                                   
+
                                     $(actionsCol),
                                     $(actionColMobile)
                                 ).appendTo('#myTable > tbody');
@@ -394,16 +455,16 @@
                             });
                         //console.log();
                         var sumAmount = formatterCurrency.format(result.sumOfAmount);
-                       
+
                         var $summaryRow = $('<tr class="table-info">').append(
                             $('<td name="selectRowColumn"> </td>  '),
                             $('<td>'),
-                           
+
                             $('<td>').text('Σύνολα Σελίδας').addClass('small font-weight-bold'),
                             $('<td>').text('').addClass('small'),
                             $('<td>').text('').addClass('small d-none d-sm-table-cell'),
                             $('<td>').text(sumAmount).addClass('small text-right font-weight-bold'),
-                           
+
                             $('<td>').text('').addClass('small d-none d-md-table-cell'),
                             $('<td>')
                         ).appendTo('#myTable > tbody:last');
@@ -660,6 +721,215 @@
                     $selectedRowsActionsMenu.attr('hidden', 'true');
                 }
             };
+            var saveDocumentPaymentMappings = (docId) => {
+                var $rowSelectors = $('input[name=checkPaymentRow]');
+                var selectedRows = $rowSelectors.filter(':checked');
+                var idsToAssign = [];
+                $.each(selectedRows,
+                    function(key, value) {
+                        console.log(value);
+                        var id = parseInt(value.dataset.itemid);
+                        idsToAssign.push(id);
+                    });
+                if (idsToAssign.length > 0) {
+                    var idsJs = JSON.stringify({
+                        //ToDo: Change this
+                        productId: docId,
+                        mediaIds: idsToAssign
+                    });
+                    var timeout;
+
+                    $.ajax({
+                        contentType: 'application/json; charset=utf-8',
+                        dataType: 'json',
+                        type: 'POST',
+                        data: idsJs,
+                        url: "/api/GrkoukInfoApi/AssignMediaToProduct",
+                        beforeSend: function() {
+                            if (timeout) {
+                                clearTimeout(timeout);
+                            }
+                            timeout = setTimeout(function() {
+
+                                    $("#loadMe").modal({
+                                        backdrop: "static", //remove ability to close modal with click
+                                        keyboard: false, //remove option to close with keyboard
+                                        show: true //Display loader!
+                                    });
+                                },
+                                1000);
+                        },
+                        success: function(result) {
+                            console.log(result);
+                            toastr.success("Assign Media", result.message);
+                            refreshTableData();
+
+                        },
+                        complete: function() {
+                            if (timeout) {
+                                clearTimeout(timeout);
+                            }
+                            $("#loadMe").modal("hide");
+                            setTimeout(function() {
+                                    console.log('Checking for open modals');
+                                    var isOpen = $('#loadMe').hasClass('show');
+                                    if (isOpen) {
+                                        console.log('There is an open Modal');
+                                        $("#loadMe").modal("hide");
+                                    } else {
+                                        console.log('No open modal');
+                                    }
+                                },
+                                2000);
+                        },
+                        error: function(e) {
+                            console.log(e);
+                            toastr.error("Assign Media", e.responseJSON.error);
+                        }
+                    });
+                }
+            };
+            var getProductsSelectorList = (docId,searchFilter, pageSize) =>{
+                console.log("Inside getProductsSelectorList");
+                console.log("searchFilter is " + searchFilter);
+
+                var timeout;
+                var pageIndex = 1;
+                var uri = '/api/GrKoukInfoApi/GetIndexTblDataWarehouseItems';
+                uri += `?pageIndex=${pageIndex}`;
+                uri += `&pageSize=${pageSize}`;
+
+                uri += `&searchFilter=${searchFilter}`;
+                $.ajax({
+                    contentType: 'application/json; charset=utf-8',
+
+                    dataType: 'json',
+                    type: 'GET',
+
+                    url: uri,
+                    beforeSend: function() {
+                        if (timeout) {
+                            clearTimeout(timeout);
+                        }
+                        timeout = setTimeout(function() {
+                                $("#loadMe").modal({
+                                    backdrop: "static",
+                                    keyboard: false,
+                                    show: true
+                                });
+                            },
+                            1000);
+                    },
+                    success: function(result) {
+                        $('#productsList > tbody').empty();
+                        $('#productsList > thead').empty();
+                        let colDefs = [
+                            {
+                                header: 'Code',
+                                text: '',
+                                class: 'small d-none d-md-table-cell'
+                            },
+                            {
+                                header: 'Product',
+                                text: '',
+                                class: 'small'
+                            },
+                            {
+                                header: 'Category',
+                                text: '',
+                                class: 'small d-none d-sm-table-cell'
+                            },
+                            {
+                                header: 'Nature',
+                                text: '',
+                                class: 'small'
+                            },
+                            {
+                                header: 'Company',
+                                text: '',
+                                class: 'small'
+                            }
+                        ];
+                        var $trHead = $('<tr>');
+                        colDefs.forEach(function(item) {
+                            var $tdColHead = $('<th>').text(item.header).addClass(item.class);
+                            $trHead.append($tdColHead);
+                        });
+                        $trHead.append($('<th>'));
+                        $trHead.appendTo('#productsList > thead');
+                        $.each(result.data,
+                            function(index, value) {
+                                colDefs[0].text = value.code;
+                                colDefs[1].text = value.name;
+                                colDefs[2].text = value.materialCateroryName;
+                                colDefs[3].text = value.warehouseItemNatureName;
+                                colDefs[4].text = value.companyCode;
+                                var itemId = value.id;
+                               // var urlDel = `@Url.Page("./Delete")?id=${itemId}`;
+
+                                var $tr = $('<tr>');
+
+                                colDefs.forEach(function(item) {
+                                    var $tdCol = $('<td>').text(item.text).addClass(item.class);
+                                    $tr.append($tdCol);
+
+                                });
+                                var actionsCol = '<td class="small text-center">';
+                                actionsCol += '<button type="button" class="btn btn-outline-info btn-sm" ';
+                                actionsCol += `data-itemId="${itemId}"`;
+                                actionsCol += 'name="selectItem">';
+                                actionsCol +=
+                                    '<span><i class="far fa-check-square fa-lg" style="color:slategray"></i></span>';
+                                actionsCol += '</button>';
+                                actionsCol += '</td>';
+
+                                $tr.append(actionsCol);
+                                $tr.appendTo('#productsList > tbody');
+
+                            });
+                        $('[name=selectItem]').on('click',
+                            function (event) {
+                                var button = $(event.delegateTarget);
+                                var productId = button.data('itemid');
+                                console.log('Inside click event handler for selectItem');
+                                if (docId instanceof Array) {
+                                    if (docId.length==1) {
+                                        assignMediaToProduct(docId[0], productId);
+                                    }
+
+                                    $('#productSelector').modal('hide');
+                                    console.log("Passed array with length " + docId.length);
+
+                                } else {
+                                    console.log("No media selected");
+
+                                }
+                            });
+                    },
+                    complete: function() {
+                        if (timeout) {
+                            clearTimeout(timeout);
+                        }
+                        $("#loadMe").modal("hide");
+                        setTimeout(function() {
+                                console.log('Checking for open modals');
+                                var isOpen = $('#loadMe').hasClass('show');
+                                if (isOpen) {
+                                    console.log('There is an open Modal');
+                                    $("#loadMe").modal("hide");
+                                } else {
+                                    console.log('No open modal');
+                                }
+                            },
+                            2000);
+                    },
+                    error: function(e) {
+                        console.log(e);
+
+                    }
+                });
+            };
+
             $rowSelectorsToggle.on('click',
                 function() {
                     rosSelectorsToggleHandler();
@@ -746,7 +1016,7 @@ $('.search_icon').on('click',
                         icon.addClass("fa-search").removeClass("fa-times");
                         $('.search_input').val('');
                     }
-                   
+
                     refreshTableData();
                 });
 
@@ -758,7 +1028,7 @@ $('.search_icon').on('click',
 
                 } else {
                     $icon.addClass("fa-search").removeClass("fa-times");
-                    
+
                 }
                 refreshTableData();
             });
