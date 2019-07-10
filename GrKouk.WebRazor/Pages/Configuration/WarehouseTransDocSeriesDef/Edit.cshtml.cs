@@ -38,8 +38,9 @@ namespace GrKouk.WebRazor.Pages.Configuration.WarehouseTransDocSeriesDef
             {
                 return NotFound();
             }
-           ViewData["CompanyId"] = new SelectList(_context.Companies, "Id", "Code");
-           ViewData["TransWarehouseDocTypeDefId"] = new SelectList(_context.TransWarehouseDocTypeDefs, "Id", "Name");
+            ViewData["CompanyId"] = new SelectList(_context.Companies.OrderBy(p => p.Code).AsNoTracking(), "Id", "Code");
+            ViewData["TransWarehouseDocTypeDefId"] = new SelectList(_context.TransWarehouseDocTypeDefs.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
+
             return Page();
         }
 

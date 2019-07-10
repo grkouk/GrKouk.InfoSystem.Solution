@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using GrKouk.InfoSystem.Domain.FinConfig;
 using GrKouk.WebApi.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace GrKouk.WebRazor.Pages.Configuration.WarehouseTransDocTypeDef
 {
@@ -21,8 +22,8 @@ namespace GrKouk.WebRazor.Pages.Configuration.WarehouseTransDocTypeDef
 
         public IActionResult OnGet()
         {
-        ViewData["CompanyId"] = new SelectList(_context.Companies, "Id", "Code");
-        ViewData["TransWarehouseDefId"] = new SelectList(_context.TransWarehouseDefs, "Id", "Name");
+        ViewData["CompanyId"] = new SelectList(_context.Companies.OrderBy(p => p.Code).AsNoTracking(), "Id", "Code");
+        ViewData["TransWarehouseDefId"] = new SelectList(_context.TransWarehouseDefs.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
             return Page();
         }
 

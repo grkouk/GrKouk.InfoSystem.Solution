@@ -77,7 +77,7 @@ namespace GrKouk.WebRazor.Pages.Configuration.WarehouseTransDef
             ViewData["RawMaterialInventoryValueAction"] = new SelectList(inventoryValueActions, "Value", "Text");
 
 
-            ViewData["CompanyId"] = new SelectList(_context.Companies.AsNoTracking(), "Id", "Code");
+            ViewData["CompanyId"] = new SelectList(_context.Companies.OrderBy(p=>p.Code).AsNoTracking(), "Id", "Code");
             var dbSeriesList = _context.TransWarehouseDocSeriesDefs.OrderBy(p => p.Name).AsNoTracking();
             List<SelectListItem> seriesList = new List<SelectListItem>();
             seriesList.Add(new SelectListItem() { Value = 0.ToString(), Text = "{No Default series}" });
