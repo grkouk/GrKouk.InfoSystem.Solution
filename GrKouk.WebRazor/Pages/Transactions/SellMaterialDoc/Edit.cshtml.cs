@@ -71,7 +71,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.SellMaterialDoc
                 new SelectListItem() {Value = "BARCODE", Text = "Barcode"}
             };
             ViewData["SeekType"] = new SelectList(seekTypes, "Value", "Text");
-            var transactorList = _context.Transactors.Where(s => s.TransactorType.Code == "SYS.CUSTOMER").OrderBy(s => s.Name).AsNoTracking();
+            var transactorList = _context.Transactors.Where(s => s.TransactorType.Code == "SYS.CUSTOMER" || s.TransactorType.Code == "SYS.DEPARTMENT").OrderBy(s => s.Name).AsNoTracking();
             ViewData["CompanyId"] = new SelectList(_context.Companies.OrderBy(p => p.Code).AsNoTracking(), "Id", "Code");
             ViewData["SellDocSeriesId"] = new SelectList(_context.SellDocSeriesDefs.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
             ViewData["TransactorId"] = new SelectList(transactorList, "Id", "Name");

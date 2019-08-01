@@ -9,7 +9,7 @@
     <Copyright>George Koukoudis</Copyright>
     <Configurations>Debug;Release;DebugWeb;RlsWeb</Configurations>
     <Version>1.5.3.6</Version>
-    <AssemblyVersion>1.5.3.5</AssemblyVersion>
+    <AssemblyVersion>1.5.3.6</AssemblyVersion>
     <FileVersion>1.5.3.6</FileVersion>
   </PropertyGroup>
 

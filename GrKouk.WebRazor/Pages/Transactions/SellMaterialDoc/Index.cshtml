@@ -350,6 +350,7 @@
                                 var transName = value.transactorName;
                                // var categoryName = value.finTransCategoryName;
                                 var compName = value.companyCode;
+                                var amountTotalNet =formatterCurrency.format(value.totalNetAmount);
                                var amountTotal =formatterCurrency.format(value.totalAmount);
                                 var itemId = value.id;
                                var urlEdit = `@Url.Page("./Edit")?id=${itemId}`;
