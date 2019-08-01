@@ -11,7 +11,7 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.SellDocuments
         public int SellDocumentId { get; set; }
 
         public int WarehouseItemId { get; set; }
-        public string WarehouseItemsName { get; set; }
+        public string WarehouseItemName { get; set; }
 
         public int PrimaryUnitId { get; set; }
         public int SecondaryUnitId { get; set; }

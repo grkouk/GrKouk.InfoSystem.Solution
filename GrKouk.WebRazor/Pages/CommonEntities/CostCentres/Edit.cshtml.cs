@@ -4,9 +4,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using GrKouk.InfoSystem.Domain.Shared;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GrKouk.WebRazor.Pages.CommonEntities.CostCentres
 {
+    [Authorize(Roles = "Admin")]
     public class EditModel : PageModel
     {
         private readonly GrKouk.WebApi.Data.ApiDbContext _context;

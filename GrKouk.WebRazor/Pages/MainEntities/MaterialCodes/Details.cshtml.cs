@@ -9,9 +9,11 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using GrKouk.InfoSystem.Domain.Shared;
 using GrKouk.WebApi.Data;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GrKouk.WebRazor.Pages.MainEntities.MaterialCodes
 {
+    [Authorize(Roles = "Admin")]
     public class DetailsModel : PageModel
     {
         private readonly GrKouk.WebApi.Data.ApiDbContext _context;
@@ -25,11 +27,6 @@ namespace GrKouk.WebRazor.Pages.MainEntities.MaterialCodes
 
         public async Task<IActionResult> OnGetAsync(WarehouseItemCodeTypeEnum id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
             WarehouseItemCode = await _context.WarehouseItemsCodes
                 .Include(m => m.WarehouseItem).FirstOrDefaultAsync(m => m.CodeType == id);
 

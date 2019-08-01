@@ -1,0 +1,12 @@
+{
+  "solution": {
+    "path": "GrKouk.InfoSystem.Solution.sln",
+    "projects": [
+      "GrKouk.InfoSystem.Definitions\\GrKouk.InfoSystem.Definitions.csproj",
+      "GrKouk.InfoSystem.Domain\\GrKouk.InfoSystem.Domain.csproj",
+      "GrKouk.InfoSystem.Dtos\\GrKouk.InfoSystem.Dtos.csproj",
+      "GrKouk.WebApi\\GrKouk.WebApi.csproj",
+      "GrKouk.WebRazor\\GrKouk.WebRazor.csproj"
+    ]
+  }
+}

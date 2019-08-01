@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using GrKouk.InfoSystem.Definitions;
-using GrKouk.InfoSystem.Domain.FinConfig;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using GrKouk.InfoSystem.Domain.Shared;
 using GrKouk.InfoSystem.Dtos;
-using GrKouk.WebApi.Data;
 using Microsoft.EntityFrameworkCore;
 using NToastNotify;
 
@@ -21,6 +17,7 @@ namespace GrKouk.WebRazor.Pages.Expenses
         private readonly GrKouk.WebApi.Data.ApiDbContext _context;
         private readonly IMapper _mapper;
         private readonly IToastNotification _toastNotification;
+        public int  CopyFromId { get; set; }
 
         public CreateModel(GrKouk.WebApi.Data.ApiDbContext context, IMapper mapper, IToastNotification toastNotification)
         {
@@ -29,9 +26,29 @@ namespace GrKouk.WebRazor.Pages.Expenses
             _toastNotification = toastNotification;
         }
 
-        public IActionResult OnGet()
+        public async Task<IActionResult> OnGetAsync(int? copyFromId)
         {
+
             LoadCompbos();
+            CopyFromId = 0;
+
+            if (copyFromId != null)
+            {
+                CopyFromId = (int) copyFromId;
+                var diaryTransactionToModify = await _context.FinDiaryTransactions
+                    .Include(f => f.Company)
+                    .Include(f => f.CostCentre)
+                    .Include(f => f.FinTransCategory)
+                    .Include(f => f.RevenueCentre)
+                    .Include(f => f.Transactor).FirstOrDefaultAsync(m => m.Id == CopyFromId);
+
+                if (diaryTransactionToModify != null)
+                {
+                    FinDiaryTransaction = _mapper.Map<FinDiaryExpenceTransModifyDto>(diaryTransactionToModify);
+                }
+                
+            }
+
             return Page();
         }
 

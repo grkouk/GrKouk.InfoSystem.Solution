@@ -73,17 +73,11 @@ namespace GrKouk.WebRazor.Pages.Configuration.WarehouseTransDef
             ViewData["FixedAssetInventoryAction"] = new SelectList(inventoryActions, "Value", "Text");
             ViewData["FixedAssetInventoryValueAction"] = new SelectList(inventoryValueActions, "Value", "Text");
 
-           // ViewData["AmtBuyAction"] = new SelectList(infoEntityActionList, "Value", "Text");
-           // ViewData["AmtSellAction"] = new SelectList(infoEntityActionList, "Value", "Text");
-           // ViewData["AmtInvoicedExportsAction"] = new SelectList(infoEntityActionList, "Value", "Text");
-           // ViewData["AmtInvoicedImportsAction"] = new SelectList(infoEntityActionList, "Value", "Text");
-           
-           //ViewData["VolBuyAction"] = new SelectList(infoEntityActionList, "Value", "Text");
-           // ViewData["VolInvoicedExportsAction"] = new SelectList(infoEntityActionList, "Value", "Text");
-           // ViewData["VolInvoicedImportsAction"] = new SelectList(infoEntityActionList, "Value", "Text");
-           // ViewData["VolSellAction"] = new SelectList(infoEntityActionList, "Value", "Text");
+            ViewData["RawMaterialInventoryAction"] = new SelectList(inventoryActions, "Value", "Text");
+            ViewData["RawMaterialInventoryValueAction"] = new SelectList(inventoryValueActions, "Value", "Text");
 
-            ViewData["CompanyId"] = new SelectList(_context.Companies.AsNoTracking(), "Id", "Code");
+
+            ViewData["CompanyId"] = new SelectList(_context.Companies.OrderBy(p=>p.Code).AsNoTracking(), "Id", "Code");
             var dbSeriesList = _context.TransWarehouseDocSeriesDefs.OrderBy(p => p.Name).AsNoTracking();
             List<SelectListItem> seriesList = new List<SelectListItem>();
             seriesList.Add(new SelectListItem() { Value = 0.ToString(), Text = "{No Default series}" });

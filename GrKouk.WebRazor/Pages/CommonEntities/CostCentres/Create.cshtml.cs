@@ -2,9 +2,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using GrKouk.InfoSystem.Domain.Shared;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GrKouk.WebRazor.Pages.CommonEntities.CostCentres
 {
+    [Authorize(Roles = "Admin")]
     public class CreateModel : PageModel
     {
         private readonly GrKouk.WebApi.Data.ApiDbContext _context;

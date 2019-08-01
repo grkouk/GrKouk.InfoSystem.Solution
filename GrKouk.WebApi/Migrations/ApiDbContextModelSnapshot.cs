@@ -30,6 +30,8 @@ namespace GrKouk.WebApi.Migrations
 
                     b.Property<bool>("Active");
 
+                    b.Property<int>("AutoPayoffWay");
+
                     b.Property<int>("BuyDocTypeDefId");
 
                     b.Property<string>("Code")
@@ -40,6 +42,8 @@ namespace GrKouk.WebApi.Migrations
 
                     b.Property<string>("Name")
                         .HasMaxLength(200);
+
+                    b.Property<int?>("PayoffSeriesId");
 
                     b.HasKey("Id");
 
@@ -64,6 +68,12 @@ namespace GrKouk.WebApi.Migrations
 
                     b.Property<bool>("Active");
 
+                    b.Property<string>("AllowedSectionTypes")
+                        .HasMaxLength(200);
+
+                    b.Property<string>("AllowedTransactorTypes")
+                        .HasMaxLength(200);
+
                     b.Property<string>("Code")
                         .IsRequired()
                         .HasMaxLength(15);
@@ -71,6 +81,9 @@ namespace GrKouk.WebApi.Migrations
                     b.Property<int>("CompanyId");
 
                     b.Property<string>("Name")
+                        .HasMaxLength(200);
+
+                    b.Property<string>("SelectedWarehouseItemNatures")
                         .HasMaxLength(200);
 
                     b.Property<int?>("TransTransactorDefId");
@@ -140,6 +153,44 @@ namespace GrKouk.WebApi.Migrations
                     b.ToTable("FpaKategories");
                 });
 
+            modelBuilder.Entity("GrKouk.InfoSystem.Domain.FinConfig.GlobalSettings", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("CompanyId");
+
+                    b.Property<int>("ProductProduceSeriesId");
+
+                    b.Property<int>("RawMaterialConsumeSeriesId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("GlobalSettings");
+                });
+
+            modelBuilder.Entity("GrKouk.InfoSystem.Domain.FinConfig.PaymentMethod", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("AutoPayoffWay");
+
+                    b.Property<int>("DaysOverdue");
+
+                    b.Property<string>("Name");
+
+                    b.Property<int?>("PayoffSeriesId");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PaymentMethods");
+                });
+
             modelBuilder.Entity("GrKouk.InfoSystem.Domain.FinConfig.SellDocSeriesDef", b =>
                 {
                     b.Property<int>("Id")
@@ -151,6 +202,8 @@ namespace GrKouk.WebApi.Migrations
 
                     b.Property<bool>("Active");
 
+                    b.Property<int>("AutoPayoffWay");
+
                     b.Property<string>("Code")
                         .IsRequired()
                         .HasMaxLength(15);
@@ -159,6 +212,8 @@ namespace GrKouk.WebApi.Migrations
 
                     b.Property<string>("Name")
                         .HasMaxLength(200);
+
+                    b.Property<int?>("PayoffSeriesId");
 
                     b.Property<int>("SellDocTypeDefId");
 
@@ -185,6 +240,12 @@ namespace GrKouk.WebApi.Migrations
 
                     b.Property<bool>("Active");
 
+                    b.Property<string>("AllowedSectionTypes")
+                        .HasMaxLength(200);
+
+                    b.Property<string>("AllowedTransactorTypes")
+                        .HasMaxLength(200);
+
                     b.Property<string>("Code")
                         .IsRequired()
                         .HasMaxLength(15);
@@ -192,6 +253,9 @@ namespace GrKouk.WebApi.Migrations
                     b.Property<int>("CompanyId");
 
                     b.Property<string>("Name")
+                        .HasMaxLength(200);
+
+                    b.Property<string>("SelectedWarehouseItemNatures")
                         .HasMaxLength(200);
 
                     b.Property<int?>("TransTransactorDefId");
@@ -382,6 +446,10 @@ namespace GrKouk.WebApi.Migrations
                     b.Property<string>("Name")
                         .HasMaxLength(200);
 
+                    b.Property<int>("RawMaterialInventoryAction");
+
+                    b.Property<int>("RawMaterialInventoryValueAction");
+
                     b.Property<int>("ServiceInventoryAction");
 
                     b.Property<int>("ServiceInventoryValueAction");
@@ -459,17 +527,54 @@ namespace GrKouk.WebApi.Migrations
                     b.ToTable("TransWarehouseDocTypeDefs");
                 });
 
+            modelBuilder.Entity("GrKouk.InfoSystem.Domain.MediaEntities.MediaEntry", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("MediaFile")
+                        .HasMaxLength(250);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("MediaEntries");
+                });
+
+            modelBuilder.Entity("GrKouk.InfoSystem.Domain.MediaEntities.ProductMedia", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("MediaEntryId");
+
+                    b.Property<int>("ProductId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MediaEntryId");
+
+                    b.HasIndex("ProductId", "MediaEntryId")
+                        .IsUnique();
+
+                    b.ToTable("ProductMedia");
+                });
+
             modelBuilder.Entity("GrKouk.InfoSystem.Domain.Shared.BuyDocLine", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<decimal>("AmountDiscount");
+                    b.Property<decimal>("AmountDiscount")
+                        .HasColumnType("decimal(18, 4)");
 
-                    b.Property<decimal>("AmountFpa");
+                    b.Property<decimal>("AmountFpa")
+                        .HasColumnType("decimal(18, 4)");
 
-                    b.Property<decimal>("AmountNet");
+                    b.Property<decimal>("AmountNet")
+                        .HasColumnType("decimal(18, 4)");
 
                     b.Property<int>("BuyDocumentId");
 
@@ -492,7 +597,11 @@ namespace GrKouk.WebApi.Migrations
 
                     b.Property<int>("SecondaryUnitId");
 
-                    b.Property<decimal>("UnitPrice");
+                    b.Property<decimal>("UnitExpenses")
+                        .HasColumnType("decimal(18, 4)");
+
+                    b.Property<decimal>("UnitPrice")
+                        .HasColumnType("decimal(18, 4)");
 
                     b.Property<int>("WarehouseItemId");
 
@@ -507,17 +616,43 @@ namespace GrKouk.WebApi.Migrations
                     b.ToTable("BuyDocLines");
                 });
 
+            modelBuilder.Entity("GrKouk.InfoSystem.Domain.Shared.BuyDocTransPaymentMapping", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<decimal>("AmountUsed")
+                        .HasColumnType("decimal(18, 4)");
+
+                    b.Property<int>("BuyDocumentId");
+
+                    b.Property<int>("TransactorTransactionId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TransactorTransactionId");
+
+                    b.HasIndex("BuyDocumentId", "TransactorTransactionId")
+                        .IsUnique();
+
+                    b.ToTable("BuyDocTransPaymentMappings");
+                });
+
             modelBuilder.Entity("GrKouk.InfoSystem.Domain.Shared.BuyDocument", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<decimal>("AmountDiscount");
+                    b.Property<decimal>("AmountDiscount")
+                        .HasColumnType("decimal(18, 4)");
 
-                    b.Property<decimal>("AmountFpa");
+                    b.Property<decimal>("AmountFpa")
+                        .HasColumnType("decimal(18, 4)");
 
-                    b.Property<decimal>("AmountNet");
+                    b.Property<decimal>("AmountNet")
+                        .HasColumnType("decimal(18, 4)");
 
                     b.Property<int>("BuyDocSeriesId");
 
@@ -529,6 +664,8 @@ namespace GrKouk.WebApi.Migrations
                         .HasMaxLength(500);
 
                     b.Property<int>("FiscalPeriodId");
+
+                    b.Property<int>("PaymentMethodId");
 
                     b.Property<int>("SectionId");
 
@@ -552,6 +689,8 @@ namespace GrKouk.WebApi.Migrations
 
                     b.HasIndex("FiscalPeriodId");
 
+                    b.HasIndex("PaymentMethodId");
+
                     b.HasIndex("SectionId");
 
                     b.HasIndex("TransDate");
@@ -559,6 +698,55 @@ namespace GrKouk.WebApi.Migrations
                     b.HasIndex("TransactorId");
 
                     b.ToTable("BuyDocuments");
+                });
+
+            modelBuilder.Entity("GrKouk.InfoSystem.Domain.Shared.CashRegCategory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(20);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CashRegCategories");
+                });
+
+            modelBuilder.Entity("GrKouk.InfoSystem.Domain.Shared.ClientProfile", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(20);
+
+                    b.Property<int>("CompanyId");
+
+                    b.Property<string>("Data")
+                        .HasMaxLength(200);
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(200);
+
+                    b.Property<string>("Serial")
+                        .HasMaxLength(50);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Code");
+
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("ClientProfiles");
                 });
 
             modelBuilder.Entity("GrKouk.InfoSystem.Domain.Shared.Company", b =>
@@ -597,6 +785,30 @@ namespace GrKouk.WebApi.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("CostCentres");
+                });
+
+            modelBuilder.Entity("GrKouk.InfoSystem.Domain.Shared.CrCatWarehouseItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("CashRegCategoryId");
+
+                    b.Property<int>("ClientProfileId");
+
+                    b.Property<int>("WarehouseItemId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CashRegCategoryId");
+
+                    b.HasIndex("WarehouseItemId");
+
+                    b.HasIndex("ClientProfileId", "CashRegCategoryId", "WarehouseItemId")
+                        .IsUnique();
+
+                    b.ToTable("CrCatWarehouseItems");
                 });
 
             modelBuilder.Entity("GrKouk.InfoSystem.Domain.Shared.DiaryDef", b =>
@@ -767,6 +979,77 @@ namespace GrKouk.WebApi.Migrations
                     b.ToTable("MeasureUnits");
                 });
 
+            modelBuilder.Entity("GrKouk.InfoSystem.Domain.Shared.ProductRecipe", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("CompanyId");
+
+                    b.Property<float>("Factor");
+
+                    b.Property<int>("PrimaryUnitId");
+
+                    b.Property<int>("ProductId");
+
+                    b.Property<double>("Quantity1");
+
+                    b.Property<double>("Quantity2");
+
+                    b.Property<int>("SecondaryUnitId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ProductRecipes");
+                });
+
+            modelBuilder.Entity("GrKouk.InfoSystem.Domain.Shared.ProductRecipeLine", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<decimal>("AmountNet");
+
+                    b.Property<string>("Etiology")
+                        .HasMaxLength(500);
+
+                    b.Property<float>("Factor");
+
+                    b.Property<int>("PrimaryUnitId");
+
+                    b.Property<int>("ProductId");
+
+                    b.Property<int>("ProductRecipeId");
+
+                    b.Property<int?>("ProductRecipeId1");
+
+                    b.Property<double>("Quantity1");
+
+                    b.Property<double>("Quantity2");
+
+                    b.Property<int>("SecondaryUnitId");
+
+                    b.Property<decimal>("UnitExpenses");
+
+                    b.Property<decimal>("UnitPrice");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("ProductRecipeId");
+
+                    b.HasIndex("ProductRecipeId1");
+
+                    b.ToTable("ProductRecipeLines");
+                });
+
             modelBuilder.Entity("GrKouk.InfoSystem.Domain.Shared.RevenueCentre", b =>
                 {
                     b.Property<int>("Id")
@@ -818,11 +1101,14 @@ namespace GrKouk.WebApi.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<decimal>("AmountDiscount");
+                    b.Property<decimal>("AmountDiscount")
+                        .HasColumnType("decimal(18, 4)");
 
-                    b.Property<decimal>("AmountFpa");
+                    b.Property<decimal>("AmountFpa")
+                        .HasColumnType("decimal(18, 4)");
 
-                    b.Property<decimal>("AmountNet");
+                    b.Property<decimal>("AmountNet")
+                        .HasColumnType("decimal(18, 4)");
 
                     b.Property<decimal>("DiscountRate");
 
@@ -843,7 +1129,8 @@ namespace GrKouk.WebApi.Migrations
 
                     b.Property<int>("SellDocumentId");
 
-                    b.Property<decimal>("UnitPrice");
+                    b.Property<decimal>("UnitPrice")
+                        .HasColumnType("decimal(18, 4)");
 
                     b.Property<int>("WarehouseItemId");
 
@@ -856,17 +1143,43 @@ namespace GrKouk.WebApi.Migrations
                     b.ToTable("SellDocLines");
                 });
 
+            modelBuilder.Entity("GrKouk.InfoSystem.Domain.Shared.SellDocTransPaymentMapping", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<decimal>("AmountUsed")
+                        .HasColumnType("decimal(18, 4)");
+
+                    b.Property<int>("SellDocumentId");
+
+                    b.Property<int>("TransactorTransactionId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TransactorTransactionId");
+
+                    b.HasIndex("SellDocumentId", "TransactorTransactionId")
+                        .IsUnique();
+
+                    b.ToTable("SellDocTransPaymentMappings");
+                });
+
             modelBuilder.Entity("GrKouk.InfoSystem.Domain.Shared.SellDocument", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<decimal>("AmountDiscount");
+                    b.Property<decimal>("AmountDiscount")
+                        .HasColumnType("decimal(18, 4)");
 
-                    b.Property<decimal>("AmountFpa");
+                    b.Property<decimal>("AmountFpa")
+                        .HasColumnType("decimal(18, 4)");
 
-                    b.Property<decimal>("AmountNet");
+                    b.Property<decimal>("AmountNet")
+                        .HasColumnType("decimal(18, 4)");
 
                     b.Property<int>("CompanyId");
 
@@ -874,6 +1187,8 @@ namespace GrKouk.WebApi.Migrations
                         .HasMaxLength(500);
 
                     b.Property<int>("FiscalPeriodId");
+
+                    b.Property<int>("PaymentMethodId");
 
                     b.Property<int>("SectionId");
 
@@ -896,6 +1211,8 @@ namespace GrKouk.WebApi.Migrations
                     b.HasIndex("CompanyId");
 
                     b.HasIndex("FiscalPeriodId");
+
+                    b.HasIndex("PaymentMethodId");
 
                     b.HasIndex("SectionId");
 
@@ -925,6 +1242,8 @@ namespace GrKouk.WebApi.Migrations
                     b.Property<string>("Code")
                         .HasMaxLength(15);
 
+                    b.Property<int>("CompanyId");
+
                     b.Property<string>("EMail")
                         .HasMaxLength(200);
 
@@ -950,7 +1269,11 @@ namespace GrKouk.WebApi.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Code");
+                    b.HasIndex("Code")
+                        .IsUnique()
+                        .HasFilter("[Code] IS NOT NULL");
+
+                    b.HasIndex("CompanyId");
 
                     b.HasIndex("TransactorTypeId");
 
@@ -963,11 +1286,14 @@ namespace GrKouk.WebApi.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<decimal>("AmountDiscount");
+                    b.Property<decimal>("AmountDiscount")
+                        .HasColumnType("decimal(18, 4)");
 
-                    b.Property<decimal>("AmountFpa");
+                    b.Property<decimal>("AmountFpa")
+                        .HasColumnType("decimal(18, 4)");
 
-                    b.Property<decimal>("AmountNet");
+                    b.Property<decimal>("AmountNet")
+                        .HasColumnType("decimal(18, 4)");
 
                     b.Property<int>("CompanyId");
 
@@ -992,11 +1318,14 @@ namespace GrKouk.WebApi.Migrations
 
                     b.Property<DateTime>("TransDate");
 
-                    b.Property<decimal>("TransDiscountAmount");
+                    b.Property<decimal>("TransDiscountAmount")
+                        .HasColumnType("decimal(18, 4)");
 
-                    b.Property<decimal>("TransFpaAmount");
+                    b.Property<decimal>("TransFpaAmount")
+                        .HasColumnType("decimal(18, 4)");
 
-                    b.Property<decimal>("TransNetAmount");
+                    b.Property<decimal>("TransNetAmount")
+                        .HasColumnType("decimal(18, 4)");
 
                     b.Property<string>("TransRefCode");
 
@@ -1150,11 +1479,14 @@ namespace GrKouk.WebApi.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<decimal>("AmountDiscount");
+                    b.Property<decimal>("AmountDiscount")
+                        .HasColumnType("decimal(18, 4)");
 
-                    b.Property<decimal>("AmountFpa");
+                    b.Property<decimal>("AmountFpa")
+                        .HasColumnType("decimal(18, 4)");
 
-                    b.Property<decimal>("AmountNet");
+                    b.Property<decimal>("AmountNet")
+                        .HasColumnType("decimal(18, 4)");
 
                     b.Property<int>("CompanyId");
 
@@ -1193,15 +1525,20 @@ namespace GrKouk.WebApi.Migrations
 
                     b.Property<DateTime>("TransDate");
 
-                    b.Property<decimal>("TransDiscountAmount");
+                    b.Property<decimal>("TransDiscountAmount")
+                        .HasColumnType("decimal(18, 4)");
 
-                    b.Property<decimal>("TransFpaAmount");
+                    b.Property<decimal>("TransFpaAmount")
+                        .HasColumnType("decimal(18, 4)");
 
-                    b.Property<decimal>("TransNetAmount");
+                    b.Property<decimal>("TransNetAmount")
+                        .HasColumnType("decimal(18, 4)");
 
-                    b.Property<decimal>("TransQ1");
+                    b.Property<decimal>("TransQ1")
+                        .HasColumnType("decimal(18, 4)");
 
-                    b.Property<decimal>("TransQ2");
+                    b.Property<decimal>("TransQ2")
+                        .HasColumnType("decimal(18, 4)");
 
                     b.Property<string>("TransRefCode");
 
@@ -1211,9 +1548,14 @@ namespace GrKouk.WebApi.Migrations
 
                     b.Property<int>("TransactionType");
 
-                    b.Property<decimal>("UnitFactor");
+                    b.Property<decimal>("UnitExpenses")
+                        .HasColumnType("decimal(18, 4)");
 
-                    b.Property<decimal>("UnitPrice");
+                    b.Property<decimal>("UnitFactor")
+                        .HasColumnType("decimal(18, 4)");
+
+                    b.Property<decimal>("UnitPrice")
+                        .HasColumnType("decimal(18, 4)");
 
                     b.Property<int>("WarehouseItemId");
 
@@ -1267,6 +1609,14 @@ namespace GrKouk.WebApi.Migrations
                         .WithMany()
                         .HasForeignKey("TransWarehouseDefId")
                         .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("GrKouk.InfoSystem.Domain.FinConfig.GlobalSettings", b =>
+                {
+                    b.HasOne("GrKouk.InfoSystem.Domain.Shared.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("GrKouk.InfoSystem.Domain.FinConfig.SellDocSeriesDef", b =>
@@ -1381,6 +1731,19 @@ namespace GrKouk.WebApi.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 
+            modelBuilder.Entity("GrKouk.InfoSystem.Domain.MediaEntities.ProductMedia", b =>
+                {
+                    b.HasOne("GrKouk.InfoSystem.Domain.MediaEntities.MediaEntry", "MediaEntry")
+                        .WithMany()
+                        .HasForeignKey("MediaEntryId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("GrKouk.InfoSystem.Domain.Shared.WarehouseItem", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
             modelBuilder.Entity("GrKouk.InfoSystem.Domain.Shared.BuyDocLine", b =>
                 {
                     b.HasOne("GrKouk.InfoSystem.Domain.Shared.BuyDocument", "BuyDocument")
@@ -1395,6 +1758,19 @@ namespace GrKouk.WebApi.Migrations
                     b.HasOne("GrKouk.InfoSystem.Domain.Shared.WarehouseItem", "WarehouseItem")
                         .WithMany()
                         .HasForeignKey("WarehouseItemId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("GrKouk.InfoSystem.Domain.Shared.BuyDocTransPaymentMapping", b =>
+                {
+                    b.HasOne("GrKouk.InfoSystem.Domain.Shared.BuyDocument", "BuyDocument")
+                        .WithMany()
+                        .HasForeignKey("BuyDocumentId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("GrKouk.InfoSystem.Domain.Shared.TransactorTransaction", "TransactorTransaction")
+                        .WithMany()
+                        .HasForeignKey("TransactorTransactionId")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 
@@ -1420,6 +1796,11 @@ namespace GrKouk.WebApi.Migrations
                         .HasForeignKey("FiscalPeriodId")
                         .OnDelete(DeleteBehavior.Restrict);
 
+                    b.HasOne("GrKouk.InfoSystem.Domain.FinConfig.PaymentMethod", "PaymentMethod")
+                        .WithMany()
+                        .HasForeignKey("PaymentMethodId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
                     b.HasOne("GrKouk.InfoSystem.Domain.Shared.Section", "Section")
                         .WithMany()
                         .HasForeignKey("SectionId")
@@ -1428,6 +1809,32 @@ namespace GrKouk.WebApi.Migrations
                     b.HasOne("GrKouk.InfoSystem.Domain.Shared.Transactor", "Transactor")
                         .WithMany()
                         .HasForeignKey("TransactorId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("GrKouk.InfoSystem.Domain.Shared.ClientProfile", b =>
+                {
+                    b.HasOne("GrKouk.InfoSystem.Domain.Shared.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("GrKouk.InfoSystem.Domain.Shared.CrCatWarehouseItem", b =>
+                {
+                    b.HasOne("GrKouk.InfoSystem.Domain.Shared.CashRegCategory", "CashRegCategory")
+                        .WithMany()
+                        .HasForeignKey("CashRegCategoryId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("GrKouk.InfoSystem.Domain.Shared.ClientProfile", "ClientProfile")
+                        .WithMany()
+                        .HasForeignKey("ClientProfileId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("GrKouk.InfoSystem.Domain.Shared.WarehouseItem", "WarehouseItem")
+                        .WithMany()
+                        .HasForeignKey("WarehouseItemId")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 
@@ -1459,6 +1866,36 @@ namespace GrKouk.WebApi.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 
+            modelBuilder.Entity("GrKouk.InfoSystem.Domain.Shared.ProductRecipe", b =>
+                {
+                    b.HasOne("GrKouk.InfoSystem.Domain.Shared.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("GrKouk.InfoSystem.Domain.Shared.WarehouseItem", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("GrKouk.InfoSystem.Domain.Shared.ProductRecipeLine", b =>
+                {
+                    b.HasOne("GrKouk.InfoSystem.Domain.Shared.WarehouseItem", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("GrKouk.InfoSystem.Domain.Shared.ProductRecipe", "ProductRecipe")
+                        .WithMany()
+                        .HasForeignKey("ProductRecipeId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("GrKouk.InfoSystem.Domain.Shared.ProductRecipe")
+                        .WithMany("ProductRecipeLines")
+                        .HasForeignKey("ProductRecipeId1");
+                });
+
             modelBuilder.Entity("GrKouk.InfoSystem.Domain.Shared.SellDocLine", b =>
                 {
                     b.HasOne("GrKouk.InfoSystem.Domain.Shared.SellDocument", "SellDocument")
@@ -1469,6 +1906,19 @@ namespace GrKouk.WebApi.Migrations
                     b.HasOne("GrKouk.InfoSystem.Domain.Shared.WarehouseItem", "WarehouseItem")
                         .WithMany()
                         .HasForeignKey("WarehouseItemId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("GrKouk.InfoSystem.Domain.Shared.SellDocTransPaymentMapping", b =>
+                {
+                    b.HasOne("GrKouk.InfoSystem.Domain.Shared.SellDocument", "SellDocument")
+                        .WithMany()
+                        .HasForeignKey("SellDocumentId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("GrKouk.InfoSystem.Domain.Shared.TransactorTransaction", "TransactorTransaction")
+                        .WithMany()
+                        .HasForeignKey("TransactorTransactionId")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 
@@ -1483,6 +1933,11 @@ namespace GrKouk.WebApi.Migrations
                         .WithMany()
                         .HasForeignKey("FiscalPeriodId")
                         .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("GrKouk.InfoSystem.Domain.FinConfig.PaymentMethod", "PaymentMethod")
+                        .WithMany()
+                        .HasForeignKey("PaymentMethodId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("GrKouk.InfoSystem.Domain.Shared.Section", "Section")
                         .WithMany()
@@ -1507,6 +1962,11 @@ namespace GrKouk.WebApi.Migrations
 
             modelBuilder.Entity("GrKouk.InfoSystem.Domain.Shared.Transactor", b =>
                 {
+                    b.HasOne("GrKouk.InfoSystem.Domain.Shared.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("GrKouk.InfoSystem.Domain.Shared.TransactorType", "TransactorType")
                         .WithMany()
                         .HasForeignKey("TransactorTypeId")

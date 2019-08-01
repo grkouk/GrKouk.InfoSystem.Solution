@@ -54,13 +54,17 @@
                 </div>
             </div>
             <div class="form-row">
-                <div class="form-group col-md-8">
+                <div class="form-group col-md-6">
                     <label asp-for="ItemVm.TransactorId" class="control-label small"></label>
                     <select asp-for="ItemVm.TransactorId" class="form-control form-control-sm small" asp-items="ViewBag.TransactorId"></select>
                 </div>
-                <div class="form-group col-md-4">
+                <div class="form-group col-md-3">
                     <label asp-for="ItemVm.CompanyId" class="control-label" small></label>
                     <select asp-for="ItemVm.CompanyId" class="form-control form-control-sm small" asp-items="ViewBag.CompanyId"></select>
+                </div>
+                <div class="form-group col-md-3">
+                    <label asp-for="ItemVm.PaymentMethodId" class="control-label" small></label>
+                    <select asp-for="ItemVm.PaymentMethodId" class="form-control form-control-sm small" asp-items="ViewBag.PaymentMethodId"></select>
                 </div>
             </div>
 
@@ -153,24 +157,33 @@
                                 var factor = docLine.Factor;
                                 var materialName = docLine.WarehouseItemName;
                                 var disRate = docLine.DiscountRate;
-                                var disAmount = docLine.DiscountRate;
+                                var disAmount = docLine.AmountDiscount;
                                 var vatAmount = docLine.AmountFpa;
                                 var netAmount = docLine.AmountNet;
                                 var grosAmount = netAmount - disAmount + vatAmount;
-
+                                var q1Actual=FormattableString.Invariant($"{q1}");
+                                var q2Actual=FormattableString.Invariant($"{q2}");
+                                var unitPriceActual=FormattableString.Invariant($"{unitPrice}");
+                                var vatRateActual=FormattableString.Invariant($"{vatRate}");
+                                var factorActual=FormattableString.Invariant($"{factor}");
+                                var disRateActual=FormattableString.Invariant($"{disRate}");
+                                var disAmountActual=FormattableString.Invariant($"{disAmount}");
+                                var vatAmountActual=FormattableString.Invariant($"{vatAmount}");
+                                var netAmountActual=FormattableString.Invariant($"{netAmount}");
+                                var grosAmountActual=FormattableString.Invariant($"{grosAmount}");
 
                                 var tLine = $"<tr><td class=\"small\"> {lineCount}" +
                                             $"</td><td class=\"small\" data-materialId=\"{materialId}\" " +
-                                            $"data-factor=\"{factor}\" data-mainUnitId=\"{mainUnitId}\" data-secUnitId=\"{secUnitId}\">" +
-                                            $"{materialName} </td><td class=\"small text-right\"  data-actualValue=\"{q1}\" >" +
-                                            $" {q1Str} </td><td class=\"small text-right\"  data-actualValue=\"{q2}\" > " +
-                                            $" {q2Str} </td><td class=\"small text-right\"  data-actualValue=\"{unitPrice}\" >" +
-                                            $" {unitPrice} </td><td class=\"small text-right\"  data-actualValue=\"{disRate}\" >" +
-                                            $"{disRate} </td><td class=\"small text-right\"  data-actualValue=\"{vatRate}\" >" +
-                                            $"{vatRate} </td><td class=\"small text-right\"  data-actualValue=\"{netAmount}\" >" +
-                                            $"{netAmount} </td><td class=\"small text-right\"  data-actualValue=\"{disAmount}\" >" +
-                                            $"{disAmount} </td><td class=\"small text-right\"  data-actualValue=\"{vatAmount}\" >" +
-                                            $"{vatAmount} </td><td class=\"small text-right\"  data-actualValue=\"{grosAmount}\" >" +
+                                            $"data-factor=\"{factorActual}\" data-mainUnitId=\"{mainUnitId}\" data-secUnitId=\"{secUnitId}\">" +
+                                            $"{materialName} </td><td class=\"small text-right\"  data-actualValue=\"{q1Actual}\" >" +
+                                            $" {q1Str} </td><td class=\"small text-right\"  data-actualValue=\"{q2Actual}\" > " +
+                                            $" {q2Str} </td><td class=\"small text-right\"  data-actualValue=\"{unitPriceActual}\" >" +
+                                            $" {unitPrice} </td><td class=\"small text-right\"  data-actualValue=\"{disRateActual}\" >" +
+                                            $"{disRate} </td><td class=\"small text-right\"  data-actualValue=\"{vatRateActual}\" >" +
+                                            $"{vatRate} </td><td class=\"small text-right\"  data-actualValue=\"{netAmountActual}\" >" +
+                                            $"{netAmount} </td><td class=\"small text-right\"  data-actualValue=\"{disAmountActual}\" >" +
+                                            $"{disAmount} </td><td class=\"small text-right\"  data-actualValue=\"{vatAmountActual}\" >" +
+                                            $"{vatAmount} </td><td class=\"small text-right\"  data-actualValue=\"{grosAmountActual}\" >" +
                                             $"{grosAmount} </td>" +
                                             $"<td class=\"small\">" +
                                             $"<a data-itemId=\"0\" href=\"#\" class=\"modifyItem\"><i class=\"fas fa-edit\"></i></a></td>" +
@@ -224,7 +237,7 @@
 
 
 <div>
-    <a asp-page="./Index">Back to List</a>
+    <a class="small" asp-page="./Index">Back to List</a>
 </div>
 
 @section Scripts {
@@ -332,7 +345,22 @@
                     break;
                 }
             };
+            var setSeriesInSession = () => {
+                return $.ajax({
+                    contentType: 'application/json; charset=utf-8',
 
+                    dataType: 'json',
+                    type: 'GET',
+                    url: "/api/Materials/SetBuySeriesInSession?seriesId="+$transDocSeriesId.val(),
+
+                    success: function(result) {
+
+                    },
+                    error: function(e) {
+
+                    }
+                });
+            };
             var companyChanged = () => {
 
                 //sessionStorage.setItem('CompanyId', $companyId.val());
@@ -353,7 +381,7 @@
             };
             var seriesChanged = () => {
                 console.log("Inside Series Changed");
-
+                setSeriesInSession();
                 var seriesId = $transDocSeriesId.val();
                 var uri = '@Configuration.GetSection("WebApiSettings")["WebApiLocal"]';
                 var finalUri = `${uri}/materials/BuySeriesData?seriesId=${seriesId}`;
@@ -502,7 +530,7 @@
                 $amountSum.attr('data-actualValue', sumGross);
             };
             var autoCompleteNameDef = {
-                 source: '/api/materials/SearchForMaterials',
+                 source: '/api/materials/SearchWarehouseItemsForBuy',
                 minLength: 2,
                 maxShowItems:10,
                 select: function(event, ui) {
@@ -511,7 +539,7 @@
                     this.value = ui.item.label;
                     //Get WarehouseItem data
                     var uri = '@Configuration.GetSection("WebApiSettings")["WebApiLocal"]';
-                    var finalUri = `${uri}/materials/materialdata?materialId=${ui.item.value}`;
+                    var finalUri = `${uri}/materials/materialdata?warehouseItemId=${ui.item.value}`;
 
                     console.log(finalUri);
 
@@ -817,6 +845,7 @@
                     $lineEditing.val(lineEdit);
                     $materialId.val(materialId);
                     $lookUp.val(materialName);
+                    $lookupValueValid.val('OK');
                     //$price.val(price);
                     $q1.val(q1);
                     $q2.val(q2);
@@ -834,8 +863,8 @@
                     contentType: 'application/json; charset=utf-8',
 
                     dataType: 'json',
-                    type: 'PUT',
-                    url: "/api/materials/WarehouseItemBuyDocUpdate",
+                    type: 'POST',
+                    url: "/api/materials/MaterialBuyDocUpdate",
                     data: data,
                     headers: {
                         'RequestVerificationToken': securityToken
@@ -843,6 +872,7 @@
                     success: function(result) {
                         toastr.success("Success", "Success");
                         //location.reload();
+                        window.location.href = '@Url.Page("Index")';
                     },
                     error: function(e) {
                         var r = e.responseJSON.error;
@@ -889,6 +919,7 @@
                     transRefCode: $("#ItemVm_TransRefCode").val(),
                     transactorId: $("#ItemVm_TransactorId").val(),
                     companyId: $("#ItemVm_CompanyId").val(),
+                    paymentMethodId: $("#ItemVm_PaymentMethodId").val(),
                     buyDocSeriesId: $("#ItemVm_BuyDocSeriesId").val(),
                     buyDocTypeId: $("#ItemVm_BuyDocTypeId").val(),
                     Etiology: $("#ItemVm_Etiology").val(),
@@ -913,6 +944,7 @@
             //-------------
             if ($initialLoad.val()=='True') {
                 console.log("Initial load is true setting initial values");
+                updateCounter();
                 seriesChanged();
                 companyChanged();
                 setSeekType();

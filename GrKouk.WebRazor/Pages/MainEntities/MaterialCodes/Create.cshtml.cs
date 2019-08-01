@@ -1,29 +1,55 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GrKouk.InfoSystem.Definitions;
-using GrKouk.InfoSystem.Domain.FinConfig;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using GrKouk.InfoSystem.Domain.Shared;
-using GrKouk.WebApi.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 
 namespace GrKouk.WebRazor.Pages.MainEntities.MaterialCodes
 {
+    [Authorize(Roles = "Admin")]
     public class CreateModel : PageModel
     {
         private readonly GrKouk.WebApi.Data.ApiDbContext _context;
 
+        #region Fields
+     
+        public int ParentPageSize { get; set; }
+        public int ParentPageIndex { get; set; }
+        public string ParentSortOrder { get; set; }
+        public string ParentSearchString { get; set; }
+        public string ParentWarehouseItemNatureFilter { get; set; }
+        public bool ParentFiltersVisible { get; set; }
+        public bool ParentRowSelectorsVisible { get; set; }
+
+        #endregion
         public CreateModel(GrKouk.WebApi.Data.ApiDbContext context)
         {
             _context = context;
         }
 
-        public IActionResult OnGet()
+        public IActionResult OnGet(string parentSortOrder, string parentSearchString,  bool parentFiltersVisible
+            ,string parentWarehouseItemNatureFilter
+            , bool parentRowSelectorsVisible , int? parentPageIndex, int? parentPageSize)
         {
+            ParentFiltersVisible = parentFiltersVisible;
+            ParentRowSelectorsVisible = parentRowSelectorsVisible;
+            ParentSortOrder = parentSortOrder;
+            ParentSearchString = parentSearchString;
+            ParentWarehouseItemNatureFilter = parentWarehouseItemNatureFilter;
+            if (parentPageIndex != null)
+            {
+                ParentPageIndex =(int) parentPageIndex;
+            }
+
+            if (parentPageSize != null)
+            {
+                ParentPageSize =(int) parentPageSize;
+            }
             LoadCombos();
             return Page();
         }

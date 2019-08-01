@@ -7,10 +7,12 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using GrKouk.InfoSystem.Domain.Shared;
 using GrKouk.WebApi.Data;
+using Microsoft.AspNetCore.Authorization;
 using NToastNotify;
 
 namespace GrKouk.WebRazor.Pages.CommonEntities.FiscalPeriodsManagement
 {
+    [Authorize(Roles = "Admin")]
     public class CreateModel : PageModel
     {
         private readonly GrKouk.WebApi.Data.ApiDbContext _context;

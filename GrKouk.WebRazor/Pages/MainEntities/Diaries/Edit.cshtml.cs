@@ -148,7 +148,7 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Diaries
                 .Cast<WarehouseItemNatureEnum>()
                 .Select(c => new UISelectTypeItem()
                 {
-                    Value = c.ToString(),
+                    ValueInt =(int) c,
                     Title = c.GetDescription()
                 }).ToList();
 
@@ -161,7 +161,7 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Diaries
 
             ViewData["diaryTypes"] = new SelectList(diaryTypes, "Value", "Text");
             ViewData["transactorTypes"] = new SelectList(transactorTypeList, "Value", "Title");
-            ViewData["MaterialNatureTypes"] = new SelectList(materialNatureList, "Value", "Title");
+            ViewData["MaterialNatureTypes"] = new SelectList(materialNatureList, "ValueInt", "Title");
 
             ViewData["BuyDocTypeListJs"] = buyDocTypeListJs;
             ViewData["SellDocTypeListJs"] = sellDocTypeListJs;

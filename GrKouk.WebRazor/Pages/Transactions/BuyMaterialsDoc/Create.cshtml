@@ -22,6 +22,7 @@
     <form method="post" id="transForm">
         <fieldset id="thisForm">
             <div asp-validation-summary="ModelOnly" class="text-danger small"></div>
+            <input type="hidden" asp-for="@Model.CopyFromId" id="CopyFromId" />
             <input type="hidden" asp-for="@Model.InitialLoad" id="IsInitialLoad" />
             <input type="hidden" id="MaterialId" />
             <input type="hidden" id="MaterialLastPrice" />
@@ -51,13 +52,17 @@
                 </div>
             </div>
             <div class="form-row">
-                <div class="form-group col-md-8">
+                <div class="form-group col-md-6">
                     <label asp-for="ItemVm.TransactorId" class="control-label small"></label>
                     <select asp-for="ItemVm.TransactorId" class="form-control form-control-sm small" asp-items="ViewBag.TransactorId"></select>
                 </div>
-                <div class="form-group col-md-4">
+                <div class="form-group col-md-3">
                     <label asp-for="ItemVm.CompanyId" class="control-label" small></label>
                     <select asp-for="ItemVm.CompanyId" class="form-control form-control-sm small" asp-items="ViewBag.CompanyId"></select>
+                </div>
+                <div class="form-group col-md-3">
+                    <label asp-for="ItemVm.PaymentMethodId" class="control-label" small></label>
+                    <select asp-for="ItemVm.PaymentMethodId" class="form-control form-control-sm small" asp-items="ViewBag.PaymentMethodId"></select>
                 </div>
             </div>
 
@@ -87,7 +92,7 @@
                 </div>
                 <div class="form-group col-md-1">
                     <label class="small" id="priceLabel">Price</label>
-                    <input class="form-control form-control-sm " type="number" style="font-size: 0.7rem" placeholder="Price" id="Price" />
+                    <input class="form-control form-control-sm cleave-number" type="number" style="font-size: 0.7rem" placeholder="Price" id="Price" />
                     <span class="text-danger small"></span>
                 </div>
                 <div class="form-group col-md-1">
@@ -131,7 +136,66 @@
 
                         </tr>
                     </thead>
-                    <tbody></tbody>
+                    <tbody>
+                        @{
+                            var lineCount = 0;
+                            if (Model.CopyFromItemVm != null)
+                            {
+                                foreach (var docLine in Model.CopyFromItemVm.BuyDocLines)
+                                {
+                                    lineCount++;
+                                    var materialId = docLine.WarehouseItemId;
+                                    var q1 = docLine.Quontity1;
+                                    var q1Str = $@"{q1:N2}";
+                                    var q2 = docLine.Quontity2;
+                                    var q2Str = $@"{q2:N2}";
+                                    var unitPrice = docLine.UnitPrice;
+                                    var vatRate = docLine.FpaRate;
+                                    var mainUnitId = docLine.PrimaryUnitId;
+                                    var secUnitId = docLine.SecondaryUnitId;
+                                    var factor = docLine.Factor;
+                                    var materialName = docLine.WarehouseItemName;
+                                    var disRate = docLine.DiscountRate;
+                                    var disAmount = docLine.DiscountRate;
+                                    var vatAmount = docLine.AmountFpa;
+                                    var netAmount = docLine.AmountNet;
+                                    var grosAmount = netAmount - disAmount + vatAmount;
+                                    var q1Actual = FormattableString.Invariant($"{q1}");
+                                    var q2Actual = FormattableString.Invariant($"{q2}");
+                                    var unitPriceActual = FormattableString.Invariant($"{unitPrice}");
+                                    var vatRateActual = FormattableString.Invariant($"{vatRate}");
+                                    var factorActual = FormattableString.Invariant($"{factor}");
+                                    var disRateActual = FormattableString.Invariant($"{disRate}");
+                                    var disAmountActual = FormattableString.Invariant($"{disAmount}");
+                                    var vatAmountActual = FormattableString.Invariant($"{vatAmount}");
+                                    var netAmountActual = FormattableString.Invariant($"{netAmount}");
+                                    var grosAmountActual = FormattableString.Invariant($"{grosAmount}");
+
+                                    var tLine = $"<tr><td class=\"small\"> {lineCount}" +
+                                                $"</td><td class=\"small\" data-materialId=\"{materialId}\" " +
+                                                $"data-factor=\"{factorActual}\" data-mainUnitId=\"{mainUnitId}\" data-secUnitId=\"{secUnitId}\">" +
+                                                $"{materialName} </td><td class=\"small text-right\"  data-actualValue=\"{q1Actual}\" >" +
+                                                $" {q1Str} </td><td class=\"small text-right\"  data-actualValue=\"{q2Actual}\" > " +
+                                                $" {q2Str} </td><td class=\"small text-right\"  data-actualValue=\"{unitPriceActual}\" >" +
+                                                $" {unitPrice} </td><td class=\"small text-right\"  data-actualValue=\"{disRateActual}\" >" +
+                                                $"{disRate} </td><td class=\"small text-right\"  data-actualValue=\"{vatRateActual}\" >" +
+                                                $"{vatRate} </td><td class=\"small text-right\"  data-actualValue=\"{netAmountActual}\" >" +
+                                                $"{netAmount} </td><td class=\"small text-right\"  data-actualValue=\"{disAmountActual}\" >" +
+                                                $"{disAmount} </td><td class=\"small text-right\"  data-actualValue=\"{vatAmountActual}\" >" +
+                                                $"{vatAmount} </td><td class=\"small text-right\"  data-actualValue=\"{grosAmountActual}\" >" +
+                                                $"{grosAmount} </td>" +
+                                                $"<td class=\"small\">" +
+                                                $"<a data-itemId=\"0\" href=\"#\" class=\"modifyItem\"><i class=\"fas fa-edit\"></i></a></td>" +
+                                                $"<td class=\"small\">" +
+                                                $"<a data-itemId=\"0\" href=\"#\" class=\"deleteItem\"><i class=\"fas fa-trash\"></i></a></td></tr>";
+                                    @Html.Raw(tLine)
+                                    ;
+                                }
+                            }
+
+
+                        }
+                    </tbody>
                 </table>
             </div>
             <div class="form-row">
@@ -181,6 +245,7 @@
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script src="~/lib/jqueryui/jquery-ui.min.js"></script>
     <script src="~/js/jquery.ui.autocomplete.scroll.min.js"></script>
+    <script src="~/lib/cleave.js/cleave.min.js"></script>
     <script>
         $(document).ready(function() {
             console.log("Inside Document ready");
@@ -233,18 +298,9 @@
             var $lookupValueValid = $("#LookupValueValid");
             var $materialFpaId = $('#MaterialFpaId');
             //#endregion
-
+            
             //#region Initial values
-            $materialCounter.val(0);
-            $transDate.val(new Date().toISOString().slice(0, 10));
-            $amountNet.attr('data-actualValue', '0');
-            $amountNet.val(0);
-            $amountFpa.attr('data-actualValue', '0');
-            $amountFpa.val(0);
-            $amountDiscount.attr('data-actualValue', '0');
-            $amountDiscount.val(0);
-            $amountSum.attr('data-actualValue', '0');
-            $amountSum.val(0);
+
             //#endregion
             var priceChanged = () => {
                 var priceValue =parseFloat( $price.val());
@@ -292,10 +348,27 @@
                     break;
                 }
             };
+            var setSeriesInSession = () => {
+                return $.ajax({
+                    contentType: 'application/json; charset=utf-8',
+
+                    dataType: 'json',
+                    type: 'GET',
+                    url: "/api/Materials/SetBuySeriesInSession?seriesId="+$transDocSeriesId.val(),
+
+                    success: function(result) {
+
+                    },
+                    error: function(e) {
+
+                    }
+                });
+            };
 
             var companyChanged = () => {
 
                 //sessionStorage.setItem('CompanyId', $companyId.val());
+                console.log('companyChanged companyId=' + $companyId.val());
                 return $.ajax({
                     contentType: 'application/json; charset=utf-8',
 
@@ -313,7 +386,7 @@
             };
             var seriesChanged = () => {
                 console.log("Inside Series Changed");
-
+                setSeriesInSession();
                 var seriesId = $transDocSeriesId.val();
                 var uri = '@Configuration.GetSection("WebApiSettings")["WebApiLocal"]';
                 var finalUri = `${uri}/materials/BuySeriesData?seriesId=${seriesId}`;
@@ -380,12 +453,12 @@
                     case 'SEC':
                         $q2.val(1);
                         q2Changed();
-                        $q2.focus();    
+                        $q2.focus();
                         break;
                     case 'BUY':
                         $q2.val(1);
                         q2Changed();
-                        $q2.focus();    
+                        $q2.focus();
                         break;
 
                     default:
@@ -463,7 +536,7 @@
                 $amountSum.attr('data-actualValue', sumGross);
             };
             var autoCompleteNameDef = {
-                 source: '/api/materials/SearchForMaterials',
+                 source: '/api/materials/SearchWarehouseItemsForBuy',
                 minLength: 2,
                 maxShowItems:10,
                 select: function(event, ui) {
@@ -472,7 +545,7 @@
                     this.value = ui.item.label;
                     //Get WarehouseItem data
                     var uri = '@Configuration.GetSection("WebApiSettings")["WebApiLocal"]';
-                    var finalUri = `${uri}/materials/materialdata?materialId=${ui.item.value}`;
+                    var finalUri = `${uri}/materials/materialdata?warehouseItemId=${ui.item.value}`;
 
                     console.log(finalUri);
 
@@ -557,9 +630,10 @@
             });
 
             $transDocSeriesId.change(() => {
+
                 seriesChanged();
             });
-           
+
             $q1.change(() => {
                 console.log("Q1 change event ->" + $q1.val());
                 q1Changed();
@@ -733,7 +807,7 @@
                 clearItem();
                 $lookUp.focus();
                 updateCounter();
-               
+
             });
 
             //After Add A New Order In The List, Clear Clean The Form For Add More Order.
@@ -759,7 +833,7 @@
                             $(this).remove();
                             updateCounter();
                         });
-                    
+
                 }
             });
             //--------------------
@@ -783,6 +857,7 @@
                     $lineEditing.val(lineEdit);
                     $materialId.val(materialId);
                     $lookUp.val(materialName);
+                    $lookupValueValid.val('OK');
                     //$price.val(price);
                     $q1.val(q1);
                     $q2.val(q2);
@@ -810,9 +885,11 @@
                     success: function(result) {
                         toastr.success("Success", "Success");
                         //location.reload();
+                        window.location.href = '@Url.Page("Index")';
                     },
                     error: function (e) {
-                        
+                        console.log('Error saving ');
+                        console.log(e );
                         var r = e.responseJSON.error;
                         toastr.error(r, "saveData");
                     }
@@ -865,6 +942,7 @@
                     transRefCode: $("#ItemVm_TransRefCode").val(),
                     transactorId: $("#ItemVm_TransactorId").val(),
                     companyId: $("#ItemVm_CompanyId").val(),
+                    paymentMethodId: $("#ItemVm_PaymentMethodId").val(),
                     buyDocSeriesId: $("#ItemVm_BuyDocSeriesId").val(),
                     Etiology: $("#ItemVm_Etiology").val(),
                     amountFpa: $("#ItemVm_AmountFpa").attr('data-actualValue'),
@@ -887,9 +965,26 @@
                     });
             });
             //-------------
-            if ($initialLoad.val()=='True') {
+            $transDate.val(new Date().toISOString().slice(0, 10));
+            var copyFromId =parseInt( $('#CopyFromId').val());
+
+            if (copyFromId === 0) {
+                $materialCounter.val(0);
+
+                $amountNet.attr('data-actualValue', '0');
+                $amountNet.val(0);
+                $amountFpa.attr('data-actualValue', '0');
+                $amountFpa.val(0);
+                $amountDiscount.attr('data-actualValue', '0');
+                $amountDiscount.val(0);
+                $amountSum.attr('data-actualValue', '0');
+                $amountSum.val(0);
+            } else {
+                updateCounter();
+            }
+            if ($initialLoad.val() == 'True') {
                 console.log("Initial load is true setting initial values");
-                $companyId.val('@Model.RoutedCompanyId');
+               // $companyId.val('@Model.RoutedCompanyId');
                 seriesChanged();
                 companyChanged();
                 setSeekType();

@@ -4,9 +4,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using GrKouk.InfoSystem.Domain.Shared;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GrKouk.WebRazor.Pages.MainEntities.MaterialCodes
 {
+    [Authorize(Roles = "Admin")]
     public class DeleteModel : PageModel
     {
         private readonly GrKouk.WebApi.Data.ApiDbContext _context;
@@ -21,14 +23,6 @@ namespace GrKouk.WebRazor.Pages.MainEntities.MaterialCodes
 
         public async Task<IActionResult> OnGetAsync(WarehouseItemCodeTypeEnum codeType, int materialId, string code )
         {
-            if (codeType == null)
-            {
-                return NotFound();
-            }
-            if (materialId == null)
-            {
-                return NotFound();
-            }
             if (code == null)
             {
                 return NotFound();
@@ -45,14 +39,6 @@ namespace GrKouk.WebRazor.Pages.MainEntities.MaterialCodes
 
         public async Task<IActionResult> OnPostAsync(WarehouseItemCodeTypeEnum codeType, int materialId, string code)
         {
-            if (codeType == null)
-            {
-                return NotFound();
-            }
-            if (materialId == null)
-            {
-                return NotFound();
-            }
             if (code == null)
             {
                 return NotFound();

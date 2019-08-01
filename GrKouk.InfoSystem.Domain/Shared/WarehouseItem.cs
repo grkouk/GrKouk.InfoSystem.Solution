@@ -65,7 +65,7 @@ namespace GrKouk.InfoSystem.Domain.Shared
         public virtual Company Company { get; set; }
         public decimal PriceNetto { get; set; }
         public decimal PriceBrutto { get; set; }
-
+       
         [Timestamp]
         public byte[] Timestamp { get; set; }
     }

@@ -46,6 +46,14 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.TransactorTransactions
         public decimal TransFpaAmount { get; set; }
         public decimal TransNetAmount { get; set; }
         public decimal TransDiscountAmount { get; set; }
+        /// <summary>
+        /// Transaction amount without taxes
+        /// </summary>
+        public decimal TotalNetAmount
+        {
+            get => TransNetAmount - TransDiscountAmount;
+
+        }
         public decimal TotalAmount
         {
             get => TransNetAmount + TransFpaAmount - TransDiscountAmount;
@@ -66,6 +74,24 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.TransactorTransactions
         public decimal CreditAmount => (FinancialAction.Equals(FinActionsEnum.FinActionsEnumCredit) ||
                                         FinancialAction.Equals(FinActionsEnum.FinActionsEnumNegativeCredit)
             ? TotalAmount
+            : 0);
+
+
+        [DisplayFormat(DataFormatString = "{0:C}")]
+        [Display(Name = "Net Debit ")]
+        public decimal DebitNetAmount
+        {
+            get => (FinancialAction.Equals(FinActionsEnum.FinActionsEnumDebit) ||
+                    FinancialAction.Equals(FinActionsEnum.FinActionsEnumNegativeDebit)
+                ? TotalNetAmount
+                : 0);
+
+        }
+        [DisplayFormat(DataFormatString = "{0:C}")]
+        [Display(Name = "Net Credit")]
+        public decimal CreditNetAmount => (FinancialAction.Equals(FinActionsEnum.FinActionsEnumCredit) ||
+                                        FinancialAction.Equals(FinActionsEnum.FinActionsEnumNegativeCredit)
+            ? TotalNetAmount
             : 0);
 
         [Display(Name = "Company")]

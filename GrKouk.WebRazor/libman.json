@@ -17,6 +17,22 @@
     {
       "library": "bootstrap-select@1.13.5",
       "destination": "wwwroot/lib/bootstrap-select/"
+    },
+    {
+      "library": "node-uuid@1.4.8",
+      "destination": "wwwroot/lib/node-uuid/"
+    },
+    {
+      "library": "datatables@1.10.19",
+      "destination": "wwwroot/lib/datatables/"
+    },
+    {
+      "library": "bootstrap4-duallistbox@4.0.1",
+      "destination": "wwwroot/lib/bootstrap4-duallistbox/"
+    },
+    {
+      "library": "cleave.js@1.4.10",
+      "destination": "wwwroot/lib/cleave.js/"
     }
   ]
 }

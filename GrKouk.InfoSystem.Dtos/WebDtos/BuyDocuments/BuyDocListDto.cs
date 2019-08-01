@@ -39,6 +39,12 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.BuyDocuments
             get => AmountNet + AmountFpa - AmountDiscount;
 
         }
+        [Display(Name = "Total Net Amount")]
+        public decimal TotalNetAmount
+        {
+            get => AmountNet - AmountDiscount;
+
+        }
         public int CompanyId { get; set; }
 
         [Display(Name = "Company")]

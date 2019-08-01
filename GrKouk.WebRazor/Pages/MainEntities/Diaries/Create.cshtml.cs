@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using GrKouk.InfoSystem.Definitions;
-using GrKouk.InfoSystem.Domain.FinConfig;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -40,7 +39,7 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Diaries
                     Text = c.GetDescription()
                 }).ToList();
 
-            #region MyRegion
+            #region CommentOut
             //foreach (DiaryTypeEnum value in Enum.GetValues(typeof(DiaryTypeEnum)))
             //{
             //    var a = value.GetDescription()
@@ -84,7 +83,7 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Diaries
                     Title = p.Name,
                     Value = p.Id
                 }).ToList();
-            #region MyRegion
+            #region CommentOut
             //var BuyDocTypeListJs = _context.BuyDocTypeDefs.OrderBy(p => p.Name)
             //   .ProjectTo<DiaryDocTypeItem>(_mapper.ConfigurationProvider).ToList();
 
@@ -98,7 +97,7 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Diaries
                 .Cast<WarehouseItemNatureEnum>()
                 .Select(c => new UISelectTypeItem()
                 {
-                    Value = c.ToString(),
+                    ValueInt =(int) c,
                     Title = c.GetDescription()
                 }).ToList();
 
@@ -111,7 +110,7 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Diaries
 
             ViewData["diaryTypes"] = new SelectList(diaryTypes, "Value", "Text");
             ViewData["transactorTypes"] = new SelectList(transactorTypeList, "Value", "Title");
-            ViewData["MaterialNatureTypes"] = new SelectList(materialNatureList, "Value", "Title");
+            ViewData["MaterialNatureTypes"] = new SelectList(materialNatureList, "ValueInt", "Title");
 
             //ViewData["BuyDocTypeList"] = new SelectList(_context.BuyDocTypeDefs.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
             ViewData["BuyDocTypeListJs"] = BuyDocTypeListJs;

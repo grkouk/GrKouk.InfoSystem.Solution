@@ -1,6 +1,7 @@
 ﻿using GrKouk.InfoSystem.Domain.FinConfig;
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using GrKouk.InfoSystem.Definitions;
 
 namespace GrKouk.InfoSystem.Domain.Shared
@@ -50,6 +51,7 @@ namespace GrKouk.InfoSystem.Domain.Shared
         //public virtual MeasureUnit PrimaryUnit { get; set; }
         public int SecondaryUnitId { get; set; }
         //public virtual MeasureUnit SecondaryUnit { get; set; }
+        [Column(TypeName = "decimal(18, 4)")]
         public decimal UnitFactor { get; set; }
         /// <summary>
         /// Ποσότητα σε μονάδα μέτρησης 1
@@ -61,14 +63,25 @@ namespace GrKouk.InfoSystem.Domain.Shared
         public double Quontity2 { get; set; }
         public decimal FpaRate { get; set; }
         public decimal DiscountRate { get; set; }
-        public decimal UnitPrice { get; set; }  
+        [Column(TypeName = "decimal(18, 4)")]
+        public decimal UnitPrice { get; set; }
+        [Column(TypeName = "decimal(18, 4)")]
+        public decimal UnitExpenses { get; set; }
+        [Column(TypeName = "decimal(18, 4)")]
         public decimal AmountFpa { get; set; }
+        [Column(TypeName = "decimal(18, 4)")]
         public decimal AmountNet { get; set; }
+        [Column(TypeName = "decimal(18, 4)")]
         public decimal AmountDiscount { get; set; }
+        [Column(TypeName = "decimal(18, 4)")]
         public decimal TransQ1 { get; set; }
+        [Column(TypeName = "decimal(18, 4)")]
         public decimal TransQ2 { get; set; }
+        [Column(TypeName = "decimal(18, 4)")]
         public decimal TransFpaAmount { get; set; }
+        [Column(TypeName = "decimal(18, 4)")]
         public decimal TransNetAmount { get; set; }
+        [Column(TypeName = "decimal(18, 4)")]
         public decimal TransDiscountAmount { get; set; }
         [MaxLength(500)]
         public string Etiology { get; set; }

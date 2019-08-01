@@ -15,9 +15,6 @@ namespace GrKouk.InfoSystem.Domain.Shared
 
         public int WarehouseItemId { get; set; }
         public virtual WarehouseItem WarehouseItem { get; set; }
-
-       
-
         public int PrimaryUnitId { get; set; }
         //public virtual MeasureUnit PrimaryUnit { get; set; }
         public int SecondaryUnitId { get; set; }
@@ -33,9 +30,15 @@ namespace GrKouk.InfoSystem.Domain.Shared
         public double Quontity2 { get; set; }
         public decimal FpaRate { get; set; }
         public decimal DiscountRate { get; set; }
+        [Column(TypeName = "decimal(18, 4)")]
         public decimal UnitPrice { get; set; }
+        [Column(TypeName = "decimal(18, 4)")]
+        public decimal UnitExpenses { get; set; }
+        [Column(TypeName = "decimal(18, 4)")]
         public decimal AmountFpa { get; set; }
+        [Column(TypeName = "decimal(18, 4)")]
         public decimal AmountNet { get; set; }
+        [Column(TypeName = "decimal(18, 4)")]
         public decimal AmountDiscount { get; set; }
         [MaxLength(500)]
         public string Etiology { get; set; }

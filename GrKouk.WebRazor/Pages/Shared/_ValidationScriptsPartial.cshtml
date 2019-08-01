@@ -49,9 +49,13 @@
         var cultureToUse = "en-US"; //Default regionalisation to use
 
         if (System.IO.Directory.Exists(System.IO.Path.Combine(HostingEnvironment.WebRootPath, string.Format(localePattern, currentCulture.Name))))
+        {
             cultureToUse = currentCulture.Name;
+        }
         else if (System.IO.Directory.Exists(System.IO.Path.Combine(HostingEnvironment.WebRootPath, string.Format(localePattern, currentCulture.TwoLetterISOLanguageName))))
+        {
             cultureToUse = currentCulture.TwoLetterISOLanguageName;
+        }
 
         return cultureToUse;
     }

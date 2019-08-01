@@ -2,107 +2,146 @@
 @model GrKouk.WebRazor.Pages.MainEntities.Transactors.DetailsModel
 
 @{
-    ViewData["Title"] = "Details";
+    Layout = "_LayoutDashboard";
+    ViewData["Title"] = "Transactor Details";
 }
 
-<h2>Details</h2>
 
-<div>
-    <h4>Transactor</h4>
-    <hr />
-    <dl class="row">
-        <div class="col-md-6">
-            <dl class="dl-horizontal">
-                <dt>
-                    @Html.DisplayNameFor(model => model.Transactor.Code)
-                </dt>
-                <dd>
-                    @Html.DisplayFor(model => model.Transactor.Code)
-                </dd>
-                <dt>
-                    @Html.DisplayNameFor(model => model.Transactor.Name)
-                </dt>
-                <dd>
-                    @Html.DisplayFor(model => model.Transactor.Name)
-                </dd>
-                <dt>
-                    @Html.DisplayNameFor(model => model.Transactor.EMail)
-                </dt>
-                <dd>
-                    @Html.DisplayFor(model => model.Transactor.EMail)
-                </dd>
-            </dl>
-        </div>
-        <div class="col-md-6">
-            <dl class="dl-horizontal">
-                <dt>
-                    @Html.DisplayNameFor(model => model.Transactor.TransactorType)
-                </dt>
-                <dd>
-                    @Html.DisplayFor(model => model.Transactor.TransactorType.Code)
-                </dd>
-                <dt>
-                    @Html.DisplayNameFor(model => model.Transactor.Address)
-                </dt>
-                <dd>
-                    @Html.DisplayFor(model => model.Transactor.Address)
-                </dd>
-            </dl>
-       </div>
-       
-    </dl>
-    <label asp-for="Total">@Model.Total</label>
+<div class="container-fluid">
+    <div class="row">
+        <nav class="col-md-2 d-none d-md-block bg-light sidebar">
+            <div class="sidebar-sticky">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">
+                            <span data-feather="home"></span>
+                            Dashboard <span class="sr-only">(current)</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <span data-feather="file"></span>
+                            Orders
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <span data-feather="shopping-cart"></span>
+                            Products
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <span data-feather="users"></span>
+                            Customers
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <span data-feather="bar-chart-2"></span>
+                            Reports
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <span data-feather="layers"></span>
+                            Integrations
+                        </a>
+                    </li>
+                </ul>
 
+                <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                    <span>Saved reports</span>
+                    <a class="d-flex align-items-center text-muted" href="#">
+                        <span data-feather="plus-circle"></span>
+                    </a>
+                </h6>
+                <ul class="nav flex-column mb-2">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <span data-feather="file-text"></span>
+                            Current month
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <span data-feather="file-text"></span>
+                            Last quarter
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <span data-feather="file-text"></span>
+                            Social engagement
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <span data-feather="file-text"></span>
+                            Year-end sale
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
 
-    @*<dl class="dl-horizontal">
-        
-        <dt>
-            @Html.DisplayNameFor(model => model.Transactor.Address)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Transactor.Address)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Transactor.City)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Transactor.City)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Transactor.Zip)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Transactor.Zip)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Transactor.PhoneWork)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Transactor.PhoneWork)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Transactor.PhoneMobile)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Transactor.PhoneMobile)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Transactor.PhoneFax)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Transactor.PhoneFax)
-        </dd>
-       
-       
-        <dt>
-            @Html.DisplayNameFor(model => model.Transactor.Timestamp)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Transactor.Timestamp)
-        </dd>
-    </dl>*@
+        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2">Dashboard</h1>
+                <div class="btn-toolbar mb-2 mb-md-0">
+                    <div class="btn-group mr-2">
+                        <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
+                        <span data-feather="calendar"></span>
+                        This week
+                    </button>
+                </div>
+            </div>
+
+            <canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas>
+
+            <h2>Section title</h2>
+            <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Header</th>
+                        <th>Header</th>
+                        <th>Header</th>
+                        <th>Header</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>1,001</td>
+                        <td>Lorem</td>
+                        <td>ipsum</td>
+                        <td>dolor</td>
+                        <td>sit</td>
+                    </tr>
+                    <tr>
+                    <td>1,002</td>
+                    <td>amet</td>
+                    <td>consectetur</td>
+                    <td>adipiscing</td>
+                    <td>elit</td>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
 </div>
-<div>
-    <a asp-page="./Edit" asp-route-id="@Model.Transactor.Id">Edit</a> |
-    <a asp-page="./Index">Back to List</a>
-</div>
+@section Scripts
+{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.9.0/feather.min.js"></script>
+    <script>
+        (function () {
+
+            feather.replace();
+
+        }())
+    </script>
+}

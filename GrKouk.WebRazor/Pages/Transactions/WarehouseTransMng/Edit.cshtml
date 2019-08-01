@@ -40,7 +40,7 @@
                 <div class="form-group col-md-3">
                     <label asp-for="ItemVm.TransDate" class="small"></label>
                     <input asp-for="ItemVm.TransDate" class="form-control form-control-sm small" autofocus />
-                    <span asp-validation-for="ItemVm.TransDate" class="text-danger"></span>
+                    <span asp-validation-for="ItemVm.TransDate" class="text-danger small"></span>
                 </div>
                 <div class="form-group col-md-6">
                     <label asp-for="ItemVm.TransWarehouseDocSeriesId" class="small"></label>
@@ -55,7 +55,7 @@
                 <div class="form-group col-md-3">
                     <label asp-for="ItemVm.TransRefCode" class="small"></label>
                     <input asp-for="ItemVm.TransRefCode" class="form-control form-control-sm small" />
-                    <span asp-validation-for="ItemVm.TransRefCode" class="text-danger"></span>
+                    <span asp-validation-for="ItemVm.TransRefCode" class="text-danger small"></span>
                 </div>
 
             </div>
@@ -63,7 +63,7 @@
                 <div class="form-group col-md-6">
                     <label asp-for="ItemVm.WarehouseItemId" class="small " id="materialLabel"></label>
                     <div class="input-group ">
-                        <select asp-for="ItemVm.WarehouseItemId" class="form-control form-control-sm small " asp-items="ViewBag.MaterialId"></select>
+                        <select asp-for="ItemVm.WarehouseItemId" class="form-control form-control-sm small " asp-items="ViewBag.WarehouseItemId"></select>
                         <div class="input-group-append">
                             <span class="form-control-sm small" id="matLoading" hidden><i class="fas fa-spinner fa-spin"></i></span>
                         </div>
@@ -74,7 +74,7 @@
                 <div class="form-group col-md-3">
                     <label asp-for="ItemVm.FiscalPeriodId" class="small"></label>
                     <select asp-for="ItemVm.FiscalPeriodId" class="form-control form-control-sm small" asp-items="ViewBag.FiscalPeriodId" readonly></select>
-                    <span asp-validation-for="ItemVm.FiscalPeriodId" class="text-danger"></span>
+                    <span asp-validation-for="ItemVm.FiscalPeriodId" class="text-danger small"></span>
                     </div>
                 <div class="form-group col-md-3">
                     <label asp-for="ItemVm.CompanyId" class="small"></label>
@@ -91,7 +91,7 @@
                             <span class="input-group-text form-control-sm small" id="primaryUnitCode">@Model.ItemVm.PrimaryUnitCode</span>
                         </div>
                     </div>
-                    <span asp-validation-for="ItemVm.Quontity1" class="text-danger"></span>
+                    <span asp-validation-for="ItemVm.Quontity1" class="text-danger small"></span>
                 </div>
                 <div class="form-group col-md-2">
                     <label asp-for="ItemVm.Quontity2" class="small"></label>
@@ -102,12 +102,12 @@
                         </div>
                     </div>
 
-                    <span asp-validation-for="ItemVm.Quontity2" class="text-danger"></span>
+                    <span asp-validation-for="ItemVm.Quontity2" class="text-danger small"></span>
                 </div>
                 <div class="form-group col-md-2">
                     <label asp-for="ItemVm.UnitPrice" class="small"></label>
                     <input asp-for="ItemVm.UnitPrice"  class="form-control form-control-sm small" />
-                    <span asp-validation-for="ItemVm.UnitPrice" class="text-danger"></span>
+                    <span asp-validation-for="ItemVm.UnitPrice" class="text-danger small"></span>
                 </div>
 
             </div>
@@ -115,22 +115,22 @@
                 <div class="form-group col-md-1">
                     <label asp-for="ItemVm.FpaRate" class="small"></label>
                     <input asp-for="ItemVm.FpaRate" class="form-control form-control-sm small" />
-                    <span asp-validation-for="ItemVm.FpaRate" class="text-danger"></span>
+                    <span asp-validation-for="ItemVm.FpaRate" class="text-danger small"></span>
                 </div>
                 <div class="form-group col-md-2">
                     <label asp-for="ItemVm.AmountNet" class="small"></label>
                     <input asp-for="ItemVm.AmountNet"  class="form-control form-control-sm small" readonly />
-                    <span asp-validation-for="ItemVm.AmountNet" class="text-danger"></span>
+                    <span asp-validation-for="ItemVm.AmountNet" class="text-danger small"></span>
                 </div>
                 <div class="form-group col-md-2">
                     <label asp-for="ItemVm.AmountFpa" class="small"></label>
                     <input asp-for="ItemVm.AmountFpa" class="form-control form-control-sm small" readonly />
-                    <span asp-validation-for="ItemVm.AmountFpa" class="text-danger"></span>
+                    <span asp-validation-for="ItemVm.AmountFpa" class="text-danger small"></span>
                 </div>
                 <div class="form-group col-md-2">
                     <label asp-for="ItemVm.AmountDiscount" class="small"></label>
                     <input asp-for="ItemVm.AmountDiscount" class="form-control form-control-sm small" />
-                    <span asp-validation-for="ItemVm.AmountDiscount" class="text-danger"></span>
+                    <span asp-validation-for="ItemVm.AmountDiscount" class="text-danger small"></span>
                 </div>
                 <div class="form-group col-md-2">
                     <label asp-for="ItemVm.AmountSum" class="small">Sum</label>
@@ -143,7 +143,7 @@
                 <div class="form-group col-md-12">
                     <label asp-for="ItemVm.Etiology" class="small"></label>
                     <textarea asp-for="ItemVm.Etiology" class="form-control form-control-sm small" placeholder="Αιτιολογία Κίνησης"> </textarea>
-                    <span asp-validation-for="ItemVm.Etiology" class="text-danger"></span>
+                    <span asp-validation-for="ItemVm.Etiology" class="text-danger small"></span>
                 </div>
             </div>
             <div class="form-row">
@@ -158,29 +158,15 @@
 
 
 <div>
-    <a asp-page="./Index">Back to List</a>
+    <a class="small" asp-page="./Index">Back to List</a>
 </div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script>
         $(document).ready(() => {
-            //#region Initial values
-
-            //$('#matLoading').attr('hidden', true);
-            //if (!$('#IsInitialLoad').val()) {
-            //    $('#ItemVm_TransDate').val(new Date().toISOString().slice(0, 10));
-            //    $('#ItemVm_AmountNet').attr('data-actualValue', '0');
-            //    $('#ItemVm_AmountNet').val(0);
-            //    $('#ItemVm_AmountFpa').attr('data-actualValue', '0');
-            //    $('#ItemVm_AmountFpa').val(0);
-            //    $('#ItemVm_AmountDiscount').attr('data-actualValue', '0');
-            //    $('#ItemVm_AmountDiscount').val(0);
-            //    $('#SumAmount').attr('data-actualValue', '0');
-            //    $('#SumAmount').val(0);
-            //}
-            //#endregion
-            //#region
+           
+            //#region Variables
             var $initialLoad = $('#IsInitialLoad');
             var $material = $('#ItemVm_MaterialId');
             var $unitPrice = $('#ItemVm_UnitPrice');

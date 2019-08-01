@@ -44,18 +44,7 @@
                     <input asp-for="ItemVm.TransDate" class="form-control form-control-sm small" autofocus />
                     <span asp-validation-for="ItemVm.TransDate" class="text-danger small"></span>
                 </div>
-
-                <div class="form-group col-md-2 offset-md-1">
-                    <label asp-for="ItemVm.CompanyId" class="control-label small"></label>
-                    <select asp-for="ItemVm.CompanyId" class="form-control form-control-sm small" asp-items="ViewBag.CompanyId"></select>
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group col-md-5">
-                    <label asp-for="ItemVm.TransactorId" class="control-label small"></label>
-                    <select asp-for="ItemVm.TransactorId" class="form-control form-control-sm small" asp-items="ViewBag.TransactorId"></select>
-                </div>
-                <div class="form-group col-md-4">
+                <div class="form-group col-md-7">
                     <label asp-for="ItemVm.SellDocSeriesId" class="control-label small"></label>
                     <select asp-for="ItemVm.SellDocSeriesId" class="form-control form-control-sm small" asp-items="ViewBag.SellDocSeriesId"></select>
                 </div>
@@ -64,6 +53,21 @@
                     <input asp-for="ItemVm.TransRefCode" class="form-control form-control-sm small" />
                     <span asp-validation-for="ItemVm.TransRefCode" class="text-danger small"></span>
 
+                </div>
+               
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label asp-for="ItemVm.TransactorId" class="control-label small"></label>
+                    <select asp-for="ItemVm.TransactorId" class="form-control form-control-sm small" asp-items="ViewBag.TransactorId"></select>
+                </div>
+                <div class="form-group col-md-3 ">
+                    <label asp-for="ItemVm.CompanyId" class="control-label small"></label>
+                    <select asp-for="ItemVm.CompanyId" class="form-control form-control-sm small" asp-items="ViewBag.CompanyId"></select>
+                </div>
+                <div class="form-group col-md-3">
+                    <label asp-for="ItemVm.PaymentMethodId" class="control-label" small></label>
+                    <select asp-for="ItemVm.PaymentMethodId" class="form-control form-control-sm small" asp-items="ViewBag.PaymentMethodId"></select>
                 </div>
             </div>
             <div class="form-row">
@@ -150,26 +154,35 @@
                                 var mainUnitId = docLine.PrimaryUnitId;
                                 var secUnitId = docLine.SecondaryUnitId;
                                 var factor = docLine.Factor;
-                                var materialName = docLine.WarehouseItemsName;
+                                var materialName = docLine.WarehouseItemName;
                                 var disRate = docLine.DiscountRate;
-                                var disAmount = docLine.DiscountRate;
+                                var disAmount = docLine.AmountDiscount;
                                 var vatAmount = docLine.AmountFpa;
                                 var netAmount = docLine.AmountNet;
                                 var grosAmount = netAmount - disAmount + vatAmount;
-
+                                var q1Actual=FormattableString.Invariant($"{q1}");
+                                var q2Actual=FormattableString.Invariant($"{q2}");
+                                var unitPriceActual=FormattableString.Invariant($"{unitPrice}");
+                                var vatRateActual=FormattableString.Invariant($"{vatRate}");
+                                var factorActual=FormattableString.Invariant($"{factor}");
+                                var disRateActual=FormattableString.Invariant($"{disRate}");
+                                var disAmountActual=FormattableString.Invariant($"{disAmount}");
+                                var vatAmountActual=FormattableString.Invariant($"{vatAmount}");
+                                var netAmountActual=FormattableString.Invariant($"{netAmount}");
+                                var grosAmountActual=FormattableString.Invariant($"{grosAmount}");
 
                                 var tLine = $"<tr><td class=\"small\"> {lineCount}" +
                                             $"</td><td class=\"small\" data-materialId=\"{materialId}\" " +
-                                            $"data-factor=\"{factor}\" data-mainUnitId=\"{mainUnitId}\" data-secUnitId=\"{secUnitId}\">" +
-                                            $"{materialName} </td><td class=\"small text-right\"  data-actualValue=\"{q1}\" >" +
-                                            $" {q1Str} </td><td class=\"small text-right\"  data-actualValue=\"{q2}\" > " +
-                                            $" {q2Str} </td><td class=\"small text-right\"  data-actualValue=\"{unitPrice}\" >" +
-                                            $" {unitPrice} </td><td class=\"small text-right\"  data-actualValue=\"{disRate}\" >" +
-                                            $"{disRate} </td><td class=\"small text-right\"  data-actualValue=\"{vatRate}\" >" +
-                                            $"{vatRate} </td><td class=\"small text-right\"  data-actualValue=\"{netAmount}\" >" +
-                                            $"{netAmount} </td><td class=\"small text-right\"  data-actualValue=\"{disAmount}\" >" +
-                                            $"{disAmount} </td><td class=\"small text-right\"  data-actualValue=\"{vatAmount}\" >" +
-                                            $"{vatAmount} </td><td class=\"small text-right\"  data-actualValue=\"{grosAmount}\" >" +
+                                            $"data-factor=\"{factorActual}\" data-mainUnitId=\"{mainUnitId}\" data-secUnitId=\"{secUnitId}\">" +
+                                            $"{materialName} </td><td class=\"small text-right\"  data-actualValue=\"{q1Actual}\" >" +
+                                            $" {q1Str} </td><td class=\"small text-right\"  data-actualValue=\"{q2Actual}\" > " +
+                                            $" {q2Str} </td><td class=\"small text-right\"  data-actualValue=\"{unitPriceActual}\" >" +
+                                            $" {unitPrice} </td><td class=\"small text-right\"  data-actualValue=\"{disRateActual}\" >" +
+                                            $"{disRate} </td><td class=\"small text-right\"  data-actualValue=\"{vatRateActual}\" >" +
+                                            $"{vatRate} </td><td class=\"small text-right\"  data-actualValue=\"{netAmountActual}\" >" +
+                                            $"{netAmount} </td><td class=\"small text-right\"  data-actualValue=\"{disAmountActual}\" >" +
+                                            $"{disAmount} </td><td class=\"small text-right\"  data-actualValue=\"{vatAmountActual}\" >" +
+                                            $"{vatAmount} </td><td class=\"small text-right\"  data-actualValue=\"{grosAmountActual}\" >" +
                                             $"{grosAmount} </td>" +
                                             $"<td class=\"small\">" +
                                             $"<a data-itemId=\"0\" href=\"#\" class=\"modifyItem\"><i class=\"fas fa-edit\"></i></a></td>" +
@@ -503,7 +516,7 @@
                 $amountSum.attr('data-actualValue', sumGross);
             };
             var autoCompleteNameDef = {
-                 source: '/api/materials/SearchForMaterials',
+                source: '/api/materials/SearchWarehouseItemsForSale',
                 minLength: 2,
                 maxShowItems:10,
                 select: function(event, ui) {
@@ -512,7 +525,7 @@
                     this.value = ui.item.label;
                     //Get WarehouseItem data
                     var uri = '@Configuration.GetSection("WebApiSettings")["WebApiLocal"]';
-                    var finalUri = `${uri}/materials/materialdata?warehouseItemIdId=${ui.item.value}`;
+                    var finalUri = `${uri}/materials/materialdata?warehouseItemId=${ui.item.value}`;
 
                     console.log(finalUri);
 
@@ -857,15 +870,20 @@
                         var price = $(this).parents('tr').find('td:eq(4)').attr('data-actualValue');
                         var discountRate = $(this).parents('tr').find('td:eq(5)').attr('data-actualValue');
                         var fpaRate = $(this).parents('tr').find('td:eq(6)').attr('data-actualValue');
+                        var q11 = parseFloat(q1);
+                        var q22 = parseFloat(q2);
+                        var discountRateVal = parseFloat(discountRate);
+                        var fpaRateVal = parseFloat(fpaRate);
 
                         $lineEditing.val(lineEdit);
                         $materialId.val(materialId);
                         $lookUp.val(materialName);
+                        $lookupValueValid.val('OK');
                         //$price.val(price);
-                        $q1.val(q1);
-                        $q2.val(q2);
-                        $vatPercent.val(fpaRate);
-                        $discount.val(discountRate);
+                        $q1.val(q11);
+                        $q2.val(q22);
+                        $vatPercent.val(fpaRateVal);
+                        $discount.val(discountRateVal);
                         $mainUnitId.val(mainUnitId);
                         $secUnitId.val(secUnitId);
                         $factor.val(factor);
@@ -879,7 +897,7 @@
                     contentType: 'application/json; charset=utf-8',
 
                     dataType: 'json',
-                    type: 'PUT',
+                    type: 'POST',
                     url: "/api/Materials/SalesDocUpdate",
                     data: data,
                     headers: {
@@ -888,6 +906,7 @@
                     success: function(result) {
                         toastr.success("Success", "Success");
                         //location.reload();
+                        window.location.href = '@Url.Page("Index")';
                     },
                     error: function(e) {
                         var r = e.responseJSON.error;
@@ -934,6 +953,7 @@
                     transRefCode: $("#ItemVm_TransRefCode").val(),
                     transactorId: $("#ItemVm_TransactorId").val(),
                     companyId: $("#ItemVm_CompanyId").val(),
+                     paymentMethodId: $("#ItemVm_PaymentMethodId").val(),
                     sellDocSeriesId: $("#ItemVm_SellDocSeriesId").val(),
                     sellDocTypeId: $("#ItemVm_SellDocTypeId").val(),
                     Etiology: $("#ItemVm_Etiology").val(),

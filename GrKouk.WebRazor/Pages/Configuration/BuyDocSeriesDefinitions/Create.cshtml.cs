@@ -1,6 +1,9 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
+using GrKouk.InfoSystem.Definitions;
 using GrKouk.InfoSystem.Domain.FinConfig;
+using GrKouk.WebRazor.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -28,8 +31,17 @@ namespace GrKouk.WebRazor.Pages.Configuration.BuyDocSeriesDefinitions
 
         private void LoadCombos()
         {
+            var seriesAutoPayOffList = Enum.GetValues(typeof(SeriesAutoPayoffEnum))
+                .Cast<SeriesAutoPayoffEnum>()
+                .Select(c => new SelectListItem()
+                {
+                    Value = c.ToString(),
+                    Text = c.GetDescription()
+                }).ToList();
+            ViewData["AutoPayoffWay"]= new SelectList(seriesAutoPayOffList, "Value", "Text");
             ViewData["BuyDocTypeDefId"] = new SelectList(_context.BuyDocTypeDefs.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
             ViewData["CompanyId"] = new SelectList(_context.Companies.OrderBy(p => p.Code).AsNoTracking(), "Id", "Code");
+            ViewData["PayoffSeriesId"] = new SelectList(_context.TransTransactorDocSeriesDefs.OrderBy(s => s.Name).AsNoTracking(), "Id", "Name");
         }
 
         [BindProperty]

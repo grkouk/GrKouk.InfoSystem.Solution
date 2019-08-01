@@ -57,6 +57,7 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.WarehouseItems
         [Display(Name = "Μικτή Τιμή")]
         public decimal PriceBrutto { get; set; }
         public int CompanyId { get; set; }
+        public int CashRegCategoryId { get; set; }
 
     }
 }

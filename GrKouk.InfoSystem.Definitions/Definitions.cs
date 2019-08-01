@@ -26,7 +26,9 @@ namespace GrKouk.InfoSystem.Definitions
         [Description("Εσοδο")]
         WarehouseItemNatureIncome = 4,
         [Description("Πάγιο")]
-        WarehouseItemNatureFixedAsset = 5
+        WarehouseItemNatureFixedAsset = 5,
+        [Description("Πρώτη Υλη")]
+        WarehouseItemNatureRawMaterial = 6
     }
     public enum MaterialTypeEnum
     {
@@ -113,7 +115,11 @@ namespace GrKouk.InfoSystem.Definitions
         [Description("Καθαρή Τιμή")]
         PriceTypeEnumNetto = 1,
         [Description("Μικτή Τιμή")]
-        PriceTypeEnumBrutto = 2
+        PriceTypeEnumBrutto = 2,
+        [Description("Τελ.Τιμή Αγοράς")]
+        PriceTypeEnumLastBuy = 3,
+        [Description("Τιμή Κόστους")]
+        PriceTypeEnumCost = 4
     }
 
     public enum WarehouseItemCodeTypeEnum
@@ -159,5 +165,21 @@ namespace GrKouk.InfoSystem.Definitions
         InfoEntityActionEnumIncrease = 2,
         [Description("Decrease")]
         InfoEntityActionEnumDecrease = 3,
+    }
+    public enum PictureEntityEnum
+    {
+        [Description("Product")]
+        PictureEntityEnumProduct = 1
+        
+    }
+
+    public enum SeriesAutoPayoffEnum
+    {
+        [Description("No Payoff")]
+        SeriesAutoPayoffEnumNoPayoff = 0,
+        [Description("Auto Payoff")]
+        SeriesAutoPayoffEnumAuto = 1,
+        [Description("Question")]
+        SeriesAutoPayoffEnumNoQuestion = 2
     }
 }

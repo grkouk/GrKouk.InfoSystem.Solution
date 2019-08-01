@@ -10,6 +10,7 @@
 <div class="container">
     <form method="post">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="@Model.CopyFromId" id="CopyFromId" />
         <div class="form-row">
             <div class="form-group col-md-2">
                 <label asp-for="WarehouseItemVm.Code" class="control-label small"></label>
@@ -102,11 +103,11 @@
                 <select asp-for="WarehouseItemVm.MaterialType" class="form-control form-control-sm small" asp-items="ViewBag.MaterialType"></select>
                 <span asp-validation-for="WarehouseItemVm.MaterialType" class="text-danger small"></span>
             </div>
-            <div class="form-group col-md-6">
+            <div class="form-group col-md-3">
                 <label asp-for="WarehouseItemVm.MaterialCategoryId" class="control-label small"></label>
                 <select asp-for="WarehouseItemVm.MaterialCategoryId" class="form-control form-control-sm small" asp-items="ViewBag.MaterialCategoryId"></select>
             </div>
-
+           
             <div class="form-group col-md-3">
                 <label asp-for="WarehouseItemVm.CompanyId" class="control-label small"></label>
                 <select asp-for="WarehouseItemVm.CompanyId" class="form-control form-control-sm small" asp-items="ViewBag.CompanyId"></select>
@@ -124,7 +125,7 @@
 
 
 <div>
-    <a asp-page="Index">Back to List</a>
+    <a class="small" asp-page="Index">Back to List</a>
 </div>
 
 @section Scripts {
@@ -137,8 +138,15 @@
             //    //console.log(event.toString());
             //    console.log("Inside Fpa Change");
             //});
-            $('#MaterialVm_SecondaryUnitToMainRate').val("1");
-            $('#MaterialVm_BuyUnitToMainRate').val("1");
+            var copyFromId =parseInt( $('#CopyFromId').val());
+
+            if (copyFromId===0) {
+                $('#WarehouseItemVm_SecondaryUnitToMainRate').val("1");
+                $('#WarehouseItemVm_BuyUnitToMainRate').val("1");
+                $('#WarehouseItemVm_PriceBrutto').val("0");
+                $('#WarehouseItemVm_PriceNetto').val("0");
+            }
+           
         });
     </script>
 }

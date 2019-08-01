@@ -55,6 +55,7 @@ namespace GrKouk.WebRazor.Pages.Expenses
             if (FinDiaryTransaction != null)
             {
                 _context.FinDiaryTransactions.Remove(FinDiaryTransaction);
+              //  _context.FinDiaryTransactions.RemoveRange();
                 await _context.SaveChangesAsync();
             }
 

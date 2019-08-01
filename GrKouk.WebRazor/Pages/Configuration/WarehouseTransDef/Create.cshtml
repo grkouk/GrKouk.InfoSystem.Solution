@@ -85,19 +85,26 @@
 
         </div>
         <div class="form-row">
-
-
             <div class="form-group col-md-3">
-                <label asp-for="TransWarehouseDef.MaterialInvoicedVolumeAction"  class="small"></label>
+                <label asp-for="TransWarehouseDef.RawMaterialInventoryAction" class="small"></label>
+                <select asp-for="TransWarehouseDef.RawMaterialInventoryAction" class="form-control form-control-sm" asp-items="ViewBag.RawMaterialInventoryAction"></select>
+            </div>
+            <div class="form-group col-md-3">
+                <label asp-for="TransWarehouseDef.RawMaterialInventoryValueAction" class="small"></label>
+                <select asp-for="TransWarehouseDef.RawMaterialInventoryValueAction" class="form-control form-control-sm" asp-items="ViewBag.RawMaterialInventoryValueAction"></select>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-3">
+                <label asp-for="TransWarehouseDef.MaterialInvoicedVolumeAction" class="small"></label>
                 <select asp-for="TransWarehouseDef.MaterialInvoicedVolumeAction" class="form-control form-control-sm" asp-items="ViewBag.MaterialInvoicedVolumeAction"></select>
             </div>
             <div class="form-group col-md-3">
                 <label asp-for="TransWarehouseDef.MaterialInvoicedValueAction" class="small"></label>
                 <select asp-for="TransWarehouseDef.MaterialInvoicedValueAction" class="form-control form-control-sm" asp-items="ViewBag.MaterialInvoicedValueAction"></select>
             </div>
-            
         </div>
-       
+
         @*<div class="form-row">
             <div class="form-group col-md-3">
                 <label asp-for="TransWarehouseDef.VolBuyAction" class="control-label small"></label>

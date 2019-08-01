@@ -4,94 +4,59 @@ using System.Threading.Tasks;
 using AutoMapper;
 using GrKouk.InfoSystem.Dtos.WebDtos.WarehouseTransactions;
 using GrKouk.WebRazor.Helpers;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace GrKouk.WebRazor.Pages.MainEntities.Materials
 {
+    [Authorize(Roles = "Admin")]
     public class KartelaModel : PageModel
     {
         private readonly GrKouk.WebApi.Data.ApiDbContext _context;
         private readonly IMapper _mapper;
-
+        public string WarehouseItemName { get; set; }
+        public int WarehouseItemId { get; set; }
         public KartelaModel(GrKouk.WebApi.Data.ApiDbContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
         }
 
-        public decimal sumImportsVolume = 0;
-        public decimal sumExportsVolume = 0;
-        public decimal sumImportsValue = 0;
-        public decimal sumExportsValue = 0;
-
-        public int PageSizeKartela { get; set; }
-        public string TransactorName { get; set; }
-        public int TransactorId { get; set; }
-
-        public int ParentPageSize { get; set; }
-        public int TransactorTypeFilter { get; set; }
-        public int ParentPageIndex { get; set; }
-        public PagedList<WarehouseKartelaLine> ListItems { get; set; }
-        public async Task OnGetAsync(int transactorId, int? pageIndexKartela, int? pageSizeKartela, string transactorName, int? transactorTypeFilter, int? parentPageIndex, int? parentPageSize)
+        public async Task<IActionResult> OnGetAsync(int warehouseItemId)
         {
-            TransactorTypeFilter = (int)(transactorTypeFilter ?? 0);
-            ParentPageSize = (int)(parentPageSize ?? 0);
-            ParentPageIndex = (int)(parentPageIndex ?? 0);
-            TransactorId = transactorId;
-
-            TransactorName = transactorName;
-            PageSizeKartela = (int)((pageSizeKartela == null || pageSizeKartela == 0) ? 20 : pageSizeKartela);
-
-            var dbTransactions = _mapper.Map<IEnumerable<WarehouseTransListDto>>(await _context.WarehouseTransactions
-                .Include(p => p.WarehouseItem)
-                .Include(p => p.TransWarehouseDocSeries)
-                .OrderBy(p => p.TransDate)
-                .Where(p=>p.WarehouseItemId==TransactorId)
-                .ToListAsync());
-
-
-
-            var listWithTotal = new List<WarehouseKartelaLine>();
-
-            decimal runningTotalVolume = 0;
-            decimal runningTotalValue = 0;
-            foreach (var dbTransaction in dbTransactions)
+            var warehouseItem = await _context.WarehouseItems.FirstOrDefaultAsync(x => x.Id == warehouseItemId);
+            if (warehouseItem is null)
             {
-                runningTotalVolume = dbTransaction.ImportUnits - dbTransaction.ExportUnits + runningTotalVolume;
-                runningTotalValue = dbTransaction.ImportAmount - dbTransaction.ExportAmount + runningTotalValue;
-                listWithTotal.Add(new WarehouseKartelaLine
-                {
-                    TransDate = dbTransaction.TransDate,
-                    DocSeriesCode = dbTransaction.TransWarehouseDocSeriesCode,
-                    RunningTotalVolume = runningTotalVolume,
-                    RunningTotalValue = runningTotalValue,
-                    MaterialName = dbTransaction.WarehouseItemName,
-                    ImportVolume=dbTransaction.ImportUnits,
-                    ExportVolume = dbTransaction.ExportUnits,
-                    ImportValue = dbTransaction.ImportAmount,
-                    ExportValue = dbTransaction.ExportAmount
-                });
+                return NotFound();
             }
 
-            var outList = listWithTotal.AsQueryable();
-           
+            WarehouseItemId = warehouseItemId;
+            WarehouseItemName = warehouseItem.Name;
+            LoadFilters();
+            return Page();
 
-            IQueryable<WarehouseKartelaLine> fullListIq = from s in outList select s;
 
-            ListItems = PagedList<WarehouseKartelaLine>.Create(
-                fullListIq, pageIndexKartela ?? 1, PageSizeKartela);
+        }
+        private void LoadFilters()
+        {
 
-            foreach (var item in ListItems)
+            var datePeriods = DateFilter.GetDateFiltersSelectList();
+            ViewData["DataFilterValues"] = new SelectList(datePeriods, "Value", "Text");
+
+            var pageFilterSize = PageFilter.GetPageSizeFiltersSelectList();
+            ViewData["PageFilterSize"] = new SelectList(pageFilterSize, "Value", "Text");
+
+            var dbCompanies = _context.Companies.OrderBy(p => p.Code).AsNoTracking();
+            List<SelectListItem> companiesList = new List<SelectListItem>();
+            companiesList.Add(new SelectListItem() { Value = 0.ToString(), Text = "{All Companies}" });
+            foreach (var company in dbCompanies)
             {
-                sumImportsVolume += item.ImportVolume;
-                sumExportsVolume += item.ExportVolume;
-                sumImportsValue += item.ImportValue;
-                sumExportsValue += item.ExportValue;
+                companiesList.Add(new SelectListItem() { Value = company.Id.ToString(), Text = company.Code });
             }
-
-
-
+            ViewData["CompanyFilter"] = new SelectList(companiesList, "Value", "Text");
         }
     }
 }

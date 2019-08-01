@@ -24,6 +24,7 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.SellDocuments
         public decimal AmountDiscount { get; set; }
         [MaxLength(500)]
         public string Etiology { get; set; }
+        public int PaymentMethodId { get; set; }
         [Required]
         public int CompanyId { get; set; }
         public int FiscalPeriodId { get; set; }

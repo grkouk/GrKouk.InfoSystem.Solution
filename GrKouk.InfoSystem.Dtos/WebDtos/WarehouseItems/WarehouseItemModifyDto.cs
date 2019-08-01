@@ -60,6 +60,7 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.WarehouseItems
         public decimal PriceNetto { get; set; }
         [Display(Name = "Μικτή Τιμή")]
         public decimal PriceBrutto { get; set; }
+        public int CashRegCategoryId { get; set; }
         [Timestamp]
         public byte[] Timestamp { get; set; }
 

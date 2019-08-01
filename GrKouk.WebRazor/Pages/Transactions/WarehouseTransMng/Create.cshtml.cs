@@ -11,10 +11,12 @@ using GrKouk.InfoSystem.Domain.Shared;
 using Microsoft.EntityFrameworkCore;
 using GrKouk.InfoSystem.Dtos.WebDtos.WarehouseTransactions;
 using GrKouk.WebRazor.Helpers;
+using Microsoft.AspNetCore.Authorization;
 using NToastNotify;
 
 namespace GrKouk.WebRazor.Pages.Transactions.WarehouseTransMng
 {
+    [Authorize(Roles = "Admin")]
     public class CreateModel : PageModel
     {
         private const string SectionSystemCode = "SYS-WAREHOUSE-TRANS";
@@ -24,6 +26,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.WarehouseTransMng
         private readonly IToastNotification _toastNotification;
         public bool NotUpdatable;
         public bool InitialLoad = true;
+        public int CopyFromId { get; set; }
 
         public CreateModel(GrKouk.WebApi.Data.ApiDbContext context, IMapper mapper, IToastNotification toastNotification)
         {
@@ -32,7 +35,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.WarehouseTransMng
             _toastNotification = toastNotification;
         }
 
-        public IActionResult OnGet()
+        public IActionResult OnGet(int? copyFromId)
         {
             LoadCombos();
             return Page();
@@ -50,12 +53,6 @@ namespace GrKouk.WebRazor.Pages.Transactions.WarehouseTransMng
                     Text = c.GetDescription()
                 }).ToList();
 
-            //List<SelectListItem> warTransTypes = new List<SelectListItem>
-            //{
-            //    new SelectListItem() {Value = WarehouseTransactionTypeEnum.WarehouseTransactionTypeImport.ToString(), Text = "Import"},
-            //    new SelectListItem() {Value = WarehouseTransactionTypeEnum.WarehouseTransactionTypeExport.ToString(), Text = "Export"},
-               
-            //};
             ViewData["CompanyId"] = new SelectList(_context.Companies.OrderBy(p => p.Code).AsNoTracking(), "Id", "Code");
             ViewData["FiscalPeriodId"] = new SelectList(_context.FiscalPeriods.OrderBy(p=>p.Name).AsNoTracking(), "Id", "Name");
             ViewData["WarehouseItemId"] = new SelectList(_context.WarehouseItems.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
@@ -118,7 +115,6 @@ namespace GrKouk.WebRazor.Pages.Transactions.WarehouseTransMng
             {
                 case WarehouseItemNatureEnum.WarehouseItemNatureUndefined:
                     throw new ArgumentOutOfRangeException();
-                    break;
                 case WarehouseItemNatureEnum.WarehouseItemNatureMaterial:
                     transToAttach.InventoryAction = transWarehouseDef.MaterialInventoryAction;
                     transToAttach.InventoryValueAction = transWarehouseDef.MaterialInventoryValueAction;
@@ -139,6 +135,10 @@ namespace GrKouk.WebRazor.Pages.Transactions.WarehouseTransMng
                 case WarehouseItemNatureEnum.WarehouseItemNatureFixedAsset:
                     transToAttach.InventoryAction = transWarehouseDef.FixedAssetInventoryAction;
                     transToAttach.InventoryValueAction = transWarehouseDef.FixedAssetInventoryValueAction;
+                    break;
+                case WarehouseItemNatureEnum.WarehouseItemNatureRawMaterial:
+                    transToAttach.InventoryAction = transWarehouseDef.RawMaterialInventoryAction;
+                    transToAttach.InventoryValueAction = transWarehouseDef.RawMaterialInventoryValueAction;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

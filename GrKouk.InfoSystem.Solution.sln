@@ -25,7 +25,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{DC9E4C
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Web", "Web", "{4C1D2239-BA8F-4D27-8590-ED121EFB52FB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GrKouk.InfoSystem.Definitions", "GrKouk.InfoSystem.Definitions\GrKouk.InfoSystem.Definitions.csproj", "{E24ADDEC-D0A5-4D5F-8371-6798916B6BAB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GrKouk.InfoSystem.Definitions", "GrKouk.InfoSystem.Definitions\GrKouk.InfoSystem.Definitions.csproj", "{E24ADDEC-D0A5-4D5F-8371-6798916B6BAB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

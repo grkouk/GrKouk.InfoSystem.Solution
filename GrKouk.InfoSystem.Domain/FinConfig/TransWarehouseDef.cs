@@ -14,26 +14,26 @@ namespace GrKouk.InfoSystem.Domain.FinConfig
         public string Name { get; set; }
         [Display(Name = "Ενεργό")] public bool Active { get; set; }
 
-        [Display(Name = "Mat.Inventory")]
+        [Display(Name = "Material Inventory")]
         public InventoryActionEnum MaterialInventoryAction { get; set; }
        
-        [Display(Name = "Mat.InvValAct")]
+        [Display(Name = "Material InvValue")]
         public InventoryValueActionEnum MaterialInventoryValueAction { get; set; }
-        [Display(Name = "Mat.Invoiced Volume")]
+        [Display(Name = "Material Invoiced Volume")]
         public InventoryActionEnum MaterialInvoicedVolumeAction { get; set; }
-        [Display(Name = "Mat.Invoiced Value")]
+        [Display(Name = "Material Invoiced Value")]
         public InventoryValueActionEnum MaterialInvoicedValueAction { get; set; }
-        [Display(Name = "Ser.InvAct")]
+        [Display(Name = "Service InvAct")]
         public InventoryActionEnum ServiceInventoryAction { get; set; }
-        [Display(Name = "Ser.InvValAct")]
+        [Display(Name = "Service InvValAct")]
         public InventoryValueActionEnum ServiceInventoryValueAction { get; set; }
-        [Display(Name = "Exp.InvAct")]
+        [Display(Name = "Expense InvAct")]
         public InventoryActionEnum ExpenseInventoryAction { get; set; }
-        [Display(Name = "Exp.InvValAct")]
+        [Display(Name = "Expense InvValAct")]
         public InventoryValueActionEnum ExpenseInventoryValueAction { get; set; }
-        [Display(Name = "Inc.InvAct")]
+        [Display(Name = "Income InvAct")]
         public InventoryActionEnum IncomeInventoryAction { get; set; }
-        [Display(Name = "Inc.InvValAct")]
+        [Display(Name = "Income InvValAct")]
         public InventoryValueActionEnum IncomeInventoryValueAction { get; set; }
 
         [Display(Name = "Fixed As.InvAct")]
@@ -41,33 +41,11 @@ namespace GrKouk.InfoSystem.Domain.FinConfig
         [Display(Name = "Fixed As.InvValAct")]
         public InventoryValueActionEnum FixedAssetInventoryValueAction { get; set; }
 
-        //[Display(Name = "Ποσ Τιμ/νων Εξ")]
-        //public InfoEntityActionEnum VolInvoicedExportsAction { get; set; }
+        [Display(Name = "Raw Material InvAct")]
+        public InventoryActionEnum RawMaterialInventoryAction { get; set; }
+        [Display(Name = "RawMaterial InvValAct")]
+        public InventoryValueActionEnum RawMaterialInventoryValueAction { get; set; }
 
-        //[Display(Name = "Ποσ Τιμ/νων Εισ")]
-        //public InfoEntityActionEnum VolInvoicedImportsAction { get; set; }
-        
-        //[Display(Name = "Αξία Τιμ/νων Εξ")]
-        //public InfoEntityActionEnum AmtInvoicedExportsAction { get; set; }
-
-        //[Display(Name = "Αξία Τιμ/νων Εισ")]
-        //public InfoEntityActionEnum AmtInvoicedImportsAction { get; set; }
-
-        //[Display(Name = "Ποσ Αγορών")]
-        //public InfoEntityActionEnum VolBuyAction { get; set; }
-       
-
-        //[Display(Name = "Αξία Αγορών")]
-        //public InfoEntityActionEnum AmtBuyAction { get; set; }
-       
-
-        //[Display(Name = "Ποσ Πωλήσεων")]
-        //public InfoEntityActionEnum VolSellAction { get; set; }
-      
-
-        //[Display(Name = "Αξία Πωλήσεων")]
-        //public InfoEntityActionEnum AmtSellAction { get; set; }
-       
         [Display(Name = "Default Series")]
         public int DefaultDocSeriesId { get; set; }
         public int CompanyId { get; set; }

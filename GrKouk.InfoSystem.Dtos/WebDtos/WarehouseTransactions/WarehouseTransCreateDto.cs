@@ -41,6 +41,10 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.WarehouseTransactions
         public decimal DiscountRate { get; set; }
         [Display(Name = "Unit Price")]
         public decimal UnitPrice { get; set; }
+
+        [Display(Name = "Unit Expenses")]
+        public decimal UnitExpenses { get; set; }
+
         [Display(Name = "Vat Amount")]
         public decimal AmountFpa { get; set; }
         [Display(Name = "Amount Net")]

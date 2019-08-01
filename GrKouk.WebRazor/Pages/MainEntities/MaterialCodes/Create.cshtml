@@ -10,7 +10,13 @@
 <div class="container">
     <form method="post">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
+        <input type="hidden" asp-for="ParentPageIndex" />
+        <input type="hidden" asp-for="ParentFiltersVisible" />
+        <input type="hidden" asp-for="ParentPageSize" />
+        <input type="hidden" asp-for="ParentRowSelectorsVisible" />
+        <input type="hidden" asp-for="ParentSearchString" />
+        <input type="hidden" asp-for="ParentSortOrder" />
+        <input type="hidden" asp-for="ParentWarehouseItemNatureFilter" />
         <div class="form-row">
             <div class="form-group col-sm-4">
                 <label asp-for="WarehouseItemCode.WarehouseItemId" class="control-label small"></label>
@@ -51,7 +57,14 @@
 </div>
 
 <div>
-    <a asp-page="Index">Back to List</a>
+    <a asp-page="Index"
+       asp-route-pageIndexKartela="@(Model.ParentPageIndex)"
+       asp-route-PageSizeKartela="@Model.ParentPageSize"
+       asp-route-sortOrder="@Model.ParentSortOrder"
+       asp-route-currentFilter="@Model.ParentSearchString"
+       asp-route-filtersVisible="@Model.ParentFiltersVisible"
+       asp-route-rowselectorsVisible="@Model.ParentRowSelectorsVisible"
+       >Back to List</a>
 </div>
 
 @section Scripts {

@@ -42,6 +42,8 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.BuyDocuments
         public int CompanyId { get; set; }
         public string CompanyCode { get; set; }
 
+        public int PaymentMethodId { get; set; }
+
         [Timestamp] public byte[] Timestamp { get; set; }
 
         public virtual ICollection<BuyDocLineModifyDto> BuyDocLines

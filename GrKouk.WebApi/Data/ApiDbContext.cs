@@ -1,4 +1,5 @@
 ﻿using GrKouk.InfoSystem.Domain.FinConfig;
+using GrKouk.InfoSystem.Domain.MediaEntities;
 using GrKouk.InfoSystem.Domain.Shared;
 
 using Microsoft.EntityFrameworkCore;
@@ -10,17 +11,7 @@ namespace GrKouk.WebApi.Data
         public ApiDbContext(DbContextOptions<ApiDbContext> options) : base(options)
         {
         }
-        //#region Old Entities
-        // public DbSet<TransSupplierDocTypeDef> TransSupplierDocTypeDefs { get; set; }
-        // public DbSet<TransSupplierDocSeriesDef> TransSupplierDocSeriesDefs { get; set; }
-        // public DbSet<TransSupplierDef> TransSupplierDefs { get; set; }
 
-        //  public DbSet<TransCustomerDocTypeDef> TransCustomerDocTypeDefs { get; set; }
-        // public DbSet<TransCustomerDocSeriesDef> TransCustomerDocSeriesDefs { get; set; }
-        // public DbSet<TransCustomerDef> TransCustomerDefs { get; set; }
-        // public DbSet<SupplierTransaction> SupplierTransactions { get; set; }
-        // public DbSet<CustomerTransaction> CustomerTransactions { get; set; }
-        //#endregion
         public DbSet<Company> Companies { get; set; }
         public DbSet<Transactor> Transactors { get; set; }
         public DbSet<FinDiaryTransaction> FinDiaryTransactions { get; set; }
@@ -37,13 +28,13 @@ namespace GrKouk.WebApi.Data
         public DbSet<TransWarehouseDef> TransWarehouseDefs { get; set; }
         public DbSet<TransWarehouseDocTypeDef> TransWarehouseDocTypeDefs { get; set; }
         public DbSet<TransWarehouseDocSeriesDef> TransWarehouseDocSeriesDefs { get; set; }
-      
+
         public DbSet<MeasureUnit> MeasureUnits { get; set; }
         public DbSet<MaterialCategory> MaterialCategories { get; set; }
         public DbSet<WarehouseItem> WarehouseItems { get; set; }
-     
+
         public DbSet<WarehouseTransaction> WarehouseTransactions { get; set; }
-      
+
         public DbSet<BuyDocTypeDef> BuyDocTypeDefs { get; set; }
         public DbSet<BuyDocSeriesDef> BuyDocSeriesDefs { get; set; }
         public DbSet<BuyDocLine> BuyDocLines { get; set; }
@@ -59,11 +50,22 @@ namespace GrKouk.WebApi.Data
         public DbSet<SellDocument> SellDocuments { get; set; }
         public DbSet<WarehouseItemCode> WarehouseItemsCodes { get; set; }
         public DbSet<DiaryDef> DiaryDefs { get; set; }
+        public DbSet<CashRegCategory> CashRegCategories { get; set; }
+        public DbSet<ClientProfile> ClientProfiles { get; set; }
+        public DbSet<CrCatWarehouseItem> CrCatWarehouseItems { get; set; }
+        public DbSet<MediaEntry> MediaEntries { get; set; }
+        public DbSet<ProductMedia> ProductMedia { get; set; }
+        public DbSet<PaymentMethod> PaymentMethods { get; set; }
+        public DbSet<ProductRecipeLine> ProductRecipeLines { get; set; }
+        public DbSet<ProductRecipe> ProductRecipes { get; set; }
+        public DbSet<GlobalSettings> GlobalSettings { get; set; }
+        public DbSet<BuyDocTransPaymentMapping> BuyDocTransPaymentMappings { get; set; }
+        public DbSet<SellDocTransPaymentMapping> SellDocTransPaymentMappings { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-          
+
             modelBuilder.Entity<FinDiaryTransaction>().HasIndex(c => c.TransactionDate);
 
             modelBuilder.Entity<FinDiaryTransaction>()
@@ -93,11 +95,16 @@ namespace GrKouk.WebApi.Data
                 .WithMany()
                 .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<Transactor>().HasIndex(c => c.Code);
-            modelBuilder.Entity<Transactor>()
-                .HasOne(en => en.TransactorType)
-                .WithMany()
-                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Transactor>(entity =>
+            {
+                entity.HasIndex(c => c.Code).IsUnique();
+                entity.HasOne(bd => bd.TransactorType)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(bd => bd.Company)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
 
             modelBuilder.Entity<FpaDef>()
                 .HasIndex(c => c.Code)
@@ -130,7 +137,7 @@ namespace GrKouk.WebApi.Data
                 .HasIndex(c => c.Code)
                 .IsUnique();
 
-           
+
             modelBuilder.Entity<Section>(entity =>
             {
                 entity.HasIndex(c => c.Code)
@@ -165,13 +172,14 @@ namespace GrKouk.WebApi.Data
                 entity.HasOne(bd => bd.Company)
                     .WithMany()
                     .OnDelete(DeleteBehavior.Restrict);
+
                 entity.HasOne(bd => bd.MaterialCaterory)
                     .WithMany()
                     .OnDelete(DeleteBehavior.Restrict);
 
             });
 
-           
+
             modelBuilder.Entity<WarehouseTransaction>(entity =>
             {
                 entity.HasIndex(p => p.CreatorId);
@@ -194,9 +202,9 @@ namespace GrKouk.WebApi.Data
                 entity.HasOne(p => p.WarehouseItem)
                     .WithMany()
                     .OnDelete(DeleteBehavior.Restrict);
-               
+
             });
-          
+
             modelBuilder.Entity<TransactorTransaction>(entity =>
             {
                 entity.HasIndex(p => p.CreatorId);
@@ -216,7 +224,7 @@ namespace GrKouk.WebApi.Data
                 entity.HasOne(p => p.Section)
                     .WithMany()
                     .OnDelete(DeleteBehavior.Restrict);
-              
+
                 entity.HasOne(p => p.Transactor)
                     .WithMany()
                     .OnDelete(DeleteBehavior.Restrict);
@@ -227,7 +235,7 @@ namespace GrKouk.WebApi.Data
                 entity.HasOne(bd => bd.Company)
                     .WithMany()
                     .OnDelete(DeleteBehavior.Restrict);
-                
+
                 entity.HasIndex(c => c.Code)
                     .IsUnique();
             });
@@ -235,8 +243,8 @@ namespace GrKouk.WebApi.Data
             modelBuilder.Entity<BuyDocTypeDef>(entity =>
             {
                 entity.HasIndex(p => p.Code).IsUnique();
-               
-               
+
+
                 entity.HasOne(p => p.TransTransactorDef)
                     .WithMany()
                     .OnDelete(DeleteBehavior.Restrict);
@@ -250,7 +258,7 @@ namespace GrKouk.WebApi.Data
             modelBuilder.Entity<BuyDocSeriesDef>(entity =>
             {
                 entity.HasIndex(p => p.Code).IsUnique();
-               
+
                 entity.HasOne(p => p.BuyDocTypeDef)
                 .WithMany()
                 .OnDelete(DeleteBehavior.Restrict);
@@ -342,7 +350,7 @@ namespace GrKouk.WebApi.Data
                     .WithMany()
                     .OnDelete(DeleteBehavior.Restrict);
                 entity.HasOne(p => p.SellDocument)
-                    .WithMany(c=>c.SellDocLines)
+                    .WithMany(c => c.SellDocLines)
                     .OnDelete(DeleteBehavior.Restrict);
             });
 
@@ -364,12 +372,23 @@ namespace GrKouk.WebApi.Data
                     .WithMany()
                     .OnDelete(DeleteBehavior.Restrict);
             });
+            modelBuilder.Entity<ClientProfile>(entity =>
+            {
+
+                entity.HasIndex(p => p.Code);
+
+                entity.HasOne(p => p.Company)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
 
             modelBuilder.Entity<WarehouseItemCode>(entity =>
             {
                 entity.HasKey(p => new
                 {
-                    p.CodeType, WarehouseItemId = p.WarehouseItemId, p.Code
+                    p.CodeType,
+                    WarehouseItemId = p.WarehouseItemId,
+                    p.Code
                 });
                 entity.HasIndex(p => p.Code);
 
@@ -377,7 +396,108 @@ namespace GrKouk.WebApi.Data
                     .WithMany()
                     .OnDelete(DeleteBehavior.Restrict);
             });
+            modelBuilder.Entity<CrCatWarehouseItem>(entity =>
+            {
+                entity.HasIndex(p => new
+                {
+                    p.ClientProfileId,
+                    p.CashRegCategoryId,
+                    p.WarehouseItemId
+                })
+                    .IsUnique();
+                entity.HasOne(p => p.ClientProfile)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(p => p.WarehouseItem)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(p => p.CashRegCategory)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+            modelBuilder.Entity<ProductMedia>(entity =>
+            {
+                entity.HasIndex(p => new
+                    {
+                        p.ProductId,
+                        p.MediaEntryId
+                    })
+                    .IsUnique();
+                entity.HasOne(p => p.Product)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(p => p.MediaEntry)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
 
+            });
+            modelBuilder.Entity<BuyDocTransPaymentMapping>(entity =>
+            {
+                entity.HasIndex(p => new
+                    {
+                        p.BuyDocumentId,
+                        p.TransactorTransactionId
+                    })
+                    .IsUnique();
+                entity.HasOne(p => p.BuyDocument)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(p => p.TransactorTransaction)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+            modelBuilder.Entity<SellDocTransPaymentMapping>(entity =>
+            {
+                entity.HasIndex(p => new
+                    {
+                        p.SellDocumentId,
+                        p.TransactorTransactionId
+                    })
+                    .IsUnique();
+                entity.HasOne(p => p.SellDocument)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(p => p.TransactorTransaction)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+            modelBuilder.Entity<ProductRecipeLine>(entity =>
+            {
+                entity.HasOne(p => p.Product)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(p => p.ProductRecipe)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<ProductRecipe>(entity =>
+            {
+                entity.HasOne(p => p.Product)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(p => p.Company)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+            modelBuilder.Entity<BuyDocTransPaymentMapping>(entity =>
+            {
+                entity.HasOne(p => p.BuyDocument)
+                    .WithMany(p=>p.PaymentMappings)
+                    .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(p => p.TransactorTransaction)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+            modelBuilder.Entity<SellDocTransPaymentMapping>(entity =>
+            {
+                entity.HasOne(p => p.SellDocument)
+                    .WithMany(p => p.PaymentMappings)
+                    .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(p => p.TransactorTransaction)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
         }
     }
 }

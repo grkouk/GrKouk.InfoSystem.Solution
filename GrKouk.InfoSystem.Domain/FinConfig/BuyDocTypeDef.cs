@@ -37,6 +37,12 @@ namespace GrKouk.InfoSystem.Domain.FinConfig
         public int? TransWarehouseDefId { get; set; }
         public TransWarehouseDef TransWarehouseDef { get; set; }
         public PriceTypeEnum UsedPrice { get; set; }
+        [MaxLength(200)]
+        public string SelectedWarehouseItemNatures { get; set; }
+        [MaxLength(200)]
+        public string AllowedTransactorTypes { get; set; }
+        [MaxLength(200)]
+        public string AllowedSectionTypes { get; set; }
         public int CompanyId { get; set; }
         public virtual Company Company { get; set; }
     }

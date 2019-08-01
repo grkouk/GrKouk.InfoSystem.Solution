@@ -6,8 +6,7 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.WarehouseItems
     public class WarehouseItemListDto
     {
         public int Id { get; set; }
-
-
+        public string Url { get; set; }
         public string Code { get; set; }
 
 
@@ -93,6 +92,12 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.WarehouseItems
                         break;
                     case WarehouseItemNatureEnum.WarehouseItemNatureFixedAsset:
                         ret = "Πάγιο";
+                        break;
+                    case WarehouseItemNatureEnum.WarehouseItemNatureIncome:
+                        ret = "Εσοδο";
+                        break;
+                    case WarehouseItemNatureEnum.WarehouseItemNatureRawMaterial:
+                        ret = "Πρώτη Υλη";
                         break;
                     default:
                         ret = "Απροσδιόριστο";

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace GrKouk.InfoSystem.Domain.Shared
@@ -9,7 +10,7 @@ namespace GrKouk.InfoSystem.Domain.Shared
     public class BuyDocument
     {
         private ICollection<BuyDocLine> _buyDocLines;
-
+        private ICollection<BuyDocTransPaymentMapping> _paymentMappings;
         public int Id { get; set; }
         [Required]
         [DataType(DataType.Date)]
@@ -31,9 +32,11 @@ namespace GrKouk.InfoSystem.Domain.Shared
         [Required]
         public int BuyDocTypeId { get; set; }
         public virtual BuyDocTypeDef BuyDocType { get; set; }
-
+        [Column(TypeName = "decimal(18, 4)")]
         public decimal AmountFpa { get; set; }
+        [Column(TypeName = "decimal(18, 4)")]
         public decimal AmountNet { get; set; }
+        [Column(TypeName = "decimal(18, 4)")]
         public decimal AmountDiscount { get; set; }
 
         [MaxLength(500)]
@@ -42,12 +45,20 @@ namespace GrKouk.InfoSystem.Domain.Shared
         [Required]
         public int CompanyId { get; set; }
         public virtual Company Company { get; set; }
+        public int PaymentMethodId { get; set; }
+        public virtual PaymentMethod PaymentMethod { get; set; }
+
         [Timestamp]
         public byte[] Timestamp { get; set; }
         public virtual ICollection<BuyDocLine> BuyDocLines
         {
-            get { return _buyDocLines ?? (_buyDocLines = new List<BuyDocLine>()); }
-            set { _buyDocLines = value; }
+            get => _buyDocLines ?? (_buyDocLines = new List<BuyDocLine>());
+            set => _buyDocLines = value;
+        }
+        public virtual ICollection<BuyDocTransPaymentMapping> PaymentMappings
+        {
+            get => _paymentMappings ?? (_paymentMappings = new List<BuyDocTransPaymentMapping>());
+            set => _paymentMappings = value;
         }
     }
 }

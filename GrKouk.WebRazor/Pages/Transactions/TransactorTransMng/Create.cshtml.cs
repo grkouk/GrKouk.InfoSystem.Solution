@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -9,12 +8,13 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using GrKouk.InfoSystem.Domain.Shared;
 using GrKouk.InfoSystem.Dtos.WebDtos.TransactorTransactions;
-using GrKouk.WebApi.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using NToastNotify;
 
 namespace GrKouk.WebRazor.Pages.Transactions.TransactorTransMng
 {
+    [Authorize(Roles = "Admin")]
     public class CreateModel : PageModel
     {
         private const string _sectionCode = "SYS-TRANSACTOR-TRANS";
@@ -23,6 +23,8 @@ namespace GrKouk.WebRazor.Pages.Transactions.TransactorTransMng
         private readonly IToastNotification _toastNotification;
         public bool NotUpdatable;
         public bool InitialLoad = true;
+        public int CopyFromId { get; set; }
+
         public CreateModel(GrKouk.WebApi.Data.ApiDbContext context, IMapper mapper, IToastNotification toastNotification)
         {
             _context = context;
@@ -30,7 +32,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.TransactorTransMng
             _toastNotification = toastNotification;
         }
 
-        public IActionResult OnGet()
+        public IActionResult OnGet(int? copyFromId)
         {
             LoadCombos();
             return Page();

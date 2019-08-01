@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using GrKouk.InfoSystem.Domain.FinConfig;
 
 namespace GrKouk.InfoSystem.Domain.Shared
@@ -8,7 +9,7 @@ namespace GrKouk.InfoSystem.Domain.Shared
     public class SellDocument
     {
         private ICollection<SellDocLine> _sellDocLines;
-
+        private ICollection<SellDocTransPaymentMapping> _paymentMappings;
         public int Id { get; set; }
         [Required]
         [DataType(DataType.Date)]
@@ -30,9 +31,11 @@ namespace GrKouk.InfoSystem.Domain.Shared
         [Required]
         public int SellDocTypeId { get; set; }
         public virtual SellDocTypeDef SellDocType { get; set; }
-
+        [Column(TypeName = "decimal(18, 4)")]
         public decimal AmountFpa { get; set; }
+        [Column(TypeName = "decimal(18, 4)")]
         public decimal AmountNet { get; set; }
+        [Column(TypeName = "decimal(18, 4)")]
         public decimal AmountDiscount { get; set; }
 
         [MaxLength(500)]
@@ -41,12 +44,19 @@ namespace GrKouk.InfoSystem.Domain.Shared
         [Required]
         public int CompanyId { get; set; }
         public virtual Company Company { get; set; }
+        public int PaymentMethodId { get; set; }
+        public virtual PaymentMethod PaymentMethod { get; set; }
         [Timestamp]
         public byte[] Timestamp { get; set; }
         public virtual ICollection<SellDocLine> SellDocLines
         {
-            get { return _sellDocLines ?? (_sellDocLines = new List<SellDocLine>()); }
-            set { _sellDocLines = value; }
+            get => _sellDocLines ?? (_sellDocLines = new List<SellDocLine>());
+            set => _sellDocLines = value;
+        }
+        public virtual ICollection<SellDocTransPaymentMapping> PaymentMappings
+        {
+            get => _paymentMappings ?? (_paymentMappings = new List<SellDocTransPaymentMapping>());
+            set => _paymentMappings = value;
         }
     }
 }
