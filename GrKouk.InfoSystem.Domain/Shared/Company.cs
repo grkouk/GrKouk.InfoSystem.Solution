@@ -14,6 +14,6 @@ namespace GrKouk.InfoSystem.Domain.Shared
         [Required]
         public string Name { get; set; }
 
-        public int BaseCurrencyId { get; set; }
+        public int CurrencyId { get; set; }
     }
 }
