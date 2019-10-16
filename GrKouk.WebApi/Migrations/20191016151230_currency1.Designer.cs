@@ -4,14 +4,16 @@ using GrKouk.WebApi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace GrKouk.WebApi.Migrations
 {
     [DbContext(typeof(ApiDbContext))]
-    partial class ApiDbContextModelSnapshot : ModelSnapshot
+    [Migration("20191016151230_currency1")]
+    partial class currency1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -766,8 +768,6 @@ namespace GrKouk.WebApi.Migrations
                         .HasMaxLength(200);
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CurrencyId");
 
                     b.ToTable("Companies");
                 });
@@ -1863,14 +1863,6 @@ namespace GrKouk.WebApi.Migrations
                     b.HasOne("GrKouk.InfoSystem.Domain.Shared.Company", "Company")
                         .WithMany()
                         .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.Restrict);
-                });
-
-            modelBuilder.Entity("GrKouk.InfoSystem.Domain.Shared.Company", b =>
-                {
-                    b.HasOne("GrKouk.InfoSystem.Domain.Shared.Currency", "Currency")
-                        .WithMany()
-                        .HasForeignKey("CurrencyId")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 

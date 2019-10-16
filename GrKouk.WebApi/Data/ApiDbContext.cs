@@ -507,6 +507,12 @@ namespace GrKouk.WebApi.Data
                     .WithMany()
                     .OnDelete(DeleteBehavior.Restrict);
             });
+            modelBuilder.Entity<Company>(entity =>
+            {
+                entity.HasOne(p => p.Currency)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
         }
     }
 }
