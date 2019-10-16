@@ -13,5 +13,7 @@ namespace GrKouk.InfoSystem.Domain.Shared
         [MaxLength(200)]
         [Required]
         public string Name { get; set; }
+
+        public int BaseCurrencyId { get; set; }
     }
 }
