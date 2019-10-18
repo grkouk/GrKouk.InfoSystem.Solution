@@ -38,6 +38,7 @@ namespace GrKouk.WebRazor.Pages.Companies
             {
                 return NotFound();
             }
+            LoadCombos();
             return Page();
         }
 
@@ -69,6 +70,10 @@ namespace GrKouk.WebRazor.Pages.Companies
             return RedirectToPage("./Index");
         }
 
+        private void LoadCombos()
+        {
+            ViewData["CurrencyId"] = new SelectList(_context.Currencies.OrderBy(c => c.Name).AsNoTracking(), "Id", "Name");
+        }
         private bool CompanyExists(int id)
         {
             return _context.Companies.Any(e => e.Id == id);
