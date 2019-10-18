@@ -25,7 +25,7 @@ namespace GrKouk.WebRazor.Pages.Companies
 
         public async Task OnGetAsync()
         {
-            Company = await _context.Companies.ToListAsync();
+            Company = await _context.Companies.Include(p=>p.Currency ).ToListAsync();
         }
     }
 }

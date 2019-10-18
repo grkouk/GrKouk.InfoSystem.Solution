@@ -19,7 +19,7 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos
 
         
         public string EMail { get; set; }
-
+        [Display(Name = "Transactor Type")]
         public string TransactorTypeName { get; set; }
 
         public string TransactorTypeCode { get; set; }
