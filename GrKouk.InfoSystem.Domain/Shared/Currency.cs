@@ -1,0 +1,23 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Text;
+
+namespace GrKouk.InfoSystem.Domain.Shared
+{
+    public class Currency
+    {
+        public int Id { get; set; }
+
+        [MaxLength(20)]
+        [Required]
+        public string Code { get; set; }
+        [MaxLength(20)]
+        [Display(Name = "Display Locale")]
+        public string DisplayLocale { get; set; }
+        [MaxLength(200)]
+        [Display(Name = "Currency Name")]
+        [Required]
+        public string Name { get; set; }
+    }
+}

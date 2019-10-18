@@ -61,6 +61,8 @@ namespace GrKouk.WebApi.Data
         public DbSet<GlobalSettings> GlobalSettings { get; set; }
         public DbSet<BuyDocTransPaymentMapping> BuyDocTransPaymentMappings { get; set; }
         public DbSet<SellDocTransPaymentMapping> SellDocTransPaymentMappings { get; set; }
+        public DbSet<Currency> Currencies { get; set; }
+        public DbSet<ExchangeRate> ExchangeRates { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -495,6 +497,19 @@ namespace GrKouk.WebApi.Data
                     .WithMany(p => p.PaymentMappings)
                     .OnDelete(DeleteBehavior.Restrict);
                 entity.HasOne(p => p.TransactorTransaction)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+            
+            modelBuilder.Entity<ExchangeRate>(entity =>
+            {
+                entity.HasOne(p => p.Currency)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+            modelBuilder.Entity<Company>(entity =>
+            {
+                entity.HasOne(p => p.Currency)
                     .WithMany()
                     .OnDelete(DeleteBehavior.Restrict);
             });

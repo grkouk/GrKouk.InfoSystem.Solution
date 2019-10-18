@@ -29,7 +29,7 @@ namespace GrKouk.WebRazor.Pages.Expenses
         public async Task<IActionResult> OnGetAsync(int? copyFromId)
         {
 
-            LoadCompbos();
+            LoadCombos();
             CopyFromId = 0;
 
             if (copyFromId != null)
@@ -59,7 +59,7 @@ namespace GrKouk.WebRazor.Pages.Expenses
         {
             if (!ModelState.IsValid)
             {
-                LoadCompbos();
+                LoadCombos();
                 return Page();
             }
 
@@ -74,7 +74,7 @@ namespace GrKouk.WebRazor.Pages.Expenses
             return RedirectToPage("./Index");
         }
 
-        private void LoadCompbos()
+        private void LoadCombos()
         {
             ViewData["CompanyId"] = new SelectList(_context.Companies.OrderBy(c => c.Code).AsNoTracking(), "Id", "Code");
             ViewData["CostCentreId"] = new SelectList(_context.CostCentres.OrderBy(c => c.Name).AsNoTracking(), "Id", "Name");

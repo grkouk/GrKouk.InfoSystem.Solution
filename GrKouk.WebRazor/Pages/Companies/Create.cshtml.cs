@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using GrKouk.InfoSystem.Domain.Shared;
 using GrKouk.WebApi.Data;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 
 namespace GrKouk.WebRazor.Pages.Companies
 {
@@ -23,6 +24,7 @@ namespace GrKouk.WebRazor.Pages.Companies
 
         public IActionResult OnGet()
         {
+            LoadCombos();
             return Page();
         }
 
@@ -33,6 +35,7 @@ namespace GrKouk.WebRazor.Pages.Companies
         {
             if (!ModelState.IsValid)
             {
+                LoadCombos();
                 return Page();
             }
 
@@ -40,6 +43,10 @@ namespace GrKouk.WebRazor.Pages.Companies
             await _context.SaveChangesAsync();
 
             return RedirectToPage("./Index");
+        }
+        private void LoadCombos()
+        {
+            ViewData["CurrencyId"] = new SelectList(_context.Currencies.OrderBy(c => c.Name).AsNoTracking(), "Id", "Name");
         }
     }
 }
