@@ -33,6 +33,10 @@
     <Compile Remove="Migrations\20190320183821_CashCategory.Designer.cs" />
     <Compile Remove="Migrations\20190320184043_CashCategory2.cs" />
     <Compile Remove="Migrations\20190320184043_CashCategory2.Designer.cs" />
+    <Compile Remove="Migrations\20191019150425_transactorCompanies1.cs" />
+    <Compile Remove="Migrations\20191019150425_transactorCompanies1.Designer.cs" />
+    <Compile Remove="Migrations\20191019150851_transactorCompanies1.cs" />
+    <Compile Remove="Migrations\20191019150851_transactorCompanies1.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
