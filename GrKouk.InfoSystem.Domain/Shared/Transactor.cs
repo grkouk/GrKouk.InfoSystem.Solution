@@ -10,6 +10,7 @@ namespace GrKouk.InfoSystem.Domain.Shared
     /// </summary>
   public  class Transactor
     {
+        private ICollection<TransactorCompanyMapping> _transactorCompanyMappings;
         public int Id { get; set; }
 
         [MaxLength(15)]
@@ -38,8 +39,14 @@ namespace GrKouk.InfoSystem.Domain.Shared
         public TransactorType TransactorType { get; set; }
         public int CompanyId { get; set; }
         public virtual Company Company { get; set; }
-        public ICollection<TransactorCompanyMapping> TransactorCompanyMappings { get; set; }
 
+        public ICollection<TransactorCompanyMapping> TransactorCompanyMappings
+        {
+            get => _transactorCompanyMappings ?? (_transactorCompanyMappings = new List<TransactorCompanyMapping>());
+            set => _transactorCompanyMappings = value;
+        }
+
+      
         [Timestamp]
         public byte[] Timestamp { get; set; }
     }
