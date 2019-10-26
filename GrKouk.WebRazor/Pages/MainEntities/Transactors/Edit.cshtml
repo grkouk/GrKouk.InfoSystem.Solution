@@ -9,66 +9,63 @@
 <div class="container">
     <form method="post">
         <div asp-validation-summary="ModelOnly" class="text-danger small"></div>
-        <input type="hidden" asp-for="Transactor.Id" />
-        <input type="hidden" asp-for="Transactor.Timestamp" />
+        <input type="hidden" asp-for="ItemVm.Id" />
+        <input type="hidden" asp-for="ItemVm.Timestamp" />
         <div class="form-row ">
             <div class="form-group col-md-2">
-                <label asp-for="Transactor.Code" class="control-label small"></label>
-                <input asp-for="Transactor.Code" class="form-control form-control-sm" />
-                <span asp-validation-for="Transactor.Code" class="text-danger small"></span>
+                <label asp-for="ItemVm.Code" class="form-control-label small"></label>
+                <input asp-for="ItemVm.Code" class="form-control form-control-sm" />
+                <span asp-validation-for="ItemVm.Code" class="text-danger small"></span>
             </div>
             <div class="form-group col-md-6">
-                <label asp-for="Transactor.Name" class="control-label small"></label>
-                <input asp-for="Transactor.Name" class="form-control form-control-sm" />
-                <span asp-validation-for="Transactor.Name" class="text-danger small"></span>
+                <label asp-for="ItemVm.Name" class="form-control-label small"></label>
+                <input asp-for="ItemVm.Name" class="form-control form-control-sm" />
+                <span asp-validation-for="ItemVm.Name" class="text-danger small"></span>
             </div>
            
             <div class="form-group col-md-2">
-                <label asp-for="Transactor.TransactorTypeId" class="control-label small"></label>
-                <select asp-for="Transactor.TransactorTypeId" class="form-control form-control-sm" asp-items="ViewBag.TransactorTypeId"></select>
+                <label asp-for="ItemVm.TransactorTypeId" class="form-control-label small"></label>
+                <select asp-for="ItemVm.TransactorTypeId" class="form-control form-control-sm" asp-items="ViewBag.TransactorTypeId"></select>
             </div>
-            <div class="form-group col-md-2">
-                <label asp-for="Transactor.CompanyId" class="control-label small"></label>
-                <select asp-for="Transactor.CompanyId" class="form-control form-control-sm " asp-items="ViewBag.CompanyId"></select>
-            </div>
+           
         </div>
         <div class="form-row">
             <div class="form-group col-md-6">
-                <label asp-for="Transactor.Address" class="control-label small"></label>
-                <input asp-for="Transactor.Address" class="form-control form-control-sm" />
-                <span asp-validation-for="Transactor.Address" class="text-danger small"></span>
+                <label asp-for="ItemVm.Address" class="form-control-label small"></label>
+                <input asp-for="ItemVm.Address" class="form-control form-control-sm" />
+                <span asp-validation-for="ItemVm.Address" class="text-danger small"></span>
             </div>
             <div class="form-group col-md-4">
-                <label asp-for="Transactor.City" class="control-label small"></label>
-                <input asp-for="Transactor.City" class="form-control form-control-sm" />
-                <span asp-validation-for="Transactor.City" class="text-danger small"></span>
+                <label asp-for="ItemVm.City" class="form-control-label small"></label>
+                <input asp-for="ItemVm.City" class="form-control form-control-sm" />
+                <span asp-validation-for="ItemVm.City" class="text-danger small"></span>
             </div>
             <div class="form-group col-md-2">
-                <label asp-for="Transactor.Zip" class="control-label small"></label>
-                <input asp-for="Transactor.Zip" class="form-control form-control-sm" />
-                <span asp-validation-for="Transactor.Zip" class="text-danger small"></span>
+                <label asp-for="ItemVm.Zip" class="form-control-label small"></label>
+                <input asp-for="ItemVm.Zip" class="form-control form-control-sm" />
+                <span asp-validation-for="ItemVm.Zip" class="text-danger small"></span>
             </div>
         </div>
         <div class="form-row">
             <div class="form-group col-md-3">
-                <label asp-for="Transactor.PhoneWork" class="control-label small"></label>
-                <input asp-for="Transactor.PhoneWork" class="form-control form-control-sm" />
-                <span asp-validation-for="Transactor.PhoneWork" class="text-danger small"></span>
+                <label asp-for="ItemVm.PhoneWork" class="form-control-label small"></label>
+                <input asp-for="ItemVm.PhoneWork" class="form-control form-control-sm" />
+                <span asp-validation-for="ItemVm.PhoneWork" class="text-danger small"></span>
             </div>
             <div class="form-group col-md-3">
-                <label asp-for="Transactor.PhoneMobile" class="control-label small"></label>
-                <input asp-for="Transactor.PhoneMobile" class="form-control form-control-sm" />
-                <span asp-validation-for="Transactor.PhoneMobile" class="text-danger small"></span>
+                <label asp-for="ItemVm.PhoneMobile" class="form-control-label small"></label>
+                <input asp-for="ItemVm.PhoneMobile" class="form-control form-control-sm" />
+                <span asp-validation-for="ItemVm.PhoneMobile" class="text-danger small"></span>
             </div>
             <div class="form-group col-md-3">
-                <label asp-for="Transactor.PhoneFax" class="control-label small"></label>
-                <input asp-for="Transactor.PhoneFax" class="form-control form-control-sm" />
-                <span asp-validation-for="Transactor.PhoneFax" class="text-danger small"></span>
+                <label asp-for="ItemVm.PhoneFax" class="form-control-label small"></label>
+                <input asp-for="ItemVm.PhoneFax" class="form-control form-control-sm" />
+                <span asp-validation-for="ItemVm.PhoneFax" class="text-danger small"></span>
             </div>
             <div class="form-group col-md-3">
-                <label asp-for="Transactor.EMail" class="control-label small"></label>
-                <input asp-for="Transactor.EMail" class="form-control form-control-sm" />
-                <span asp-validation-for="Transactor.EMail" class="text-danger small"></span>
+                <label asp-for="ItemVm.EMail" class="form-control-label small"></label>
+                <input asp-for="ItemVm.EMail" class="form-control form-control-sm" />
+                <span asp-validation-for="ItemVm.EMail" class="text-danger small"></span>
             </div>
         </div>
         <div class="form-group">
