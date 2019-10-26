@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using GrKouk.InfoSystem.Domain.Shared;
 using GrKouk.InfoSystem.Dtos;
+using GrKouk.WebRazor.Helpers;
 using Microsoft.EntityFrameworkCore;
 using NToastNotify;
 
@@ -37,6 +38,7 @@ namespace GrKouk.WebRazor.Pages.Expenses
                 CopyFromId = (int) copyFromId;
                 var diaryTransactionToModify = await _context.FinDiaryTransactions
                     .Include(f => f.Company)
+                    .ThenInclude(f=>f.Currency)
                     .Include(f => f.CostCentre)
                     .Include(f => f.FinTransCategory)
                     .Include(f => f.RevenueCentre)
@@ -83,6 +85,17 @@ namespace GrKouk.WebRazor.Pages.Expenses
             var transactorList = _context.Transactors.Where(s => s.TransactorType.Code == "SYS.DTRANSACTOR").OrderBy(s => s.Name).AsNoTracking();
             ViewData["TransactorId"] = new SelectList(transactorList, "Id", "Name");
 
+            var companyCurrencyListJs = _context.Companies.Include(p=>p.Currency).OrderBy(p => p.Id).AsNoTracking()
+                .Select(p => new CompanyCurrencyList()
+                {
+                    CompanyId = p.Id,
+                    CurrencyId = p.Currency.Id,
+                    CurrencyCode = p.Currency.Code,
+                    DisplayLocale = p.Currency.DisplayLocale,
+                    CurrencyName = p.Currency.Name
+                    
+                }).ToList();
+            ViewData["CompanyCurrencyListJs"] = companyCurrencyListJs;
         }
     }
 }
