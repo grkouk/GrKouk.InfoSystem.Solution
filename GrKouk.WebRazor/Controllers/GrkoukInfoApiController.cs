@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -950,7 +951,7 @@ namespace GrKouk.WebRazor.Controllers
         [HttpGet("GetIndexTblDataTransactors")]
         public async Task<IActionResult> GetIndexTblDataTransactors([FromQuery] IndexDataTableRequest request)
         {
-            IQueryable<Transactor> fullListIq = _context.Transactors;
+            IQueryable<Transactor> fullListIq = _context.Transactors.Include(p=>p.TransactorCompanyMappings);
             int transactorTypeId = 0;
             if (!String.IsNullOrEmpty(request.TransactorTypeFilter))
             {
@@ -988,11 +989,20 @@ namespace GrKouk.WebRazor.Controllers
                         if (allCompaniesEntity != null)
                         {
                             var allCompaniesId = allCompaniesEntity.Id;
-                            fullListIq = fullListIq.Where(p => p.CompanyId == companyId || p.CompanyId==allCompaniesId);
+                            //var cmp= new TransactorCompanyMapping()
+                            //{
+                            //    CompanyId = companyId
+                            //};
+                            //IEqualityComparer<TransactorCompanyMapping> cmComparer = new TransCompMappingEq();
+
+                            //fullListIq=fullListIq.Where(p => p.TransactorCompanyMappings.Contains(cmp, cmComparer));
+
+                            fullListIq = fullListIq.Where(t => t.TransactorCompanyMappings.Any( p=>p.CompanyId== companyId|| p.CompanyId==allCompaniesId));
                         }
                         else
                         {
-                            fullListIq = fullListIq.Where(p => p.CompanyId == companyId);
+                            fullListIq = fullListIq.Where(t => t.TransactorCompanyMappings.Any(p => p.CompanyId == companyId ));
+                            //fullListIq = fullListIq.Where(p => p.CompanyId == companyId);
                         }
 
                         
