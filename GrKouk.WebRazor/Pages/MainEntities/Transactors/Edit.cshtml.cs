@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using GrKouk.InfoSystem.Domain.Shared;
+using GrKouk.InfoSystem.Dtos.WebDtos.Diaries;
+using GrKouk.InfoSystem.Dtos.WebDtos.Transactors;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -16,15 +19,17 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Transactors
     {
         private readonly GrKouk.WebApi.Data.ApiDbContext _context;
         private readonly IToastNotification _toastNotification;
+        private readonly IMapper _mapper;
 
-        public EditModel(GrKouk.WebApi.Data.ApiDbContext context, IToastNotification toastNotification)
+        public EditModel(GrKouk.WebApi.Data.ApiDbContext context, IToastNotification toastNotification,IMapper mapper)
         {
             _context = context;
             _toastNotification = toastNotification;
+            _mapper = mapper;
         }
 
         [BindProperty]
-        public Transactor Transactor { get; set; }
+        public TransactorModifyDto ItemVm { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -33,13 +38,34 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Transactors
                 return NotFound();
             }
 
-            Transactor = await _context.Transactors
-                .Include(t => t.TransactorType).FirstOrDefaultAsync(m => m.Id == id);
+            var dbTransactor = await _context.Transactors
+                .Include(t => t.TransactorType)
+                .Include(p=>p.TransactorCompanyMappings)
+                .FirstOrDefaultAsync(m => m.Id == id);
 
-            if (Transactor == null)
+            if (dbTransactor == null)
             {
                 return NotFound();
             }
+
+            ItemVm = _mapper.Map<TransactorModifyDto>(dbTransactor);
+            string cmps="";
+            bool isFirst = true;
+            foreach (var companyMapping in dbTransactor.TransactorCompanyMappings)
+            {
+                if (!isFirst)
+                {
+                    cmps += ",";
+                }
+                else
+                {
+                    isFirst = false;
+                }
+
+                cmps += companyMapping.CompanyId.ToString();
+            }
+
+            ItemVm.SelectedCompanies = cmps;    
             LoadCombos();
 
             return Page();
@@ -47,8 +73,15 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Transactors
 
         private void LoadCombos()
         {
+            var companiesListJs = _context.Companies.OrderBy(p => p.Name)
+                .Select(p => new DiaryDocTypeItem()
+                {
+                    Title = p.Name,
+                    Value = p.Id
+                }).ToList();
             ViewData["TransactorTypeId"] = new SelectList(_context.TransactorTypes.OrderBy(p => p.Code).AsNoTracking(), "Id", "Code");
-            ViewData["CompanyId"] = new SelectList(_context.Companies.OrderBy(p => p.Code).AsNoTracking(), "Id", "Code");
+            //ViewData["CompanyId"] = new SelectList(_context.Companies.OrderBy(p => p.Code).AsNoTracking(), "Id", "Code");
+            ViewData["CompaniesListJs"] = companiesListJs;
         }
         public async Task<IActionResult> OnPostAsync()
         {
@@ -56,9 +89,37 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Transactors
             {
                 return Page();
             }
+            var transactorToAdd = _mapper.Map<Transactor>(ItemVm);
+            _context.Attach(transactorToAdd).State = EntityState.Modified;
+            //transactorToAdd.TransactorCompanyMappings.Clear();
+            _context.TransactorCompanyMappings.RemoveRange(_context.TransactorCompanyMappings.Where(p => p.TransactorId == transactorToAdd.Id));
+            
+            if (!String.IsNullOrEmpty(ItemVm.SelectedCompanies))
+            {
+                var listOfCompanies = ItemVm.SelectedCompanies.Split(",");
+                bool fl = true;
+                foreach (var listOfCompany in listOfCompanies)
+                {
+                    int companyId;
+                    int.TryParse(listOfCompany, out companyId);
+                    if (companyId > 0)
+                    {
+                        transactorToAdd.TransactorCompanyMappings.Add(new TransactorCompanyMapping
+                        {
+                            CompanyId = companyId,
+                            TransactorId = transactorToAdd.Id
+                        });
+                        //TODO: remove when companyid column removed for transactor entity
+                        if (fl)
+                        {
+                            transactorToAdd.CompanyId = companyId;
+                            fl = false;
+                        }
 
-            _context.Attach(Transactor).State = EntityState.Modified;
+                    }
+                }
 
+            }
             try
             {
                 await _context.SaveChangesAsync();
@@ -66,7 +127,7 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Transactors
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!TransactorExists(Transactor.Id))
+                if (!TransactorExists(transactorToAdd.Id))
                 {
                     return NotFound();
                 }

@@ -63,6 +63,8 @@ namespace GrKouk.WebApi.Data
         public DbSet<SellDocTransPaymentMapping> SellDocTransPaymentMappings { get; set; }
         public DbSet<Currency> Currencies { get; set; }
         public DbSet<ExchangeRate> ExchangeRates { get; set; }
+        public DbSet<TransactorCompanyMapping> TransactorCompanyMappings { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -97,16 +99,7 @@ namespace GrKouk.WebApi.Data
                 .WithMany()
                 .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<Transactor>(entity =>
-            {
-                entity.HasIndex(c => c.Code).IsUnique();
-                entity.HasOne(bd => bd.TransactorType)
-                    .WithMany()
-                    .OnDelete(DeleteBehavior.Restrict);
-                entity.HasOne(bd => bd.Company)
-                    .WithMany()
-                    .OnDelete(DeleteBehavior.Restrict);
-            });
+
 
             modelBuilder.Entity<FpaDef>()
                 .HasIndex(c => c.Code)
@@ -420,10 +413,10 @@ namespace GrKouk.WebApi.Data
             modelBuilder.Entity<ProductMedia>(entity =>
             {
                 entity.HasIndex(p => new
-                    {
-                        p.ProductId,
-                        p.MediaEntryId
-                    })
+                {
+                    p.ProductId,
+                    p.MediaEntryId
+                })
                     .IsUnique();
                 entity.HasOne(p => p.Product)
                     .WithMany()
@@ -436,10 +429,10 @@ namespace GrKouk.WebApi.Data
             modelBuilder.Entity<BuyDocTransPaymentMapping>(entity =>
             {
                 entity.HasIndex(p => new
-                    {
-                        p.BuyDocumentId,
-                        p.TransactorTransactionId
-                    })
+                {
+                    p.BuyDocumentId,
+                    p.TransactorTransactionId
+                })
                     .IsUnique();
                 entity.HasOne(p => p.BuyDocument)
                     .WithMany()
@@ -448,21 +441,7 @@ namespace GrKouk.WebApi.Data
                     .WithMany()
                     .OnDelete(DeleteBehavior.Restrict);
             });
-            modelBuilder.Entity<SellDocTransPaymentMapping>(entity =>
-            {
-                entity.HasIndex(p => new
-                    {
-                        p.SellDocumentId,
-                        p.TransactorTransactionId
-                    })
-                    .IsUnique();
-                entity.HasOne(p => p.SellDocument)
-                    .WithMany()
-                    .OnDelete(DeleteBehavior.Restrict);
-                entity.HasOne(p => p.TransactorTransaction)
-                    .WithMany()
-                    .OnDelete(DeleteBehavior.Restrict);
-            });
+           
             modelBuilder.Entity<ProductRecipeLine>(entity =>
             {
                 entity.HasOne(p => p.Product)
@@ -485,7 +464,22 @@ namespace GrKouk.WebApi.Data
             modelBuilder.Entity<BuyDocTransPaymentMapping>(entity =>
             {
                 entity.HasOne(p => p.BuyDocument)
-                    .WithMany(p=>p.PaymentMappings)
+                    .WithMany(p => p.PaymentMappings)
+                    .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(p => p.TransactorTransaction)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+            modelBuilder.Entity<SellDocTransPaymentMapping>(entity =>
+            {
+                entity.HasIndex(p => new
+                    {
+                        p.SellDocumentId,
+                        p.TransactorTransactionId
+                    })
+                    .IsUnique();
+                entity.HasOne(p => p.SellDocument)
+                    .WithMany()
                     .OnDelete(DeleteBehavior.Restrict);
                 entity.HasOne(p => p.TransactorTransaction)
                     .WithMany()
@@ -500,7 +494,7 @@ namespace GrKouk.WebApi.Data
                     .WithMany()
                     .OnDelete(DeleteBehavior.Restrict);
             });
-            
+
             modelBuilder.Entity<ExchangeRate>(entity =>
             {
                 entity.HasOne(p => p.Currency)
@@ -512,6 +506,30 @@ namespace GrKouk.WebApi.Data
                 entity.HasOne(p => p.Currency)
                     .WithMany()
                     .OnDelete(DeleteBehavior.Restrict);
+            });
+            modelBuilder.Entity<Transactor>(entity =>
+           {
+               entity.HasIndex(c => c.Code).IsUnique();
+               entity.HasOne(bd => bd.TransactorType)
+                   .WithMany()
+                   .OnDelete(DeleteBehavior.Restrict);
+
+           });
+            modelBuilder.Entity<TransactorCompanyMapping>(entity =>
+            {
+                entity.HasKey(p => new
+                {
+                    p.CompanyId,
+                    p.TransactorId
+                });
+                entity.HasOne(p => p.Company)
+                    .WithMany(p => p.TransactorCompanyMappings)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .HasForeignKey(p => p.CompanyId);
+                entity.HasOne(p => p.Transactor)
+                    .WithMany(p => p.TransactorCompanyMappings)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .HasForeignKey(p => p.TransactorId);
             });
         }
     }

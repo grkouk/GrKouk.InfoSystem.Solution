@@ -39,6 +39,7 @@
         </div>
         <div class="form-row">
             <div class="form-group col-md-2">
+                <label class="small" id="test"></label>
                 <label asp-for="FinDiaryTransaction.CompanyId" class="small"></label>
                 <select asp-for="FinDiaryTransaction.CompanyId" class="form-control form-control-sm" asp-items="ViewBag.CompanyId"></select>
             </div>
@@ -85,6 +86,29 @@
     <script>
         $(document).ready(function() {
             console.log("Inside Document ready");
+
+            var companyCurrencyListJs = @Html.Raw(Json.Serialize(ViewBag.CompanyCurrencyListJs));
+            $('#FinDiaryTransaction_CompanyId').change(() => {
+                console.log("Value of select");
+                console.log($('#FinDiaryTransaction_CompanyId').val());
+                console.log(companyCurrencyListJs);
+                let companyId=$('#FinDiaryTransaction_CompanyId').val();
+                if (companyId) {
+                    let obj = companyCurrencyListJs.find(o => o.companyId == companyId);
+                    if (obj) {
+                        console.log('Found element');
+                        console.log(obj);
+                        var txt = obj.currencyCode + " " + obj.displayLocale;
+
+                        $('#test').text(txt);
+                    } else {
+                        $('#test').val('Not Found');
+                    }
+                    
+                }
+                
+            });
+
             $('#FinDiaryTransaction_TransactorId').change(() => {
                 console.log("Value of select");
                 console.log($('#FinDiaryTransaction_TransactorId').val());

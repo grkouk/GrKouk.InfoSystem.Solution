@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace GrKouk.InfoSystem.Domain.Shared
 {
@@ -16,5 +17,7 @@ namespace GrKouk.InfoSystem.Domain.Shared
         [Display(Name = "Base Currency")]
         public int CurrencyId { get; set; }
         public Currency Currency { get; set; }
+
+        public ICollection<TransactorCompanyMapping> TransactorCompanyMappings { get; set; }
     }
 }
