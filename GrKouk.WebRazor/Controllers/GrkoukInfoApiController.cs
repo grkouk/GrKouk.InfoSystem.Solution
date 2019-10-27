@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -988,7 +989,15 @@ namespace GrKouk.WebRazor.Controllers
                         if (allCompaniesEntity != null)
                         {
                             var allCompaniesId = allCompaniesEntity.Id;
-                            fullListIq = fullListIq.Where(p => p.CompanyId == companyId || p.CompanyId==allCompaniesId);
+                            var cmp= new TransactorCompanyMapping()
+                            {
+                                CompanyId = companyId
+                            };
+                            IEqualityComparer<TransactorCompanyMapping> cmComparer = new TransCompMappingEq();
+
+                            fullListIq=fullListIq.Where(p => p.TransactorCompanyMappings.Contains(cmp, cmComparer));
+
+                            //fullListIq = fullListIq.Where(p => p.TransactorCompanyMappings.Contains(p=>p.Company.id== cmp|| p.Company==allCompaniesEntity));
                         }
                         else
                         {
