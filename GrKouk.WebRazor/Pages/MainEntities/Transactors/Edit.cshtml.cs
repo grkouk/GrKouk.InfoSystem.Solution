@@ -91,7 +91,9 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Transactors
             }
             var transactorToAdd = _mapper.Map<Transactor>(ItemVm);
             _context.Attach(transactorToAdd).State = EntityState.Modified;
-            transactorToAdd.TransactorCompanyMappings.Clear();
+            //transactorToAdd.TransactorCompanyMappings.Clear();
+            _context.TransactorCompanyMappings.RemoveRange(_context.TransactorCompanyMappings.Where(p => p.TransactorId == transactorToAdd.Id));
+            
             if (!String.IsNullOrEmpty(ItemVm.SelectedCompanies))
             {
                 var listOfCompanies = ItemVm.SelectedCompanies.Split(",");
