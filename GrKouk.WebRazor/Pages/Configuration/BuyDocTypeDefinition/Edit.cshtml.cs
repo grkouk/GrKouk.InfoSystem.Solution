@@ -67,7 +67,10 @@ namespace GrKouk.WebRazor.Pages.Configuration.BuyDocTypeDefinition
                     Title = c.GetDescription()
                 }).ToList();
             ViewData["warehouseItemNaturesList"] = new SelectList(warehouseItemNaturesList, "ValueInt", "Title");
-           // ViewData["UsedPrice"] = new SelectList(usedPriceTypeList, "Value", "Text");
+            // ViewData["UsedPrice"] = new SelectList(usedPriceTypeList, "Value", "Text");
+            ViewData["transactorTypesList"] =
+                new SelectList(_context.TransactorTypes.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
+
             ViewData["CompanyId"] = new SelectList(_context.Companies.OrderBy(p => p.Code).AsNoTracking(), "Id", "Code");
             //ViewData["TransSupplierDefId"] = new SelectList(_context.TransSupplierDefs.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
             ViewData["TransTransactorDefId"] = new SelectList(_context.TransTransactorDefs.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
