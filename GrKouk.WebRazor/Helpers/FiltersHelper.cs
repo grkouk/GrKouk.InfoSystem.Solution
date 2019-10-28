@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GrKouk.InfoSystem.Definitions;
+using GrKouk.WebApi.Data;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 
 namespace GrKouk.WebRazor.Helpers
 {
@@ -48,6 +50,19 @@ namespace GrKouk.WebRazor.Helpers
             //Αλλαγή του στοιχείου 0 από απροσδιόριστο σε {Ολές οι φύσεις είδους}
             materialNatures[0].Text = "{All }";
             return materialNatures;
+        }
+
+        public static List<SelectListItem> GetCompaniesFilterList(ApiDbContext context)
+        {
+            var dbCompanies = context.Companies.Where(t=>t.Id!=1).OrderBy(p => p.Code).AsNoTracking();
+            List<SelectListItem> companiesList = new List<SelectListItem>();
+            companiesList.Add(new SelectListItem() { Value = 0.ToString(), Text = "{All Companies}" });
+            foreach (var company in dbCompanies)
+            {
+                companiesList.Add(new SelectListItem() { Value = company.Id.ToString(), Text = company.Code });
+            }
+
+            return companiesList;
         }
     }
 }
