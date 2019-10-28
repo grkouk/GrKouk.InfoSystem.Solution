@@ -25,7 +25,7 @@ namespace GrKouk.WebRazor.Pages.Configuration.SellDocTypeDefs
 
         public IActionResult OnGet()
         {
-            LoadCompbos();
+            LoadCombos();
             return Page();
         }
 
@@ -45,7 +45,7 @@ namespace GrKouk.WebRazor.Pages.Configuration.SellDocTypeDefs
             return RedirectToPage("./Index");
         }
 
-        private void LoadCompbos()
+        private void LoadCombos()
         {
             List<SelectListItem> usedPriceTypeList = new List<SelectListItem>
             {
@@ -62,6 +62,9 @@ namespace GrKouk.WebRazor.Pages.Configuration.SellDocTypeDefs
                     Title = c.GetDescription()
                 }).ToList();
             ViewData["warehouseItemNaturesList"] = new SelectList(warehouseItemNaturesList, "ValueInt", "Title");
+            ViewData["transactorTypesList"] =
+                new SelectList(_context.TransactorTypes.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
+
             ViewData["UsedPrice"] = new SelectList(usedPriceTypeList, "Value", "Text");
             ViewData["CompanyId"] = new SelectList(_context.Companies.OrderBy(p => p.Code).AsNoTracking(), "Id", "Code");
 

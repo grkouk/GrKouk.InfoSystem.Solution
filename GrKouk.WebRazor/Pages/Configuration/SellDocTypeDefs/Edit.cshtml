@@ -15,6 +15,8 @@
     <form method="post">
         <input type="hidden" asp-for="SellDocTypeDef.Id" />
         <input type="hidden" asp-for="SellDocTypeDef.SelectedWarehouseItemNatures" />
+        <input type="hidden" asp-for="SellDocTypeDef.AllowedTransactorTypes" />
+
         <div asp-validation-summary="ModelOnly" class="text-danger small"></div>
         <div class="form-row">
             <div class="form-group col-md-2">
@@ -65,8 +67,13 @@
                 <label class="control-label small">WarehouseItem Natures </label>
                 <select class="selectpicker form-control " id="MaterialNatureTypes" multiple
                         data-selected-text-format="count > 1"
-                        asp-items="ViewBag.warehouseItemNaturesList"
-                ></select>
+                        asp-items="ViewBag.warehouseItemNaturesList"></select>
+            </div>
+            <div class=" form-group col-md-3">
+                <label class="control-label small">Allowed Transactor Types </label>
+                <select class="selectpicker form-control " id="SelectedTransactorTypes" multiple
+                        data-selected-text-format="count > 1"
+                        asp-items="ViewBag.transactorTypesList"></select>
             </div>
         </div>
         <div class="form-row">
@@ -89,6 +96,8 @@
         $(document).ready(function() {
             var $selectedWarehouseItemNatures = $('#SellDocTypeDef_SelectedWarehouseItemNatures');
             var $matNatureTypes = $('#MaterialNatureTypes');
+            var $allowedTransTypes = $('#SellDocTypeDef_AllowedTransactorTypes');
+            var $selectedTransactorTypes = $('#SelectedTransactorTypes');
 
             $('.selectpicker').selectpicker();
             var updateSelectedWareItemNatures = () => {
@@ -98,6 +107,16 @@
                if (matList != null) {
                     var matListArr = matList.split(',');
                     $matNatureTypes.selectpicker('val', matListArr);
+                }
+               
+            };
+            var updateSelectedAllowedTransactorTypes = () => {
+                var matList = $allowedTransTypes.val();
+               
+                console.log('matList=' + matList);
+                if (matList != null) {
+                    var matListArr = matList.split(',');
+                    $selectedTransactorTypes.selectpicker('val', matListArr);
                 }
                
             };
@@ -113,7 +132,20 @@
                
                 $selectedWarehouseItemNatures.val(sDocs);
             });
+            $selectedTransactorTypes.on('changed.bs.select', function (e, clickedIndex, isSelected, previousValue) {
+                var sel = $('#SelectedTransactorTypes option:selected');
+                var selected = [];
+                $(sel).each(function(index, item) {
+                    selected.push([$(this).val()]);
+                });
+                console.log('selected=' + selected);
+                var sDocs = selected.toString();
+                console.log('sDocs=' + sDocs);
+               
+                $allowedTransTypes.val(sDocs);
+            });
             updateSelectedWareItemNatures();
+            updateSelectedAllowedTransactorTypes();
         });
     </script>
 }
