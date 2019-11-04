@@ -79,6 +79,8 @@ namespace GrKouk.WebRazor.Automapper
             CreateMap<TransactorTransaction, TransactorTransCreateDto>().ReverseMap();
             CreateMap<TransactorTransaction, TransactorTransModifyDto>().ReverseMap();
             CreateMap<TransactorTransaction, TransactorTransListDto>()
+                .ForMember(dest => dest.CompanyCurrencyId,
+                    opt => opt.MapFrom(src => src.Company.CurrencyId))
                 .ForMember(dest => dest.TransTransactorDocSeriesCode, opt => opt.MapFrom(src => src.TransTransactorDocSeries.Code))
                 .ForMember(dest => dest.TransTransactorDocSeriesName, opt => opt.MapFrom(src => src.TransTransactorDocSeries.Name));
             CreateMap<TransactorTransaction, BuyDocCreateAjaxDto>().ReverseMap();

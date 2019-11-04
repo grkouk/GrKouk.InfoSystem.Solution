@@ -519,6 +519,40 @@ namespace GrKouk.WebRazor.Controllers
             var pageSize = request.PageSize;
 
             var listItems = await PagedList<TransactorTransListDto>.CreateAsync(t, pageIndex, pageSize);
+            foreach (var listItem in listItems)
+            {
+                if (listItem.CompanyCurrencyId != 1)
+                {
+                    var r = await _context.ExchangeRates.Where(p => p.CurrencyId == listItem.CompanyCurrencyId)
+                        .OrderByDescending(p => p.ClosingDate).FirstOrDefaultAsync();
+                    if (r != null)
+                    {
+                        listItem.AmountFpa = listItem.AmountFpa / r.Rate;
+                        listItem.AmountNet = listItem.AmountNet / r.Rate;
+                        listItem.AmountDiscount = listItem.AmountDiscount / r.Rate;
+                        listItem.TransFpaAmount = listItem.TransFpaAmount / r.Rate;
+                        listItem.TransNetAmount = listItem.TransNetAmount / r.Rate;
+                        listItem.TransDiscountAmount = listItem.TransDiscountAmount / r.Rate;
+
+                    }
+                }
+                if (request.DisplayCurrencyId != 1)
+                {
+                    var r = await _context.ExchangeRates.Where(p => p.CurrencyId == request.DisplayCurrencyId)
+                        .OrderByDescending(p => p.ClosingDate).FirstOrDefaultAsync();
+                    if (r != null)
+                    {
+                        listItem.AmountFpa = listItem.AmountFpa * r.Rate;
+                        listItem.AmountNet = listItem.AmountNet * r.Rate;
+                        listItem.AmountDiscount = listItem.AmountDiscount * r.Rate;
+                        listItem.TransFpaAmount = listItem.TransFpaAmount * r.Rate;
+                        listItem.TransNetAmount = listItem.TransNetAmount * r.Rate;
+                        listItem.TransDiscountAmount = listItem.TransDiscountAmount * r.Rate;
+
+                    }
+                }
+
+            }
             decimal sumAmountTotal = listItems.Sum(p => p.TotalAmount);
             decimal sumDebit = listItems.Sum(p => p.DebitAmount);
             decimal sumCredit = listItems.Sum(p => p.CreditAmount);
