@@ -162,7 +162,10 @@ namespace GrKouk.WebRazor.Controllers
         {
             IQueryable<FinDiaryTransaction> expensesIq = from s in _context.FinDiaryTransactions
                                                          select s;
-
+            //var q = _context.FinDiaryTransactions.Include(p => p.Company)
+            //    .ThenInclude(p => p.Currency)
+            //    .ThenInclude(p => p.Rates.OrderByDescending(s => s.ClosingDate));
+            
             expensesIq = expensesIq.Include(f => f.Company)
                 .Include(f => f.CostCentre)
                 .Include(f => f.FinTransCategory)
@@ -224,6 +227,32 @@ namespace GrKouk.WebRazor.Controllers
             var pageSize = request.PageSize;
 
             var listItems = await PagedList<FinDiaryExpenseTransactionDto>.CreateAsync(t, pageIndex, pageSize);
+            foreach (var listItem in listItems)
+            {
+                if (listItem.CompanyCurrencyId!=1)
+                {
+                    var r = await _context.ExchangeRates.Where(p => p.CurrencyId == listItem.CompanyCurrencyId)
+                        .OrderByDescending(p => p.ClosingDate).FirstOrDefaultAsync();
+                    if (r != null)
+                    {
+                        listItem.AmountFpa = listItem.AmountFpa / r.Rate;
+                        listItem.AmountNet = listItem.AmountNet / r.Rate;
+                        listItem.AmountTotal = listItem.AmountTotal / r.Rate;
+                    }
+                }
+                if (request.DisplayCurrencyId!=1)
+                {
+                    var r = await _context.ExchangeRates.Where(p => p.CurrencyId == request.DisplayCurrencyId)
+                        .OrderByDescending(p => p.ClosingDate).FirstOrDefaultAsync();
+                    if (r != null)
+                    {
+                        listItem.AmountFpa = listItem.AmountFpa * r.Rate;
+                        listItem.AmountNet = listItem.AmountNet * r.Rate;
+                        listItem.AmountTotal = listItem.AmountTotal * r.Rate;
+                    }
+                }
+               
+            }
             decimal sumAmountTotal = listItems.Sum(p => p.AmountTotal);
 
             var response = new IndexDataTableResponse<FinDiaryExpenseTransactionDto>

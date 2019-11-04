@@ -35,6 +35,8 @@ namespace GrKouk.WebRazor.Automapper
                 .ForMember(dest => dest.CompanyCode, opt => opt.MapFrom(src => src.Company.Code))
                 .ForMember(dest => dest.CostCentreName, opt => opt.MapFrom(src => src.CostCentre.Name))
                 .ForMember(dest => dest.CostCentreCode, opt => opt.MapFrom(src => src.CostCentre.Code))
+                .ForMember(dest=>dest.CompanyCurrencyId, 
+                    opt=>opt.MapFrom(src=>src.Company.CurrencyId))
                 .ForMember(dest => dest.AmountTotal,
                     opt => opt.MapFrom(src => src.AmountFpa + src.AmountNet));
             #endregion

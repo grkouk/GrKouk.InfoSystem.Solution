@@ -21,6 +21,7 @@ namespace GrKouk.WebRazor.Helpers
         public int WarehouseItemId { get; set; }
         public string ClientProfileFilter { get; set; }
         public string CashRegCategoryFilter { get; set; }
+        public int DisplayCurrencyId { get; set; }
     }
 
     public class IndexDataTableResponse<T>

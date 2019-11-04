@@ -212,7 +212,7 @@
 {
     <script src="~/js/moment.min.js"></script>
     <script>
-        $(document).ready(function () {
+        $(document).ready(function() {
             var currentCulture = '@System.Globalization.CultureInfo.CurrentCulture';
             var formatterCurrency = new Intl.NumberFormat(currentCulture,
                 {
@@ -249,34 +249,34 @@
                 return x !== x;
             };
             var handleSortUi = () => {
-                
+
                 var curSort = $('#currentSort').val();
 
                 $('[name=SortIcon]').hide();
                 if (curSort === undefined || curSort === null || curSort.length === 0) {
                     //hide all icons
                     return;
-                   
+
                 }
                 var curSortAr = curSort.split(':');
                 switch (curSortAr[0]) {
-                    case 'transactiondate':
-                        if (curSortAr[1] === 'asc') {
-                            $('#TransDateHeaderIcon').addClass('fas fa-sort-numeric-up').show();
-                        } else {
-                            $('#TransDateHeaderIcon').addClass('fas fa-sort-numeric-down').show();
-                        }
-                        break;
-                    case 'transactorname':
-                        if (curSortAr[1] === 'asc') {
-                            $('#TransactorNameHeaderIcon').addClass('fas fa-sort-alpha-up').show();
-                        } else {
-                            $('#TransactorNameHeaderIcon').addClass('fas fa-sort-alpha-down').show();
-                        }
-                        break;
+                case 'transactiondate':
+                    if (curSortAr[1] === 'asc') {
+                        $('#TransDateHeaderIcon').addClass('fas fa-sort-numeric-up').show();
+                    } else {
+                        $('#TransDateHeaderIcon').addClass('fas fa-sort-numeric-down').show();
+                    }
+                    break;
+                case 'transactorname':
+                    if (curSortAr[1] === 'asc') {
+                        $('#TransactorNameHeaderIcon').addClass('fas fa-sort-alpha-up').show();
+                    } else {
+                        $('#TransactorNameHeaderIcon').addClass('fas fa-sort-alpha-down').show();
+                    }
+                    break;
                 default:
                 }
-               
+
             };
             var handleSelectedRowsUi = () => {
                 var $rowSelectors = $('input[name=checkTableRow]');
@@ -295,11 +295,12 @@
                     $checkAllRows.prop('checked', false);
                 }
             };
-            var getTableData = (pageIndex, pageSize, sortData, dateRange, companyFilter,searchFilter) => {
+            var getTableData = (pageIndex, pageSize, sortData, dateRange, companyFilter, searchFilter,displayCurrencyId) => {
                 //#region getTableData
                 var timeout;
 
-                var uri =`/api/GrKoukInfoApi/GetIndexTblDataExpenses?pageIndex=${pageIndex}&pageSize=${pageSize}&companyFilter=${companyFilter}&dateRange=${dateRange}&sortData=${sortData}&searchFilter=${searchFilter}`;
+                var uri =
+                    `/api/GrKoukInfoApi/GetIndexTblDataExpenses?pageIndex=${pageIndex}&pageSize=${pageSize}&companyFilter=${companyFilter}&dateRange=${dateRange}&sortData=${sortData}&searchFilter=${searchFilter}&displayCurrencyId=${displayCurrencyId}`;
                 $.ajax({
                     contentType: 'application/json; charset=utf-8',
 
@@ -328,7 +329,7 @@
 
                         $totalPages.val(totalPages);
                         $totalRecords.val(totalRecords);
-                        var pagingInfo =`Page:${pageIndex} of ${totalPages} Total Items ${totalRecords}`;
+                        var pagingInfo = `Page:${pageIndex} of ${totalPages} Total Items ${totalRecords}`;
                         $('[name=PagingInfo]').text(pagingInfo);
                         var hasPrevious = result.hasPrevious;
                         var hasNext = result.hasNext;
@@ -351,27 +352,38 @@
                                 var transName = value.transactorName;
                                 var categoryName = value.finTransCategoryName;
                                 var compName = value.companyName;
-                                var amountTotal =formatterCurrency.format(value.amountTotal);
+                                var amountTotal = formatterCurrency.format(value.amountTotal);
                                 var itemId = value.id;
                                 var urlEdit = `@Url.Page("./Edit")?id=${itemId}`;
                                 var urlInfo = `@Url.Page("./Details")?id=${itemId}`;
                                 var urlDel = `@Url.Page("./Delete")?id=${itemId}`;
-                                var urlNewLikeThis=`@Url.Page("./Create")?copyFromId=${itemId}`;
+                                var urlNewLikeThis = `@Url.Page("./Create")?copyFromId=${itemId}`;
                                 var actionsCol = '<td class="small text-center d-none d-md-table-cell">';
-                                actionsCol += `<a href="${urlEdit}"><i class="fas fa-edit fa-lg" style="color:slategray"></i></a> |`;
-                                actionsCol += `<a href="${urlInfo}"><i class="fas fa-info-circle fa-lg" style="color:slategray"></i></a> | `;
-                                actionsCol += `<a href="${urlDel}"><i class="fas fa-trash fa-lg" style="color:slategray"></i></a> | `;
-                                actionsCol += `<a href="${urlNewLikeThis}"><i class="fas fa-clone fa-lg" style="color:slategray"></i></a> `;
+                                actionsCol += `<a href="${urlEdit
+                                    }"><i class="fas fa-edit fa-lg" style="color:slategray"></i></a> |`;
+                                actionsCol += `<a href="${urlInfo
+                                    }"><i class="fas fa-info-circle fa-lg" style="color:slategray"></i></a> | `;
+                                actionsCol += `<a href="${urlDel
+                                    }"><i class="fas fa-trash fa-lg" style="color:slategray"></i></a> | `;
+                                actionsCol += `<a href="${urlNewLikeThis
+                                    }"><i class="fas fa-clone fa-lg" style="color:slategray"></i></a> `;
                                 actionsCol += '</td>';
-                                var actionColMobile = '<td class="small text-center d-table-cell d-sm-table-cell d-md-none">';
-                                actionColMobile +='<a class=" dropdown-toggle" role="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" ';
-                                actionColMobile +='aria-expanded="false"><i class="fas fa-bars fa-lg" style="color:slategray"></i></a>';
+                                var actionColMobile =
+                                    '<td class="small text-center d-table-cell d-sm-table-cell d-md-none">';
+                                actionColMobile +=
+                                    '<a class=" dropdown-toggle" role="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" ';
+                                actionColMobile +=
+                                    'aria-expanded="false"><i class="fas fa-bars fa-lg" style="color:slategray"></i></a>';
                                 actionColMobile +=
                                     '<div class="dropdown-menu small" aria-labelledby="dropdownMenuButton">';
-                                actionColMobile += `<a class="dropdown-item" href="${urlEdit}"><i class="fas fa-edit fa-lg" style="color:slategray"></i>  Edit</a> `;
-                                actionColMobile += `<a class="dropdown-item" href="${urlInfo}"><i class="fas fa-info-circle fa-lg" style="color:slategray"></i> Details</a> `;
-                                actionColMobile += `<a class="dropdown-item" href="${urlDel}"><i class="fas fa-trash fa-lg" style="color:slategray"></i> Delete</a> `;
-                                actionColMobile += `<a class="dropdown-item" href="${urlNewLikeThis}"><i class="fas fa-clone fa-lg" style="color:slategray"></i> Duplicate</a> `;
+                                actionColMobile += `<a class="dropdown-item" href="${urlEdit
+                                    }"><i class="fas fa-edit fa-lg" style="color:slategray"></i>  Edit</a> `;
+                                actionColMobile += `<a class="dropdown-item" href="${urlInfo
+                                    }"><i class="fas fa-info-circle fa-lg" style="color:slategray"></i> Details</a> `;
+                                actionColMobile += `<a class="dropdown-item" href="${urlDel
+                                    }"><i class="fas fa-trash fa-lg" style="color:slategray"></i> Delete</a> `;
+                                actionColMobile += `<a class="dropdown-item" href="${urlNewLikeThis
+                                    }"><i class="fas fa-clone fa-lg" style="color:slategray"></i> Duplicate</a> `;
                                 actionColMobile += '</div></td>';
 
                                 var $tr = $('<tr>').append(
@@ -465,8 +477,9 @@
                 var datePeriod = $('#DatePeriodFilter').val();
                 var sortData = $('#currentSort').val();
                 var searchVal = $('.search_input').val();
+                var displayCurrencyId = 1;
 
-                getTableData(pageIndex, pageSize, sortData, datePeriod, companyFilter,searchVal);
+                getTableData(pageIndex, pageSize, sortData, datePeriod, companyFilter, searchVal,displayCurrencyId);
 
             };
             var gotoFirstPage = () => {
@@ -580,7 +593,7 @@
             };
             var handleFiltersUi = () => {
                 var filterVisible = $filtersVisible.val();
-                if (filterVisible==='True' || filterVisible==='true') {
+                if (filterVisible === 'True' || filterVisible === 'true') {
                     $filterCollapse.collapse('show');
                 } else {
                     $filterCollapse.collapse('hide');
@@ -592,7 +605,7 @@
             $deleteSelectedRowsLink.on('click',
                 () => {
                     deleteSelectedRows();
-                   
+
                 });
 
 
@@ -672,9 +685,10 @@
                     $('#pageIndex').val(1);
                     refreshTableData();
                 });
-            $('#GoToLast').on('click', function() {
-                gotoLastPage();
-            });
+            $('#GoToLast').on('click',
+                function() {
+                    gotoLastPage();
+                });
             $('#GoToFirst').on('click',
                 function() {
                     gotoFirstPage();
@@ -724,13 +738,14 @@
                     $('#pageIndex').val(1);
                     refreshTableData();
                 });
-            $('#CreateNew').on('click', function() {
-                var uri = '@Url.Page("Create")';
-                window.location.href = uri;
-            });
+            $('#CreateNew').on('click',
+                function() {
+                    var uri = '@Url.Page("Create")';
+                    window.location.href = uri;
+                });
 
             $('.search_icon').on('click',
-                function () {
+                function() {
                     icon = $(this).find("svg");
                     if (icon.hasClass('fa-search')) {
                         icon.addClass("fa-times").removeClass("fa-search");
@@ -738,22 +753,23 @@
                         icon.addClass("fa-search").removeClass("fa-times");
                         $('.search_input').val('');
                     }
-                   
+
                     refreshTableData();
                 });
 
-            $('#FiltersForm').on('submit', function(e) {
-                e.preventDefault();
-                var $icon = $('.search_icon').find("svg");
-                if ($icon.hasClass('fa-search')) {
-                    $icon.addClass("fa-times").removeClass("fa-search");
+            $('#FiltersForm').on('submit',
+                function(e) {
+                    e.preventDefault();
+                    var $icon = $('.search_icon').find("svg");
+                    if ($icon.hasClass('fa-search')) {
+                        $icon.addClass("fa-times").removeClass("fa-search");
 
-                } else {
-                    $icon.addClass("fa-search").removeClass("fa-times");
-                    
-                }
-                refreshTableData();
-            });
+                    } else {
+                        $icon.addClass("fa-search").removeClass("fa-times");
+
+                    }
+                    refreshTableData();
+                });
             var storageItemJs = localStorage.getItem('ExpensesIndexView');
             if (storageItemJs === undefined || storageItemJs === null) {
                 $('#pageIndex').val(1);
@@ -790,7 +806,7 @@
             refreshTableData();
 
             rowSelectorsUi();
-           
+
         });
 
         $(window).on('beforeunload',
