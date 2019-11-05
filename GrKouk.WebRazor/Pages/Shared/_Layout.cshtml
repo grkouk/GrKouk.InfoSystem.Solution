@@ -25,25 +25,20 @@
 </head>
 <body>
     <nav class="navbar fixed-top navbar-expand-md navbar-dark bg-dark">
-        <a asp-page="/Index" class="navbar-brand">GrKouk Info System</a>
+        <a asp-page="/Index" class="navbar-brand">GrKouk </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navBarMain"
                 aria-controls="navBarMain" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navBarMain">
             <ul class="navbar-nav mr-auto">
-                <li class="nav-item">
-                    <a class="nav-link" asp-page="/Index">Home</a>
-                    @*<a class="nav-link" asp-page="/Test3">Image Uploader</a>*@
-                </li>
+               
 
                 @if (User.IsInRole("Admin"))
                 {
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown"
-                           aria-haspopup="true" aria-expanded="false">
-                            Management
-                        </a>
+                           aria-haspopup="true" aria-expanded="false">Management</a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                             @* <span class="dropdown-item-text">Configuration</span>*@
                             <a class="dropdown-item" asp-page="/Expenses/index">Exprenses(Εξοδα)</a>
@@ -64,9 +59,7 @@
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown"
-                           aria-haspopup="true" aria-expanded="false">
-                            Configuration
-                        </a>
+                           aria-haspopup="true" aria-expanded="false">Configuration</a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                             <a class="dropdown-item" asp-page="/MediaMng/index">Media</a>
                             <a class="dropdown-item" asp-page="/commonentities/CashRegCategories/index">Cash Register Categories</a>
@@ -91,9 +84,7 @@
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown"
-                           aria-haspopup="true" aria-expanded="false">
-                            Παραστατικά
-                        </a>
+                           aria-haspopup="true" aria-expanded="false">Παραστατικά</a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                             <a class="dropdown-item" asp-page="/configuration/warehousetransdef/index">Warehouse Trans Def</a>
                             <a class="dropdown-item" asp-page="/configuration/WarehouseTransDocTypeDef/index">Warehouse Trans Doc Type Def</a>
@@ -113,10 +104,8 @@
                     </li>
                     <li class="nav-link dropdown" >
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown"
-                           aria-haspopup="true" aria-expanded="false">
-                            Εργαλείο
-                        </a>
-                        <div class="dropdown-menu">
+                           aria-haspopup="true" aria-expanded="false">Εργαλεία</a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                             <a class="dropdown-item" asp-page="/tools/updaterates">Ενημέρωση ισοτιμιών</a>
                         </div>
 
