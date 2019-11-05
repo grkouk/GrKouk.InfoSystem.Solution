@@ -82,7 +82,7 @@ namespace GrKouk.WebRazor
                     TimeOut = 5000,
                     ExtendedTimeOut = 1000
                 })
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
 
             services.AddAutoMapper(cfg =>
