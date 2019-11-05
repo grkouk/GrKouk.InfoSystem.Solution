@@ -324,6 +324,32 @@ namespace GrKouk.WebRazor.Controllers
             var pageSize = request.PageSize;
 
             var listItems = await PagedList<BuyDocListDto>.CreateAsync(t, pageIndex, pageSize);
+            foreach (var listItem in listItems)
+            {
+                if (listItem.CompanyCurrencyId != 1)
+                {
+                    var r = await _context.ExchangeRates.Where(p => p.CurrencyId == listItem.CompanyCurrencyId)
+                        .OrderByDescending(p => p.ClosingDate).FirstOrDefaultAsync();
+                    if (r != null)
+                    {
+                        listItem.AmountFpa = listItem.AmountFpa / r.Rate;
+                        listItem.AmountNet = listItem.AmountNet / r.Rate;
+                        listItem.AmountDiscount = listItem.AmountDiscount / r.Rate;
+                    }
+                }
+                if (request.DisplayCurrencyId != 1)
+                {
+                    var r = await _context.ExchangeRates.Where(p => p.CurrencyId == request.DisplayCurrencyId)
+                        .OrderByDescending(p => p.ClosingDate).FirstOrDefaultAsync();
+                    if (r != null)
+                    {
+                        listItem.AmountFpa = listItem.AmountFpa * r.Rate;
+                        listItem.AmountNet = listItem.AmountNet * r.Rate;
+                        listItem.AmountDiscount = listItem.AmountDiscount * r.Rate;
+                    }
+                }
+
+            }
             decimal sumAmountTotal = listItems.Sum(p => p.TotalAmount);
             //decimal sumAmountTotal = listItems.Sum(p => p.TotalAmount);
             //decimal sumDebit = listItems.Sum(p => p.DebitAmount);
@@ -452,6 +478,32 @@ namespace GrKouk.WebRazor.Controllers
             var pageSize = request.PageSize;
 
             var listItems = await PagedList<SellDocListDto>.CreateAsync(t, pageIndex, pageSize);
+            foreach (var listItem in listItems)
+            {
+                if (listItem.CompanyCurrencyId != 1)
+                {
+                    var r = await _context.ExchangeRates.Where(p => p.CurrencyId == listItem.CompanyCurrencyId)
+                        .OrderByDescending(p => p.ClosingDate).FirstOrDefaultAsync();
+                    if (r != null)
+                    {
+                        listItem.AmountFpa = listItem.AmountFpa / r.Rate;
+                        listItem.AmountNet = listItem.AmountNet / r.Rate;
+                        listItem.AmountDiscount = listItem.AmountDiscount / r.Rate;
+                    }
+                }
+                if (request.DisplayCurrencyId != 1)
+                {
+                    var r = await _context.ExchangeRates.Where(p => p.CurrencyId == request.DisplayCurrencyId)
+                        .OrderByDescending(p => p.ClosingDate).FirstOrDefaultAsync();
+                    if (r != null)
+                    {
+                        listItem.AmountFpa = listItem.AmountFpa * r.Rate;
+                        listItem.AmountNet = listItem.AmountNet * r.Rate;
+                        listItem.AmountDiscount = listItem.AmountDiscount * r.Rate;
+                    }
+                }
+
+            }
             decimal sumAmountTotal = listItems.Sum(p => p.TotalAmount);
 
             var response = new IndexDataTableResponse<SellDocListDto>
@@ -623,9 +675,39 @@ namespace GrKouk.WebRazor.Controllers
             var pageSize = request.PageSize;
 
             var listItems = await PagedList<WarehouseTransListDto>.CreateAsync(t, pageIndex, pageSize);
-            //decimal sumAmountTotal = listItems.Sum(p => p.TotalAmount);
-            //decimal sumDebit = listItems.Sum(p => p.DebitAmount);
-            //decimal sumCredit = listItems.Sum(p => p.CreditAmount);
+            foreach (var listItem in listItems)
+            {
+                if (listItem.CompanyCurrencyId != 1)
+                {
+                    var r = await _context.ExchangeRates.Where(p => p.CurrencyId == listItem.CompanyCurrencyId)
+                        .OrderByDescending(p => p.ClosingDate).FirstOrDefaultAsync();
+                    if (r != null)
+                    {
+                        listItem.AmountFpa = listItem.AmountFpa / r.Rate;
+                        listItem.AmountNet = listItem.AmountNet / r.Rate;
+                        listItem.AmountDiscount = listItem.AmountDiscount / r.Rate;
+                        listItem.TransFpaAmount = listItem.TransFpaAmount / r.Rate;
+                        listItem.TransNetAmount = listItem.TransNetAmount / r.Rate;
+                        listItem.TransDiscountAmount = listItem.TransDiscountAmount / r.Rate;
+                    }
+                }
+                if (request.DisplayCurrencyId != 1)
+                {
+                    var r = await _context.ExchangeRates.Where(p => p.CurrencyId == request.DisplayCurrencyId)
+                        .OrderByDescending(p => p.ClosingDate).FirstOrDefaultAsync();
+                    if (r != null)
+                    {
+                        listItem.AmountFpa = listItem.AmountFpa * r.Rate;
+                        listItem.AmountNet = listItem.AmountNet * r.Rate;
+                        listItem.AmountDiscount = listItem.AmountDiscount * r.Rate;
+                        listItem.TransFpaAmount = listItem.TransFpaAmount * r.Rate;
+                        listItem.TransNetAmount = listItem.TransNetAmount * r.Rate;
+                        listItem.TransDiscountAmount = listItem.TransDiscountAmount * r.Rate;
+                    }
+                }
+
+            }
+          
             decimal sumImportVolume = listItems.Sum(p => p.ImportUnits);
             decimal sumImportValue = listItems.Sum(p => p.ImportAmount);
             decimal sumExportVolume = listItems.Sum(p => p.ExportUnits);
@@ -640,12 +722,10 @@ namespace GrKouk.WebRazor.Controllers
                 SumImportValue = sumImportValue,
                 SumExportVolume = sumExportVolume,
                 SumExportValue = sumExportValue,
-                // SumOfAmount = sumAmountTotal,
-                // SumOfDebit = sumDebit,
-                // SumOfCredit = sumCredit,
+               
                 Data = listItems
             };
-            //return new JsonResult(response);
+            
             return Ok(response);
         }
         [HttpGet("GetIndexTblDataTransactorsBalance")]

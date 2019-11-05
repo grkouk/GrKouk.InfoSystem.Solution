@@ -49,6 +49,6 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.BuyDocuments
 
         [Display(Name = "Company")]
         public string CompanyCode { get; set; }
-
+        public int CompanyCurrencyId { get; set; }
     }
 }
