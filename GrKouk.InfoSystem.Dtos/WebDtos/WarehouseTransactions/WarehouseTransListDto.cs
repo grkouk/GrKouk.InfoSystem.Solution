@@ -227,6 +227,7 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.WarehouseTransactions
         public int CompanyId { get; set; }
         [Display(Name = "Company")]
         public string CompanyCode { get; set; }
+        public int CompanyCurrencyId { get; set; }
         //TODO: Να δώ το θέμα με τις αξίες Trans* κάτι. γιατί όταν αποθηκεύετε μπορεί να είναι αρνητικό. 
         //Αυτές οι αξίες δεν μπορούν να χρησιμοποιηθούν ως αξίες για τις τιμολογημένες τιμές. 
     }

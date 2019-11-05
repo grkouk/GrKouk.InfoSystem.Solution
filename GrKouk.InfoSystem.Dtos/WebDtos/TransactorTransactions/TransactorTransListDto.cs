@@ -96,6 +96,6 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.TransactorTransactions
 
         [Display(Name = "Company")]
         public string CompanyCode { get; set; }
-
+        public int CompanyCurrencyId { get; set; }
     }
 }

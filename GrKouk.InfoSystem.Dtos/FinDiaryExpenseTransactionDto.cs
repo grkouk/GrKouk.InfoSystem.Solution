@@ -66,6 +66,8 @@ namespace GrKouk.InfoSystem.Dtos
         [Display(Name = "Μικτό", Prompt = "Μικτό")]
         public decimal AmountTotal { get; set; }
 
+        public int CompanyCurrencyId { get; set; }
+
         public byte[] Timestamp { get; set; }
     }
 }

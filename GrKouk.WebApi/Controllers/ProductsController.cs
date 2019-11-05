@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using GrKouk.InfoSystem.Definitions;
+using GrKouk.InfoSystem.Domain.MediaEntities;
 using GrKouk.WebApi.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -24,6 +25,42 @@ namespace GrKouk.WebApi.Controllers
             _context = context;
             _mapper = mapper;
         }
+
+        [HttpGet("AllProducts")]
+        public async Task<ActionResult<IEnumerable<ProductListDto>>> GetAllProducts()
+        {
+            
+            
+            var items = await _context.WarehouseItems.Where(o =>  o.WarehouseItemNature == WarehouseItemNatureEnum.WarehouseItemNatureMaterial)
+                .ToListAsync();
+            var products = _mapper.Map<List<ProductListDto>>(items);
+            foreach (var productItem in products)
+            {
+                try
+                {
+                    var productMedia = await _context.ProductMedia
+                        .Include(p => p.MediaEntry)
+                        .SingleOrDefaultAsync(p => p.ProductId == productItem.Id);
+                    if (productMedia != null)
+                    {
+                        //productItem.ImageUrl = Url.Content("~/productimages/" + productMedia.MediaEntry.MediaFile);
+                        productItem.ImageUrl = "http://info.villakoukoudis.com/productimages/" + productMedia.MediaEntry.MediaFile;
+                    }
+                    else
+                    {
+                        productItem.ImageUrl = "http://info.villakoukoudis.com/productimages/" + "noimage.jpg";
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    productItem.ImageUrl = "http://info.villakoukoudis.com/productimages/" + "noimage.jpg";
+                }
+
+            }
+            return products;
+        }
+
         [HttpGet("GetProductsSyncList")]
         public async Task<ActionResult<IEnumerable<ProductSyncDto>>> GetProductsSyncList(string client)
         {

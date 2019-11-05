@@ -497,9 +497,14 @@ namespace GrKouk.WebApi.Data
 
             modelBuilder.Entity<ExchangeRate>(entity =>
             {
+                entity.HasIndex(p => p.ClosingDate);
                 entity.HasOne(p => p.Currency)
                     .WithMany()
                     .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(p=>p.Currency)
+                    .WithMany(p=>p.Rates)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .HasForeignKey(p => p.CurrencyId);
             });
             modelBuilder.Entity<Company>(entity =>
             {

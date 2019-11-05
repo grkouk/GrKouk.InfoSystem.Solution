@@ -291,12 +291,12 @@
                     $checkAllRows.prop('checked', false);
                 }
             };
-            var getTableData = (pageIndex, pageSize, sortData, dateRange, companyFilter, searchFilter) => {
+            var getTableData = (pageIndex, pageSize, sortData, dateRange, companyFilter, searchFilter,displayCurrencyId) => {
                 //#region getTableData
                 var timeout;
 
                 var uri =
-                    `/api/GrKoukInfoApi/GetIndexTblDataTransactorTrans?pageIndex=${pageIndex}&pageSize=${pageSize}&companyFilter=${companyFilter}&dateRange=${dateRange}&sortData=${sortData}&searchFilter=${searchFilter}`;
+                    `/api/GrKoukInfoApi/GetIndexTblDataTransactorTrans?pageIndex=${pageIndex}&pageSize=${pageSize}&companyFilter=${companyFilter}&dateRange=${dateRange}&sortData=${sortData}&searchFilter=${searchFilter}&displayCurrencyId=${displayCurrencyId}`;
                 $.ajax({
                     contentType: 'application/json; charset=utf-8',
 
@@ -493,8 +493,9 @@
                 var datePeriod = $('#DatePeriodFilter').val();
                 var sortData = $('#currentSort').val();
                 var searchVal = $('.search_input').val();
+                var displayCurrencyId = 1;
 
-                getTableData(pageIndex, pageSize, sortData, datePeriod, companyFilter, searchVal);
+                getTableData(pageIndex, pageSize, sortData, datePeriod, companyFilter, searchVal,displayCurrencyId);
 
             };
             var gotoFirstPage = () => {

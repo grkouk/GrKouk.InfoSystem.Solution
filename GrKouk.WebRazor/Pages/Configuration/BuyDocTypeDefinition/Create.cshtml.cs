@@ -25,11 +25,11 @@ namespace GrKouk.WebRazor.Pages.Configuration.BuyDocTypeDefinition
 
         public IActionResult OnGet()
         {
-            LoadCompbos();
+            LoadCombos();
             return Page();
         }
 
-        private void LoadCompbos()
+        private void LoadCombos()
         {
           
             var usedPriceTypeList = Enum.GetValues(typeof(PriceTypeEnum))
@@ -50,8 +50,11 @@ namespace GrKouk.WebRazor.Pages.Configuration.BuyDocTypeDefinition
                     ValueInt = (int)c,
                     Title = c.GetDescription()
                 }).ToList();
-            ViewData["warehouseItemNaturesList"] = new SelectList(warehouseItemNaturesList, "ValueInt", "Title"); 
+            ViewData["warehouseItemNaturesList"] = new SelectList(warehouseItemNaturesList, "ValueInt", "Title");
 
+
+            ViewData["transactorTypesList"] =
+                new SelectList(_context.TransactorTypes.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
            
             ViewData["CompanyId"] = new SelectList(_context.Companies.OrderBy(p => p.Code).AsNoTracking(), "Id", "Code");
           //  ViewData["TransSupplierDefId"] = new SelectList(_context.TransSupplierDefs.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");

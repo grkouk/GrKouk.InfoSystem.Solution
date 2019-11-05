@@ -19,5 +19,12 @@ namespace GrKouk.InfoSystem.Domain.Shared
         [Display(Name = "Currency Name")]
         [Required]
         public string Name { get; set; }
+
+        private ICollection<ExchangeRate> _rates;
+        public ICollection<ExchangeRate> Rates
+        {
+            get => _rates ?? (_rates = new List<ExchangeRate>());
+            set => _rates = value;
+        }
     }
 }

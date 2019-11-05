@@ -37,6 +37,7 @@ namespace GrKouk.WebApi.AutoMapper
             CreateMap<FinDiaryTransaction, FinDiaryTransactionModifyDto>().ReverseMap();
             CreateMap<FinDiaryTransaction, FinDiaryExpenceTransModifyDto>().ReverseMap();
             CreateMap<WarehouseItem, ProductSyncDto>();
+            CreateMap<WarehouseItem, ProductListDto>();
         }
     }
 }
