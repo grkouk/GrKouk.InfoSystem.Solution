@@ -170,7 +170,7 @@ namespace GrKouk.InfoSystem.Definitions
     {
         [Description("Product")]
         PictureEntityEnumProduct = 1
-        
+
     }
 
     public enum SeriesAutoPayoffEnum
@@ -181,5 +181,41 @@ namespace GrKouk.InfoSystem.Definitions
         SeriesAutoPayoffEnumAuto = 1,
         [Description("Question")]
         SeriesAutoPayoffEnumNoQuestion = 2
+    }
+
+    public enum ProdCodeNature
+    {
+        [Description("Product")]
+        ProdCodeNatureProduct = 1,
+        [Description("Service")]
+        ProdCodeNatureService = 2,
+        [Description("Expense")]
+        ProdCodeNatureExpense = 3,
+        [Description("Income")]
+        ProdCodeNatureIncome = 4,
+        [Description("Fixed Asset")]
+        ProdCodeNatureFixedAsset = 5,
+        [Description("Raw Material")]
+        ProdCodeNatureRaw = 6
+    }
+
+    public enum ProdCodeRawShape
+    {
+        [Description("Bead")]
+        ProdCodeRawShapeBead = 10,
+        [Description("Νήμα")]
+        ProdCodeRawShapeNima = 20,
+        [Description("Figure")]
+        ProdCodeRawShapeFigure = 30
+    }
+
+    public enum ProdCodeSeason
+    {
+        [Description("Season 2018")]
+        ProdCodeSeason2018 = 18,
+        [Description("Season 2019")]
+        ProdCodeSeason2019 = 19,
+        [Description("Season 2020")]
+        ProdCodeSeason2020 = 20
     }
 }
