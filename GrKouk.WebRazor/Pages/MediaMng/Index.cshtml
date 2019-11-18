@@ -89,7 +89,9 @@
             <th class="small">
                 Media File
             </th>
-
+            <th class="small">
+                Filename
+            </th>
             <th class="small">
                 Image
             </th>
@@ -382,6 +384,10 @@
                                         let cols = [
                                             {
                                                 text: value.mediaFile,
+                                                class: 'small'
+                                            },
+                                            {
+                                                text: value.originalFilename,
                                                 class: 'small'
                                             }
                                         ];
