@@ -27,6 +27,7 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.SellDocuments
         [Required]
         public int CompanyId { get; set; }
         public int PaymentMethodId { get; set; }
+        public int SalesChannelId { get; set; }
         //public Single Q1 { get; set; }
         //public Single Q2 { get; set; }
 

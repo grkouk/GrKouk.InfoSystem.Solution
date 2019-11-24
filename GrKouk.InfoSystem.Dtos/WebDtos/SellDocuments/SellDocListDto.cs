@@ -50,5 +50,6 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.SellDocuments
         [Display(Name = "Company")]
         public string CompanyCode { get; set; }
         public int CompanyCurrencyId { get; set; }
+        public int SalesChannelId { get; set; }
     }
 }

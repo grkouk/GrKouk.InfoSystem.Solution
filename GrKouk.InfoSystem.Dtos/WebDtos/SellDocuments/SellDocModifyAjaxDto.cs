@@ -25,6 +25,7 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.SellDocuments
         [MaxLength(500)]
         public string Etiology { get; set; }
         public int PaymentMethodId { get; set; }
+        public int SalesChannelId { get; set; }
         [Required]
         public int CompanyId { get; set; }
         public int FiscalPeriodId { get; set; }

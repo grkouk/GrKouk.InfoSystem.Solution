@@ -43,6 +43,7 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.SellDocuments
         public int CompanyId { get; set; }
         public string CompanyCode { get; set; }
         public int PaymentMethodId { get; set; }
+        public int SalesChannelId { get; set; }
         [Timestamp] public byte[] Timestamp { get; set; }
 
         public virtual ICollection<SellDocLineModifyDto> SellDocLines

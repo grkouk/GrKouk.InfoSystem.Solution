@@ -64,6 +64,7 @@ namespace GrKouk.WebApi.Data
         public DbSet<Currency> Currencies { get; set; }
         public DbSet<ExchangeRate> ExchangeRates { get; set; }
         public DbSet<TransactorCompanyMapping> TransactorCompanyMappings { get; set; }
+        public DbSet<SalesChannel> SalesChannels { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -352,7 +353,9 @@ namespace GrKouk.WebApi.Data
             modelBuilder.Entity<SellDocument>(entity =>
             {
                 entity.HasIndex(p => p.TransDate);
-
+                entity.HasOne(p => p.SalesChannel)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
                 entity.HasOne(p => p.Transactor)
                     .WithMany()
                     .OnDelete(DeleteBehavior.Restrict);

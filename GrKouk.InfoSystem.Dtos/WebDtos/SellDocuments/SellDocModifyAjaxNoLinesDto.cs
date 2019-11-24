@@ -23,6 +23,7 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.SellDocuments
         public string Etiology { get; set; }
         public int FiscalPeriodId { get; set; }
         public int PaymentMethodId { get; set; }
+        public int SalesChannelId { get; set; }
         public int CompanyId { get; set; }
         [Timestamp]
         public byte[] Timestamp { get; set; }
