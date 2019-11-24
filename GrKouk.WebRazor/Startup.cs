@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using AutoMapper;
@@ -29,6 +30,7 @@ namespace GrKouk.WebRazor
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            #region CommentOut
             //services.AddCors(options =>
             //{
             //    options.AddPolicy("AllowAllOrigins",
@@ -47,11 +49,13 @@ namespace GrKouk.WebRazor
             //    //            "http://thassos-rent-a-bike.com").AllowAnyMethod().AllowAnyHeader();
             //    //    });
             //});
+#endregion
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
+                
             });
 
             services.AddDbContext<ApiDbContext>(options =>
@@ -73,7 +77,7 @@ namespace GrKouk.WebRazor
                 o.ResourcesPath = "Resources";
             });
             services.AddDistributedMemoryCache();
-            services.AddSession();
+            services.AddSession(options => { options.IdleTimeout = TimeSpan.FromMinutes(30); });
             services.AddMvc()
                 .AddNToastNotifyToastr(new ToastrOptions()
                 {

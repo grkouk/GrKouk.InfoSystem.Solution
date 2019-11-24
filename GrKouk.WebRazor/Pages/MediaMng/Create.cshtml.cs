@@ -55,6 +55,7 @@ namespace GrKouk.WebRazor.Pages.MediaMng
                 }
 
                 MediaEntry.MediaFile = newFileName;
+                MediaEntry.OriginalFileName = uploadedFilename;
                 _context.MediaEntries.Add(MediaEntry);
             }
             //return new JsonResult(listFiles);

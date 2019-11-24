@@ -76,6 +76,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.SellMaterialDoc
             ViewData["SellDocSeriesId"] = new SelectList(_context.SellDocSeriesDefs.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
             ViewData["TransactorId"] = new SelectList(transactorList, "Id", "Name");
             ViewData["PaymentMethodId"] = new SelectList(_context.PaymentMethods.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
+            ViewData["SalesChannelId"] = new SelectList(_context.SalesChannels.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
         }
 
         public async Task<IActionResult> OnPostAsync()

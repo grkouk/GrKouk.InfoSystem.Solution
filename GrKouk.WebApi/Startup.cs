@@ -46,7 +46,7 @@ namespace GrKouk.WebApi
 
             services.AddTransient<IPropertyMappingService, PropertyMappingService>();
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddAutoMapper(cfg =>
             {
                 cfg.AddProfile(new AutoMapperProfile());

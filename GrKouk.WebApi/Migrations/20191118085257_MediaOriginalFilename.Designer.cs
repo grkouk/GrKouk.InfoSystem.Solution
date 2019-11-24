@@ -4,14 +4,16 @@ using GrKouk.WebApi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace GrKouk.WebApi.Migrations
 {
     [DbContext(typeof(ApiDbContext))]
-    partial class ApiDbContextModelSnapshot : ModelSnapshot
+    [Migration("20191118085257_MediaOriginalFilename")]
+    partial class MediaOriginalFilename
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -189,23 +191,6 @@ namespace GrKouk.WebApi.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("PaymentMethods");
-                });
-
-            modelBuilder.Entity("GrKouk.InfoSystem.Domain.FinConfig.SalesChannel", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Code")
-                        .HasMaxLength(15);
-
-                    b.Property<string>("Name")
-                        .HasMaxLength(200);
-
-                    b.HasKey("Id");
-
-                    b.ToTable("SalesChannels");
                 });
 
             modelBuilder.Entity("GrKouk.InfoSystem.Domain.FinConfig.SellDocSeriesDef", b =>
@@ -1258,8 +1243,6 @@ namespace GrKouk.WebApi.Migrations
 
                     b.Property<int>("PaymentMethodId");
 
-                    b.Property<int>("SalesChannelId");
-
                     b.Property<int>("SectionId");
 
                     b.Property<int>("SellDocSeriesId");
@@ -1283,8 +1266,6 @@ namespace GrKouk.WebApi.Migrations
                     b.HasIndex("FiscalPeriodId");
 
                     b.HasIndex("PaymentMethodId");
-
-                    b.HasIndex("SalesChannelId");
 
                     b.HasIndex("SectionId");
 
@@ -2039,11 +2020,6 @@ namespace GrKouk.WebApi.Migrations
                         .WithMany()
                         .HasForeignKey("PaymentMethodId")
                         .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("GrKouk.InfoSystem.Domain.FinConfig.SalesChannel", "SalesChannel")
-                        .WithMany()
-                        .HasForeignKey("SalesChannelId")
-                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("GrKouk.InfoSystem.Domain.Shared.Section", "Section")
                         .WithMany()

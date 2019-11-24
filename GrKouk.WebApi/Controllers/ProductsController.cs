@@ -61,6 +61,25 @@ namespace GrKouk.WebApi.Controllers
             return products;
         }
 
+        [HttpGet("Codes")]
+        public async Task<ActionResult<IEnumerable<ProductListDto>>> GetProductCodes(string codeBase)
+        {
+            IQueryable<ProductListDto> items = _context.WarehouseItems
+                .Select(p => new ProductListDto
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    Code = p.Code
+                });
+
+            if (!String.IsNullOrEmpty(codeBase))
+            {
+                items = items.Where(p => p.Code.Contains(codeBase));
+            }
+
+            return await items.OrderByDescending(p => p.Code).ToListAsync();
+        }
+
         [HttpGet("GetProductsSyncList")]
         public async Task<ActionResult<IEnumerable<ProductSyncDto>>> GetProductsSyncList(string client)
         {

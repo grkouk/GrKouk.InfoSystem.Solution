@@ -12,12 +12,15 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.SellDocuments
         public int Id { get; set; }
         [Required]
         [DataType(DataType.Date)]
+        [Display(Name = "Trans Date")]
         public DateTime TransDate { get; set; }
-
+        [Display(Name = "Ref Code")]
         public string TransRefCode { get; set; }
         [Required]
+        [Display(Name = "Transactor")]
         public int TransactorId { get; set; }
         [Required]
+        [Display(Name = "Doc Series")]
         public int SellDocSeriesId { get; set; }
         public decimal AmountFpa { get; set; }
         public decimal AmountNet { get; set; }
@@ -25,8 +28,12 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.SellDocuments
         [MaxLength(500)]
         public string Etiology { get; set; }
         [Required]
+        [Display(Name = "Company")]
         public int CompanyId { get; set; }
+        [Display(Name = "Payment Method")]
         public int PaymentMethodId { get; set; }
+        [Display(Name = "Sales Channel")]
+        public int SalesChannelId { get; set; }
         //public Single Q1 { get; set; }
         //public Single Q2 { get; set; }
 

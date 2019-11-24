@@ -46,6 +46,9 @@ namespace GrKouk.InfoSystem.Domain.Shared
         public virtual Company Company { get; set; }
         public int PaymentMethodId { get; set; }
         public virtual PaymentMethod PaymentMethod { get; set; }
+        public int SalesChannelId { get; set; }
+        public SalesChannel SalesChannel { get; set; }
+
         [Timestamp]
         public byte[] Timestamp { get; set; }
         public virtual ICollection<SellDocLine> SellDocLines

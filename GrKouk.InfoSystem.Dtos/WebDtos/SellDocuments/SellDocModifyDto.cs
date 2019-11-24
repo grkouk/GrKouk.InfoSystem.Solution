@@ -11,19 +11,21 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.SellDocuments
 
         public int Id { get; set; }
 
-        [DataType(DataType.Date)] public DateTime TransDate { get; set; }
-
+        [DataType(DataType.Date)]
+        [Display(Name = "Trans Date")]
+        public DateTime TransDate { get; set; }
+        [Display(Name = "Ref Code")]
         public string TransRefCode { get; set; }
 
         public int SectionId { get; set; }
         public string SectionCode { get; set; }
-
+        [Display(Name = "Transactor")]
         public int TransactorId { get; set; }
         public string TransactorName { get; set; }
 
         public int FiscalPeriodId { get; set; }
         public string FiscalPeriodCode { get; set; }
-
+        [Display(Name = "Doc Series")]
         public int SellDocSeriesId { get; set; }
         public string SellDocSeriesCode { get; set; }
         public string SellDocSeriesName { get; set; }
@@ -40,9 +42,13 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.SellDocuments
         public decimal AmountSum => (AmountNet + AmountFpa - AmountDiscount);
 
         [MaxLength(500)] public string Etiology { get; set; }
+        [Display(Name = "Company")]
         public int CompanyId { get; set; }
         public string CompanyCode { get; set; }
+        [Display(Name = "Payment Method")]
         public int PaymentMethodId { get; set; }
+        [Display(Name = "Sales Channel")]
+        public int SalesChannelId { get; set; }
         [Timestamp] public byte[] Timestamp { get; set; }
 
         public virtual ICollection<SellDocLineModifyDto> SellDocLines
