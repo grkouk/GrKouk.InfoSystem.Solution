@@ -1513,9 +1513,72 @@ namespace GrKouk.WebRazor.Controllers
             }
             var dbTrans = transactionsList.ProjectTo<TransactorTransListDto>(_mapper.ConfigurationProvider);
             var dbTransactions = await dbTrans.ToListAsync();
+            foreach (var listItem in dbTransactions)
+            {
+                if (listItem.CompanyCurrencyId != 1)
+                {
+                    var r = await _context.ExchangeRates.Where(p => p.CurrencyId == listItem.CompanyCurrencyId)
+                        .OrderByDescending(p => p.ClosingDate).FirstOrDefaultAsync();
+                    if (r != null)
+                    {
+                        listItem.AmountFpa = listItem.AmountFpa / r.Rate;
+                        listItem.AmountNet = listItem.AmountNet / r.Rate;
+                        listItem.AmountDiscount = listItem.AmountDiscount / r.Rate;
+                        listItem.TransFpaAmount = listItem.TransFpaAmount / r.Rate;
+                        listItem.TransNetAmount = listItem.TransNetAmount / r.Rate;
+                        listItem.TransDiscountAmount = listItem.TransDiscountAmount / r.Rate;
+                    }
+                }
+                if (request.DisplayCurrencyId != 1)
+                {
+                    var r = await _context.ExchangeRates.Where(p => p.CurrencyId == request.DisplayCurrencyId)
+                        .OrderByDescending(p => p.ClosingDate).FirstOrDefaultAsync();
+                    if (r != null)
+                    {
+                        listItem.AmountFpa = listItem.AmountFpa * r.Rate;
+                        listItem.AmountNet = listItem.AmountNet * r.Rate;
+                        listItem.AmountDiscount = listItem.AmountDiscount * r.Rate;
+                        listItem.TransFpaAmount = listItem.TransFpaAmount * r.Rate;
+                        listItem.TransNetAmount = listItem.TransNetAmount * r.Rate;
+                        listItem.TransDiscountAmount = listItem.TransDiscountAmount * r.Rate;
+                    }
+                }
+
+            }
             //-----------------------------------------------
             var dbTransBeforePeriod = transListBeforePeriod.ProjectTo<TransactorTransListDto>(_mapper.ConfigurationProvider);
+            foreach (var listItem in dbTransBeforePeriod)
+            {
+                if (listItem.CompanyCurrencyId != 1)
+                {
+                    var r = await _context.ExchangeRates.Where(p => p.CurrencyId == listItem.CompanyCurrencyId)
+                        .OrderByDescending(p => p.ClosingDate).FirstOrDefaultAsync();
+                    if (r != null)
+                    {
+                        listItem.AmountFpa = listItem.AmountFpa / r.Rate;
+                        listItem.AmountNet = listItem.AmountNet / r.Rate;
+                        listItem.AmountDiscount = listItem.AmountDiscount / r.Rate;
+                        listItem.TransFpaAmount = listItem.TransFpaAmount / r.Rate;
+                        listItem.TransNetAmount = listItem.TransNetAmount / r.Rate;
+                        listItem.TransDiscountAmount = listItem.TransDiscountAmount / r.Rate;
+                    }
+                }
+                if (request.DisplayCurrencyId != 1)
+                {
+                    var r = await _context.ExchangeRates.Where(p => p.CurrencyId == request.DisplayCurrencyId)
+                        .OrderByDescending(p => p.ClosingDate).FirstOrDefaultAsync();
+                    if (r != null)
+                    {
+                        listItem.AmountFpa = listItem.AmountFpa * r.Rate;
+                        listItem.AmountNet = listItem.AmountNet * r.Rate;
+                        listItem.AmountDiscount = listItem.AmountDiscount * r.Rate;
+                        listItem.TransFpaAmount = listItem.TransFpaAmount * r.Rate;
+                        listItem.TransNetAmount = listItem.TransNetAmount * r.Rate;
+                        listItem.TransDiscountAmount = listItem.TransDiscountAmount * r.Rate;
+                    }
+                }
 
+            }
             //Create before period line
             var bl1 = new
             {
@@ -1704,9 +1767,71 @@ namespace GrKouk.WebRazor.Controllers
 
             var dbTrans = transactionsList.ProjectTo<WarehouseTransListDto>(_mapper.ConfigurationProvider);
             var dbTransactions = await dbTrans.ToListAsync();
+            foreach (var listItem in dbTransactions)
+            {
+                if (listItem.CompanyCurrencyId != 1)
+                {
+                    var r = await _context.ExchangeRates.Where(p => p.CurrencyId == listItem.CompanyCurrencyId)
+                        .OrderByDescending(p => p.ClosingDate).FirstOrDefaultAsync();
+                    if (r != null)
+                    {
+                        listItem.AmountFpa = listItem.AmountFpa / r.Rate;
+                        listItem.AmountNet = listItem.AmountNet / r.Rate;
+                        listItem.AmountDiscount = listItem.AmountDiscount / r.Rate;
+                        listItem.TransFpaAmount = listItem.TransFpaAmount / r.Rate;
+                        listItem.TransNetAmount = listItem.TransNetAmount / r.Rate;
+                        listItem.TransDiscountAmount = listItem.TransDiscountAmount / r.Rate;
+                    }
+                }
+                if (request.DisplayCurrencyId != 1)
+                {
+                    var r = await _context.ExchangeRates.Where(p => p.CurrencyId == request.DisplayCurrencyId)
+                        .OrderByDescending(p => p.ClosingDate).FirstOrDefaultAsync();
+                    if (r != null)
+                    {
+                        listItem.AmountFpa = listItem.AmountFpa * r.Rate;
+                        listItem.AmountNet = listItem.AmountNet * r.Rate;
+                        listItem.AmountDiscount = listItem.AmountDiscount * r.Rate;
+                        listItem.TransFpaAmount = listItem.TransFpaAmount * r.Rate;
+                        listItem.TransNetAmount = listItem.TransNetAmount * r.Rate;
+                        listItem.TransDiscountAmount = listItem.TransDiscountAmount * r.Rate;
+                    }
+                }
 
+            }
             var dbTransBeforePeriod = transListBeforePeriod.ProjectTo<WarehouseTransListDto>(_mapper.ConfigurationProvider);
+            foreach (var listItem in dbTransBeforePeriod)
+            {
+                if (listItem.CompanyCurrencyId != 1)
+                {
+                    var r = await _context.ExchangeRates.Where(p => p.CurrencyId == listItem.CompanyCurrencyId)
+                        .OrderByDescending(p => p.ClosingDate).FirstOrDefaultAsync();
+                    if (r != null)
+                    {
+                        listItem.AmountFpa = listItem.AmountFpa / r.Rate;
+                        listItem.AmountNet = listItem.AmountNet / r.Rate;
+                        listItem.AmountDiscount = listItem.AmountDiscount / r.Rate;
+                        listItem.TransFpaAmount = listItem.TransFpaAmount / r.Rate;
+                        listItem.TransNetAmount = listItem.TransNetAmount / r.Rate;
+                        listItem.TransDiscountAmount = listItem.TransDiscountAmount / r.Rate;
+                    }
+                }
+                if (request.DisplayCurrencyId != 1)
+                {
+                    var r = await _context.ExchangeRates.Where(p => p.CurrencyId == request.DisplayCurrencyId)
+                        .OrderByDescending(p => p.ClosingDate).FirstOrDefaultAsync();
+                    if (r != null)
+                    {
+                        listItem.AmountFpa = listItem.AmountFpa * r.Rate;
+                        listItem.AmountNet = listItem.AmountNet * r.Rate;
+                        listItem.AmountDiscount = listItem.AmountDiscount * r.Rate;
+                        listItem.TransFpaAmount = listItem.TransFpaAmount * r.Rate;
+                        listItem.TransNetAmount = listItem.TransNetAmount * r.Rate;
+                        listItem.TransDiscountAmount = listItem.TransDiscountAmount * r.Rate;
+                    }
+                }
 
+            }
             //Create before period line
             var bl1 = new
             {
