@@ -1223,6 +1223,12 @@ namespace GrKouk.WebRazor.Controllers
                     case "namesort:desc":
                         fullListIq = fullListIq.OrderByDescending(p => p.Name);
                         break;
+                    case "codesort:asc":
+                        fullListIq = fullListIq.OrderBy(p => p.Code);
+                        break;
+                    case "codesort:desc":
+                        fullListIq = fullListIq.OrderByDescending(p => p.Code);
+                        break;
                     case "categorysort:asc":
                         fullListIq = fullListIq.OrderBy(p => p.MaterialCaterory.Name);
                         break;
