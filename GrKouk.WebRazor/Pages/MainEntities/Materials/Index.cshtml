@@ -378,16 +378,17 @@
                         //#region getTableData
                         var timeout;
 
-                        var uri =
-                            `/api/GrKoukInfoApi/GetIndexTblDataWarehouseItems?pageIndex=${pageIndex}&pageSize=${pageSize
-                                }&companyFilter=${companyFilter}&warehouseItemNatureFilter=${warehouseItemNatureFilter
-                                }&sortData=${sortData}&searchFilter=${searchFilter}`;
+                        var uri = `/api/GrKoukInfoApi/GetIndexTblDataWarehouseItems`;
+                        uri += `?pageIndex=${pageIndex}`;
+                        uri += `&pageSize=${pageSize}`;
+                        uri += `&companyFilter=${companyFilter}`;
+                        uri += `&warehouseItemNatureFilter=${warehouseItemNatureFilter}`;
+                        uri += `&sortData=${sortData}`;
+                        uri += `&searchFilter=${searchFilter}`;
                         $.ajax({
                             contentType: 'application/json; charset=utf-8',
-
                             dataType: 'json',
                             type: 'GET',
-
                             url: uri,
                             beforeSend: function() {
                                 if (timeout) {
