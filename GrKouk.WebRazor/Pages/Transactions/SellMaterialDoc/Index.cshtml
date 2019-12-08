@@ -296,7 +296,14 @@
                 //#region getTableData
                 var timeout;
                
-                var uri =`/api/GrKoukInfoApi/GetIndexTblDataSellDocuments?pageIndex=${pageIndex}&pageSize=${pageSize}&companyFilter=${companyFilter}&dateRange=${dateRange}&sortData=${sortData}&searchFilter=${searchFilter}&displayCurrencyId=${displayCurrencyId}`;
+                var uri =`/api/GrKoukInfoApi/GetIndexTblDataSellDocuments`;
+                uri += `?pageIndex=${pageIndex}`;
+                uri += `&pageSize=${pageSize}`;
+                uri += `&companyFilter=${companyFilter}`;
+                uri += `&dateRange=${dateRange}`;
+                uri += `&sortData=${sortData}`;
+                uri += `&searchFilter=${searchFilter}`;
+                uri += `&displayCurrencyId=${displayCurrencyId}`;
                 $.ajax({
                     contentType: 'application/json; charset=utf-8',
 

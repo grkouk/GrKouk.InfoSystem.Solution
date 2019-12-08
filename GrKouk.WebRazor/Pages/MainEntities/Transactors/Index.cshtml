@@ -304,8 +304,11 @@
                     var timeout;
 
                     var uri = '/api/GrKoukInfoApi/GetIndexTblDataTransactors';
-                    uri += `?pageIndex=${pageIndex}&pageSize=${pageSize}&companyFilter=${companyFilter}`;
-                    uri += `&transactorTypeFilter=${transactorTypeFilter}&sortData=${sortData}`;
+                    uri += `?pageIndex=${pageIndex}`;
+                    uri += `&pageSize=${pageSize}`;
+                    uri += `&companyFilter=${companyFilter}`;
+                    uri += `&transactorTypeFilter=${transactorTypeFilter}`;
+                    uri += `&sortData=${sortData}`;
                     uri += `&searchFilter=${searchFilter}`;
                     $.ajax({
                         contentType: 'application/json; charset=utf-8',
