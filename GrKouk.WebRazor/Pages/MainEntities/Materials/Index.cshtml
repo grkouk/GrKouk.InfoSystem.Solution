@@ -116,7 +116,11 @@
                 Image
             </th>
             <th class="small">
-                Code
+                <a href="#" id="CodeSortHeader">
+                    Code
+                </a>
+                <i class="fas fa-sort-alpha-down" id="CodeSortHeaderIcon" name="SortIcon"></i>
+                
             </th>
             <th class="small">
                 <a href="#" id="NameSortHeader">
@@ -340,6 +344,13 @@
                     } else {
                         $('#NameSortHeaderIcon').addClass('fas fa-sort-alpha-down').show();
                     }
+                        break;
+                case 'codesort':
+                    if (curSortAr[1] === 'asc') {
+                        $('#CodeSortHeaderIcon').addClass('fas fa-sort-alpha-up').show();
+                    } else {
+                        $('#CodeSortHeaderIcon').addClass('fas fa-sort-alpha-down').show();
+                    }
                     break;
                 default:
                 }
@@ -367,16 +378,17 @@
                         //#region getTableData
                         var timeout;
 
-                        var uri =
-                            `/api/GrKoukInfoApi/GetIndexTblDataWarehouseItems?pageIndex=${pageIndex}&pageSize=${pageSize
-                                }&companyFilter=${companyFilter}&warehouseItemNatureFilter=${warehouseItemNatureFilter
-                                }&sortData=${sortData}&searchFilter=${searchFilter}`;
+                        var uri = `/api/GrKoukInfoApi/GetIndexTblDataWarehouseItems`;
+                        uri += `?pageIndex=${pageIndex}`;
+                        uri += `&pageSize=${pageSize}`;
+                        uri += `&companyFilter=${companyFilter}`;
+                        uri += `&warehouseItemNatureFilter=${warehouseItemNatureFilter}`;
+                        uri += `&sortData=${sortData}`;
+                        uri += `&searchFilter=${searchFilter}`;
                         $.ajax({
                             contentType: 'application/json; charset=utf-8',
-
                             dataType: 'json',
                             type: 'GET',
-
                             url: uri,
                             beforeSend: function() {
                                 if (timeout) {
@@ -883,6 +895,24 @@
                         newSortVal = curSortAr[0] + ':' + newSort;
                     } else {
                         newSortVal = 'namesort:asc';
+                    }
+                    $('#currentSort').val(newSortVal);
+                    $('#pageIndex').val(1);
+                    refreshTableData();
+                });
+            $('#CodeSortHeader').on('click',
+                function() {
+                    var newSortVal = '';
+                    var curSort = $('#currentSort').val();
+                    if (curSort === undefined || curSort === null || curSort.length === 0) {
+                        curSort = 'namesort:desc';
+                    }
+                    var curSortAr = curSort.split(':');
+                    if (curSortAr[0] === 'codesort') {
+                        var newSort = curSortAr[1] === 'asc' ? 'desc' : 'asc';
+                        newSortVal = curSortAr[0] + ':' + newSort;
+                    } else {
+                        newSortVal = 'codesort:asc';
                     }
                     $('#currentSort').val(newSortVal);
                     $('#pageIndex').val(1);
