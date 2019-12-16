@@ -296,6 +296,7 @@
             var $pageSize = $('#PageSize');
             var $totalPages = $('#totalPages');
             var $totalRecords = $('#totalRecords');
+            var currencyListJs = @Html.Raw(Json.Serialize(ViewBag.CurrencyListJs));
             //#endregion
             var reallyIsNaN = function(x) {
                 return x !== x;
@@ -944,7 +945,27 @@
                     }
                 });
             };
+            var currencyChanged = () => {
+                let curCurrencySelected = parseInt($('#CurrencySelector').val());
 
+                var currencyCode;
+                try {
+                    currencyCode = currencyListJs.find(x => x.id === curCurrencySelected).code;    
+                    formatterCurrency = new Intl.NumberFormat(currentCulture,
+                        {
+                            style: 'currency',
+                            currency: currencyCode,
+                            minimumFractionDigits: 2
+                        });
+                } catch (e) {
+                    //not found keep old formater or maybe create a default one
+                    console.log('Not found currency code for this id');
+                } 
+                
+
+                 
+               
+            };
             $rowSelectorsToggle.on('click',
                 function() {
                     rosSelectorsToggleHandler();
@@ -952,6 +973,7 @@
 
             $('#CurrencySelector').on('change',
                 function() {
+                    currencyChanged();
                     refreshTableData();
                 });
             $('#DatePeriodFilter').on('change',
