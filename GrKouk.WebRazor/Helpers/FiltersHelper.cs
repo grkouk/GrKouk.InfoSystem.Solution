@@ -64,5 +64,17 @@ namespace GrKouk.WebRazor.Helpers
 
             return companiesList;
         }
+        public static List<SelectListItem> GetCurrenciesFilterList(ApiDbContext context)
+        {
+            var dbItems = context.Currencies.OrderBy(p=> p.Name).AsNoTracking();
+            List<SelectListItem> itemsList = new List<SelectListItem>();
+            //itemsList.Add(new SelectListItem() { Value = 0.ToString(), Text = "{All Companies}" });
+            foreach (var item in dbItems)
+            {
+                itemsList.Add(new SelectListItem() { Value = item.Id.ToString(), Text = item.Code });
+            }
+
+            return itemsList;
+        }
     }
 }

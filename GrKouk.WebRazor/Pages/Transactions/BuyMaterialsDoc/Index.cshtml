@@ -82,6 +82,11 @@
 
                     </small>
                 </div>
+                <div class="form-group col-md-auto">
+                    <label class="small"> Currency:</label>
+                    <select id="CurrencySelector" class="form-control form-control-sm small"
+                            asp-items="ViewBag.CurrencySelector"></select>
+                </div>
             </div>
         </div>
     </form>
@@ -356,10 +361,8 @@
                 uri += `&displayCurrencyId=${displayCurrencyId}`;
                 $.ajax({
                     contentType: 'application/json; charset=utf-8',
-
                     dataType: 'json',
                     type: 'GET',
-
                     url: uri,
                     beforeSend: function() {
                         if (timeout) {
@@ -544,7 +547,12 @@
                 var datePeriod = $('#DatePeriodFilter').val();
                 var sortData = $('#currentSort').val();
                 var searchVal = $('.search_input').val();
-                var displayCurrencyId = 1;
+                var $dcId = $('#CurrencySelector');
+
+                var displayCurrencyId =$dcId.val() == null || $dcId.val().length == 0
+                    ? 1
+                    : parseInt($dcId.val());
+                
                 getTableData(pageIndex, pageSize, sortData, datePeriod, companyFilter,searchVal,displayCurrencyId);
 
             };
@@ -942,7 +950,10 @@
                     rosSelectorsToggleHandler();
                 });
 
-
+            $('#CurrencySelector').on('change',
+                function() {
+                    refreshTableData();
+                });
             $('#DatePeriodFilter').on('change',
                 function() {
                     $('#pageIndex').val(1);
@@ -1014,8 +1025,8 @@
                 var uri = '@Url.Page("Create")';
                 window.location.href = uri;
             });
-$('.search_icon').on('click',
-                function () {
+            $('.search_icon').on('click',
+                function() {
                     icon = $(this).find("svg");
                     if (icon.hasClass('fa-search')) {
                         icon.addClass("fa-times").removeClass("fa-search");
@@ -1076,6 +1087,13 @@ $('.search_icon').on('click',
                 $('#PageSize').val(filtersValue);
                 filtersValue = storageItem.find(x => x.filterKey === 'pageIndex').filterValue;
                 $('#pageIndex').val(filtersValue);
+
+                try {
+                    filtersValue = storageItem.find(x => x.filterKey === 'currentCurrency').filterValue;
+                    $('#CurrencySelector').val(filtersValue);  
+                } catch (e) {
+
+                } 
             }
             handleFiltersUi();
             refreshTableData();
@@ -1098,6 +1116,7 @@ $('.search_icon').on('click',
                 var currentSort = $('#currentSort').val();
                 var companyFilter = $('#CompanyFilter').val();
                 var pageIndex = $('#pageIndex').val();
+                var currentCurrency = $('#CurrencySelector').val();
                 var filtersArr = [];
                 //#endregion
                 filtersArr.push({
@@ -1127,6 +1146,10 @@ $('.search_icon').on('click',
                 filtersArr.push({
                     filterKey: 'companyFilter',
                     filterValue: companyFilter
+                });
+                filtersArr.push({
+                    filterKey: 'currentCurrency',
+                    filterValue: currentCurrency
                 });
                 //var storageItem = new {
                 //    itemName: 'dateRangeFilter',
