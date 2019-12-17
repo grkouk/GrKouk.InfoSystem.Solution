@@ -67,11 +67,6 @@ namespace GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc
                     PaymentMethodId = CopyFromItemVm.PaymentMethodId,
                     TransactorId = CopyFromItemVm.TransactorId
                 };
-
-                //if (ItemVm == null)
-                //{
-                //    return NotFound();
-                //}
             }
             LoadCombos();
             return Page();
