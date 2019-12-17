@@ -57,7 +57,7 @@
                     <div class="input-group input-group-sm">
                         <select asp-for="ItemVm.TransactorId" class="form-control form-control-sm small" asp-items="ViewBag.TransactorId"></select>
                         <div class="input-group-append" id="button-addon4">
-                            <button class="btn btn-outline-secondary" type="button">...</button>
+                            <button class="btn btn-outline-secondary" data-toggle="modal" data-target="#itemSelector" data-selectorType="Suppliers" type="button">...</button>
                         </div>
                     </div>
 
@@ -82,9 +82,9 @@
 
                     <label class="small">LookUp</label>
                     <div class="input-group input-group-sm">
-                        <input class="form-control form-control-sm small" style="font-size: 0.7rem" id="Lookup" />
+                        <input class="form-control form-control-sm " style="font-size: 0.7rem" id="Lookup" />
                         <div class="input-group-append" id="button-addon5">
-                            <button class="btn btn-outline-secondary btn-sm small" type="button">...</button>
+                            <button class="btn btn-outline-secondary btn-sm " data-toggle="modal" data-target="#itemSelector" data-selectorType="Products" style="font-size: 0.7rem" type="button"><i class="fab fa-asymmetrik"></i></button>
                         </div>
                     </div>
                     <span class="text-danger small"></span>
@@ -252,15 +252,35 @@
 <div>
     <a class="small" asp-page="Index">Back to List</a>
 </div>
+<!-- Modal Image Viewer -->
+<div class="modal fade" id="imageViewer" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
+    <div class="modal-dialog " role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="imageModalLabel">Image</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-center">
+                <img id="imageControl" src="" style="height:400px;width:400px;" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+            </div>
+        </div>
+    </div>
+</div>
 <!-- Modal product selector -->
-<div class="modal fade" id="productSelector" tabindex="-1" role="dialog" aria-labelledby="productModalLabel" aria-hidden="true">
+<div class="modal fade" id="itemSelector" tabindex="-1" role="dialog" aria-labelledby="itemsModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" style="overflow-y: scroll; max-height:85%;  margin-top: 50px; margin-bottom:50px;" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <div class="container-fluid">
                     <div class="form-row">
                         <div class="col-6">
-                            <p class="modal-title font-weight-bold" id="productModalLabel">Products</p>
+                            <p class="modal-title font-weight-bold" id="itemsModalLabel">Selector</p>
                         </div>
                         <div class="col-6 text-right">
 
@@ -273,7 +293,7 @@
                         <div class="col-10">
                             @*<form class="form-inline">
                             *@
-                            <input class="form-control form-control-sm" name="productSearchText" placeholder="Search text" type="text" />
+                            <input class="form-control form-control-sm" name="itemsSearchText" placeholder="Search text" type="text" />
                             @*
                                 </form>*@
                         </div>
@@ -285,7 +305,7 @@
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-12">
-                            <table class="table table-bordered table-sm" id="productsList">
+                            <table class="table table-bordered table-sm" id="selectorItemsList">
                                 <thead class="thead-light">
                                     <tr>
                                         <th class="small">
@@ -384,8 +404,22 @@
             var $materialFpaId = $('#MaterialFpaId');
             //#endregion
 
-            //#region Initial values
+            //#region items selectors modals
+            
+            $('#itemSelector').on('show.bs.modal',
+                function (event) {
+                    var button = $(event.relatedTarget);
+                    var selectorType = button.data('selectorType');
+                    var modal = $(this);
+                    modal.find('.modal-title').text(selectorType);
+                    // var mediaId = button.data('mediaid');
+                    //mediaArr.length = 0;
+                    //var arr = [];
+                    //arr.push(mediaId);
 
+                    //mediaArr.push(mediaId);
+                    //getProductsSelectorList(mediaArr,'', 10);
+                });
             //#endregion
             var priceChanged = () => {
                 var priceValue =parseFloat( $price.val());
