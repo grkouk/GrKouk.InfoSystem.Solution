@@ -75,24 +75,23 @@
         <div class="form-row">
             <div class="form-group  col-md-3">
                 <label asp-for="ItemVm.Quontity1" class="small"></label>
-                <div class="input-group ">
-                    <input asp-for="ItemVm.Quontity1" class="form-control form-control-sm small" />
+                <div class="input-group input-group-sm ">
+                    <input asp-for="ItemVm.Quontity1" class="form-control form-control-sm " />
                     <div class="input-group-append">
-                        <span class="input-group-text form-control-sm small" id="primaryUnitCode"></span>
+                        <span class="input-group-text" id="primaryUnitCode"></span>
                     </div>
                 </div>
-                <span asp-validation-for="ItemVm.Quontity1" class="text-danger small"></span>
+                <span asp-validation-for="ItemVm.Quontity1" class="text-danger form-control-sm small"></span>
             </div>
             <div class="form-group col-md-3">
                 <label asp-for="ItemVm.Quontity2" class="small"></label>
-                <div class="input-group">
+                <div class="input-group input-group-sm">
                     <input asp-for="ItemVm.Quontity2" class="form-control form-control-sm small" />
                     <div class="input-group-append">
-                        <span class="input-group-text form-control-sm small" id="secondaryUnitCode"></span>
+                        <span class="input-group-text" id="secondaryUnitCode"></span>
                     </div>
                 </div>
-
-                <span asp-validation-for="ItemVm.Quontity2" class="text-danger small"></span>
+                <span asp-validation-for="ItemVm.Quontity2" class="text-danger form-control-sm small"></span>
             </div>
             <div class="form-group col-md-2">
                 <label asp-for="ItemVm.UnitPrice" class="small"></label>
