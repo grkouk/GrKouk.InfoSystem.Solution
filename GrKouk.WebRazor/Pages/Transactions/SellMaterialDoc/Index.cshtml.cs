@@ -46,15 +46,12 @@ namespace GrKouk.WebRazor.Pages.Transactions.SellMaterialDoc
             ViewData["DataFilterValues"] = new SelectList(datePeriods, "Value", "Text");
             var pageFilterSize = PageFilter.GetPageSizeFiltersSelectList();
             ViewData["PageFilterSize"] = new SelectList(pageFilterSize, "Value", "Text");
-            //var dbCompanies = _context.Companies.OrderBy(p => p.Code).AsNoTracking();
-            //List<SelectListItem> companiesList = new List<SelectListItem>();
-            //companiesList.Add(new SelectListItem() { Value = 0.ToString(), Text = "{All Companies}" });
-            //foreach (var company in dbCompanies)
-            //{
-            //    companiesList.Add(new SelectListItem() { Value = company.Id.ToString(), Text = company.Code });
-            //}
+           
             var companiesList = FiltersHelper.GetCompaniesFilterList(_context);
             ViewData["CompanyFilter"] = new SelectList(companiesList, "Value", "Text");
+            ViewData["CurrencySelector"] = new SelectList(FiltersHelper.GetCurrenciesFilterList(_context), "Value", "Text");
+            var currencyListJs = _context.Currencies.OrderBy(p => p.Id).AsNoTracking().ToList();
+            ViewData["CurrencyListJs"] = currencyListJs;
         }
     }
 }

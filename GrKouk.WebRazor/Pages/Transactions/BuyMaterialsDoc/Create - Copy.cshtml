@@ -1,6 +1,6 @@
 ﻿@page
 
-@model GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc.CreateModel
+@model GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc.CreateModelcopy
 @using Microsoft.Extensions.Configuration
 @inject IConfiguration Configuration
 
@@ -54,14 +54,7 @@
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label asp-for="ItemVm.TransactorId" class="control-label small"></label>
-                    <div class="input-group input-group-sm">
-                        <select asp-for="ItemVm.TransactorId" class="form-control form-control-sm small" asp-items="ViewBag.TransactorId"></select>
-                        <div class="input-group-append" id="button-addon4">
-                            <button class="btn btn-outline-secondary" type="button">...</button>
-                           </div>
-                    </div>
-                    
-                    
+                    <select asp-for="ItemVm.TransactorId" class="form-control form-control-sm small" asp-items="ViewBag.TransactorId"></select>
                 </div>
                 <div class="form-group col-md-3">
                     <label asp-for="ItemVm.CompanyId" class="control-label" small></label>
@@ -81,12 +74,7 @@
                 <div class="form-group col-sm-3">
 
                     <label class="small">LookUp</label>
-                    <div class="input-group input-group-sm">
-                        <input class="form-control form-control-sm small" style="font-size: 0.7rem" id="Lookup" />
-                        <div class="input-group-append" id="button-addon5">
-                            <button class="btn btn-outline-secondary btn-sm small" type="button">...</button>
-                        </div>
-                    </div>
+                    <input class="form-control form-control-sm small" style="font-size: 0.7rem" id="Lookup" />
                     <span class="text-danger small"></span>
                 </div>
 

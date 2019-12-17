@@ -13,7 +13,7 @@ using NToastNotify;
 namespace GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc
 {
     [Authorize(Roles = "Admin")]
-    public class CreateModel : PageModel
+    public class CreateModelcopy : PageModel
     {
         private readonly GrKouk.WebApi.Data.ApiDbContext _context;
         private readonly IMapper _mapper;
@@ -24,7 +24,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc
         public int RoutedSectionId { get; set; }
         public bool InitialLoad = true;
         public int CopyFromId { get; set; }
-        public CreateModel(GrKouk.WebApi.Data.ApiDbContext context, IMapper mapper, IToastNotification toastNotification)
+        public CreateModelcopy(GrKouk.WebApi.Data.ApiDbContext context, IMapper mapper, IToastNotification toastNotification)
         {
             _context = context;
             _mapper = mapper;
@@ -67,6 +67,11 @@ namespace GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc
                     PaymentMethodId = CopyFromItemVm.PaymentMethodId,
                     TransactorId = CopyFromItemVm.TransactorId
                 };
+
+                //if (ItemVm == null)
+                //{
+                //    return NotFound();
+                //}
             }
             LoadCombos();
             return Page();

@@ -33,9 +33,12 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.SellDocuments
         public int SellDocTypeId { get; set; }
         public string SellDocTypeCode { get; set; }
         public string SellDocTypeName { get; set; }
-        [Display(Name = "Vat Amount")] public decimal AmountFpa { get; set; }
-        [Display(Name = "Net Amount")] public decimal AmountNet { get; set; }
-        [Display(Name = "Discount Amount")] public decimal AmountDiscount { get; set; }
+        [Display(Name = "Vat Amount")] 
+        public decimal AmountFpa { get; set; }
+        [Display(Name = "Net Amount")] 
+        public decimal AmountNet { get; set; }
+        [Display(Name = "Discount Amount")] 
+        public decimal AmountDiscount { get; set; }
 
         [DisplayFormat(DataFormatString = "{0:C}")]
         [Display(Name = "Sum")]

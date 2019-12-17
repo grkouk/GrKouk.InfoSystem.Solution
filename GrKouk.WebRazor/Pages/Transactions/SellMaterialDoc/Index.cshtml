@@ -84,6 +84,11 @@
 
                     </small>
                 </div>
+                <div class="form-group col-md-auto">
+                    <label class="small"> Currency:</label>
+                    <select id="CurrencySelector" class="form-control form-control-sm small"
+                            asp-items="ViewBag.CurrencySelector"></select>
+                </div>
             </div>
         </div>
     </form>
@@ -241,6 +246,7 @@
             var $pageSize = $('#PageSize');
             var $totalPages = $('#totalPages');
             var $totalRecords = $('#totalRecords');
+            var currencyListJs = @Html.Raw(Json.Serialize(ViewBag.CurrencyListJs));
             //#endregion
             var reallyIsNaN = function(x) {
                 return x !== x;
@@ -486,7 +492,10 @@
                 var datePeriod = $('#DatePeriodFilter').val();
                 var sortData = $('#currentSort').val();
                 var searchVal = $('.search_input').val();
-                var displayCurrencyId = 1;
+                var $dcId = $('#CurrencySelector');
+                var displayCurrencyId =$dcId.val() == null || $dcId.val().length == 0
+                    ? 1
+                    : parseInt($dcId.val());
                 getTableData(pageIndex, pageSize, sortData, datePeriod, companyFilter,searchVal,displayCurrencyId);
 
             };
@@ -675,6 +684,29 @@
                     rosSelectorsToggleHandler();
                 });
 
+            var currencyChanged = () => {
+                let curCurrencySelected = parseInt($('#CurrencySelector').val());
+
+                var currencyCode;
+                try {
+                    currencyCode = currencyListJs.find(x => x.id === curCurrencySelected).code;    
+                    formatterCurrency = new Intl.NumberFormat(currentCulture,
+                        {
+                            style: 'currency',
+                            currency: currencyCode,
+                            minimumFractionDigits: 2
+                        });
+                } catch (e) {
+                    //not found keep old formater or maybe create a default one
+                    console.log('Not found currency code for this id');
+                } 
+            };
+
+            $('#CurrencySelector').on('change',
+                function() {
+                    currencyChanged();
+                    refreshTableData();
+                });
 
             $('#DatePeriodFilter').on('change',
                 function() {
@@ -747,16 +779,16 @@
                 var uri = '@Url.Page("Create")';
                 window.location.href = uri;
             });
-$('.search_icon').on('click',
-                function () {
-                    icon = $(this).find("svg");
+            $('.search_icon').on('click',
+                function() {
+                    let icon = $(this).find("svg");
                     if (icon.hasClass('fa-search')) {
                         icon.addClass("fa-times").removeClass("fa-search");
                     } else {
                         icon.addClass("fa-search").removeClass("fa-times");
                         $('.search_input').val('');
                     }
-                   
+
                     refreshTableData();
                 });
 
@@ -793,12 +825,7 @@ $('.search_icon').on('click',
                 $('#filtersVisible').val(filtersValue);
                 filtersValue = storageItem.find(x => x.filterKey === 'rowSelectorsVisible').filterValue;
                 $('#rowSelectorsVisible').val(filtersValue);
-                //if (filtersValue === true) {
-                //    $rowSelectorsToggle.text('Hide Row Selectors');
-                //} else {
-                //    $rowSelectorsToggle.text('Show Row Selectors');
-                //}
-                // rosSelectorsToggleHandler();
+               
                 filtersValue = storageItem.find(x => x.filterKey === 'dateRangeFilter').filterValue;
                 $('#DatePeriodFilter').val(filtersValue);
                 filtersValue = storageItem.find(x => x.filterKey === 'currentSort').filterValue;
@@ -809,8 +836,16 @@ $('.search_icon').on('click',
                 $('#PageSize').val(filtersValue);
                 filtersValue = storageItem.find(x => x.filterKey === 'pageIndex').filterValue;
                 $('#pageIndex').val(filtersValue);
+                try {
+                   filtersValue = storageItem.find(x => x.filterKey === 'currentCurrency').filterValue;
+                   $('#CurrencySelector').val(filtersValue);  
+                } catch (e) {
+
+                } 
+               
             }
             handleFiltersUi();
+            currencyChanged();
             refreshTableData();
 
             rowSelectorsUi();
@@ -831,6 +866,7 @@ $('.search_icon').on('click',
                 var currentSort = $('#currentSort').val();
                 var companyFilter = $('#CompanyFilter').val();
                 var pageIndex = $('#pageIndex').val();
+                var currentCurrency = $('#CurrencySelector').val();
                 var filtersArr = [];
                 //#endregion
                 filtersArr.push({
@@ -861,10 +897,10 @@ $('.search_icon').on('click',
                     filterKey: 'companyFilter',
                     filterValue: companyFilter
                 });
-                //var storageItem = new {
-                //    itemName: 'dateRangeFilter',
-                //    filters:filtersArr
-                //};
+                filtersArr.push({
+                    filterKey: 'currentCurrency',
+                    filterValue: currentCurrency
+                });
 
                 var sessionVal = JSON.stringify(filtersArr);
 
