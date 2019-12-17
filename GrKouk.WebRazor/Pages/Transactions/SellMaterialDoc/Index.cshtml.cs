@@ -50,6 +50,8 @@ namespace GrKouk.WebRazor.Pages.Transactions.SellMaterialDoc
             var companiesList = FiltersHelper.GetCompaniesFilterList(_context);
             ViewData["CompanyFilter"] = new SelectList(companiesList, "Value", "Text");
             ViewData["CurrencySelector"] = new SelectList(FiltersHelper.GetCurrenciesFilterList(_context), "Value", "Text");
+            var currencyListJs = _context.Currencies.OrderBy(p => p.Id).AsNoTracking().ToList();
+            ViewData["CurrencyListJs"] = currencyListJs;
         }
     }
 }

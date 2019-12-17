@@ -83,6 +83,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.SellMaterialDoc
         {
             if (!ModelState.IsValid)
             {
+                LoadCombos();
                 return Page();
             }
 

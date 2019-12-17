@@ -961,10 +961,6 @@
                     //not found keep old formater or maybe create a default one
                     console.log('Not found currency code for this id');
                 } 
-                
-
-                 
-               
             };
             $rowSelectorsToggle.on('click',
                 function() {
@@ -1093,12 +1089,7 @@
                 $('#filtersVisible').val(filtersValue);
                 filtersValue = storageItem.find(x => x.filterKey === 'rowSelectorsVisible').filterValue;
                 $('#rowSelectorsVisible').val(filtersValue);
-                //if (filtersValue === true) {
-                //    $rowSelectorsToggle.text('Hide Row Selectors');
-                //} else {
-                //    $rowSelectorsToggle.text('Show Row Selectors');
-                //}
-                // rosSelectorsToggleHandler();
+               
                 filtersValue = storageItem.find(x => x.filterKey === 'dateRangeFilter').filterValue;
                 $('#DatePeriodFilter').val(filtersValue);
                 filtersValue = storageItem.find(x => x.filterKey === 'currentSort').filterValue;
@@ -1118,6 +1109,7 @@
                 } 
             }
             handleFiltersUi();
+            currencyChanged();
             refreshTableData();
 
             rowSelectorsUi();
@@ -1173,10 +1165,7 @@
                     filterKey: 'currentCurrency',
                     filterValue: currentCurrency
                 });
-                //var storageItem = new {
-                //    itemName: 'dateRangeFilter',
-                //    filters:filtersArr
-                //};
+               
 
                 var sessionVal = JSON.stringify(filtersArr);
 
