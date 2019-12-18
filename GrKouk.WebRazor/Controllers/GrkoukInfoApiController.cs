@@ -777,19 +777,46 @@ namespace GrKouk.WebRazor.Controllers
             var dbTransactions = dbTrans.GroupBy(g => new
             {
 
+              
                 g.CompanyCode,
+                g.CompanyCurrencyId,
                 g.TransactorId
             }
                 )
-                .Select(s => new
+                .Select(s => new TransactorIsozygioItem
                 {
-                    Id = s.Key.TransactorId,
-                    TransactorName = "",
-                    CompanyCode = s.Key.CompanyCode,
+                    Id = s.Key.TransactorId, TransactorName = "", CompanyCode = s.Key.CompanyCode,
+                    CompanyCurrencyId = s.Key.CompanyCurrencyId,
                     DebitAmount = s.Sum(x => x.DebitAmount),
                     CreditAmount = s.Sum(x => x.CreditAmount)
                 }).ToList();
+            foreach (var listItem in dbTransactions)
+            {
 
+                if (listItem.CompanyCurrencyId != 1)
+                {
+                    var r = await _context.ExchangeRates.Where(p => p.CurrencyId == listItem.CompanyCurrencyId)
+                        .OrderByDescending(p => p.ClosingDate).FirstOrDefaultAsync();
+                    if (r != null)
+                    {
+                        listItem.DebitAmount /= r.Rate;
+                        listItem.CreditAmount /= r.Rate;
+
+                    }
+                }
+                if (request.DisplayCurrencyId != 1)
+                {
+                    var r = await _context.ExchangeRates.Where(p => p.CurrencyId == request.DisplayCurrencyId)
+                        .OrderByDescending(p => p.ClosingDate).FirstOrDefaultAsync();
+                    if (r != null)
+                    {
+                        listItem.DebitAmount *= r.Rate;
+                        listItem.CreditAmount *= r.Rate;
+
+                    }
+                }
+
+            }
             var isozigioType = "FREE";
             var transactorType = await _context.TransactorTypes.Where(c => c.Id == transactorTypeId).FirstOrDefaultAsync();
             var isozigioName = "";
