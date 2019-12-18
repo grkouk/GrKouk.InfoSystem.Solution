@@ -924,8 +924,6 @@ namespace GrKouk.WebRazor.Controllers
                 }
             }
 
-
-
             if (!String.IsNullOrEmpty(request.CompanyFilter))
             {
                 if (Int32.TryParse(request.CompanyFilter, out var companyId))
