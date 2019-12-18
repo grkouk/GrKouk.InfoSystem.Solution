@@ -49,6 +49,7 @@ namespace GrKouk.WebRazor.Controllers
         public List<int> ProductIdList { get; set; }
 
     }
+
     [Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
@@ -942,21 +943,49 @@ namespace GrKouk.WebRazor.Controllers
 
             var dbTransactions = dbTrans.GroupBy(g => new
             {
+                g.CompanyId,
                 g.CompanyCode,
+                g.CompanyCurrencyId,
                 g.WarehouseItemId
             }
                 )
-                .Select(s => new
+                .Select(s => new WarehouseIsozygioItem
                 {
-                    Id = s.Key.WarehouseItemId,
-                    MaterialName = "",
+                    Id = s.Key.WarehouseItemId, MaterialName = "", CompanyId = s.Key.CompanyId,
                     CompanyCode = s.Key.CompanyCode,
+                    CompanyCurrencyId = s.Key.CompanyCurrencyId,
                     ImportVolume = s.Sum(x => x.ImportUnits),
                     ExportVolume = s.Sum(x => x.ExportUnits),
                     ImportValue = s.Sum(x => x.ImportAmount),
                     ExportValue = s.Sum(x => x.ExportAmount)
                 }).ToList();
+            foreach (var listItem in dbTransactions)
+            {
 
+                if (listItem.CompanyCurrencyId != 1)
+                {
+                    var r = await _context.ExchangeRates.Where(p => p.CurrencyId == listItem.CompanyCurrencyId)
+                        .OrderByDescending(p => p.ClosingDate).FirstOrDefaultAsync();
+                    if (r != null)
+                    {
+                        listItem.ImportValue /= r.Rate;
+                        listItem.ExportValue /= r.Rate;
+                       
+                    }
+                }
+                if (request.DisplayCurrencyId != 1)
+                {
+                    var r = await _context.ExchangeRates.Where(p => p.CurrencyId == request.DisplayCurrencyId)
+                        .OrderByDescending(p => p.ClosingDate).FirstOrDefaultAsync();
+                    if (r != null)
+                    {
+                        listItem.ImportValue *= r.Rate;
+                        listItem.ExportValue *= r.Rate;
+                       
+                    }
+                }
+
+            }
             //var isozigioType = "FREE";
             //var isozigioName = "";
 
