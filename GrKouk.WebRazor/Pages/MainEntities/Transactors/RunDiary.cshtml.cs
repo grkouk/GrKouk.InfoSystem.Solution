@@ -59,6 +59,10 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Transactors
                 companiesList.Add(new SelectListItem() { Value = company.Id.ToString(), Text = company.Code });
             }
             ViewData["CompanyFilter"] = new SelectList(companiesList, "Value", "Text");
+           
+            ViewData["CurrencySelector"] = new SelectList(FiltersHelper.GetCurrenciesFilterList(_context), "Value", "Text");
+            var currencyListJs = _context.Currencies.OrderBy(p => p.Id).AsNoTracking().ToList();
+            ViewData["CurrencyListJs"] = currencyListJs;
         }
     }
 }

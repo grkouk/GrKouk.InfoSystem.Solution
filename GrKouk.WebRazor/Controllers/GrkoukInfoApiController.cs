@@ -1325,6 +1325,135 @@ namespace GrKouk.WebRazor.Controllers
             };
             return Ok(response);
         }
+        [HttpGet("GetIndexTblDataWareHouseSelectorItems")]
+        public async Task<IActionResult> GetIndexTblDataWareHouseSelectorItems([FromQuery] IndexDataTableRequest request)
+        {
+            //Thread.Sleep(10000);
+            IQueryable<WarehouseItem> fullListIq = _context.WarehouseItems;
+            if (!String.IsNullOrEmpty(request.WarehouseItemNatureFilter))
+            {
+                if (Int32.TryParse(request.WarehouseItemNatureFilter, out var warehouseItemNatureFilter))
+                {
+                    if (warehouseItemNatureFilter > 0)
+                    {
+                        var flt = (WarehouseItemNatureEnum)warehouseItemNatureFilter;
+                        fullListIq = fullListIq.Where(p => p.WarehouseItemNature == flt);
+                    }
+                }
+            }
+            if (!String.IsNullOrEmpty(request.SortData))
+            {
+                switch (request.SortData.ToLower())
+                {
+
+                    case "namesort:asc":
+                        fullListIq = fullListIq.OrderBy(p => p.Name);
+                        break;
+                    case "namesort:desc":
+                        fullListIq = fullListIq.OrderByDescending(p => p.Name);
+                        break;
+                    case "codesort:asc":
+                        fullListIq = fullListIq.OrderBy(p => p.Code);
+                        break;
+                    case "codesort:desc":
+                        fullListIq = fullListIq.OrderByDescending(p => p.Code);
+                        break;
+                    case "categorysort:asc":
+                        fullListIq = fullListIq.OrderBy(p => p.MaterialCaterory.Name);
+                        break;
+                    case "categorysort:desc":
+                        fullListIq = fullListIq.OrderByDescending(p => p.MaterialCaterory.Name);
+                        break;
+                }
+            }
+
+            if (!String.IsNullOrEmpty(request.CompanyFilter))
+            {
+                if (Int32.TryParse(request.CompanyFilter, out var companyId))
+                {
+                    if (companyId > 0)
+                    {
+                        var allCompaniesEntity = await _context.Companies.SingleOrDefaultAsync(s => s.Code == "ALLCOMP");
+                        if (allCompaniesEntity != null)
+                        {
+                            var allCompaniesId = allCompaniesEntity.Id;
+                            fullListIq = fullListIq.Where(p => p.CompanyId == companyId || p.CompanyId == allCompaniesId);
+                        }
+                        else
+                        {
+                            fullListIq = fullListIq.Where(p => p.CompanyId == companyId);
+                        }
+
+
+                    }
+                }
+            }
+            if (!String.IsNullOrEmpty(request.SearchFilter))
+            {
+                fullListIq = fullListIq.Where(p => p.Name.Contains(request.SearchFilter)
+                                                   || p.Code.Contains(request.SearchFilter)
+                                                   || p.ShortDescription.Contains(request.SearchFilter)
+                                                   || p.Description.Contains(request.SearchFilter)
+                                                   || p.MaterialCaterory.Name.Contains(request.SearchFilter));
+            }
+
+            PagedList<WarehouseItemListDto> listItems;
+            try
+            {
+                var projectedList = fullListIq.ProjectTo<WarehouseItemListDto>(_mapper.ConfigurationProvider);
+                var pageIndex = request.PageIndex;
+
+                var pageSize = request.PageSize;
+
+                listItems = await PagedList<WarehouseItemListDto>.CreateAsync(projectedList, pageIndex, pageSize);
+            }
+            catch (Exception e)
+            {
+                string msg = e.InnerException.Message;
+                return BadRequest(new
+                {
+                    error = e.Message + " " + msg
+                });
+
+            }
+            foreach (var productItem in listItems)
+            {
+
+                ProductMedia productMedia;
+
+                try
+                {
+                    productMedia = await _context.ProductMedia
+                        .Include(p => p.MediaEntry)
+                        .SingleOrDefaultAsync(p => p.ProductId == productItem.Id);
+                    if (productMedia != null)
+                    {
+                        productItem.Url = Url.Content("~/productimages/" + productMedia.MediaEntry.MediaFile);
+                    }
+                    else
+                    {
+                        productItem.Url = Url.Content("~/productimages/" + "noimage.jpg");
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    productItem.Url = Url.Content("~/productimages/" + "noimage.jpg");
+                }
+
+            }
+
+            var response = new IndexDataTableResponse<WarehouseItemListDto>
+            {
+                TotalRecords = listItems.TotalCount,
+                TotalPages = listItems.TotalPages,
+                HasPrevious = listItems.HasPrevious,
+                HasNext = listItems.HasNext,
+                // Diaries = relevantDiarys,
+                Data = listItems
+            };
+            return Ok(response);
+        }
         [HttpGet("LastDiaryTransactionData")]
         public async Task<IActionResult> GetLastDiaryTransactionDataAsync(int transactorId)
         {
@@ -1427,6 +1556,40 @@ namespace GrKouk.WebRazor.Controllers
             var pageSize = request.PageSize;
 
             var listItems = await PagedList<TransactorTransListDto>.CreateAsync(t, pageIndex, pageSize);
+            foreach (var listItem in listItems)
+            {
+                if (listItem.CompanyCurrencyId != 1)
+                {
+                    var r = await _context.ExchangeRates.Where(p => p.CurrencyId == listItem.CompanyCurrencyId)
+                        .OrderByDescending(p => p.ClosingDate).FirstOrDefaultAsync();
+                    if (r != null)
+                    {
+                        listItem.AmountFpa = listItem.AmountFpa / r.Rate;
+                        listItem.AmountNet = listItem.AmountNet / r.Rate;
+                        listItem.AmountDiscount = listItem.AmountDiscount / r.Rate;
+                        listItem.TransFpaAmount = listItem.TransFpaAmount / r.Rate;
+                        listItem.TransNetAmount = listItem.TransNetAmount / r.Rate;
+                        listItem.TransDiscountAmount = listItem.TransDiscountAmount / r.Rate;
+
+                    }
+                }
+                if (request.DisplayCurrencyId != 1)
+                {
+                    var r = await _context.ExchangeRates.Where(p => p.CurrencyId == request.DisplayCurrencyId)
+                        .OrderByDescending(p => p.ClosingDate).FirstOrDefaultAsync();
+                    if (r != null)
+                    {
+                        listItem.AmountFpa = listItem.AmountFpa * r.Rate;
+                        listItem.AmountNet = listItem.AmountNet * r.Rate;
+                        listItem.AmountDiscount = listItem.AmountDiscount * r.Rate;
+                        listItem.TransFpaAmount = listItem.TransFpaAmount * r.Rate;
+                        listItem.TransNetAmount = listItem.TransNetAmount * r.Rate;
+                        listItem.TransDiscountAmount = listItem.TransDiscountAmount * r.Rate;
+
+                    }
+                }
+
+            }
             decimal sumAmountTotal = listItems.Sum(p => p.TotalAmount);
             decimal sumDebit = listItems.Sum(p => p.DebitAmount);
             decimal sumCredit = listItems.Sum(p => p.CreditAmount);
