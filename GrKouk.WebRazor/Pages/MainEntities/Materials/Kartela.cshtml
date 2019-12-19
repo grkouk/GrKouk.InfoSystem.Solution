@@ -75,6 +75,11 @@
                         <label name="PagingInfo"> </label>
 
                     </small>
+                    <div class="form-group col-md-auto">
+                        <label class="small"> Currency:</label>
+                        <select id="CurrencySelector" class="form-control form-control-sm small"
+                                asp-items="ViewBag.CurrencySelector"></select>
+                    </div>
                 </div>
             </div>
         </div>
@@ -209,7 +214,8 @@
             var $pageIndex = $('#pageIndex');
             var $pageSize = $('#PageSize');
             var $totalPages = $('#totalPages');
-            var $totalRecords = $('#totalRecords');
+              var $totalRecords = $('#totalRecords');
+            var currencyListJs = @Html.Raw(Json.Serialize(ViewBag.CurrencyListJs));
             //#endregion
             var reallyIsNaN = function(x) {
                 return x !== x;
@@ -265,7 +271,7 @@
                     $checkAllRows.prop('checked', false);
                 }
             };
-            var getTableData = (pageIndex, pageSize, sortData, dateRange, companyFilter,transactorTypeFilter,warehouseItemNatureFilter, searchFilter,transactorId,warehouseItemId) => {
+            var getTableData = (pageIndex, pageSize, sortData, dateRange, companyFilter,transactorTypeFilter,warehouseItemNatureFilter, searchFilter,transactorId,warehouseItemId,displayCurrencyId) => {
                 //#region getTableData
                 var timeout;
 
@@ -279,6 +285,7 @@
                 uri += `&sortData=${sortData}`;
                 uri += `&searchFilter=${searchFilter}`;
                 uri += `&warehouseItemId=${warehouseItemId}`;
+                uri += `&displayCurrencyId=${displayCurrencyId}`;
                 $.ajax({
                     contentType: 'application/json; charset=utf-8',
 
@@ -517,7 +524,11 @@
                 var warehouseItemId = $('#WarehouseItemId').val();
               //  var transactorTypeFilter = $('#TransactorTypeFilter').val();
                 //var warehouseItemNatureFilter = $('#WarehouseItemNatureFilter').val();
-                getTableData(pageIndex, pageSize, sortData,datePeriod , companyFilter, '','' ,searchVal,'',warehouseItemId);
+                var $dcId = $('#CurrencySelector');
+                var displayCurrencyId =$dcId.val() == null || $dcId.val().length == 0
+                    ? 1
+                    : parseInt($dcId.val());
+                getTableData(pageIndex, pageSize, sortData,datePeriod , companyFilter, '','' ,searchVal,'',warehouseItemId,displayCurrencyId);
 
             };
             var gotoFirstPage = () => {
@@ -700,12 +711,34 @@
                     $selectedRowsActionsMenu.attr('hidden', 'true');
                 }
             };
+
             $rowSelectorsToggle.on('click',
                 function() {
                     rosSelectorsToggleHandler();
                 });
 
+            var currencyChanged = () => {
+                let curCurrencySelected = parseInt($('#CurrencySelector').val());
 
+                var currencyCode;
+                try {
+                    currencyCode = currencyListJs.find(x => x.id === curCurrencySelected).code;
+                    formatterCurrency = new Intl.NumberFormat(currentCulture,
+                        {
+                            style: 'currency',
+                            currency: currencyCode,
+                            minimumFractionDigits: 2
+                        });
+                } catch (e) {
+                    //not found keep old formater or maybe create a default one
+                    console.log('Not found currency code for this id');
+                }
+            };
+            $('#CurrencySelector').on('change',
+                function() {
+                    currencyChanged();
+                    refreshTableData();
+                });
             $('#DatePeriodFilter').on('change',
                 function() {
                     $('#pageIndex').val(1);
@@ -859,8 +892,15 @@
                 $('#TransactorTypeFilter').val(filtersValue);
                 filtersValue = storageItem.find(x => x.filterKey === 'warehouseItemNatureFilter').filterValue;
                 $('#WarehouseItemNatureFilter').val(filtersValue);
+                try {
+                    filtersValue = storageItem.find(x => x.filterKey === 'currentCurrency').filterValue;
+                    $('#CurrencySelector').val(filtersValue);
+                } catch (e) {
+
+                }
             }
-            handleFiltersUi();
+              handleFiltersUi();
+            currencyChanged();
             refreshTableData();
 
             rowSelectorsUi();
@@ -881,7 +921,8 @@
                 var companyFilter = $('#CompanyFilter').val();
                 var pageIndex = $('#pageIndex').val();
                 var transactorTypeFilter = $('#TransactorTypeFilter').val();
-                var warehouseItemNatureFilter = $('#WarehouseItemNatureFilter').val();
+            var warehouseItemNatureFilter = $('#WarehouseItemNatureFilter').val();
+                var currentCurrency = $('#CurrencySelector').val();
                 var filtersArr = [];
                 //#endregion
                 filtersArr.push({
@@ -920,7 +961,10 @@
                     filterKey: 'warehouseItemNatureFilter',
                     filterValue: warehouseItemNatureFilter
                 });
-
+                filtersArr.push({
+                    filterKey: 'currentCurrency',
+                    filterValue: currentCurrency
+                });
                 var sessionVal = JSON.stringify(filtersArr);
 
                 localStorage.setItem('WarehouseAccountTab', sessionVal);

@@ -57,11 +57,11 @@
                     <div class="input-group input-group-sm">
                         <select asp-for="ItemVm.TransactorId" class="form-control form-control-sm small" asp-items="ViewBag.TransactorId"></select>
                         <div class="input-group-append" id="button-addon4">
-                            <button class="btn btn-outline-secondary" type="button">...</button>
-                           </div>
+                            <button class="btn btn-outline-secondary" data-toggle="modal" data-target="#itemSelector" data-selectorType="Suppliers" type="button">...</button>
+                        </div>
                     </div>
-                    
-                    
+
+
                 </div>
                 <div class="form-group col-md-3">
                     <label asp-for="ItemVm.CompanyId" class="control-label" small></label>
@@ -82,9 +82,9 @@
 
                     <label class="small">LookUp</label>
                     <div class="input-group input-group-sm">
-                        <input class="form-control form-control-sm small" style="font-size: 0.7rem" id="Lookup" />
+                        <input class="form-control form-control-sm " style="font-size: 0.7rem" id="Lookup" />
                         <div class="input-group-append" id="button-addon5">
-                            <button class="btn btn-outline-secondary btn-sm small" type="button">...</button>
+                            <button class="btn btn-outline-secondary btn-sm " data-toggle="modal" data-target="#itemSelector" data-selectorType="Products" style="font-size: 0.7rem" type="button"><i class="fab fa-asymmetrik"></i></button>
                         </div>
                     </div>
                     <span class="text-danger small"></span>
@@ -252,6 +252,99 @@
 <div>
     <a class="small" asp-page="Index">Back to List</a>
 </div>
+<!-- Modal Image Viewer -->
+<div class="modal fade" id="imageViewer" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
+    <div class="modal-dialog " role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="imageModalLabel">Image</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-center">
+                <img id="imageControl" src="" style="height:400px;width:400px;" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal product selector -->
+<div class="modal fade" id="itemSelector" tabindex="-1" role="dialog" aria-labelledby="itemsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" style="overflow-y: scroll; max-height:85%;  margin-top: 50px; margin-bottom:50px;" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="container-fluid">
+                    <div class="form-row">
+                        <div class="col-6">
+                            <p class="modal-title font-weight-bold" id="itemsModalLabel">Selector</p>
+                        </div>
+                        <div class="col-6 text-right">
+
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-10">
+                            @*<form class="form-inline">
+                            *@
+                            <input class="form-control form-control-sm" name="itemsSearchText" placeholder="Search text" type="text" />
+                            @*
+                                </form>*@
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body ">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-12">
+                            <table class="table table-bordered table-sm" id="selectorItemsList">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th class="small">
+                                            Product
+                                        </th>
+                                        <th class="small">
+                                            col 2
+                                        </th>
+                                        <th></th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade modal-topmost" id="loadMe" tabindex="-1" role="dialog" aria-labelledby="loadMeLabel">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-body text-center">
+                <div class="loader"></div>
+                <div>
+                    <p>Executing request. <br><small>Please wait...</small></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
@@ -310,9 +403,167 @@
             var $lookupValueValid = $("#LookupValueValid");
             var $materialFpaId = $('#MaterialFpaId');
             //#endregion
-            
-            //#region Initial values
 
+            //#region items selectors modals
+             var getProductsSelectorList = (searchFilter, pageSize) =>{
+                var timeout;
+                var pageIndex = 1;
+                var uri = '/api/GrKoukInfoApi/GetIndexTblDataWareHouseSelectorItems';
+                uri += `?pageIndex=${pageIndex}`;
+                uri += `&pageSize=${pageSize}`;
+
+                uri += `&searchFilter=${searchFilter}`;
+                $.ajax({
+                    contentType: 'application/json; charset=utf-8',
+
+                    dataType: 'json',
+                    type: 'GET',
+
+                    url: uri,
+                    beforeSend: function() {
+                        if (timeout) {
+                            clearTimeout(timeout);
+                        }
+                        timeout = setTimeout(function() {
+                                $("#loadMe").modal({
+                                    backdrop: "static",
+                                    keyboard: false,
+                                    show: true
+                                });
+                            },
+                            1000);
+                    },
+                    success: function(result) {
+                        $('#productsList > tbody').empty();
+                        $('#productsList > thead').empty();
+                        let colDefs = [
+                            {
+                                header: 'Code',
+                                text: '',
+                                class: 'small d-none d-md-table-cell'
+                            },
+                            {
+                                header: 'Product',
+                                text: '',
+                                class: 'small'
+                            },
+                            {
+                                header: 'Category',
+                                text: '',
+                                class: 'small d-none d-sm-table-cell'
+                            },
+                            {
+                                header: 'Nature',
+                                text: '',
+                                class: 'small'
+                            },
+                            {
+                                header: 'Company',
+                                text: '',
+                                class: 'small'
+                            }
+                        ];
+                        var $trHead = $('<tr>');
+                        colDefs.forEach(function(item) {
+                            var $tdColHead = $('<th>').text(item.header).addClass(item.class);
+                            $trHead.append($tdColHead);
+                        });
+                        $trHead.append($('<th>'));
+                        $trHead.appendTo('#productsList > thead');
+                        $.each(result.data,
+                            function(index, value) {
+                                colDefs[0].text = value.code;
+                                colDefs[1].text = value.name;
+                                colDefs[2].text = value.materialCateroryName;
+                                colDefs[3].text = value.warehouseItemNatureName;
+                                colDefs[4].text = value.companyCode;
+                                var itemId = value.id;
+                               // var urlDel = `@Url.Page("./Delete")?id=${itemId}`;
+
+                                var $tr = $('<tr>');
+
+                                colDefs.forEach(function(item) {
+                                    var $tdCol = $('<td>').text(item.text).addClass(item.class);
+                                    $tr.append($tdCol);
+
+                                });
+                                var actionsCol = '<td class="small text-center">';
+                                actionsCol += '<button type="button" class="btn btn-outline-info btn-sm" ';
+                                actionsCol += `data-itemId="${itemId}"`;
+                                actionsCol += 'name="selectItem">';
+                                actionsCol +=
+                                    '<span><i class="far fa-check-square fa-lg" style="color:slategray"></i></span>';
+                                actionsCol += '</button>';
+                                actionsCol += '</td>';
+
+                                $tr.append(actionsCol);
+                                $tr.appendTo('#productsList > tbody');
+
+                            });
+                        $('[name=selectItem]').on('click',
+                            function (event) {
+                                var button = $(event.delegateTarget);
+                                var productId = button.data('itemid');
+                                console.log('Inside click event handler for selectItem');
+                                if (mediaIds instanceof Array) {
+                                    if (mediaIds.length==1) {
+                                        assignMediaToProduct(mediaIds[0], productId);
+                                    }
+
+                                    $('#productSelector').modal('hide');
+                                    console.log("Passed array with length " + mediaIds.length);
+
+                                } else {
+                                    console.log("No media selected");
+
+                                }
+                            });
+                    },
+                    complete: function() {
+                        if (timeout) {
+                            clearTimeout(timeout);
+                        }
+                        $("#loadMe").modal("hide");
+                        setTimeout(function() {
+                                console.log('Checking for open modals');
+                                var isOpen = $('#loadMe').hasClass('show');
+                                if (isOpen) {
+                                    console.log('There is an open Modal');
+                                    $("#loadMe").modal("hide");
+                                } else {
+                                    console.log('No open modal');
+                                }
+                            },
+                            2000);
+                    },
+                    error: function(e) {
+                        console.log(e);
+
+                    }
+                });
+            };
+            $('#imageViewer').on('show.bs.modal',
+                function(event) {
+                    var button = $(event.relatedTarget);
+                    var imageUrl = button.data('imageurl');
+                    var $modal = $(this);
+                    $modal.find('.modal-title').text('Image');
+                    $modal.find('#imageControl').attr("src", imageUrl);
+                });
+            $('#itemSelector').on('show.bs.modal',
+                function (event) {
+                    var button = $(event.relatedTarget);
+                    var selectorType = button.data('selectorType');
+                    var modal = $(this);
+                    modal.find('.modal-title').text(selectorType);
+                    // var mediaId = button.data('mediaid');
+                    //mediaArr.length = 0;
+                    //var arr = [];
+                    //arr.push(mediaId);
+
+                    //mediaArr.push(mediaId);
+                    //getProductsSelectorList(mediaArr,'', 10);
+                });
             //#endregion
             var priceChanged = () => {
                 var priceValue =parseFloat( $price.val());
