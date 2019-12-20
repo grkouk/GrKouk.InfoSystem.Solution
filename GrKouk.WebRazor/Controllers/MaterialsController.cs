@@ -301,7 +301,7 @@ namespace GrKouk.WebRazor.Controllers
                     lastPrice = lastPrice,
                     priceNetto=p.PriceNetto,
                     priceBrutto=p.PriceBrutto,
-
+                    warehouseItemName=p.Name,
                     fpaRate = p.FpaDef.Rate
                 }).FirstOrDefaultAsync();
 

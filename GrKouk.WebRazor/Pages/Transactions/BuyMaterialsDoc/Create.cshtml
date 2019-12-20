@@ -205,7 +205,7 @@
                                                 $"<a data-itemId=\"0\" href=\"#\" class=\"modifyItem\"><i class=\"fas fa-edit\"></i></a></td>" +
                                                 $"<td class=\"small\">" +
                                                 $"<a data-itemId=\"0\" href=\"#\" class=\"deleteItem\"><i class=\"fas fa-trash\"></i></a></td></tr>";
-                                    @Html.Raw(tLine)
+                            @Html.Raw(tLine)
                                     ;
                                 }
                             }
@@ -278,7 +278,7 @@
     </div>
 </div>
 <!-- Modal product selector -->
-<div class="modal fade" id="itemSelector" tabindex="-1" role="dialog" aria-labelledby="itemsModalLabel" aria-hidden="true" data-keyboard="true">
+<div class="modal fade" id="itemSelector" tabindex="-1" role="dialog" aria-labelledby="itemsModalLabel" aria-hidden="true" data-keyboard="false">
     <div class="modal-dialog modal-dialog-centered modal-lg" style="overflow-y: scroll; max-height:75%;  margin-top: 50px; margin-bottom:50px;" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -307,7 +307,7 @@
                     <div class="form-row">
                         <div class="col-10">
                             <input class="form-control form-control-sm" name="itemsSearchText" placeholder="Search text" type="text" />
-                            
+
                         </div>
                         <div class="col-2">
                             <span class="spinner-border spinner-border-sm text-primary" id="SpinnerLoader" style="display: none"></span>
@@ -630,18 +630,9 @@
                                 var button = $(event.delegateTarget);
                                 var productId = button.data('itemid');
                                 console.log('Inside click event handler for selectItem');
-                                if (mediaIds instanceof Array) {
-                                    if (mediaIds.length==1) {
-                                        assignMediaToProduct(mediaIds[0], productId);
-                                    }
+                                getWarehouseItemInfo(productId);
+                                $('#itemSelector').modal('hide');
 
-                                    $('#productSelector').modal('hide');
-                                   
-
-                                } else {
-                                    console.log("No media selected");
-
-                                }
                             });
                     },
                     complete: function() {
@@ -655,7 +646,7 @@
                                 var isOpen = $('#SpinnerLoader').is(':visible');
                                 if (isOpen) {
                                     console.log('Spinner is showing');
-                                    
+
                                     $('#SpinnerLoader').hide();
                                 } else {
                                     console.log('No open modal');
@@ -682,8 +673,9 @@
             $('#itemSelector').on('shown.bs.modal', function() {
                 let currentCompany = $('#ItemVm_CompanyId').val();
                 var $compList = $('#CompaniesList');
-                $compList.val(currentCompany);
+                $compList.selectpicker('val',currentCompany);
                 $compList.selectpicker('render');
+                $('[name=itemsSearchText]').trigger('focus');
                 //$compList.selectpicker('refresh');
 
             });
@@ -693,7 +685,7 @@
                     var selectorType = button.data('selectortype');
                     var modal = $(this);
                     modal.find('.modal-title').text(selectorType);
-                
+
                     //$('.selectpicker').selectpicker();
                     var $matNatures = $('#MaterialNatureTypes');
                     if ($matNatures.children('option').length === 0) {
@@ -989,57 +981,61 @@
                 $amountSum.val(formatterCurrency.format(sumGross));
                 $amountSum.attr('data-actualValue', sumGross);
             };
+            var getWarehouseItemInfo = (itemId) => {
+                var uri = '@Configuration.GetSection("WebApiSettings")["WebApiLocal"]';
+                var finalUri = `${uri}/materials/materialdata?warehouseItemId=${itemId}`;
+                $materialId.val(itemId);
+                console.log(finalUri);
+
+                fetch(finalUri)
+                    .then(function(response) {
+                        if (response.ok) {
+                            return response.json();
+                        } else {
+                            return "";
+                        }
+
+                    })
+                    .then(function(myJson) {
+                        if (myJson) {
+                            console.log(JSON.stringify(myJson));
+                            var rate = myJson.fpaRate;
+                            var lastPrice = myJson.lastPrice;
+                            var fpaId = myJson.fpaId;
+                            //I Use main unit and Buy Unit as secondary
+                            $q1Label.text(`Q1(${myJson.mainUnitCode})`);
+                            $q2Label.text(`Q2(${myJson.buyUnitCode})`);
+                            $vatPercent.val(rate);
+                            $('#MaterialFpaId').val(fpaId);
+                            $price.val(lastPrice);
+                            $priceNet.val(lastPrice);
+                            $mainUnitId.val(myJson.mainUnitId);
+                            $secUnitId.val(myJson.buyUnitId);
+                            $factor.val(myJson.factorBuy);
+                            $discount.val('0');
+                            $lookUp.val(myJson.warehouseItemName);
+                            $lookupValueValid.val('OK');
+                        }
+                        else {
+                            $lookupValueValid.val('ERROR');
+                        }
+
+                    })
+                    .catch((error) => {
+                        $lookupValueValid.val('ERROR');
+                        console.log(error);
+                    });
+            };
             var autoCompleteNameDef = {
                  source: '/api/materials/SearchWarehouseItemsForBuy',
                 minLength: 2,
                 maxShowItems:10,
                 select: function(event, ui) {
-                    $materialId.val(ui.item.value);
+
                     console.log(ui.item.value.toString());
                     this.value = ui.item.label;
                     //Get WarehouseItem data
-                    var uri = '@Configuration.GetSection("WebApiSettings")["WebApiLocal"]';
-                    var finalUri = `${uri}/materials/materialdata?warehouseItemId=${ui.item.value}`;
-
-                    console.log(finalUri);
-
-                    fetch(finalUri)
-                        .then(function(response) {
-                            if (response.ok) {
-                                return response.json();
-                            } else {
-                                return "";
-                            }
-
-                        })
-                        .then(function(myJson) {
-                            if (myJson) {
-                                console.log(JSON.stringify(myJson));
-                                var rate = myJson.fpaRate;
-                                var lastPrice = myJson.lastPrice;
-                                var fpaId = myJson.fpaId;
-                                //I Use main unit and Buy Unit as secondary
-                                $q1Label.text(`Q1(${myJson.mainUnitCode})`);
-                                $q2Label.text(`Q2(${myJson.buyUnitCode})`);
-                                $vatPercent.val(rate);
-                                $('#MaterialFpaId').val(fpaId);
-                                $price.val(lastPrice);
-                                $priceNet.val(lastPrice);
-                                $mainUnitId.val(myJson.mainUnitId);
-                                $secUnitId.val(myJson.buyUnitId);
-                                $factor.val(myJson.factorBuy);
-                                $discount.val('0');
-                                $lookupValueValid.val('OK');
-                            }
-                            else {
-                                $lookupValueValid.val('ERROR');
-                            }
-
-                        })
-                        .catch((error) => {
-                            $lookupValueValid.val('ERROR');
-                            console.log(error);
-                        });
+                    getWarehouseItemInfo(ui.item.value);
                     return false;
                  }
 
