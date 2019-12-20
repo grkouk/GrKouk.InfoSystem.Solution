@@ -15,6 +15,7 @@ using GrKouk.InfoSystem.Dtos;
 using GrKouk.InfoSystem.Dtos.WebDtos;
 using GrKouk.InfoSystem.Dtos.WebDtos.BuyDocuments;
 using GrKouk.InfoSystem.Dtos.WebDtos.CashRegister;
+using GrKouk.InfoSystem.Dtos.WebDtos.Diaries;
 using GrKouk.InfoSystem.Dtos.WebDtos.DiaryTransactions;
 using GrKouk.InfoSystem.Dtos.WebDtos.Media;
 using GrKouk.InfoSystem.Dtos.WebDtos.ProductRecipies;
@@ -66,11 +67,11 @@ namespace GrKouk.WebRazor.Controllers
         [HttpGet("UnlinkProductImages")]
         public async Task<IActionResult> UnlinkProductImages(int ProductId)
         {
-            string message="";
+            string message = "";
             using (var transaction = _context.Database.BeginTransaction())
             {
                 var mediaToDelete = await _context.ProductMedia.Where(p => p.ProductId == ProductId).ToListAsync();
-                if (mediaToDelete.Count>0)
+                if (mediaToDelete.Count > 0)
                 {
                     foreach (var mediaItem in mediaToDelete)
                     {
@@ -79,13 +80,13 @@ namespace GrKouk.WebRazor.Controllers
 
                     try
                     {
-                        var mediaUnlinked =  await _context.SaveChangesAsync();
+                        var mediaUnlinked = await _context.SaveChangesAsync();
                         var ms = new StringBuilder()
                             .Append("Unlinking media successful")
                             .Append($"</br>Unlinked: {mediaUnlinked} media");
 
                         message = ms.ToString();
-                      
+
                         transaction.Commit();
                     }
                     catch (Exception e)
@@ -96,14 +97,14 @@ namespace GrKouk.WebRazor.Controllers
                             .Append("Unlinking media unsuccessful")
                             .Append($"</br> {e.Message}");
                         message = ms.ToString();
-                       
+
                     }
                 }
-                
-               
+
+
             }
 
-            return Ok(new { message=message  });
+            return Ok(new { message = message });
         }
         [HttpPost("DeleteBuyDocumentsList")]
         public async Task<IActionResult> DeleteBuyDocumentList([FromBody] IdList docIds)
@@ -166,7 +167,7 @@ namespace GrKouk.WebRazor.Controllers
             //var q = _context.FinDiaryTransactions.Include(p => p.Company)
             //    .ThenInclude(p => p.Currency)
             //    .ThenInclude(p => p.Rates.OrderByDescending(s => s.ClosingDate));
-            
+
             expensesIq = expensesIq.Include(f => f.Company)
                 .Include(f => f.CostCentre)
                 .Include(f => f.FinTransCategory)
@@ -230,7 +231,7 @@ namespace GrKouk.WebRazor.Controllers
             var listItems = await PagedList<FinDiaryExpenseTransactionDto>.CreateAsync(t, pageIndex, pageSize);
             foreach (var listItem in listItems)
             {
-                if (listItem.CompanyCurrencyId!=1)
+                if (listItem.CompanyCurrencyId != 1)
                 {
                     var r = await _context.ExchangeRates.Where(p => p.CurrencyId == listItem.CompanyCurrencyId)
                         .OrderByDescending(p => p.ClosingDate).FirstOrDefaultAsync();
@@ -241,7 +242,7 @@ namespace GrKouk.WebRazor.Controllers
                         listItem.AmountTotal = listItem.AmountTotal / r.Rate;
                     }
                 }
-                if (request.DisplayCurrencyId!=1)
+                if (request.DisplayCurrencyId != 1)
                 {
                     var r = await _context.ExchangeRates.Where(p => p.CurrencyId == request.DisplayCurrencyId)
                         .OrderByDescending(p => p.ClosingDate).FirstOrDefaultAsync();
@@ -252,7 +253,7 @@ namespace GrKouk.WebRazor.Controllers
                         listItem.AmountTotal = listItem.AmountTotal * r.Rate;
                     }
                 }
-               
+
             }
             decimal sumAmountTotal = listItems.Sum(p => p.AmountTotal);
 
@@ -268,6 +269,42 @@ namespace GrKouk.WebRazor.Controllers
             return Ok(response);
         }
 
+        [HttpGet("GetSelectorTransactorTypes")]
+        public async Task<ActionResult<IList<UISelectTypeItem>>> GetSelectorTransactorTypes()
+        {
+            var transactorTypeList = await _context.TransactorTypes.OrderBy(p => p.Name)
+                .Select(p => new UISelectTypeItem()
+                {
+                    Title = p.Name,
+                    Value = p.Id.ToString()
+                }).ToListAsync();
+            return Ok(transactorTypeList);
+        }
+        [HttpGet("GetSelectorMaterialNatures")]
+        public ActionResult<IList<UISelectTypeItem>> GetSelectorMaterialNatures()
+        {
+            var materialNatureList = Enum.GetValues(typeof(WarehouseItemNatureEnum))
+                .Cast<WarehouseItemNatureEnum>()
+                .Select(c => new UISelectTypeItem()
+                {
+                    ValueInt = (int)c,
+                    Title = c.GetDescription()
+                }).ToList();
+
+            return Ok(materialNatureList);
+        }
+        [HttpGet("GetSelectorCompanies")]
+        public ActionResult<IList<UISelectTypeItem>> GetSelectorCompanies()
+        {
+            var dbCompanies = _context.Companies.Where(t => t.Id != 1).OrderBy(p => p.Code).AsNoTracking();
+            List<UISelectTypeItem> companiesList = new List<UISelectTypeItem>();
+            //companiesList.Add(new UISelectTypeItem() { Value = 0.ToString(), Text = "{All Companies}" });
+            foreach (var company in dbCompanies)
+            {
+                companiesList.Add(new UISelectTypeItem() { Value = company.Id.ToString(), Title = company.Code });
+            }
+            return Ok(companiesList);
+        }
         [HttpGet("GetIndexTblDataBuyDocuments")]
         public async Task<IActionResult> GetIndexTblDataBuyDocuments([FromQuery] IndexDataTableRequest request)
         {
@@ -708,7 +745,7 @@ namespace GrKouk.WebRazor.Controllers
                 }
 
             }
-          
+
             decimal sumImportVolume = listItems.Sum(p => p.ImportUnits);
             decimal sumImportValue = listItems.Sum(p => p.ImportAmount);
             decimal sumExportVolume = listItems.Sum(p => p.ExportUnits);
@@ -723,10 +760,10 @@ namespace GrKouk.WebRazor.Controllers
                 SumImportValue = sumImportValue,
                 SumExportVolume = sumExportVolume,
                 SumExportValue = sumExportValue,
-               
+
                 Data = listItems
             };
-            
+
             return Ok(response);
         }
         [HttpGet("GetIndexTblDataTransactorsBalance")]
@@ -777,7 +814,7 @@ namespace GrKouk.WebRazor.Controllers
             var dbTransactions = dbTrans.GroupBy(g => new
             {
 
-              
+
                 g.CompanyCode,
                 g.CompanyCurrencyId,
                 g.TransactorId
@@ -785,7 +822,9 @@ namespace GrKouk.WebRazor.Controllers
                 )
                 .Select(s => new TransactorIsozygioItem
                 {
-                    Id = s.Key.TransactorId, TransactorName = "", CompanyCode = s.Key.CompanyCode,
+                    Id = s.Key.TransactorId,
+                    TransactorName = "",
+                    CompanyCode = s.Key.CompanyCode,
                     CompanyCurrencyId = s.Key.CompanyCurrencyId,
                     DebitAmount = s.Sum(x => x.DebitAmount),
                     CreditAmount = s.Sum(x => x.CreditAmount)
@@ -978,7 +1017,9 @@ namespace GrKouk.WebRazor.Controllers
                 )
                 .Select(s => new WarehouseIsozygioItem
                 {
-                    Id = s.Key.WarehouseItemId, MaterialName = "", CompanyId = s.Key.CompanyId,
+                    Id = s.Key.WarehouseItemId,
+                    MaterialName = "",
+                    CompanyId = s.Key.CompanyId,
                     CompanyCode = s.Key.CompanyCode,
                     CompanyCurrencyId = s.Key.CompanyCurrencyId,
                     ImportVolume = s.Sum(x => x.ImportUnits),
@@ -997,7 +1038,7 @@ namespace GrKouk.WebRazor.Controllers
                     {
                         listItem.ImportValue /= r.Rate;
                         listItem.ExportValue /= r.Rate;
-                       
+
                     }
                 }
                 if (request.DisplayCurrencyId != 1)
@@ -1008,7 +1049,7 @@ namespace GrKouk.WebRazor.Controllers
                     {
                         listItem.ImportValue *= r.Rate;
                         listItem.ExportValue *= r.Rate;
-                       
+
                     }
                 }
 
@@ -1148,7 +1189,7 @@ namespace GrKouk.WebRazor.Controllers
         [HttpGet("GetIndexTblDataTransactors")]
         public async Task<IActionResult> GetIndexTblDataTransactors([FromQuery] IndexDataTableRequest request)
         {
-            IQueryable<Transactor> fullListIq = _context.Transactors.Include(p=>p.TransactorCompanyMappings);
+            IQueryable<Transactor> fullListIq = _context.Transactors.Include(p => p.TransactorCompanyMappings);
             int transactorTypeId = 0;
             if (!String.IsNullOrEmpty(request.TransactorTypeFilter))
             {
@@ -1182,27 +1223,16 @@ namespace GrKouk.WebRazor.Controllers
                 {
                     if (companyId > 0)
                     {
-                        var allCompaniesEntity = await _context.Companies.SingleOrDefaultAsync(s => s.Code=="ALLCOMP");
+                        var allCompaniesEntity = await _context.Companies.SingleOrDefaultAsync(s => s.Code == "ALLCOMP");
                         if (allCompaniesEntity != null)
                         {
                             var allCompaniesId = allCompaniesEntity.Id;
-                            //var cmp= new TransactorCompanyMapping()
-                            //{
-                            //    CompanyId = companyId
-                            //};
-                            //IEqualityComparer<TransactorCompanyMapping> cmComparer = new TransCompMappingEq();
-
-                            //fullListIq=fullListIq.Where(p => p.TransactorCompanyMappings.Contains(cmp, cmComparer));
-
-                            fullListIq = fullListIq.Where(t => t.TransactorCompanyMappings.Any( p=>p.CompanyId== companyId|| p.CompanyId==allCompaniesId));
+                            fullListIq = fullListIq.Where(t => t.TransactorCompanyMappings.Any(p => p.CompanyId == companyId || p.CompanyId == allCompaniesId));
                         }
                         else
                         {
-                            fullListIq = fullListIq.Where(t => t.TransactorCompanyMappings.Any(p => p.CompanyId == companyId ));
-                            //fullListIq = fullListIq.Where(p => p.CompanyId == companyId);
+                            fullListIq = fullListIq.Where(t => t.TransactorCompanyMappings.Any(p => p.CompanyId == companyId));
                         }
-
-                        
                     }
                 }
             }
@@ -1309,7 +1339,7 @@ namespace GrKouk.WebRazor.Controllers
                             fullListIq = fullListIq.Where(p => p.CompanyId == companyId);
                         }
 
-                        
+
                     }
                 }
             }
@@ -1379,6 +1409,140 @@ namespace GrKouk.WebRazor.Controllers
             };
             return Ok(response);
         }
+        [HttpGet("GetSelectorWareHouseItems")]
+        public async Task<IActionResult> GetSelectorWareHouseItems([FromQuery] IndexDataTableRequest request)
+        {
+            //Thread.Sleep(10000);
+            IQueryable<WarehouseItem> fullListIq = _context.WarehouseItems;
+
+            if (!String.IsNullOrEmpty(request.WarehouseItemNatureFilter))
+            {
+                try
+                {
+                    var naturesList = request.WarehouseItemNatureFilter.Split(',')
+                        .Where(m => int.TryParse(m, out int _))
+                        .Select(m => int.Parse(m))
+                        .ToList();
+                    //var naturesList = Array.ConvertAll(request.WarehouseItemNatureFilter.Split(","), int.Parse);
+                    if (naturesList.Count > 0)
+                    {
+                        fullListIq = fullListIq.Where(p => naturesList.Contains((int)p.WarehouseItemNature));
+                    }
+
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+
+                }
+
+            }
+            if (!String.IsNullOrEmpty(request.SortData))
+            {
+                switch (request.SortData.ToLower())
+                {
+
+                    case "namesort:asc":
+                        fullListIq = fullListIq.OrderBy(p => p.Name);
+                        break;
+                    case "namesort:desc":
+                        fullListIq = fullListIq.OrderByDescending(p => p.Name);
+                        break;
+                    case "codesort:asc":
+                        fullListIq = fullListIq.OrderBy(p => p.Code);
+                        break;
+                    case "codesort:desc":
+                        fullListIq = fullListIq.OrderByDescending(p => p.Code);
+                        break;
+                    case "categorysort:asc":
+                        fullListIq = fullListIq.OrderBy(p => p.MaterialCaterory.Name);
+                        break;
+                    case "categorysort:desc":
+                        fullListIq = fullListIq.OrderByDescending(p => p.MaterialCaterory.Name);
+                        break;
+                }
+            }
+
+            if (!String.IsNullOrEmpty(request.CompanyFilter))
+            {
+
+                var tagIds = new List<int>(request.CompanyFilter.Split(',').Select(s => int.Parse(s)));
+                // var companiesList = Array.ConvertAll(request.CompanyFilter.Split(","), int.Parse);
+                var allCompaniesEntity = await _context.Companies.SingleOrDefaultAsync(s => s.Code == "ALLCOMP");
+
+                if (allCompaniesEntity != null)
+                {
+                    var allCompaniesId = allCompaniesEntity.Id;
+                    tagIds.Add(allCompaniesId);
+                }
+
+                fullListIq = fullListIq.Where(p => tagIds.Contains(p.CompanyId));
+            }
+            if (!String.IsNullOrEmpty(request.SearchFilter))
+            {
+                fullListIq = fullListIq.Where(p => p.Name.Contains(request.SearchFilter)
+                                                   || p.Code.Contains(request.SearchFilter)
+                                                   || p.ShortDescription.Contains(request.SearchFilter)
+                                                   || p.Description.Contains(request.SearchFilter)
+                                                   || p.MaterialCaterory.Name.Contains(request.SearchFilter));
+            }
+
+            PagedList<WarehouseItemListDto> listItems;
+            try
+            {
+                var projectedList = fullListIq.ProjectTo<WarehouseItemListDto>(_mapper.ConfigurationProvider);
+                var pageIndex = request.PageIndex;
+
+                var pageSize = request.PageSize;
+
+                listItems = await PagedList<WarehouseItemListDto>.CreateAsync(projectedList, pageIndex, pageSize);
+            }
+            catch (Exception e)
+            {
+                string msg=String.Empty;
+                if (e.InnerException!=null)
+                {
+                    msg = e.InnerException.Message;
+                }
+                
+                return BadRequest(new
+                {
+                    error = e.Message + " " + msg
+                });
+
+            }
+            foreach (var productItem in listItems)
+            {
+
+                ProductMedia productMedia;
+
+                try
+                {
+                    productMedia = await _context.ProductMedia
+                        .Include(p => p.MediaEntry)
+                        .SingleOrDefaultAsync(p => p.ProductId == productItem.Id);
+                    productItem.Url = productMedia != null ? Url.Content("~/productimages/" + productMedia.MediaEntry.MediaFile) : Url.Content("~/productimages/" + "noimage.jpg");
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    productItem.Url = Url.Content("~/productimages/" + "noimage.jpg");
+                }
+
+            }
+
+            var response = new IndexDataTableResponse<WarehouseItemListDto>
+            {
+                TotalRecords = listItems.TotalCount,
+                TotalPages = listItems.TotalPages,
+                HasPrevious = listItems.HasPrevious,
+                HasNext = listItems.HasNext,
+                // Diaries = relevantDiarys,
+                Data = listItems
+            };
+            return Ok(response);
+        }
+
         [HttpGet("GetIndexTblDataWareHouseSelectorItems")]
         public async Task<IActionResult> GetIndexTblDataWareHouseSelectorItems([FromQuery] IndexDataTableRequest request)
         {
@@ -1822,10 +1986,10 @@ namespace GrKouk.WebRazor.Controllers
                     beforePeriod.RunningTotal = bl1.Debit - bl1.Credit;
                     break;
                 case "SYS.SUPPLIER":
-                    beforePeriod.RunningTotal = bl1.Credit - bl1.Debit ;
+                    beforePeriod.RunningTotal = bl1.Credit - bl1.Debit;
                     break;
                 default:
-                    beforePeriod.RunningTotal = bl1.Credit - bl1.Debit ;
+                    beforePeriod.RunningTotal = bl1.Credit - bl1.Debit;
                     break;
             }
             beforePeriod.TransDate = beforePeriodDate;
@@ -1836,7 +2000,7 @@ namespace GrKouk.WebRazor.Controllers
             listWithTotal.Add(beforePeriod);
 
             //----------------------------------------------------
-           
+
 
             decimal runningTotal = beforePeriod.RunningTotal;
             foreach (var dbTransaction in dbTransactions)
