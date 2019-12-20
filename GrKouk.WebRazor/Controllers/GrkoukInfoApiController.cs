@@ -276,6 +276,7 @@ namespace GrKouk.WebRazor.Controllers
                 .Select(p => new UISelectTypeItem()
                 {
                     Title = p.Name,
+                    ValueInt = p.Id,
                     Value = p.Id.ToString()
                 }).ToListAsync();
             return Ok(transactorTypeList);
