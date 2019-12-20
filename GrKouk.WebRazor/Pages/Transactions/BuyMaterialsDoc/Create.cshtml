@@ -424,7 +424,7 @@
             $.fn.selectpicker.Constructor.BootstrapVersion = '4';
             var selectedCompanies="";
             var selectedNatures = "";
-            $('.selectpicker').selectpicker();
+            //$('.selectpicker').selectpicker();
             var getWarehouseItemNatureList = () => {
                  var timeout;
                 var pageIndex = 1;
@@ -624,6 +624,7 @@
                                 $tr.appendTo('#selectorItemsList > tbody');
 
                             });
+
                         $('[name=selectItem]').on('click',
                             function (event) {
                                 var button = $(event.delegateTarget);
@@ -635,7 +636,7 @@
                                     }
 
                                     $('#productSelector').modal('hide');
-                                    console.log("Passed array with length " + mediaIds.length);
+                                   
 
                                 } else {
                                     console.log("No media selected");
@@ -678,39 +679,32 @@
                     $modal.find('.modal-title').text('Image');
                     $modal.find('#imageControl').attr("src", imageUrl);
                 });
+            $('#itemSelector').on('shown.bs.modal', function() {
+                let currentCompany = $('#ItemVm_CompanyId').val();
+                var $compList = $('#CompaniesList');
+                $compList.val(currentCompany);
+                $compList.selectpicker('render');
+                //$compList.selectpicker('refresh');
+
+            });
             $('#itemSelector').on('show.bs.modal',
                 function (event) {
                     var button = $(event.relatedTarget);
                     var selectorType = button.data('selectortype');
                     var modal = $(this);
                     modal.find('.modal-title').text(selectorType);
-                    let currentCompany = $('#ItemVm_CompanyId').val();
+                
                     //$('.selectpicker').selectpicker();
                     var $matNatures = $('#MaterialNatureTypes');
-                    if ($matNatures.children('option').length == 0) {
+                    if ($matNatures.children('option').length === 0) {
                         getWarehouseItemNatureList();
 
                     }
                     var $compList = $('#CompaniesList');
-                    if ($compList.children('option').length == 0) {
+                    if ($compList.children('option').length === 0) {
                         getCompanyList();
 
                     }
-
-                   // $compList.selectpicker('val', currentCompany);
-                    $compList.val(currentCompany);
-                    $compList.selectpicker('render');
-
-                    // var mediaId = button.data('mediaid');
-                    //mediaArr.length = 0;
-                    //var arr = [];
-                    //arr.push(mediaId);
-
-                    //mediaArr.push(mediaId);
-                    //getProductsSelectorList(mediaArr,'', 10);
-
-
-
                 });
 
             $('#MaterialNatureTypes').on('changed.bs.select', function (e, clickedIndex, isSelected, previousValue) {
