@@ -37,8 +37,8 @@ namespace GrKouk.InfoSystem.Domain.Shared
 
         public int TransactorTypeId { get; set; }
         public TransactorType TransactorType { get; set; }
-        public int CompanyId { get; set; }
-        public virtual Company Company { get; set; }
+        //public int CompanyId { get; set; }
+       // public virtual Company Company { get; set; }
 
         public ICollection<TransactorCompanyMapping> TransactorCompanyMappings
         {

@@ -1410,6 +1410,91 @@ namespace GrKouk.WebRazor.Controllers
             };
             return Ok(response);
         }
+        [HttpGet("GetSelectorTransactors")]
+        public async Task<IActionResult> GetSelectorTransactors([FromQuery] IndexDataTableRequest request)
+        {
+            IQueryable<Transactor> fullListIq = _context.Transactors.Include(p => p.TransactorCompanyMappings);
+
+            try
+            {
+                var transactorType = request.TransactorTypeFilter.Split(',')
+                    .Where(m => int.TryParse(m, out int _))
+                    .Select(m => int.Parse(m))
+                    .ToList();
+                if (transactorType.Count > 0)
+                {
+                    fullListIq = fullListIq.Where(p => transactorType.Contains((int)p.TransactorTypeId));
+                }
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+            if (!String.IsNullOrEmpty(request.SortData))
+            {
+                switch (request.SortData.ToLower())
+                {
+
+                    case "transactorname:asc":
+                        fullListIq = fullListIq.OrderBy(p => p.Name);
+                        break;
+                    case "transactorname:desc":
+                        fullListIq = fullListIq.OrderByDescending(p => p.Name);
+                        break;
+
+                }
+            }
+            if (!String.IsNullOrEmpty(request.CompanyFilter))
+            {
+
+                var tagIds = request.CompanyFilter.Split(',')
+                    .Where(m => int.TryParse(m, out int _))
+                    .Select(s => int.Parse(s))
+                    .ToList();
+                // var companiesList = Array.ConvertAll(request.CompanyFilter.Split(","), int.Parse);
+                var allCompaniesEntity = await _context.Companies.SingleOrDefaultAsync(s => s.Code == "ALLCOMP");
+
+                if (allCompaniesEntity != null)
+                {
+                    var allCompaniesId = allCompaniesEntity.Id;
+                    tagIds.Add(allCompaniesId);
+                }
+
+                fullListIq = fullListIq.Where(p => p.TransactorCompanyMappings.Any(t=>tagIds.Contains(t.CompanyId)));
+            }
+            
+            if (!String.IsNullOrEmpty(request.SearchFilter))
+            {
+                fullListIq = fullListIq.Where(p => p.Name.Contains(request.SearchFilter)
+                                                   || p.EMail.Contains(request.SearchFilter)
+                                                   || p.Address.Contains(request.SearchFilter)
+                                                   || p.City.Contains(request.SearchFilter)
+                                                   || p.PhoneFax.Contains(request.SearchFilter)
+                                                   || p.PhoneMobile.Contains(request.SearchFilter)
+                                                   || p.PhoneWork.Contains(request.SearchFilter));
+            }
+            var projectedList = fullListIq.ProjectTo<TransactorListDto>(_mapper.ConfigurationProvider);
+            var pageIndex = request.PageIndex;
+
+            var pageSize = request.PageSize;
+
+            var listItems = await PagedList<TransactorListDto>.CreateAsync(projectedList, pageIndex, pageSize);
+
+           
+
+            var response = new IndexDataTableResponse<TransactorListDto>
+            {
+                TotalRecords = listItems.TotalCount,
+                TotalPages = listItems.TotalPages,
+                HasPrevious = listItems.HasPrevious,
+                HasNext = listItems.HasNext,
+               // Diaries = relevantDiarys,
+                Data = listItems
+            };
+            return Ok(response);
+        }
+
         [HttpGet("GetSelectorWareHouseItems")]
         public async Task<IActionResult> GetSelectorWareHouseItems([FromQuery] IndexDataTableRequest request)
         {
@@ -1483,9 +1568,11 @@ namespace GrKouk.WebRazor.Controllers
             {
                 fullListIq = fullListIq.Where(p => p.Name.Contains(request.SearchFilter)
                                                    || p.Code.Contains(request.SearchFilter)
-                                                   || p.ShortDescription.Contains(request.SearchFilter)
-                                                   || p.Description.Contains(request.SearchFilter)
-                                                   || p.MaterialCaterory.Name.Contains(request.SearchFilter));
+                                                   || p.WarehouseItemCodes.Any(t=>t.Code==request.SearchFilter)
+                                                  // || p.ShortDescription.Contains(request.SearchFilter)
+                                                  // || p.Description.Contains(request.SearchFilter)
+                                                   //|| p.MaterialCaterory.Name.Contains(request.SearchFilter)
+                                                   );
             }
 
             PagedList<WarehouseItemListDto> listItems;

@@ -1549,15 +1549,11 @@ namespace GrKouk.WebApi.Migrations
 
                     b.Property<int>("TransactorId");
 
-                    b.Property<int?>("WarehouseItemId1");
-
                     b.HasKey("CodeType", "WarehouseItemId", "Code");
 
                     b.HasIndex("Code");
 
                     b.HasIndex("WarehouseItemId");
-
-                    b.HasIndex("WarehouseItemId1");
 
                     b.ToTable("WarehouseItemsCodes");
                 });
@@ -2165,13 +2161,9 @@ namespace GrKouk.WebApi.Migrations
             modelBuilder.Entity("GrKouk.InfoSystem.Domain.Shared.WarehouseItemCode", b =>
                 {
                     b.HasOne("GrKouk.InfoSystem.Domain.Shared.WarehouseItem", "WarehouseItem")
-                        .WithMany()
+                        .WithMany("WarehouseItemCodes")
                         .HasForeignKey("WarehouseItemId")
                         .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("GrKouk.InfoSystem.Domain.Shared.WarehouseItem")
-                        .WithMany("WarehouseItemCodes")
-                        .HasForeignKey("WarehouseItemId1");
                 });
 
             modelBuilder.Entity("GrKouk.InfoSystem.Domain.Shared.WarehouseTransaction", b =>

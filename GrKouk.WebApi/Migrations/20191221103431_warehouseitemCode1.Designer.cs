@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GrKouk.WebApi.Migrations
 {
     [DbContext(typeof(ApiDbContext))]
-    [Migration("20191221084911_warehouseCodeWarehouse")]
-    partial class warehouseCodeWarehouse
+    [Migration("20191221103431_warehouseitemCode1")]
+    partial class warehouseitemCode1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -1551,15 +1551,11 @@ namespace GrKouk.WebApi.Migrations
 
                     b.Property<int>("TransactorId");
 
-                    b.Property<int?>("WarehouseItemId1");
-
                     b.HasKey("CodeType", "WarehouseItemId", "Code");
 
                     b.HasIndex("Code");
 
                     b.HasIndex("WarehouseItemId");
-
-                    b.HasIndex("WarehouseItemId1");
 
                     b.ToTable("WarehouseItemsCodes");
                 });
@@ -2167,13 +2163,9 @@ namespace GrKouk.WebApi.Migrations
             modelBuilder.Entity("GrKouk.InfoSystem.Domain.Shared.WarehouseItemCode", b =>
                 {
                     b.HasOne("GrKouk.InfoSystem.Domain.Shared.WarehouseItem", "WarehouseItem")
-                        .WithMany()
+                        .WithMany("WarehouseItemCodes")
                         .HasForeignKey("WarehouseItemId")
                         .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("GrKouk.InfoSystem.Domain.Shared.WarehouseItem")
-                        .WithMany("WarehouseItemCodes")
-                        .HasForeignKey("WarehouseItemId1");
                 });
 
             modelBuilder.Entity("GrKouk.InfoSystem.Domain.Shared.WarehouseTransaction", b =>

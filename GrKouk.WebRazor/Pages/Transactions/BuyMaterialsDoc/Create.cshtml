@@ -719,13 +719,13 @@
                 });
             };
 
-             var getTransactorSelectorList = (selCompanies,selNatures,searchFilter, pageSize) =>{
+             var getTransactorSelectorList = (selCompanies,selTransTypes,searchFilter, pageSize) =>{
                 var timeout;
                 var pageIndex = 1;
-                var uri = '/api/GrKoukInfoApi/GetSelectorWareHouseItems';
+                var uri = '/api/GrKoukInfoApi/GetSelectorTransactors';
                 uri += `?pageIndex=${pageIndex}`;
                 uri += `&pageSize=${pageSize}`;
-                uri += `&warehouseItemNatureFilter=${selNatures}`;
+                uri += `&transactorTypeFilter=${selTransTypes}`;
                 uri += `&companyFilter=${selCompanies}`;
                 uri += `&searchFilter=${searchFilter}`;
                 $.ajax({
@@ -760,13 +760,13 @@
                                 class: 'small d-none d-md-table-cell'
                             },
                             {
-                                header: 'Product',
+                                header: 'Transactor',
                                 text: '',
                                 class: 'small'
                             },
 
                             {
-                                header: 'Nature',
+                                header: 'Type',
                                 text: '',
                                 class: 'small'
                             },
@@ -789,7 +789,7 @@
                                 colDefs[0].text = value.code;
                                 colDefs[1].text = value.name;
                                 //colDefs[2].text = value.materialCateroryName;
-                                colDefs[2].text = value.warehouseItemNatureName;
+                                colDefs[2].text = value.TransactorTypeName;
                                 colDefs[3].text = value.companyCode;
                                 var itemId = value.id;
                                // var urlDel = `@Url.Page("./Delete")?id=${itemId}`;

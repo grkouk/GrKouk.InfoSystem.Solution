@@ -76,11 +76,11 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Transactors
                             TransactorId = transactorToAdd.Id
                         });
                         //TODO: remove when companyid column removed for transactor entity
-                        if (fl)
-                        {
-                            transactorToAdd.CompanyId = companyId;
-                            fl = false;
-                        }
+                        //if (fl)
+                        //{
+                        //    transactorToAdd.CompanyId = companyId;
+                        //    fl = false;
+                        //}
                         
                     }
                 }
