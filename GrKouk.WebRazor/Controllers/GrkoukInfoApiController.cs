@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -20,6 +21,7 @@ using GrKouk.InfoSystem.Dtos.WebDtos.DiaryTransactions;
 using GrKouk.InfoSystem.Dtos.WebDtos.Media;
 using GrKouk.InfoSystem.Dtos.WebDtos.ProductRecipies;
 using GrKouk.InfoSystem.Dtos.WebDtos.SellDocuments;
+using GrKouk.InfoSystem.Dtos.WebDtos.Transactors;
 using GrKouk.InfoSystem.Dtos.WebDtos.TransactorTransactions;
 using GrKouk.InfoSystem.Dtos.WebDtos.WarehouseItems;
 using GrKouk.InfoSystem.Dtos.WebDtos.WarehouseTransactions;
@@ -1190,7 +1192,28 @@ namespace GrKouk.WebRazor.Controllers
         [HttpGet("GetIndexTblDataTransactors")]
         public async Task<IActionResult> GetIndexTblDataTransactors([FromQuery] IndexDataTableRequest request)
         {
-            IQueryable<Transactor> fullListIq = _context.Transactors.Include(p => p.TransactorCompanyMappings);
+            //IQueryable<Transactor> fullListIq = _context.Transactors.Include(p => p.TransactorCompanyMappings)
+            //    .ThenInclude(p=>p.Company);
+            var fullListIq = _context.TransactorCompanyMappings
+                .Select(t => new TransactorBigClass
+                {
+                    Id=t.Transactor.Id,
+                    Code=t.Transactor.Code,
+                    Name=t.Transactor.Name,
+                    Address = t.Transactor.Address,
+                    City = t.Transactor.City,
+                    Zip = t.Transactor.Zip,
+                    PhoneWork = t.Transactor.PhoneWork,
+                    PhoneMobile = t.Transactor.PhoneMobile,
+                    PhoneFax = t.Transactor.PhoneFax,
+                    TransactorTypeId = t.Transactor.TransactorTypeId,
+                    TransactorTypeCode = t.Transactor.TransactorType.Code,
+                    TransactorTypeName = t.Transactor.TransactorType.Name,
+                    CompanyId = t.Company.Id,
+                    CompanyCode = t.Company.Code
+                });
+
+
             int transactorTypeId = 0;
             if (!String.IsNullOrEmpty(request.TransactorTypeFilter))
             {
@@ -1228,11 +1251,13 @@ namespace GrKouk.WebRazor.Controllers
                         if (allCompaniesEntity != null)
                         {
                             var allCompaniesId = allCompaniesEntity.Id;
-                            fullListIq = fullListIq.Where(t => t.TransactorCompanyMappings.Any(p => p.CompanyId == companyId || p.CompanyId == allCompaniesId));
+                            //fullListIq = fullListIq.Where(t => t.TransactorCompanyMappings.Any(p => p.CompanyId == companyId || p.CompanyId == allCompaniesId));
+                            fullListIq = fullListIq.Where(t => t.CompanyId == companyId || t.CompanyId == allCompaniesId);
                         }
                         else
                         {
-                            fullListIq = fullListIq.Where(t => t.TransactorCompanyMappings.Any(p => p.CompanyId == companyId));
+                            //fullListIq = fullListIq.Where(t => t.TransactorCompanyMappings.Any(p => p.CompanyId == companyId));
+                            fullListIq = fullListIq.Where(t => t.CompanyId == companyId );
                         }
                     }
                 }
@@ -1247,7 +1272,22 @@ namespace GrKouk.WebRazor.Controllers
                                                    || p.PhoneMobile.Contains(request.SearchFilter)
                                                    || p.PhoneWork.Contains(request.SearchFilter));
             }
-            var projectedList = fullListIq.ProjectTo<TransactorListDto>(_mapper.ConfigurationProvider);
+
+            //var testList = fullListIq.ToList();
+            var projectedList = fullListIq.GroupBy(g => new
+                {
+                    g.Id, g.Name, g.Code, g.EMail, g.TransactorTypeCode
+                })
+                .Select(f => new TransactorListDto
+                {
+                    Id = f.Key.Id,
+                    Name = f.Key.Name,
+                    Code = f.Key.Code,
+                    TransactorTypeCode = f.Key.TransactorTypeCode,
+                    EMail = f.Key.EMail,
+                    CompanyCode = String.Join(",",f.Select(n=>n.CompanyCode))
+                });
+            //var projectedList = fullListIq.ProjectTo<TransactorListDto>(_mapper.ConfigurationProvider);
             var pageIndex = request.PageIndex;
 
             var pageSize = request.PageSize;

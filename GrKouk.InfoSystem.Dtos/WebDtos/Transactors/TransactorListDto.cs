@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Text;
-using GrKouk.InfoSystem.Domain.Shared;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace GrKouk.InfoSystem.Dtos.WebDtos
+namespace GrKouk.InfoSystem.Dtos.WebDtos.Transactors
 {
     public class TransactorListDto
     {
