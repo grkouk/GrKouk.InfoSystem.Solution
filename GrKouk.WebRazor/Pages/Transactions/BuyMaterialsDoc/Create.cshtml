@@ -719,7 +719,137 @@
                 });
             };
 
+             var getTransactorSelectorList = (selCompanies,selNatures,searchFilter, pageSize) =>{
+                var timeout;
+                var pageIndex = 1;
+                var uri = '/api/GrKoukInfoApi/GetSelectorWareHouseItems';
+                uri += `?pageIndex=${pageIndex}`;
+                uri += `&pageSize=${pageSize}`;
+                uri += `&warehouseItemNatureFilter=${selNatures}`;
+                uri += `&companyFilter=${selCompanies}`;
+                uri += `&searchFilter=${searchFilter}`;
+                $.ajax({
+                    contentType: 'application/json; charset=utf-8',
 
+                    dataType: 'json',
+                    type: 'GET',
+
+                    url: uri,
+                    beforeSend: function() {
+                        if (timeout) {
+                            clearTimeout(timeout);
+                        }
+                        timeout = setTimeout(function() {
+                                $('#SpinnerLoader').show();
+
+                            },
+                            1000);
+                    },
+                    success: function(result) {
+                        $('#selectorItemsList > tbody').empty();
+                        $('#selectorItemsList > thead').empty();
+                        let colDefs = [
+                            //{
+                            //    header: 'Url',
+                            //    text: '',
+                            //    class: 'small d-none d-md-table-cell'
+                            //},
+                            {
+                                header: 'Code',
+                                text: '',
+                                class: 'small d-none d-md-table-cell'
+                            },
+                            {
+                                header: 'Product',
+                                text: '',
+                                class: 'small'
+                            },
+
+                            {
+                                header: 'Nature',
+                                text: '',
+                                class: 'small'
+                            },
+                            {
+                                header: 'Company',
+                                text: '',
+                                class: 'small'
+                            }
+                        ];
+                        var $trHead = $('<tr>');
+                        colDefs.forEach(function(item) {
+                            var $tdColHead = $('<th>').text(item.header).addClass(item.class);
+                            $trHead.append($tdColHead);
+                        });
+                        $trHead.append($('<th>'));
+                        $trHead.appendTo('#selectorItemsList > thead');
+                        $.each(result.data,
+                            function (index, value) {
+                                //colDefs[0].text = value.url;
+                                colDefs[0].text = value.code;
+                                colDefs[1].text = value.name;
+                                //colDefs[2].text = value.materialCateroryName;
+                                colDefs[2].text = value.warehouseItemNatureName;
+                                colDefs[3].text = value.companyCode;
+                                var itemId = value.id;
+                               // var urlDel = `@Url.Page("./Delete")?id=${itemId}`;
+
+                                var $tr = $('<tr>');
+
+                                colDefs.forEach(function(item) {
+                                    var $tdCol = $('<td>').text(item.text).addClass(item.class);
+                                    $tr.append($tdCol);
+
+                                });
+                                var actionsCol = '<td class="small text-center">';
+                                actionsCol += '<button type="button" class="btn btn-outline-info btn-sm" ';
+                                actionsCol += `data-itemId="${itemId}"`;
+                                actionsCol += 'name="selectItem">';
+                                actionsCol +=
+                                    '<span><i class="far fa-check-square fa-lg" style="color:slategray"></i></span>';
+                                actionsCol += '</button>';
+                                actionsCol += '</td>';
+
+                                $tr.append(actionsCol);
+                                $tr.appendTo('#selectorItemsList > tbody');
+
+                            });
+
+                        $('[name=selectItem]').on('click',
+                            function (event) {
+                                var button = $(event.delegateTarget);
+                                var productId = button.data('itemid');
+                                console.log('Inside click event handler for selectItem');
+                                getWarehouseItemInfo(productId);
+                                $('#itemSelector').modal('hide');
+
+                            });
+                    },
+                    complete: function() {
+                        if (timeout) {
+                            clearTimeout(timeout);
+                        }
+                        $("#loadMe").modal("hide");
+                        setTimeout(function() {
+                                console.log('Checking for open modals');
+                                //var isOpen = $('#loadMe').hasClass('show');
+                                var isOpen = $('#SpinnerLoader').is(':visible');
+                                if (isOpen) {
+                                    console.log('Spinner is showing');
+
+                                    $('#SpinnerLoader').hide();
+                                } else {
+                                    console.log('No open modal');
+                                }
+                            },
+                            2000);
+                    },
+                    error: function(e) {
+                        console.log(e);
+
+                    }
+                });
+            };
             $('#imageViewer').on('show.bs.modal',
                 function(event) {
                     var button = $(event.relatedTarget);

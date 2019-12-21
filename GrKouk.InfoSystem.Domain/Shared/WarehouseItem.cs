@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using GrKouk.InfoSystem.Definitions;
 using GrKouk.InfoSystem.Domain.FinConfig;
 
@@ -6,6 +7,7 @@ namespace GrKouk.InfoSystem.Domain.Shared
 {
     public class WarehouseItem
     {
+        private ICollection<WarehouseItemCode> _warehouseItemCodes;
         public int Id { get; set; }
 
         [MaxLength(20)]
@@ -65,7 +67,11 @@ namespace GrKouk.InfoSystem.Domain.Shared
         public virtual Company Company { get; set; }
         public decimal PriceNetto { get; set; }
         public decimal PriceBrutto { get; set; }
-       
+        public virtual ICollection<WarehouseItemCode> WarehouseItemCodes
+        {
+            get => _warehouseItemCodes ?? (_warehouseItemCodes = new List<WarehouseItemCode>());
+            set => _warehouseItemCodes = value;
+        }
         [Timestamp]
         public byte[] Timestamp { get; set; }
     }
