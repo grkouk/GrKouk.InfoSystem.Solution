@@ -429,8 +429,8 @@
             var selectedCompanies="";
             var selectedNatures = "";
             var selectedTransTypes = "";
-
-            //$('.selectpicker').selectpicker();
+            var curSelectorType = "";
+            
             var getWarehouseItemNatureList = () => {
                  var timeout;
                 var pageIndex = 1;
@@ -773,7 +773,7 @@
                             {
                                 header: 'Company',
                                 text: '',
-                                class: 'small'
+                                class: 'small d-none d-md-table-cell'
                             }
                         ];
                         var $trHead = $('<tr>');
@@ -789,7 +789,7 @@
                                 colDefs[0].text = value.code;
                                 colDefs[1].text = value.name;
                                 //colDefs[2].text = value.materialCateroryName;
-                                colDefs[2].text = value.TransactorTypeName;
+                                colDefs[2].text = value.transactorTypeName;
                                 colDefs[3].text = value.companyCode;
                                 var itemId = value.id;
                                // var urlDel = `@Url.Page("./Delete")?id=${itemId}`;
@@ -818,9 +818,9 @@
                         $('[name=selectItem]').on('click',
                             function (event) {
                                 var button = $(event.delegateTarget);
-                                var productId = button.data('itemid');
+                                var transactorId = button.data('itemid');
                                 console.log('Inside click event handler for selectItem');
-                                getWarehouseItemInfo(productId);
+                                $('#ItemVm_TransactorId').val(transactorId);
                                 $('#itemSelector').modal('hide');
 
                             });
@@ -857,9 +857,15 @@
                     var $modal = $(this);
                     $modal.find('.modal-title').text('Image');
                     $modal.find('#imageControl').attr("src", imageUrl);
+                  
                 });
             $('#itemSelector').on('shown.bs.modal', function() {
                 let currentCompany = $('#ItemVm_CompanyId').val();
+                $('[name=itemsSearchText]').val("");
+                $('#selectorItemsList > tbody').empty();
+                $('#selectorItemsList > thead').empty();
+               // $('#MaterialNatureTypes').selectpicker('deselectall');
+               // $('#TransactorTypes').selectpicker('deselectall');
                 var $compList = $('#CompaniesList');
                 $compList.selectpicker('val',currentCompany);
                 $compList.selectpicker('render');
@@ -882,6 +888,7 @@
                             modal.find('.modal-title').text("Ευρετήριο Προιόντων");
                             $('#TransactorSelectorTypesDiv').hide();
                             $('#MaterialNatureTypesDiv').show();
+                            curSelectorType = "ProductsSelector";
                             var $matNatures = $('#MaterialNatureTypes');
                             if ($matNatures.children('option').length === 0) {
                                 getWarehouseItemNatureList();
@@ -891,6 +898,7 @@
                             modal.find('.modal-title').text("Supplier selector");
                             $('#TransactorSelectorTypesDiv').show();
                             $('#MaterialNatureTypesDiv').hide();
+                            curSelectorType = "SuppliersSelector";
                             var $transTypes = $('#TransactorTypes');
                             if ($transTypes.children('option').length === 0) {
                                 getTransactorTypeList();
@@ -958,8 +966,16 @@
                     }
                     timeKey = setTimeout(function() {
                         console.log("Will execute get request in 1 sec!");
-
-                        getProductsSelectorList(selectedCompanies, selectedNatures, searchText, 100);
+                        switch (curSelectorType) {
+                        case "ProductsSelector":
+                            getProductsSelectorList(selectedCompanies, selectedNatures, searchText, 100);
+                            break;
+                        case "SuppliersSelector":
+                            getTransactorSelectorList(selectedCompanies, selectedTransTypes, searchText, 100);
+                            break;
+                        default:
+                        }
+                       
                         $('#itemSelector').modal('handleUpdate');
                         },
                         1000);
