@@ -39,6 +39,8 @@
     <Compile Remove="Migrations\20191019150851_transactorCompanies1.Designer.cs" />
     <Compile Remove="Migrations\20191221084911_warehouseCodeWarehouse.cs" />
     <Compile Remove="Migrations\20191221084911_warehouseCodeWarehouse.Designer.cs" />
+    <Compile Remove="Migrations\20191221103431_warehouseitemCode1.cs" />
+    <Compile Remove="Migrations\20191221103431_warehouseitemCode1.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GrKouk.WebApi.Migrations
 {
     [DbContext(typeof(ApiDbContext))]
-    [Migration("20191221103431_warehouseitemCode1")]
-    partial class warehouseitemCode1
+    [Migration("20191222082302_TransactorRemovedCompany")]
+    partial class TransactorRemovedCompany
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -1316,8 +1316,6 @@ namespace GrKouk.WebApi.Migrations
                     b.Property<string>("Code")
                         .HasMaxLength(15);
 
-                    b.Property<int>("CompanyId");
-
                     b.Property<string>("EMail")
                         .HasMaxLength(200);
 
@@ -1346,8 +1344,6 @@ namespace GrKouk.WebApi.Migrations
                     b.HasIndex("Code")
                         .IsUnique()
                         .HasFilter("[Code] IS NOT NULL");
-
-                    b.HasIndex("CompanyId");
 
                     b.HasIndex("TransactorTypeId");
 
@@ -2070,11 +2066,6 @@ namespace GrKouk.WebApi.Migrations
 
             modelBuilder.Entity("GrKouk.InfoSystem.Domain.Shared.Transactor", b =>
                 {
-                    b.HasOne("GrKouk.InfoSystem.Domain.Shared.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
                     b.HasOne("GrKouk.InfoSystem.Domain.Shared.TransactorType", "TransactorType")
                         .WithMany()
                         .HasForeignKey("TransactorTypeId")

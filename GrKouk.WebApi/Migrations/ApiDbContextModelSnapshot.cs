@@ -1314,8 +1314,6 @@ namespace GrKouk.WebApi.Migrations
                     b.Property<string>("Code")
                         .HasMaxLength(15);
 
-                    b.Property<int>("CompanyId");
-
                     b.Property<string>("EMail")
                         .HasMaxLength(200);
 
@@ -1344,8 +1342,6 @@ namespace GrKouk.WebApi.Migrations
                     b.HasIndex("Code")
                         .IsUnique()
                         .HasFilter("[Code] IS NOT NULL");
-
-                    b.HasIndex("CompanyId");
 
                     b.HasIndex("TransactorTypeId");
 
@@ -2068,11 +2064,6 @@ namespace GrKouk.WebApi.Migrations
 
             modelBuilder.Entity("GrKouk.InfoSystem.Domain.Shared.Transactor", b =>
                 {
-                    b.HasOne("GrKouk.InfoSystem.Domain.Shared.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
                     b.HasOne("GrKouk.InfoSystem.Domain.Shared.TransactorType", "TransactorType")
                         .WithMany()
                         .HasForeignKey("TransactorTypeId")

@@ -1192,20 +1192,19 @@ namespace GrKouk.WebRazor.Controllers
         [HttpGet("GetIndexTblDataTransactors")]
         public async Task<IActionResult> GetIndexTblDataTransactors([FromQuery] IndexDataTableRequest request)
         {
-            //IQueryable<Transactor> fullListIq = _context.Transactors.Include(p => p.TransactorCompanyMappings)
-            //    .ThenInclude(p=>p.Company);
             var fullListIq = _context.TransactorCompanyMappings
                 .Select(t => new TransactorBigClass
                 {
-                    Id=t.Transactor.Id,
-                    Code=t.Transactor.Code,
-                    Name=t.Transactor.Name,
-                    Address = t.Transactor.Address,
-                    City = t.Transactor.City,
+                    Id = t.Transactor.Id,
+                    Code = t.Transactor.Code,
+                    Name = t.Transactor.Name,
+                    Address = string.IsNullOrEmpty(t.Transactor.Address) ? " " : t.Transactor.Address,
+                    City = string.IsNullOrEmpty(t.Transactor.City) ? " " : t.Transactor.City,
+                    EMail = string.IsNullOrEmpty(t.Transactor.EMail) ? " " : t.Transactor.EMail,
                     Zip = t.Transactor.Zip,
-                    PhoneWork = t.Transactor.PhoneWork,
-                    PhoneMobile = t.Transactor.PhoneMobile,
-                    PhoneFax = t.Transactor.PhoneFax,
+                    PhoneWork = string.IsNullOrEmpty(t.Transactor.PhoneWork) ? " " : t.Transactor.PhoneWork,
+                    PhoneMobile = string.IsNullOrEmpty(t.Transactor.PhoneMobile) ? " " : t.Transactor.PhoneMobile,
+                    PhoneFax = string.IsNullOrEmpty(t.Transactor.PhoneFax) ? " " : t.Transactor.PhoneFax,
                     TransactorTypeId = t.Transactor.TransactorTypeId,
                     TransactorTypeCode = t.Transactor.TransactorType.Code,
                     TransactorTypeName = t.Transactor.TransactorType.Name,
@@ -1217,7 +1216,7 @@ namespace GrKouk.WebRazor.Controllers
             int transactorTypeId = 0;
             if (!String.IsNullOrEmpty(request.TransactorTypeFilter))
             {
-                if (Int32.TryParse(request.TransactorTypeFilter, out transactorTypeId))
+                if (Int32.TryParse(request.TransactorTypeFilter, out  transactorTypeId))
                 {
                     if (transactorTypeId > 0)
                     {
@@ -1229,21 +1228,18 @@ namespace GrKouk.WebRazor.Controllers
             {
                 switch (request.SortData.ToLower())
                 {
-
                     case "transactorname:asc":
                         fullListIq = fullListIq.OrderBy(p => p.Name);
                         break;
                     case "transactorname:desc":
                         fullListIq = fullListIq.OrderByDescending(p => p.Name);
                         break;
-
                 }
             }
 
             if (!String.IsNullOrEmpty(request.CompanyFilter))
             {
-                int companyId;
-                if (Int32.TryParse(request.CompanyFilter, out companyId))
+                if (Int32.TryParse(request.CompanyFilter, out var companyId))
                 {
                     if (companyId > 0)
                     {
@@ -1251,21 +1247,21 @@ namespace GrKouk.WebRazor.Controllers
                         if (allCompaniesEntity != null)
                         {
                             var allCompaniesId = allCompaniesEntity.Id;
-                            //fullListIq = fullListIq.Where(t => t.TransactorCompanyMappings.Any(p => p.CompanyId == companyId || p.CompanyId == allCompaniesId));
                             fullListIq = fullListIq.Where(t => t.CompanyId == companyId || t.CompanyId == allCompaniesId);
                         }
                         else
                         {
-                            //fullListIq = fullListIq.Where(t => t.TransactorCompanyMappings.Any(p => p.CompanyId == companyId));
-                            fullListIq = fullListIq.Where(t => t.CompanyId == companyId );
+                            fullListIq = fullListIq.Where(t => t.CompanyId == companyId);
                         }
                     }
                 }
             }
+
             if (!String.IsNullOrEmpty(request.SearchFilter))
             {
                 fullListIq = fullListIq.Where(p => p.Name.Contains(request.SearchFilter)
                                                    || p.EMail.Contains(request.SearchFilter)
+                                                   || p.Code.Contains(request.SearchFilter)
                                                    || p.Address.Contains(request.SearchFilter)
                                                    || p.City.Contains(request.SearchFilter)
                                                    || p.PhoneFax.Contains(request.SearchFilter)
@@ -1273,27 +1269,28 @@ namespace GrKouk.WebRazor.Controllers
                                                    || p.PhoneWork.Contains(request.SearchFilter));
             }
 
-            //var testList = fullListIq.ToList();
-            var projectedList = fullListIq.GroupBy(g => new
-                {
-                    g.Id, g.Name, g.Code, g.EMail, g.TransactorTypeCode
-                })
+            var testList = fullListIq.ToList();
+            var projectedList = testList.GroupBy(g => new
+            {
+                g.Id,
+                g.Name,
+                g.Code,
+                g.EMail,
+                g.TransactorTypeCode
+            })
                 .Select(f => new TransactorListDto
                 {
                     Id = f.Key.Id,
                     Name = f.Key.Name,
                     Code = f.Key.Code,
                     TransactorTypeCode = f.Key.TransactorTypeCode,
-                    EMail = f.Key.EMail,
-                    CompanyCode = String.Join(",",f.Select(n=>n.CompanyCode))
+                    EMail = string.IsNullOrEmpty(f.Key.EMail) ? " " : f.Key.EMail,
+                    CompanyCode = String.Join(",", f.Select(n => n.CompanyCode))
                 });
-            //var projectedList = fullListIq.ProjectTo<TransactorListDto>(_mapper.ConfigurationProvider);
             var pageIndex = request.PageIndex;
 
             var pageSize = request.PageSize;
-
-            var listItems = await PagedList<TransactorListDto>.CreateAsync(projectedList, pageIndex, pageSize);
-
+            var listItems = PagedList<TransactorListDto>.Create(projectedList.AsQueryable(), pageIndex, pageSize);
             var relevantDiarys = new List<SearchListItem>();
             var dList = await _context.DiaryDefs.Where(p => p.DiaryType == DiaryTypeEnum.DiaryTypeEnumTransactors)
                 .ToListAsync();
@@ -1453,36 +1450,48 @@ namespace GrKouk.WebRazor.Controllers
         [HttpGet("GetSelectorTransactors")]
         public async Task<IActionResult> GetSelectorTransactors([FromQuery] IndexDataTableRequest request)
         {
-            IQueryable<Transactor> fullListIq = _context.Transactors.Include(p => p.TransactorCompanyMappings);
+            var fullListIq = _context.TransactorCompanyMappings
+               .Select(t => new TransactorBigClass
+               {
+                   Id = t.Transactor.Id,
+                   Code = t.Transactor.Code,
+                   Name = t.Transactor.Name,
+                   Address = string.IsNullOrEmpty(t.Transactor.Address) ? " " : t.Transactor.Address,
+                   City = string.IsNullOrEmpty(t.Transactor.City) ? " " : t.Transactor.City,
+                   EMail = string.IsNullOrEmpty(t.Transactor.EMail) ? " " : t.Transactor.EMail,
+                   Zip = t.Transactor.Zip,
+                   PhoneWork = string.IsNullOrEmpty(t.Transactor.PhoneWork) ? " " : t.Transactor.PhoneWork,
+                   PhoneMobile = string.IsNullOrEmpty(t.Transactor.PhoneMobile) ? " " : t.Transactor.PhoneMobile,
+                   PhoneFax = string.IsNullOrEmpty(t.Transactor.PhoneFax) ? " " : t.Transactor.PhoneFax,
+                   TransactorTypeId = t.Transactor.TransactorTypeId,
+                   TransactorTypeCode = t.Transactor.TransactorType.Code,
+                   TransactorTypeName = t.Transactor.TransactorType.Name,
+                   CompanyId = t.Company.Id,
+                   CompanyCode = t.Company.Code
+               });
 
-            try
+
+            int transactorTypeId = 0;
+            if (!String.IsNullOrEmpty(request.TransactorTypeFilter))
             {
-                var transactorType = request.TransactorTypeFilter.Split(',')
-                    .Where(m => int.TryParse(m, out int _))
-                    .Select(m => int.Parse(m))
-                    .ToList();
-                if (transactorType.Count > 0)
+                if (Int32.TryParse(request.TransactorTypeFilter, out transactorTypeId))
                 {
-                    fullListIq = fullListIq.Where(p => transactorType.Contains((int)p.TransactorTypeId));
+                    if (transactorTypeId > 0)
+                    {
+                        fullListIq = fullListIq.Where(p => p.TransactorTypeId == transactorTypeId);
+                    }
                 }
-
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
             }
             if (!String.IsNullOrEmpty(request.SortData))
             {
                 switch (request.SortData.ToLower())
                 {
-
                     case "transactorname:asc":
                         fullListIq = fullListIq.OrderBy(p => p.Name);
                         break;
                     case "transactorname:desc":
                         fullListIq = fullListIq.OrderByDescending(p => p.Name);
                         break;
-
                 }
             }
             if (!String.IsNullOrEmpty(request.CompanyFilter))
@@ -1501,28 +1510,43 @@ namespace GrKouk.WebRazor.Controllers
                     tagIds.Add(allCompaniesId);
                 }
 
-                fullListIq = fullListIq.Where(p => p.TransactorCompanyMappings.Any(t=>tagIds.Contains(t.CompanyId)));
+                fullListIq = fullListIq.Where(p => tagIds.Contains(p.CompanyId));
             }
-            
+
             if (!String.IsNullOrEmpty(request.SearchFilter))
             {
                 fullListIq = fullListIq.Where(p => p.Name.Contains(request.SearchFilter)
                                                    || p.EMail.Contains(request.SearchFilter)
+                                                   || p.Code.Contains(request.SearchFilter)
                                                    || p.Address.Contains(request.SearchFilter)
                                                    || p.City.Contains(request.SearchFilter)
                                                    || p.PhoneFax.Contains(request.SearchFilter)
                                                    || p.PhoneMobile.Contains(request.SearchFilter)
                                                    || p.PhoneWork.Contains(request.SearchFilter));
             }
-            var projectedList = fullListIq.ProjectTo<TransactorListDto>(_mapper.ConfigurationProvider);
+
+            var testList = fullListIq.ToList();
+            var projectedList = testList.GroupBy(g => new
+            {
+                g.Id,
+                g.Name,
+                g.Code,
+                g.EMail,
+                g.TransactorTypeCode
+            })
+                .Select(f => new TransactorListDto
+                {
+                    Id = f.Key.Id,
+                    Name = f.Key.Name,
+                    Code = f.Key.Code,
+                    TransactorTypeCode = f.Key.TransactorTypeCode,
+                    EMail = string.IsNullOrEmpty(f.Key.EMail) ? " " : f.Key.EMail,
+                    CompanyCode = String.Join(",", f.Select(n => n.CompanyCode))
+                });
             var pageIndex = request.PageIndex;
 
             var pageSize = request.PageSize;
-
-            var listItems = await PagedList<TransactorListDto>.CreateAsync(projectedList, pageIndex, pageSize);
-
-           
-
+            var listItems = PagedList<TransactorListDto>.Create(projectedList.AsQueryable(), pageIndex, pageSize);
             var response = new IndexDataTableResponse<TransactorListDto>
             {
                 TotalRecords = listItems.TotalCount,
