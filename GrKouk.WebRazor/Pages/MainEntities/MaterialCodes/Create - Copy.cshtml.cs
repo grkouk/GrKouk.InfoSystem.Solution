@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper;
 using GrKouk.InfoSystem.Definitions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -9,50 +8,49 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using GrKouk.InfoSystem.Domain.Shared;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
-using NToastNotify;
 
 namespace GrKouk.WebRazor.Pages.MainEntities.MaterialCodes
 {
     [Authorize(Roles = "Admin")]
-    public class CreateModel : PageModel
+    public class CreateModelCopy : PageModel
     {
-       #region Fields
         private readonly GrKouk.WebApi.Data.ApiDbContext _context;
-        private readonly IMapper _mapper;
-        private readonly IToastNotification _toastNotification;
-        public int CopyFromId { get; set; }
+
+        #region Fields
+     
+        public int ParentPageSize { get; set; }
+        public int ParentPageIndex { get; set; }
+        public string ParentSortOrder { get; set; }
+        public string ParentSearchString { get; set; }
+        public string ParentWarehouseItemNatureFilter { get; set; }
+        public bool ParentFiltersVisible { get; set; }
+        public bool ParentRowSelectorsVisible { get; set; }
+
         #endregion
-        public CreateModel(GrKouk.WebApi.Data.ApiDbContext context, IMapper mapper, IToastNotification toastNotification)
+        public CreateModelCopy(GrKouk.WebApi.Data.ApiDbContext context)
         {
             _context = context;
-            _mapper = mapper;
-            _toastNotification = toastNotification;
         }
-        public async Task<IActionResult> OnGetAsync(int? copyFromId)
+
+        public IActionResult OnGet(string parentSortOrder, string parentSearchString,  bool parentFiltersVisible
+            ,string parentWarehouseItemNatureFilter
+            , bool parentRowSelectorsVisible , int? parentPageIndex, int? parentPageSize)
         {
-            LoadCombos();
-            CopyFromId = 0;
-            if (copyFromId != null)
+            ParentFiltersVisible = parentFiltersVisible;
+            ParentRowSelectorsVisible = parentRowSelectorsVisible;
+            ParentSortOrder = parentSortOrder;
+            ParentSearchString = parentSearchString;
+            ParentWarehouseItemNatureFilter = parentWarehouseItemNatureFilter;
+            if (parentPageIndex != null)
             {
-                CopyFromId = (int)copyFromId;
-                var materialToModify = await _context.WarehouseItems
-                    .Include(m => m.BuyMeasureUnit)
-                    .Include(m => m.Company)
-                    .Include(m => m.FpaDef)
-                    .Include(m => m.MainMeasureUnit)
-                    .Include(m => m.MaterialCaterory)
-                    .Include(m => m.SecondaryMeasureUnit).FirstOrDefaultAsync(m => m.Id == CopyFromId);
-
-                if (materialToModify == null)
-                {
-                    return NotFound();
-                }
-
-                WarehouseItemVm = _mapper.Map<WarehouseItemCreateDto>(materialToModify);
-
+                ParentPageIndex =(int) parentPageIndex;
             }
 
-
+            if (parentPageSize != null)
+            {
+                ParentPageSize =(int) parentPageSize;
+            }
+            LoadCombos();
             return Page();
         }
 

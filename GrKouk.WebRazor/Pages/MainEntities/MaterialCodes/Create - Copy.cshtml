@@ -1,21 +1,22 @@
 ﻿@page
-@model GrKouk.WebRazor.Pages.MainEntities.MaterialCodes.CreateModel
-@using Microsoft.Extensions.Configuration
-@inject IConfiguration Configuration
+@model GrKouk.WebRazor.Pages.MainEntities.MaterialCodes.CreateModelCopy
+
 @{
     ViewData["Title"] = "Create";
 }
-@section MyCss
-{
-    <link rel="stylesheet" href="~/css/search-modal.css" />
-    
-}
+
 <h4>New WarehouseItem Code</h4>
 <hr />
 <div class="container">
     <form method="post">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-       
+        <input type="hidden" asp-for="ParentPageIndex" />
+        <input type="hidden" asp-for="ParentFiltersVisible" />
+        <input type="hidden" asp-for="ParentPageSize" />
+        <input type="hidden" asp-for="ParentRowSelectorsVisible" />
+        <input type="hidden" asp-for="ParentSearchString" />
+        <input type="hidden" asp-for="ParentSortOrder" />
+        <input type="hidden" asp-for="ParentWarehouseItemNatureFilter" />
         <div class="form-row">
             <div class="form-group col-sm-4">
                 <label asp-for="WarehouseItemCode.WarehouseItemId" class="control-label small"></label>
@@ -62,7 +63,8 @@
        asp-route-sortOrder="@Model.ParentSortOrder"
        asp-route-currentFilter="@Model.ParentSearchString"
        asp-route-filtersVisible="@Model.ParentFiltersVisible"
-       asp-route-rowselectorsVisible="@Model.ParentRowSelectorsVisible">Back to List</a>
+       asp-route-rowselectorsVisible="@Model.ParentRowSelectorsVisible"
+       >Back to List</a>
 </div>
 
 @section Scripts {

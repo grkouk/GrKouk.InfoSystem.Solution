@@ -48,7 +48,7 @@ namespace GrKouk.WebApi.Data
         public DbSet<SellDocSeriesDef> SellDocSeriesDefs { get; set; }
         public DbSet<SellDocLine> SellDocLines { get; set; }
         public DbSet<SellDocument> SellDocuments { get; set; }
-        public DbSet<WarehouseItemCode> WarehouseItemsCodes { get; set; }
+       // public DbSet<WarehouseItemCode> WarehouseItemsCodes { get; set; }
         public DbSet<DiaryDef> DiaryDefs { get; set; }
         public DbSet<CashRegCategory> CashRegCategories { get; set; }
         public DbSet<ClientProfile> ClientProfiles { get; set; }
@@ -65,7 +65,7 @@ namespace GrKouk.WebApi.Data
         public DbSet<ExchangeRate> ExchangeRates { get; set; }
         public DbSet<TransactorCompanyMapping> TransactorCompanyMappings { get; set; }
         public DbSet<SalesChannel> SalesChannels { get; set; }
-
+        public DbSet<WrItemCode> WrItemCodes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
