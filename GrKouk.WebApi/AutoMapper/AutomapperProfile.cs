@@ -3,6 +3,7 @@ using GrKouk.InfoSystem.Domain.Shared;
 using GrKouk.InfoSystem.Dtos;
 using GrKouk.InfoSystem.Dtos.MobileDtos;
 using GrKouk.InfoSystem.Dtos.WebDtos;
+using GrKouk.InfoSystem.Dtos.WebDtos.Transactors;
 
 namespace GrKouk.WebApi.AutoMapper
 {

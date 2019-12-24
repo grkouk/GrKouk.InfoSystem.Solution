@@ -172,7 +172,10 @@ namespace GrKouk.WebApi.Data
                 entity.HasOne(bd => bd.MaterialCaterory)
                     .WithMany()
                     .OnDelete(DeleteBehavior.Restrict);
-
+                entity.HasMany(p => p.WarehouseItemCodes)
+                    .WithOne(p => p.WarehouseItem)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .HasForeignKey(p => p.WarehouseItemId);
             });
 
 
@@ -390,9 +393,8 @@ namespace GrKouk.WebApi.Data
                 });
                 entity.HasIndex(p => p.Code);
 
-                entity.HasOne(p => p.WarehouseItem)
-                    .WithMany()
-                    .OnDelete(DeleteBehavior.Restrict);
+               
+               
             });
             modelBuilder.Entity<CrCatWarehouseItem>(entity =>
             {
