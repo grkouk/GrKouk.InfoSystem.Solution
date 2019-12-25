@@ -1322,7 +1322,7 @@ namespace GrKouk.WebRazor.Controllers
         public async Task<IActionResult> GetIndexTblDataWarehouseCodeItems([FromQuery] IndexDataTableRequest request)
         {
             //Thread.Sleep(10000);
-            IQueryable<WrItemCode> fullListIq = _context.WrItemCodes;
+            IQueryable<WrItemCode> fullListIq = _context.WrItemCodes.Include(p=>p.WarehouseItem);
            
             if (!String.IsNullOrEmpty(request.SortData))
             {
@@ -1341,7 +1341,9 @@ namespace GrKouk.WebRazor.Controllers
                     case "codesort:desc":
                         fullListIq = fullListIq.OrderByDescending(p => p.Code);
                         break;
-                   
+                   default:
+                       fullListIq = fullListIq.OrderBy(p => p.Id);
+                       break;
                 }
             }
 
@@ -1382,6 +1384,48 @@ namespace GrKouk.WebRazor.Controllers
                 var pageSize = request.PageSize;
 
                 listItems = await PagedList<WrItemCodeListDto>.CreateAsync(projectedList, pageIndex, pageSize);
+                foreach (var item in listItems)
+                {
+                    if (item.CompanyId>0)
+                    {
+                        var com = await _context.Companies.FirstOrDefaultAsync(p => p.Id == item.CompanyId);
+                        if (com !=null)
+                        {
+                            item.CompanyCode = com.Code;
+                            item.CompanyName = com.Name;
+                        }
+                        else
+                        {
+                            item.CompanyCode = "##Err##";
+                            item.CompanyName = "##Err##";
+                        }
+                    }
+                    else
+                    {
+                        item.CompanyCode = "{All}";
+                        item.CompanyName = "{All Companies}";
+                    }
+                    if (item.TransactorId > 0)
+                    {
+                        var com = await _context.Transactors.FirstOrDefaultAsync(p => p.Id == item.TransactorId);
+                        if (com != null)
+                        {
+                            item.TransactorName = com.Name;
+                        }
+                        else
+                        {
+                            
+                            item.TransactorName = "##Err##";
+                        }
+                    }
+                    else
+                    {
+                        item.TransactorName = "{All Transactors}";
+                    }
+
+                    item.CodeUsedUnitName = item.CodeUsedUnit.GetDescription();
+                    item.CodeTypeName = item.CodeType.GetDescription();
+                }
             }
             catch (Exception e)
             {

@@ -31,7 +31,7 @@ namespace GrKouk.WebRazor.Pages.MainEntities.MaterialCodes
         }
         public async Task<IActionResult> OnGetAsync(int? copyFromId)
         {
-            LoadCombos();
+           await LoadCombos();
             CopyFromId = 0;
             if (copyFromId != null)
             {
@@ -53,7 +53,7 @@ namespace GrKouk.WebRazor.Pages.MainEntities.MaterialCodes
             return Page();
         }
 
-        private void LoadCombos()
+        private async Task LoadCombos()
         {
             List<SelectListItem> codeTypes = new List<SelectListItem>
             {
@@ -73,7 +73,8 @@ namespace GrKouk.WebRazor.Pages.MainEntities.MaterialCodes
 
             ViewData["WarehouseItemId"] = new SelectList(_context.WarehouseItems.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
             ViewData["CompanyId"] = FiltersHelper.GetCompaniesFilterList(_context);
-            ViewData["TransactorId"] = FiltersHelper.GetTransactorsForTypeFilterList(_context, "SYS.SUPPLIER");
+
+            ViewData["TransactorId"] = await FiltersHelper.GetTransactorsForTypeFilterListAsync(_context, "SYS.SUPPLIER");
         }
         [BindProperty]
         public WrItemCode ItemVm { get; set; }

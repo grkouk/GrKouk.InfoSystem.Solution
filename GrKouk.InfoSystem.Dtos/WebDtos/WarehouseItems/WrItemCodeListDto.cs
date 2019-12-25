@@ -14,7 +14,7 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.WarehouseItems
         public string CompanyName { get; set; }
         public string CompanyCode { get; set; }
         public WarehouseItemCodeTypeEnum CodeType { get; set; }
-        [MaxLength(30)]
+        public string CodeTypeName { get; set; }
         public string Code { get; set; }
         public int TransactorId { get; set; }
         public string TransactorName { get; set; }
@@ -22,6 +22,7 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.WarehouseItems
         public WarehouseItem WarehouseItem { get; set; }
         public string WarehouseItemName { get; set; }
         public WarehouseItemCodeUsedUnitEnum CodeUsedUnit { get; set; }
+        public string CodeUsedUnitName { get; set; }
         public double RateToMainUnit { get; set; }
     }
 }

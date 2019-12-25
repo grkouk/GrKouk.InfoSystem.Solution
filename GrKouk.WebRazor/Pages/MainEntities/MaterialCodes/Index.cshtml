@@ -398,11 +398,7 @@
                         $('#myTable > tbody').empty();
                         $('#myTable > thead').empty();
                         let colDefs = [
-                            {
-                                header: 'Code',
-                                text: '',
-                                class: 'small d-none d-md-table-cell'
-                            },
+                            
                             {
                                 header: 'Product',
                                 text: '',
@@ -411,8 +407,29 @@
                             {
                                 header: 'Company',
                                 text: '',
-                                class: 'small'
-                            }
+                                class: 'small d-none d-md-table-cell'
+                            },
+                            {
+                                header: 'Transactor',
+                                text: '',
+                                class: 'small d-none d-md-table-cell'
+                            },
+                            {
+                                header: 'Code Type',
+                                text: '',
+                                class: 'small d-none d-md-table-cell'
+                            },
+                            {
+                                header: 'Unit',
+                                text: '',
+                                class: 'small d-none d-md-table-cell'
+                            },
+                            {
+                                header: 'Code',
+                                text: '',
+                                class: 'small '
+                            },
+                           
                         ];
                         var $trHead = $('<tr>');
                         colDefs.forEach(function(item) {
@@ -423,11 +440,12 @@
                         $trHead.appendTo('#myTable > thead');
                         $.each(result.data,
                             function (index, value) {
-                                colDefs[0].text = value.code;
-                                colDefs[1].text = value.name;
-                                //colDefs[2].text = value.materialCateroryName;
-                                //colDefs[3].text = value.warehouseItemNatureName;
-                                colDefs[2].text = value.companyCode;
+                                colDefs[0].text = value.warehouseItemName;
+                                colDefs[1].text = value.companyCode;
+                                colDefs[2].text = value.transactorName;
+                                colDefs[3].text = value.codeTypeName;
+                                colDefs[4].text = value.codeUsedUnitName;
+                                colDefs[5].text = value.code;
 
                                 var itemId = value.id;
                                 var $tr = $('<tr>');

@@ -114,6 +114,7 @@ namespace GrKouk.WebRazor.Automapper
           
             CreateMap<Transactor, TransactorCreateDto>().ReverseMap();
             CreateMap<Transactor, TransactorModifyDto>().ReverseMap();
+            CreateMap<WrItemCode, WrItemCodeListDto>();
             //CreateMap<BuyDocTypeDef, DiaryDocTypeItem>()
             //    .ForMember(dest => dest.Value, opt => opt.MapFrom(src => src.Id))
             //    .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Name));

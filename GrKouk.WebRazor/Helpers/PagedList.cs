@@ -41,6 +41,8 @@ namespace GrKouk.WebRazor.Helpers
         public static PagedList<T> Create(IQueryable<T> source, int pageNumber, int pageSize)
         {
             var count = source.Count();
+            pageNumber = pageNumber == 0 ? 1 : pageNumber;
+            pageSize = pageSize < 0 ? 1 : pageSize;
             var items = source.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
             return new PagedList<T>(items, count, pageNumber, pageSize);
         }
@@ -48,28 +50,30 @@ namespace GrKouk.WebRazor.Helpers
             IQueryable<T> source, int pageIndex, int pageSize)
         {
             var count = await source.CountAsync();
+            pageIndex = pageIndex == 0 ? 1 : pageIndex;
+            pageSize = pageSize < 0 ? 1 : pageSize;
             var items = await source.Skip((pageIndex - 1) * pageSize)
                 .Take(pageSize).ToListAsync();
             return new PagedList<T>(items, count, pageIndex, pageSize);
         }
-        public static async Task<PagedList<T>> CreateForDataTableAsync(
-            IQueryable<T> source, int itemsToSkip, int pageSize)
-        {
-            List<T> items;
-            var count = await source.CountAsync();
-            if (pageSize==-1)
-            {
-                items = await source.ToListAsync();
-            }
-            else
-            {
-                 items = await source.Skip(itemsToSkip)
-                    .Take(pageSize).ToListAsync();
+        //public static async Task<PagedList<T>> CreateForDataTableAsync(
+        //    IQueryable<T> source, int itemsToSkip, int pageSize)
+        //{
+        //    List<T> items;
+        //    var count = await source.CountAsync();
+        //    if (pageSize==-1)
+        //    {
+        //        items = await source.ToListAsync();
+        //    }
+        //    else
+        //    {
+        //         items = await source.Skip(itemsToSkip)
+        //            .Take(pageSize).ToListAsync();
 
-            }
+        //    }
 
-            var pageIndex = (int)Math.Ceiling(itemsToSkip / (double)pageSize);
-            return new PagedList<T>(items, count, pageIndex, pageSize);
-        }
+        //    var pageIndex = (int)Math.Ceiling(itemsToSkip / (double)pageSize);
+        //    return new PagedList<T>(items, count, pageIndex, pageSize);
+        //}
     }
 }
