@@ -383,19 +383,21 @@ namespace GrKouk.WebApi.Data
                     .OnDelete(DeleteBehavior.Restrict);
             });
 
-            modelBuilder.Entity<WarehouseItemCode>(entity =>
+           
+            modelBuilder.Entity<WrItemCode>(entity =>
             {
-                entity.HasKey(p => new
+                entity.HasIndex(p => new
                 {
+                    p.CompanyId,
                     p.CodeType,
-                    WarehouseItemId = p.WarehouseItemId,
+                    p.WarehouseItemId,
+                    p.TransactorId,
                     p.Code
-                });
+                }).IsUnique();
                 entity.HasIndex(p => p.Code);
 
-               
-               
             });
+
             modelBuilder.Entity<CrCatWarehouseItem>(entity =>
             {
                 entity.HasIndex(p => new

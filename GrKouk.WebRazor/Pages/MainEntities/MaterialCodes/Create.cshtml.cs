@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using GrKouk.InfoSystem.Domain.Shared;
+using GrKouk.WebRazor.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using NToastNotify;
@@ -35,20 +36,16 @@ namespace GrKouk.WebRazor.Pages.MainEntities.MaterialCodes
             if (copyFromId != null)
             {
                 CopyFromId = (int)copyFromId;
-                var materialToModify = await _context.WarehouseItems
-                    .Include(m => m.BuyMeasureUnit)
-                    .Include(m => m.Company)
-                    .Include(m => m.FpaDef)
-                    .Include(m => m.MainMeasureUnit)
-                    .Include(m => m.MaterialCaterory)
-                    .Include(m => m.SecondaryMeasureUnit).FirstOrDefaultAsync(m => m.Id == CopyFromId);
+                var itemToCopy = await _context.WrItemCodes
+                    .FirstOrDefaultAsync(m => m.Id == CopyFromId);
 
-                if (materialToModify == null)
+                if (itemToCopy == null)
                 {
                     return NotFound();
                 }
 
-                WarehouseItemVm = _mapper.Map<WarehouseItemCreateDto>(materialToModify);
+                //WarehouseItemVm = _mapper.Map<WarehouseItemCreateDto>(itemToCopy);
+                ItemVm = itemToCopy;
 
             }
 
@@ -75,9 +72,11 @@ namespace GrKouk.WebRazor.Pages.MainEntities.MaterialCodes
             ViewData["CodeUsedUnit"] = new SelectList(codeUsedUnits, "Value", "Text");
 
             ViewData["WarehouseItemId"] = new SelectList(_context.WarehouseItems.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
+            ViewData["CompanyId"] = FiltersHelper.GetCompaniesFilterList(_context);
+            ViewData["TransactorId"] = FiltersHelper.GetTransactorsForTypeFilterList(_context, "SYS.SUPPLIER");
         }
         [BindProperty]
-        public WarehouseItemCode WarehouseItemCode { get; set; }
+        public WrItemCode ItemVm { get; set; }
 
         public async Task<IActionResult> OnPostAsync()
         {
@@ -86,7 +85,7 @@ namespace GrKouk.WebRazor.Pages.MainEntities.MaterialCodes
                 return Page();
             }
 
-            _context.WarehouseItemsCodes.Add(WarehouseItemCode);
+            _context.WrItemCodes.Add(ItemVm);
             await _context.SaveChangesAsync();
 
             return RedirectToPage("./Index");

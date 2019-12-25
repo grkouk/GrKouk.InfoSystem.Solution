@@ -64,6 +64,27 @@ namespace GrKouk.WebRazor.Helpers
 
             return companiesList;
         }
+        public static List<SelectListItem> GetTransactorsForTypeFilterList(ApiDbContext context,string trType)
+        {
+            var trTypeObject = context.TransactorTypes.FirstOrDefaultAsync(p => p.Code == trType);
+            int trTypeId = 0;
+            if (trTypeObject != null)
+            {
+                trTypeId = trTypeObject.Id;
+            }
+
+            var dbTransactors = context.Transactors.Where(t => t.TransactorTypeId == trTypeId).OrderBy(p => p.Name).AsNoTracking();
+            List<SelectListItem> transactorsList = new List<SelectListItem>
+            {
+                new SelectListItem() {Value = 0.ToString(), Text = "{No Transactor}"}
+            };
+            foreach (var item in dbTransactors)
+            {
+                transactorsList.Add(new SelectListItem() { Value = item.Id.ToString(), Text = item.Code });
+            }
+
+            return transactorsList;
+        }
         public static List<SelectListItem> GetCurrenciesFilterList(ApiDbContext context)
         {
             var dbItems = context.Currencies.OrderBy(p=> p.Name).AsNoTracking();

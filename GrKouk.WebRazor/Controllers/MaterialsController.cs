@@ -57,20 +57,102 @@ namespace GrKouk.WebRazor.Controllers
             HttpContext.Session.SetString("SalesSeriesId", seriesId);
             return Ok(new { });
         }
+        [HttpGet("SeekCompanyBarcode")]
+        public async Task<IActionResult> GetCompanyMaterialFromBarcode(string barcode, int companyId)
+        {
+           var materials = await _context.WrItemCodes
+                .Include(p => p.WarehouseItem).ThenInclude(p => p.FpaDef)
+                .Include(p => p.WarehouseItem).ThenInclude(p => p.MainMeasureUnit)
+                .Include(p => p.WarehouseItem).ThenInclude(p => p.SecondaryMeasureUnit)
+                .Include(p => p.WarehouseItem).ThenInclude(p => p.BuyMeasureUnit)
+                .Where(p => p.Code == barcode && p.CodeType == WarehouseItemCodeTypeEnum.CodeTypeEnumBarcode && p.CompanyId==companyId)
+                .ToListAsync();
+
+            if (materials == null)
+            {
+                return NotFound(new
+                {
+                    Error = "WarehouseItem Not Found"
+                });
+            }
+
+            if (materials.Count > 1)
+            {
+                return NotFound(new
+                {
+                    Error = "More than one material found"
+                });
+            }
+
+            var material = materials[0].WarehouseItem;
+
+            var usedUnit = materials[0].CodeUsedUnit;
+            double unitFactor=materials[0].RateToMainUnit;
+            string unitToUse;
+            switch (usedUnit)
+            {
+                case WarehouseItemCodeUsedUnitEnum.CodeUsedUnitEnumMain:
+                    unitFactor = 1;
+                    unitToUse = "MAIN";
+                    break;
+                case WarehouseItemCodeUsedUnitEnum.CodeUsedUnitEnumSecondary:
+                    unitToUse = "SEC";
+                    break;
+                case WarehouseItemCodeUsedUnitEnum.CodeUsedUnitEnumBuy:
+                    unitToUse = "BUY";
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            var lastPr = await _context.WarehouseTransactions.Where(m => m.Id == material.Id)
+                .Select(k => new
+                {
+                    LastPrice = k.UnitPrice
+                }).FirstOrDefaultAsync();
+
+            var lastPrice = lastPr?.LastPrice ?? 0;
+
+            return Ok(new
+            {
+                Id = material.Id,
+                Name = material.Name,
+                fpaId = material.FpaDefId,
+                lastPrice = lastPrice,
+                fpaRate = material.FpaDef.Rate,
+                unitToUse = unitToUse,
+                Factor = unitFactor,
+                mainUnitId = material.MainMeasureUnitId,
+                secUnitId = material.SecondaryMeasureUnitId,
+                buyUnitId = material.BuyMeasureUnitId,
+                mainUnitCode = material.MainMeasureUnit.Code,
+                secUnitCode = material.SecondaryMeasureUnit.Code,
+                buyUnitCode = material.BuyMeasureUnit.Code,
+                factorSeq = material.SecondaryUnitToMainRate,
+                factorBuy = material.BuyUnitToMainRate,
+
+            });
+        }
         [HttpGet("SeekBarcode")]
         public async Task<IActionResult> GetMaterialFromBarcode(string barcode)
         {
             //var sessionCompanyId = HttpContext.Session.GetString("CompanyId");
-            var materials = await _context.WarehouseItemsCodes
-                .Include(p => p.WarehouseItem).ThenInclude(p=>p.FpaDef)
+            //var materials = await _context.WarehouseItemsCodes
+            //    .Include(p => p.WarehouseItem).ThenInclude(p=>p.FpaDef)
+            //    .Include(p => p.WarehouseItem).ThenInclude(p => p.MainMeasureUnit)
+            //    .Include(p => p.WarehouseItem).ThenInclude(p => p.SecondaryMeasureUnit)
+            //    .Include(p => p.WarehouseItem).ThenInclude(p => p.BuyMeasureUnit)
+            //    .Where(p => p.Code == barcode && p.CodeType == WarehouseItemCodeTypeEnum.CodeTypeEnumBarcode)
+            //    .ToListAsync();
+            var materials = await _context.WrItemCodes
+                .Include(p => p.WarehouseItem).ThenInclude(p => p.FpaDef)
                 .Include(p => p.WarehouseItem).ThenInclude(p => p.MainMeasureUnit)
                 .Include(p => p.WarehouseItem).ThenInclude(p => p.SecondaryMeasureUnit)
                 .Include(p => p.WarehouseItem).ThenInclude(p => p.BuyMeasureUnit)
                 .Where(p => p.Code == barcode && p.CodeType == WarehouseItemCodeTypeEnum.CodeTypeEnumBarcode)
                 .ToListAsync();
-
-                //.ProjectTo<WarehouseItemSearchListDto>(_mapper.ConfigurationProvider)
-                //.Select(p => new { label = p.Label, value = p.Id }).ToListAsync();
+            //.ProjectTo<WarehouseItemSearchListDto>(_mapper.ConfigurationProvider)
+            //.Select(p => new { label = p.Label, value = p.Id }).ToListAsync();
 
             if (materials == null)
             {

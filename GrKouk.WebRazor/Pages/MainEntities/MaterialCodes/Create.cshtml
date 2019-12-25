@@ -15,36 +15,51 @@
 <div class="container">
     <form method="post">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-       
+        <div class="form-row">
+            <div class="form-group col-md-3">
+                <label asp-for="ItemVm.CompanyId" class="control-label" small></label>
+                <select asp-for="ItemVm.CompanyId" class="form-control form-control-sm small" asp-items="ViewBag.CompanyId"></select>
+            </div>
+            <div class="form-group col-md-6">
+                <label asp-for="ItemVm.TransactorId" class="control-label small"></label>
+                <div class="input-group input-group-sm">
+                    <select asp-for="ItemVm.TransactorId" class="form-control form-control-sm small" asp-items="ViewBag.TransactorId"></select>
+                    <div class="input-group-append" id="button-addon4">
+                        <button class="btn btn-outline-secondary" data-toggle="modal" data-target="#itemSelector" data-selectorType="SuppliersSelector" type="button">...</button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="form-row">
             <div class="form-group col-sm-4">
-                <label asp-for="WarehouseItemCode.WarehouseItemId" class="control-label small"></label>
-                <select asp-for="WarehouseItemCode.WarehouseItemId" class="form-control form-control-sm" asp-items="ViewBag.WarehouseItemId"></select>
+                <label asp-for="ItemVm.WarehouseItemId" class="control-label small"></label>
+                <select asp-for="ItemVm.WarehouseItemId" class="form-control form-control-sm" asp-items="ViewBag.WarehouseItemId"></select>
             </div>
             <div class="form-group col-sm-2">
-                <label asp-for="WarehouseItemCode.CodeType" class="control-label small"></label>
-                <select asp-for="WarehouseItemCode.CodeType" class="form-control form-control-sm" asp-items="ViewBag.CodeType"></select>
-                <span asp-validation-for="WarehouseItemCode.CodeType" class="text-danger small"></span>
+                <label asp-for="ItemVm.CodeType" class="control-label small"></label>
+                <select asp-for="ItemVm.CodeType" class="form-control form-control-sm" asp-items="ViewBag.CodeType"></select>
+                <span asp-validation-for="ItemVm.CodeType" class="text-danger small"></span>
             </div>
             <div class="form-group col-sm-2">
-                <label asp-for="WarehouseItemCode.Code" class="control-label small"></label>
-                <input asp-for="WarehouseItemCode.Code" class="form-control form-control-sm" />
-                <span asp-validation-for="WarehouseItemCode.Code" class="text-danger small"></span>
+                <label asp-for="ItemVm.Code" class="control-label small"></label>
+                <input asp-for="ItemVm.Code" class="form-control form-control-sm" />
+                <span asp-validation-for="ItemVm.Code" class="text-danger small"></span>
             </div>
         </div>
 
 
         <div class="form-row">
             <div class="form-group col-sm-2">
-                <label asp-for="WarehouseItemCode.TransactorId" class="control-label small"></label>
-                <input asp-for="WarehouseItemCode.TransactorId" class="form-control form-control-sm" />
-                <span asp-validation-for="WarehouseItemCode.TransactorId" class="text-danger small"></span>
+                <label asp-for="ItemVm.CodeUsedUnit" class="control-label small"></label>
+                <select asp-for="ItemVm.CodeUsedUnit" class="form-control form-control-sm" asp-items="ViewBag.CodeUsedUnit"></select>
+                <span asp-validation-for="ItemVm.CodeUsedUnit" class="text-danger small"></span>
             </div>
             <div class="form-group col-sm-2">
-                <label asp-for="WarehouseItemCode.CodeUsedUnit" class="control-label small"></label>
-                <select asp-for="WarehouseItemCode.CodeUsedUnit" class="form-control form-control-sm" asp-items="ViewBag.CodeUsedUnit"></select>
-                <span asp-validation-for="WarehouseItemCode.CodeUsedUnit" class="text-danger small"></span>
+                <label asp-for="ItemVm.RateToMainUnit" class="control-label small"></label>
+                <input asp-for="ItemVm.RateToMainUnit" class="form-control form-control-sm" ></input>
+                <span asp-validation-for="ItemVm.RateToMainUnit" class="text-danger small"></span>
             </div>
+
         </div>
 
         <div class="form-row">
@@ -57,12 +72,7 @@
 
 <div>
     <a asp-page="Index"
-       asp-route-pageIndexKartela="@(Model.ParentPageIndex)"
-       asp-route-PageSizeKartela="@Model.ParentPageSize"
-       asp-route-sortOrder="@Model.ParentSortOrder"
-       asp-route-currentFilter="@Model.ParentSearchString"
-       asp-route-filtersVisible="@Model.ParentFiltersVisible"
-       asp-route-rowselectorsVisible="@Model.ParentRowSelectorsVisible">Back to List</a>
+      >Back to List</a>
 </div>
 
 @section Scripts {

@@ -25,20 +25,20 @@ namespace GrKouk.WebRazor.Pages.MainEntities.MaterialCodes
         }
 
         [BindProperty]
-        public WarehouseItemCode WarehouseItemCode { get; set; }
+        public WrItemCode WarehouseItemCode { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(WarehouseItemCodeTypeEnum id)
+        public async Task<IActionResult> OnGetAsync(int id)
         {
            
 
-            WarehouseItemCode = await _context.WarehouseItemsCodes
-                .Include(m => m.WarehouseItem).FirstOrDefaultAsync(m => m.CodeType == id);
+            WarehouseItemCode = await _context.WrItemCodes
+                .Include(m => m.WarehouseItem).FirstOrDefaultAsync(m => m.Id == id);
 
             if (WarehouseItemCode == null)
             {
                 return NotFound();
             }
-           ViewData["WarehouseItemId"] = new SelectList(_context.WarehouseItems, "Id", "Id");
+          
             return Page();
         }
 
@@ -57,7 +57,7 @@ namespace GrKouk.WebRazor.Pages.MainEntities.MaterialCodes
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!MaterialCodeExists(WarehouseItemCode.CodeType))
+                if (!MaterialCodeExists(WarehouseItemCode.Id))
                 {
                     return NotFound();
                 }
@@ -70,9 +70,9 @@ namespace GrKouk.WebRazor.Pages.MainEntities.MaterialCodes
             return RedirectToPage("./Index");
         }
 
-        private bool MaterialCodeExists(WarehouseItemCodeTypeEnum id)
+        private bool MaterialCodeExists(int id)
         {
-            return _context.WarehouseItemsCodes.Any(e => e.CodeType == id);
+            return _context.WrItemCodes.Any(e => e.Id == id);
         }
     }
 }

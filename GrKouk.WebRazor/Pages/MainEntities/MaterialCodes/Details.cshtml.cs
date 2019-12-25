@@ -25,15 +25,15 @@ namespace GrKouk.WebRazor.Pages.MainEntities.MaterialCodes
 
         public WarehouseItemCode WarehouseItemCode { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(WarehouseItemCodeTypeEnum id)
+        public async Task<IActionResult> OnGetAsync(int id)
         {
-            WarehouseItemCode = await _context.WarehouseItemsCodes
-                .Include(m => m.WarehouseItem).FirstOrDefaultAsync(m => m.CodeType == id);
+            //WarehouseItemCode = await _context.WrItemCodes
+            //    .Include(m => m.WarehouseItem).FirstOrDefaultAsync(m => m.Id == id);
 
-            if (WarehouseItemCode == null)
-            {
-                return NotFound();
-            }
+            //if (WarehouseItemCode == null)
+            //{
+            //    return NotFound();
+            //}
             return Page();
         }
     }
