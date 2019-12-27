@@ -29,6 +29,7 @@
             <div asp-validation-summary="ModelOnly" class="text-danger small"></div>
             <input type="hidden" asp-for="@Model.CopyFromId" id="CopyFromId" />
             <input type="hidden" asp-for="@Model.InitialLoad" id="IsInitialLoad" />
+        <input type="hidden" id="currentSort" />
             <input type="hidden" id="MaterialId" />
             <input type="hidden" id="MaterialLastPrice" />
             <input type="hidden" id="MaterialFactor" />
@@ -202,7 +203,7 @@
                                                 $"<a data-itemId=\"0\" href=\"#\" class=\"modifyItem\"><i class=\"fas fa-edit\"></i></a></td>" +
                                                 $"<td class=\"small\">" +
                                                 $"<a data-itemId=\"0\" href=\"#\" class=\"deleteItem\"><i class=\"fas fa-trash\"></i></a></td></tr>";
-                            @Html.Raw(tLine)
+                                    @Html.Raw(tLine)
                                     ;
                                 }
                             }
@@ -423,13 +424,42 @@
 
             //#region items selectors modals
             $.fn.selectpicker.Constructor.BootstrapVersion = '4';
-            var selectedCompanies="";
+            var selectedCompanies = "";
             var selectedNatures = "";
             var selectedTransTypes = "";
             var curSelectorType = "";
-            
+            var handleSortUi = () => {
+
+                var curSort = $('#currentSort').val();
+
+                $('[name=SortIcon]').hide();
+                if (curSort === undefined || curSort === null || curSort.length === 0) {
+                    //hide all icons
+                    return;
+
+                }
+                var curSortAr = curSort.split(':');
+                switch (curSortAr[0]) {
+                case 'transactiondate':
+                    if (curSortAr[1] === 'asc') {
+                        $('#TransDateHeaderIcon').addClass('fas fa-sort-numeric-up').show();
+                    } else {
+                        $('#TransDateHeaderIcon').addClass('fas fa-sort-numeric-down').show();
+                    }
+                    break;
+                case 'productnamesort':
+                    if (curSortAr[1] === 'asc') {
+                        $('#TransactorNameHeaderIcon').addClass('fas fa-sort-alpha-up').show();
+                    } else {
+                        $('#TransactorNameHeaderIcon').addClass('fas fa-sort-alpha-down').show();
+                    }
+                    break;
+                default:
+                }
+
+            };
             var getWarehouseItemNatureList = () => {
-                 var timeout;
+                var timeout;
                 var pageIndex = 1;
                 var uri = '/api/GrKoukInfoApi/GetSelectorMaterialNatures';
                 $.ajax({
@@ -453,7 +483,8 @@
                     success: function(result) {
                         $.each(result,
                             function(index, item) {
-                                $('#MaterialNatureTypes').append($('<option></option>').attr('value', item.valueInt).text(item.title));
+                                $('#MaterialNatureTypes').append($('<option></option>').attr('value', item.valueInt)
+                                    .text(item.title));
                             });
                         $('#MaterialNatureTypes').selectpicker('refresh');
                     },
@@ -480,8 +511,8 @@
                     }
                 });
             };
-             var getTransactorTypeList = () => {
-                 var timeout;
+            var getTransactorTypeList = () => {
+                var timeout;
                 var pageIndex = 1;
                 var uri = '/api/GrKoukInfoApi/GetSelectorTransactorTypes';
                 $.ajax({
@@ -505,7 +536,8 @@
                     success: function(result) {
                         $.each(result,
                             function(index, item) {
-                                $('#TransactorTypes').append($('<option></option>').attr('value', item.valueInt).text(item.title));
+                                $('#TransactorTypes').append($('<option></option>').attr('value', item.valueInt)
+                                    .text(item.title));
                             });
                         $('#TransactorTypes').selectpicker('refresh');
                     },
@@ -533,7 +565,7 @@
                 });
             };
             var getCompanyList = () => {
-                 var timeout;
+                var timeout;
                 var pageIndex = 1;
                 var uri = '/api/GrKoukInfoApi/GetSelectorCompanies';
                 $.ajax({
@@ -557,7 +589,8 @@
                     success: function(result) {
                         $.each(result,
                             function(index, item) {
-                                $('#CompaniesList').append($('<option></option>').attr('value', item.value).text(item.title));
+                                $('#CompaniesList')
+                                    .append($('<option></option>').attr('value', item.value).text(item.title));
                             });
                         $('#CompaniesList').selectpicker('refresh');
                     },
@@ -584,7 +617,7 @@
                     }
                 });
             };
-            var getProductsSelectorList = (selCompanies,selNatures,searchFilter, pageSize) =>{
+            var getProductsSelectorList = (selCompanies, selNatures, searchFilter,sortData, pageSize) => {
                 var timeout;
                 var pageIndex = 1;
                 var uri = '/api/GrKoukInfoApi/GetSelectorWareHouseItems';
@@ -592,13 +625,12 @@
                 uri += `&pageSize=${pageSize}`;
                 uri += `&warehouseItemNatureFilter=${selNatures}`;
                 uri += `&companyFilter=${selCompanies}`;
+                uri += `&sortData=${sortData}`;
                 uri += `&searchFilter=${searchFilter}`;
                 $.ajax({
                     contentType: 'application/json; charset=utf-8',
-
                     dataType: 'json',
                     type: 'GET',
-
                     url: uri,
                     beforeSend: function() {
                         if (timeout) {
@@ -614,28 +646,30 @@
                         $('#selectorItemsList > tbody').empty();
                         $('#selectorItemsList > thead').empty();
                         let colDefs = [
-                            //{
-                            //    header: 'Url',
-                            //    text: '',
-                            //    class: 'small d-none d-md-table-cell'
-                            //},
                             {
+                                sortKey: 'ProductCodeSort',
+                                sortType: 'alpha',
                                 header: 'Code',
                                 text: '',
                                 class: 'small d-none d-md-table-cell'
                             },
                             {
+                                sortKey: 'ProductNameSort',
+                                sortType: 'alpha',
                                 header: 'Product',
                                 text: '',
                                 class: 'small'
                             },
-
                             {
+                                sortKey: '',
+                                sortType: '',
                                 header: 'Nature',
                                 text: '',
                                 class: 'small'
                             },
                             {
+                                sortKey: 'CompanyNameSort',
+                                sortType: 'alpha',
                                 header: 'Company',
                                 text: '',
                                 class: 'small'
@@ -643,13 +677,27 @@
                         ];
                         var $trHead = $('<tr>');
                         colDefs.forEach(function(item) {
-                            var $tdColHead = $('<th>').text(item.header).addClass(item.class);
-                            $trHead.append($tdColHead);
+                            //var $tdColHead = $('<th>').text(item.header).addClass(item.class);
+                            var tdColHead = '';
+                            if (item.sortKey.length !== 0) {
+                                let colHtml = "";
+                                colHtml = `<th class="${item.class}"> `;
+                                colHtml += `<a href="#" role="button" name="SortHeader" `;
+                                colHtml += `data-sortkey="${item.sortKey}" data-sorttype="${item.sortType}">  `;
+                                colHtml += `${item.header}  `;
+                                colHtml += `</a>  `;
+                                colHtml += `<i class="" name="SortIcon"></i>  `;
+                                colHtml += `</a>  `;
+                                tdColHead = colHtml;
+                            } else {
+                                tdColHead = $('<th>').text(item.header).addClass(item.class);
+                            }
+                            $trHead.append($(tdColHead));
                         });
                         $trHead.append($('<th>'));
                         $trHead.appendTo('#selectorItemsList > thead');
                         $.each(result.data,
-                            function (index, value) {
+                            function(index, value) {
                                 //colDefs[0].text = value.url;
                                 colDefs[0].text = value.code;
                                 colDefs[1].text = value.name;
@@ -657,7 +705,7 @@
                                 colDefs[2].text = value.warehouseItemNatureName;
                                 colDefs[3].text = value.companyCode;
                                 var itemId = value.id;
-                               // var urlDel = `@Url.Page("./Delete")?id=${itemId}`;
+                                // var urlDel = `@Url.Page("./Delete")?id=${itemId}`;
 
                                 var $tr = $('<tr>');
 
@@ -681,12 +729,42 @@
                             });
 
                         $('[name=selectItem]').on('click',
-                            function (event) {
+                            function(event) {
                                 var button = $(event.delegateTarget);
                                 var productId = button.data('itemid');
                                 console.log('Inside click event handler for selectItem');
                                 getWarehouseItemInfo(productId);
                                 $('#itemSelector').modal('hide');
+
+                            });
+                        $('[name=SortHeader]').on('click',
+                            function(event) {
+                                var button = $(event.delegateTarget);
+                                var reqSort = button.data('sortkey');
+                                let reqSortType = button.data('sorttype');
+                                let iconSortType = '';
+                                var newSortVal = '';
+                                var curSort = $('#currentSort').val();
+                                if (curSort === undefined || curSort === null || curSort.length === 0) {
+                                    curSort = reqSort + ':desc';
+                                }
+                                var curSortAr = curSort.split(':');
+                                if (curSortAr[0] === reqSort) {
+                                    var newSort = curSortAr[1] === 'asc' ? 'desc' : 'asc';
+                                    var newSortIconType = curSortAr[1] === 'asc' ? '-down' : '-up';
+                                    newSortVal = curSortAr[0] + ':' + newSort;
+                                    iconSortType = "fas fa-sort-" + reqSortType + newSortIconType;
+                                } else {
+                                    newSortVal = reqSort + ':asc';
+                                    iconSortType= "fas fa-sort-" + reqSortType + "-up";
+                                }
+                                let $btParent = button.parent();
+                                $btParent.find('td:eq(0)').addClass(iconSortType);
+
+                                $('#currentSort').val(newSortVal);
+                                //$('#pageIndex').val(1);
+                                getProductsSelectorList(selCompanies,selNatures,searchFilter,newSortVal,1000);
+
 
                             });
                     },
@@ -716,7 +794,7 @@
                 });
             };
 
-             var getTransactorSelectorList = (selCompanies,selTransTypes,searchFilter, pageSize) =>{
+            var getTransactorSelectorList = (selCompanies, selTransTypes, searchFilter, pageSize) => {
                 var timeout;
                 var pageIndex = 1;
                 var uri = '/api/GrKoukInfoApi/GetSelectorTransactors';
@@ -761,7 +839,6 @@
                                 text: '',
                                 class: 'small'
                             },
-
                             {
                                 header: 'Type',
                                 text: '',
@@ -781,7 +858,7 @@
                         $trHead.append($('<th>'));
                         $trHead.appendTo('#selectorItemsList > thead');
                         $.each(result.data,
-                            function (index, value) {
+                            function(index, value) {
                                 //colDefs[0].text = value.url;
                                 colDefs[0].text = value.code;
                                 colDefs[1].text = value.name;
@@ -789,7 +866,7 @@
                                 colDefs[2].text = value.transactorTypeName;
                                 colDefs[3].text = value.companyCode;
                                 var itemId = value.id;
-                               // var urlDel = `@Url.Page("./Delete")?id=${itemId}`;
+                                // var urlDel = `@Url.Page("./Delete")?id=${itemId}`;
 
                                 var $tr = $('<tr>');
 
@@ -813,7 +890,7 @@
                             });
 
                         $('[name=selectItem]').on('click',
-                            function (event) {
+                            function(event) {
                                 var button = $(event.delegateTarget);
                                 var transactorId = button.data('itemid');
                                 console.log('Inside click event handler for selectItem');
@@ -854,96 +931,100 @@
                     var $modal = $(this);
                     $modal.find('.modal-title').text('Image');
                     $modal.find('#imageControl').attr("src", imageUrl);
-                  
+
                 });
-            $('#itemSelector').on('shown.bs.modal', function() {
-                let currentCompany = $('#ItemVm_CompanyId').val();
-                $('[name=itemsSearchText]').val("");
-                $('#selectorItemsList > tbody').empty();
-                $('#selectorItemsList > thead').empty();
-               // $('#MaterialNatureTypes').selectpicker('deselectall');
-               // $('#TransactorTypes').selectpicker('deselectall');
-                var $compList = $('#CompaniesList');
-                $compList.selectpicker('val',currentCompany);
-                $compList.selectpicker('render');
-                var $transList = $('#TransactorTypes');
-                
-                $transList.selectpicker('val',3);
-                $transList.selectpicker('render');
+            $('#itemSelector').on('shown.bs.modal',
+                function() {
+                    let currentCompany = $('#ItemVm_CompanyId').val();
+                    $('[name=itemsSearchText]').val("");
+                    $('#selectorItemsList > tbody').empty();
+                    $('#selectorItemsList > thead').empty();
+                    // $('#MaterialNatureTypes').selectpicker('deselectall');
+                    // $('#TransactorTypes').selectpicker('deselectall');
+                    var $compList = $('#CompaniesList');
+                    $compList.selectpicker('val', currentCompany);
+                    $compList.selectpicker('render');
+                    var $transList = $('#TransactorTypes');
 
-                $('[name=itemsSearchText]').trigger('focus');
-                //$compList.selectpicker('refresh');
+                    $transList.selectpicker('val', 3);
+                    $transList.selectpicker('render');
 
-            });
+                    $('[name=itemsSearchText]').trigger('focus');
+                    //$compList.selectpicker('refresh');
+
+                });
             $('#itemSelector').on('show.bs.modal',
-                function (event) {
+                function(event) {
                     var button = $(event.relatedTarget);
                     var selectorType = button.data('selectortype');
                     var modal = $(this);
                     switch (selectorType) {
-                        case "ProductsSelector":
-                            modal.find('.modal-title').text("Ευρετήριο Προιόντων");
-                            $('#TransactorSelectorTypesDiv').hide();
-                            $('#MaterialNatureTypesDiv').show();
-                            curSelectorType = "ProductsSelector";
-                            var $matNatures = $('#MaterialNatureTypes');
-                            if ($matNatures.children('option').length === 0) {
-                                getWarehouseItemNatureList();
-                            }
-                            break;
-                        case "SuppliersSelector":
-                            modal.find('.modal-title').text("Supplier selector");
-                            $('#TransactorSelectorTypesDiv').show();
-                            $('#MaterialNatureTypesDiv').hide();
-                            curSelectorType = "SuppliersSelector";
-                            var $transTypes = $('#TransactorTypes');
-                            if ($transTypes.children('option').length === 0) {
-                                getTransactorTypeList();
-                            }
-                            break;
+                    case "ProductsSelector":
+                        modal.find('.modal-title').text("Ευρετήριο Προιόντων");
+                        $('#TransactorSelectorTypesDiv').hide();
+                        $('#MaterialNatureTypesDiv').show();
+                        curSelectorType = "ProductsSelector";
+                        var $matNatures = $('#MaterialNatureTypes');
+                        if ($matNatures.children('option').length === 0) {
+                            getWarehouseItemNatureList();
+                        }
+                        break;
+                    case "SuppliersSelector":
+                        modal.find('.modal-title').text("Supplier selector");
+                        $('#TransactorSelectorTypesDiv').show();
+                        $('#MaterialNatureTypesDiv').hide();
+                        curSelectorType = "SuppliersSelector";
+                        var $transTypes = $('#TransactorTypes');
+                        if ($transTypes.children('option').length === 0) {
+                            getTransactorTypeList();
+                        }
+                        break;
                     default:
                     }
-                    
-                    
+
+
                     var $compList = $('#CompaniesList');
                     if ($compList.children('option').length === 0) {
                         getCompanyList();
                     }
                 });
-            $('#TransactorTypes').on('changed.bs.select', function (e, clickedIndex, isSelected, previousValue) {
-                var sel = $('#TransactorTypes option:selected');
-                var selected = [];
-                $(sel).each(function(index, item) {
-                    selected.push([$(this).val()]);
+            $('#TransactorTypes').on('changed.bs.select',
+                function(e, clickedIndex, isSelected, previousValue) {
+                    var sel = $('#TransactorTypes option:selected');
+                    var selected = [];
+                    $(sel).each(function(index, item) {
+                        selected.push([$(this).val()]);
+                    });
+
+                    var sItem = selected.toString();
+
+                    selectedTransTypes = sItem;
+                });
+            $('#MaterialNatureTypes').on('changed.bs.select',
+                function(e, clickedIndex, isSelected, previousValue) {
+                    var sel = $('#MaterialNatureTypes option:selected');
+                    var selected = [];
+                    $(sel).each(function(index, item) {
+                        selected.push([$(this).val()]);
+                    });
+
+                    var sItem = selected.toString();
+
+                    selectedNatures = sItem;
                 });
 
-                var sItem = selected.toString();
+            $('#CompaniesList').on('changed.bs.select',
+                function(e, clickedIndex, isSelected, previousValue) {
+                    var sel = $('#CompaniesList option:selected');
+                    var selected = [];
+                    $(sel).each(function(index, item) {
+                        selected.push([$(this).val()]);
+                    });
 
-                selectedTransTypes=sItem;
-            });
-            $('#MaterialNatureTypes').on('changed.bs.select', function (e, clickedIndex, isSelected, previousValue) {
-                var sel = $('#MaterialNatureTypes option:selected');
-                var selected = [];
-                $(sel).each(function(index, item) {
-                    selected.push([$(this).val()]);
+                    var sItem = selected.toString();
+
+                    selectedCompanies = sItem;
                 });
-
-                var sItem = selected.toString();
-
-                selectedNatures=sItem;
-            });
-
-            $('#CompaniesList').on('changed.bs.select', function (e, clickedIndex, isSelected, previousValue) {
-                var sel = $('#CompaniesList option:selected');
-                var selected = [];
-                $(sel).each(function(index, item) {
-                    selected.push([$(this).val()]);
-                });
-
-                var sItem = selected.toString();
-
-                selectedCompanies=sItem;
-            });
             var timeKey;
             $('[name=itemsSearchText]').on('keyup',
                 function(event) {
@@ -962,24 +1043,24 @@
                         clearTimeout(timeKey);
                     }
                     timeKey = setTimeout(function() {
-                        console.log("Will execute get request in 1 sec!");
-                        switch (curSelectorType) {
-                        case "ProductsSelector":
-                            getProductsSelectorList(selectedCompanies, selectedNatures, searchText, 100);
-                            break;
-                        case "SuppliersSelector":
-                            getTransactorSelectorList(selectedCompanies, selectedTransTypes, searchText, 100);
-                            break;
-                        default:
-                        }
-                       
-                        $('#itemSelector').modal('handleUpdate');
+                            console.log("Will execute get request in 1 sec!");
+                            switch (curSelectorType) {
+                            case "ProductsSelector":
+                                getProductsSelectorList(selectedCompanies, selectedNatures, searchText,'', 100);
+                                break;
+                            case "SuppliersSelector":
+                                getTransactorSelectorList(selectedCompanies, selectedTransTypes, searchText, 100);
+                                break;
+                            default:
+                            }
+
+                            $('#itemSelector').modal('handleUpdate');
                         },
                         1000);
                 });
-            //#endregion
+            //#endregion----------------------------
             var priceChanged = () => {
-                var priceValue =parseFloat( $price.val());
+                var priceValue = parseFloat($price.val());
                 var fpaValue = parseFloat($vatPercent.val());
                 var priceNetValue = 0;
 
@@ -1001,7 +1082,7 @@
                 }
             };
             var lineUpdatePrice = (linePrice, lineFpaRate) => {
-                var priceNetValue = parseFloat( linePrice);
+                var priceNetValue = parseFloat(linePrice);
                 var fpaValue = parseFloat(lineFpaRate);
                 var priceValue = 0;
 
@@ -1012,13 +1093,13 @@
                 }
                 var priceType = $seriesUsedPrice.val();
                 switch (priceType) {
-                case '1'://Netto
-                        $priceNet.val(priceNetValue);
-                        $price.val(priceNetValue);
+                case '1': //Netto
+                    $priceNet.val(priceNetValue);
+                    $price.val(priceNetValue);
                     break;
-                case '2'://Brutto
-                        $priceNet.val(priceNetValue);
-                        $price.val(priceValue);
+                case '2': //Brutto
+                    $priceNet.val(priceNetValue);
+                    $price.val(priceValue);
                     break;
                 default:
                     break;
@@ -1030,7 +1111,7 @@
 
                     dataType: 'json',
                     type: 'GET',
-                    url: "/api/Materials/SetBuySeriesInSession?seriesId="+$transDocSeriesId.val(),
+                    url: "/api/Materials/SetBuySeriesInSession?seriesId=" + $transDocSeriesId.val(),
 
                     success: function(result) {
 
@@ -1050,7 +1131,7 @@
 
                     dataType: 'json',
                     type: 'GET',
-                    url: "/api/Materials/SetCompanyInSession?companyId="+$companyId.val(),
+                    url: "/api/Materials/SetCompanyInSession?companyId=" + $companyId.val(),
 
                     success: function(result) {
 
@@ -1100,47 +1181,47 @@
             };
             var setupUnitToUse = (e) => {
                 switch (e) {
-                    case 'MAIN':
-                        $q1.prop('disabled', false);
-                        $q2.prop('disabled' , true);
-                        break;
-                    case 'SEC':
-                        $q1.prop('disabled', true);
-                        $q2.prop('disabled' , false);
-                        break;
-                    case 'BUY':
-                        $q1.prop('disabled', true);
-                        $q2.prop('disabled' , false);
-                        break;
+                case 'MAIN':
+                    $q1.prop('disabled', false);
+                    $q2.prop('disabled', true);
+                    break;
+                case 'SEC':
+                    $q1.prop('disabled', true);
+                    $q2.prop('disabled', false);
+                    break;
+                case 'BUY':
+                    $q1.prop('disabled', true);
+                    $q2.prop('disabled', false);
+                    break;
 
-                    default:
-                        $q1.prop('disabled', false);
-                        $q2.prop('disabled', false);
-                        break;
+                default:
+                    $q1.prop('disabled', false);
+                    $q2.prop('disabled', false);
+                    break;
                 }
             };
             var initValUnitToUse = (e) => {
                 switch (e) {
-                    case 'MAIN':
-                        $q1.val(1);
-                        q1Changed();
-                        $q1.focus();
-                        break;
-                    case 'SEC':
-                        $q2.val(1);
-                        q2Changed();
-                        $q2.focus();
-                        break;
-                    case 'BUY':
-                        $q2.val(1);
-                        q2Changed();
-                        $q2.focus();
-                        break;
+                case 'MAIN':
+                    $q1.val(1);
+                    q1Changed();
+                    $q1.focus();
+                    break;
+                case 'SEC':
+                    $q2.val(1);
+                    q2Changed();
+                    $q2.focus();
+                    break;
+                case 'BUY':
+                    $q2.val(1);
+                    q2Changed();
+                    $q2.focus();
+                    break;
 
-                    default:
-                        $q1.val(1);
-                        q1Changed();
-                        break;
+                default:
+                    $q1.val(1);
+                    q1Changed();
+                    break;
                 }
             };
 
@@ -1149,7 +1230,7 @@
                     contentType: 'application/json; charset=utf-8',
                     dataType: 'json',
                     type: 'GET',
-                    url: "/api/Materials/SeekBarcode?barcode="+$lookUp.val(),
+                    url: "/api/Materials/SeekBarcode?barcode=" + $lookUp.val(),
 
                     success: function(result) {
 
@@ -1245,8 +1326,7 @@
                             $discount.val('0');
                             $lookUp.val(myJson.warehouseItemName);
                             $lookupValueValid.val('OK');
-                        }
-                        else {
+                        } else {
                             $lookupValueValid.val('ERROR');
                         }
 
@@ -1257,9 +1337,9 @@
                     });
             };
             var autoCompleteNameDef = {
-                 source: '/api/materials/SearchWarehouseItemsForBuy',
+                source: '/api/materials/SearchWarehouseItemsForBuy',
                 minLength: 2,
-                maxShowItems:10,
+                maxShowItems: 10,
                 select: function(event, ui) {
 
                     console.log(ui.item.value.toString());
@@ -1267,7 +1347,7 @@
                     //Get WarehouseItem data
                     getWarehouseItemInfo(ui.item.value);
                     return false;
-                 }
+                }
 
             };
 
@@ -1281,19 +1361,19 @@
 
                 var sType = $seekType.val();
                 switch (sType) {
-                    case 'NAME':
-                        $q1.prop('disabled', false);
-                        $q2.prop('disabled' , false);
-                        $lookUp.autocomplete(autoCompleteNameDef);
-                        break;
-                    case 'CODE':
-                        break;
-                    case 'BARCODE':
-                        $lookUp.change(() => {
-                            seekBarcode();
-                         });
-                        break;
-                    default:
+                case 'NAME':
+                    $q1.prop('disabled', false);
+                    $q2.prop('disabled', false);
+                    $lookUp.autocomplete(autoCompleteNameDef);
+                    break;
+                case 'CODE':
+                    break;
+                case 'BARCODE':
+                    $lookUp.change(() => {
+                        seekBarcode();
+                    });
+                    break;
+                default:
                 }
             };
             $seekType.change(() => {
@@ -1430,12 +1510,11 @@
                         '</td></tr>';
                     detailsTableBody.append(productItem);
                     //#endregion
-                }
-                else {
+                } else {
                     console.log("Inside lineEdit Modifying Line");
                     //Μεταβολή γραμμής πίνακα
                     var $tbl = $('#detailsTable');
-                    var $rows = $('tr',$tbl);
+                    var $rows = $('tr', $tbl);
                     var $row = $rows.eq(lineEdit);
 
                     var $colMaterial = $('td:eq(1)', $row);
@@ -1503,52 +1582,56 @@
                 $q2.prop('disabled', false);
             }
 
-            $(document).on('click','a.deleteItem',function(e) {
-                e.preventDefault();
-                var $self = $(this);
-                if ($(this).attr('data-itemId') == "0") {
+            $(document).on('click',
+                'a.deleteItem',
+                function(e) {
+                    e.preventDefault();
+                    var $self = $(this);
+                    if ($(this).attr('data-itemId') == "0") {
 
-                    $(this).parents('tr').css("background-color", "#ff6347").fadeOut(800,
-                        function() {
-                            $(this).remove();
-                            updateCounter();
-                        });
+                        $(this).parents('tr').css("background-color", "#ff6347").fadeOut(800,
+                            function() {
+                                $(this).remove();
+                                updateCounter();
+                            });
 
-                }
-            });
+                    }
+                });
             //--------------------
-            $(document).on('click','a.modifyItem',function(e) {
-                e.preventDefault();
-                var $self = $(this);
-                if ($(this).attr('data-itemId') == "0") {
+            $(document).on('click',
+                'a.modifyItem',
+                function(e) {
+                    e.preventDefault();
+                    var $self = $(this);
+                    if ($(this).attr('data-itemId') == "0") {
 
-                    var lineEdit = $(this).parents('tr').find('td:eq(0)').text();
-                    var materialId = $(this).parents('tr').find('td:eq(1)').attr('data-materialId');
-                    var materialName = $(this).parents('tr').find('td:eq(1)').text();
-                    var mainUnitId = $(this).parents('tr').find('td:eq(1)').attr('data-mainUnitId');
-                    var secUnitId = $(this).parents('tr').find('td:eq(1)').attr('data-secUnitId');
-                    var factor = $(this).parents('tr').find('td:eq(1)').attr('data-factor');
-                    var q1 = $(this).parents('tr').find('td:eq(2)').attr('data-actualValue');
-                    var q2 = $(this).parents('tr').find('td:eq(3)').attr('data-actualValue');
-                    var price = $(this).parents('tr').find('td:eq(4)').attr('data-actualValue');
-                    var discountRate = $(this).parents('tr').find('td:eq(5)').attr('data-actualValue');
-                    var fpaRate = $(this).parents('tr').find('td:eq(6)').attr('data-actualValue');
+                        var lineEdit = $(this).parents('tr').find('td:eq(0)').text();
+                        var materialId = $(this).parents('tr').find('td:eq(1)').attr('data-materialId');
+                        var materialName = $(this).parents('tr').find('td:eq(1)').text();
+                        var mainUnitId = $(this).parents('tr').find('td:eq(1)').attr('data-mainUnitId');
+                        var secUnitId = $(this).parents('tr').find('td:eq(1)').attr('data-secUnitId');
+                        var factor = $(this).parents('tr').find('td:eq(1)').attr('data-factor');
+                        var q1 = $(this).parents('tr').find('td:eq(2)').attr('data-actualValue');
+                        var q2 = $(this).parents('tr').find('td:eq(3)').attr('data-actualValue');
+                        var price = $(this).parents('tr').find('td:eq(4)').attr('data-actualValue');
+                        var discountRate = $(this).parents('tr').find('td:eq(5)').attr('data-actualValue');
+                        var fpaRate = $(this).parents('tr').find('td:eq(6)').attr('data-actualValue');
 
-                    $lineEditing.val(lineEdit);
-                    $materialId.val(materialId);
-                    $lookUp.val(materialName);
-                    $lookupValueValid.val('OK');
-                    //$price.val(price);
-                    $q1.val(q1);
-                    $q2.val(q2);
-                    $vatPercent.val(fpaRate);
-                    $discount.val(discountRate);
-                    $mainUnitId.val(mainUnitId);
-                    $secUnitId.val(secUnitId);
-                    $factor.val(factor);
-                    lineUpdatePrice(price,fpaRate);
-                }
-            });
+                        $lineEditing.val(lineEdit);
+                        $materialId.val(materialId);
+                        $lookUp.val(materialName);
+                        $lookupValueValid.val('OK');
+                        //$price.val(price);
+                        $q1.val(q1);
+                        $q2.val(q2);
+                        $vatPercent.val(fpaRate);
+                        $discount.val(discountRate);
+                        $mainUnitId.val(mainUnitId);
+                        $secUnitId.val(secUnitId);
+                        $factor.val(factor);
+                        lineUpdatePrice(price, fpaRate);
+                    }
+                });
 
 
             function saveData(data) {
@@ -1567,9 +1650,9 @@
                         //location.reload();
                         window.location.href = '@Url.Page("Index")';
                     },
-                    error: function (e) {
+                    error: function(e) {
                         console.log('Error saving ');
-                        console.log(e );
+                        console.log(e);
                         var r = e.responseJSON.error;
                         toastr.error(r, "saveData");
                     }
@@ -1599,23 +1682,24 @@
                 var linesArr = [];
                 linesArr.length = 0;
 
-                $.each($("#detailsTable tbody tr"),function() {
-                    linesArr.push({
-                        // materialId: $(this).find('td:eq(0)').html(),
-                        warehouseItemId: $(this).find('td:eq(1)').attr('data-materialId'),
-                        mainUnitId: $(this).find('td:eq(1)').attr('data-mainUnitId'),
-                        secUnitId: $(this).find('td:eq(1)').attr('data-secUnitId'),
-                        factor: $(this).find('td:eq(1)').attr('data-factor'),
-                        q1: $(this).find('td:eq(2)').attr('data-actualValue'),
-                        q2: $(this).find('td:eq(3)').attr('data-actualValue'),
-                        price: $(this).find('td:eq(4)').attr('data-actualValue'),
-                        discount: $(this).find('td:eq(5)').attr('data-actualValue'),
-                        discountRate: $(this).find('td:eq(5)').attr('data-actualValue'),
-                        fpaRate: $(this).find('td:eq(6)').attr('data-actualValue'),
-                        vatPercent: $(this).find('td:eq(6)').attr('data-actualValue')
+                $.each($("#detailsTable tbody tr"),
+                    function() {
+                        linesArr.push({
+                            // materialId: $(this).find('td:eq(0)').html(),
+                            warehouseItemId: $(this).find('td:eq(1)').attr('data-materialId'),
+                            mainUnitId: $(this).find('td:eq(1)').attr('data-mainUnitId'),
+                            secUnitId: $(this).find('td:eq(1)').attr('data-secUnitId'),
+                            factor: $(this).find('td:eq(1)').attr('data-factor'),
+                            q1: $(this).find('td:eq(2)').attr('data-actualValue'),
+                            q2: $(this).find('td:eq(3)').attr('data-actualValue'),
+                            price: $(this).find('td:eq(4)').attr('data-actualValue'),
+                            discount: $(this).find('td:eq(5)').attr('data-actualValue'),
+                            discountRate: $(this).find('td:eq(5)').attr('data-actualValue'),
+                            fpaRate: $(this).find('td:eq(6)').attr('data-actualValue'),
+                            vatPercent: $(this).find('td:eq(6)').attr('data-actualValue')
 
+                        });
                     });
-                });
 
                 var data = JSON.stringify({
                     transDate: $("#ItemVm_TransDate").val(),
@@ -1646,7 +1730,7 @@
             });
             //-------------
             $transDate.val(new Date().toISOString().slice(0, 10));
-            var copyFromId =parseInt( $('#CopyFromId').val());
+            var copyFromId = parseInt($('#CopyFromId').val());
 
             if (copyFromId === 0) {
                 $materialCounter.val(0);
@@ -1664,7 +1748,7 @@
             }
             if ($initialLoad.val() == 'True') {
                 console.log("Initial load is true setting initial values");
-               // $companyId.val('@Model.RoutedCompanyId');
+                // $companyId.val('@Model.RoutedCompanyId');
                 seriesChanged();
                 companyChanged();
                 setSeekType();

@@ -1723,16 +1723,16 @@ namespace GrKouk.WebRazor.Controllers
                 switch (request.SortData.ToLower())
                 {
 
-                    case "namesort:asc":
+                    case "productnamesort:asc":
                         fullListIq = fullListIq.OrderBy(p => p.Name);
                         break;
-                    case "namesort:desc":
+                    case "productnamesort:desc":
                         fullListIq = fullListIq.OrderByDescending(p => p.Name);
                         break;
-                    case "codesort:asc":
+                    case "productcodesort:asc":
                         fullListIq = fullListIq.OrderBy(p => p.Code);
                         break;
-                    case "codesort:desc":
+                    case "productcodesort:desc":
                         fullListIq = fullListIq.OrderByDescending(p => p.Code);
                         break;
                     case "categorysort:asc":
