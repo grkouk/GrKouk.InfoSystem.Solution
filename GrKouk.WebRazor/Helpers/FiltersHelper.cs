@@ -65,6 +65,7 @@ namespace GrKouk.WebRazor.Helpers
 
             return companiesList;
         }
+       
         public static async Task<List<SelectListItem>> GetTransactorsForTypeFilterListAsync(ApiDbContext context, string trType)
         {
             var trTypeObject = await context.TransactorTypes.FirstOrDefaultAsync(p => p.Code == trType);

@@ -72,8 +72,8 @@ namespace GrKouk.WebRazor.Pages.MainEntities.MaterialCodes
             ViewData["CodeUsedUnit"] = new SelectList(codeUsedUnits, "Value", "Text");
 
             ViewData["WarehouseItemId"] = new SelectList(_context.WarehouseItems.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
-            ViewData["CompanyId"] = FiltersHelper.GetCompaniesFilterList(_context);
-
+            //ViewData["CompanyId"] = FiltersHelper.GetCompaniesFilterList(_context);
+            ViewData["CompanyId"] = new SelectList(_context.Companies.OrderBy(p => p.Code).AsNoTracking(), "Id", "Code");
             ViewData["TransactorId"] = await FiltersHelper.GetTransactorsForTypeFilterListAsync(_context, "SYS.SUPPLIER");
         }
         [BindProperty]
