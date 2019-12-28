@@ -56,11 +56,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc
             {
                 return NotFound();
             }
-
-            //ItemVm.AmountNet = buyMatDoc.BuyDocLines.Sum(p => p.AmountNet);
-            //ItemVm.AmountFpa = buyMatDoc.BuyDocLines.Sum(p => p.AmountFpa);
-            //ItemVm.AmountDiscount = buyMatDoc.BuyDocLines.Sum(p => p.AmountDiscount);
-
+            
             LoadCombos();
             return Page();
         }
