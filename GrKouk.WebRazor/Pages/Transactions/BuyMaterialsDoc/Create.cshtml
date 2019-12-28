@@ -29,7 +29,7 @@
             <div asp-validation-summary="ModelOnly" class="text-danger small"></div>
             <input type="hidden" asp-for="@Model.CopyFromId" id="CopyFromId" />
             <input type="hidden" asp-for="@Model.InitialLoad" id="IsInitialLoad" />
-        <input type="hidden" id="currentSort" />
+        
             <input type="hidden" id="MaterialId" />
             <input type="hidden" id="MaterialLastPrice" />
             <input type="hidden" id="MaterialFactor" />
@@ -428,36 +428,33 @@
             var selectedNatures = "";
             var selectedTransTypes = "";
             var curSelectorType = "";
-            var handleSortUi = () => {
+            const setProductSelectorCurrentSort = (currentSort) => {
+                var filtersArr = [];
+                filtersArr.push({
+                    filterKey: 'currentSort',
+                    filterValue: currentSort
+                });
+                let sessionVal = JSON.stringify(filtersArr);
 
-                var curSort = $('#currentSort').val();
-
-                $('[name=SortIcon]').hide();
-                if (curSort === undefined || curSort === null || curSort.length === 0) {
-                    //hide all icons
-                    return;
-
-                }
-                var curSortAr = curSort.split(':');
-                switch (curSortAr[0]) {
-                case 'transactiondate':
-                    if (curSortAr[1] === 'asc') {
-                        $('#TransDateHeaderIcon').addClass('fas fa-sort-numeric-up').show();
-                    } else {
-                        $('#TransDateHeaderIcon').addClass('fas fa-sort-numeric-down').show();
-                    }
-                    break;
-                case 'productnamesort':
-                    if (curSortAr[1] === 'asc') {
-                        $('#TransactorNameHeaderIcon').addClass('fas fa-sort-alpha-up').show();
-                    } else {
-                        $('#TransactorNameHeaderIcon').addClass('fas fa-sort-alpha-down').show();
-                    }
-                    break;
-                default:
-                }
-
+                localStorage.setItem('ProductSelectorStore', sessionVal);
             };
+
+            const getProductSelectorCurrentSort = () => {
+                var storageItemJs = localStorage.getItem('ProductSelectorStore');
+                if (storageItemJs === undefined || storageItemJs === null) {
+                    return "";
+                } else {
+               
+                    var storageItem = JSON.parse(storageItemJs);
+                    try {
+                        let filtersValue = storageItem.find(x => x.filterKey === 'currentSort').filterValue;
+                        return filtersValue;
+                    } catch (e) {
+                        return "";
+                    }
+                }
+            };
+
             var getWarehouseItemNatureList = () => {
                 var timeout;
                 var pageIndex = 1;
@@ -617,7 +614,7 @@
                     }
                 });
             };
-            var getProductsSelectorList = (selCompanies, selNatures, searchFilter,sortData, pageSize) => {
+            var getProductsSelectorList = (selCompanies, selNatures, searchFilter, sortData, pageSize) => {
                 var timeout;
                 var pageIndex = 1;
                 var uri = '/api/GrKoukInfoApi/GetSelectorWareHouseItems';
@@ -675,14 +672,14 @@
                                 class: 'small'
                             }
                         ];
-                        let curSortUndefined=false;
-                         let curSortAr=[]; 
-                         var curSort = $('#currentSort').val();
-                          if (curSort === undefined || curSort === null || curSort.length === 0) {
-                             curSortUndefined=true;
-                           } else{
-                              curSortAr = curSort.split(':');
-                           }
+                        let curSortUndefined = false;
+                        let curSortAr = [];
+                        var curSort = getProductSelectorCurrentSort();
+                        if (curSort === undefined || curSort === null || curSort.length === 0) {
+                            curSortUndefined = true;
+                        } else {
+                            curSortAr = curSort.split(':');
+                        }
                         var $trHead = $('<tr>');
                         colDefs.forEach(function(item) {
                             //var $tdColHead = $('<th>').text(item.header).addClass(item.class);
@@ -694,12 +691,11 @@
                                 colHtml += `data-sortkey="${item.sortKey}" data-sorttype="${item.sortType}">  `;
                                 colHtml += `${item.header}  `;
                                 colHtml += `</a>  `;
-                                if(curSortUndefined){
-                                    colHtml += `<i class="" name="SortIcon"></i>  `;    
-                                }
-                                else {
-                                    if(curSortAr[0]===item.sortKey) {
-                                        
+                                if (curSortUndefined) {
+                                    colHtml += `<i class="" name="SortIcon"></i>  `;
+                                } else {
+                                    if (curSortAr[0] === item.sortKey) {
+
                                         var newSortIconType = curSortAr[1] === 'asc' ? '-down' : '-up';
                                         var iconSortType = "fas fa-sort-" + item.sortType + newSortIconType;
                                         colHtml += `<i class="${iconSortType}" name="SortIcon"></i>  `;
@@ -707,7 +703,7 @@
                                         colHtml += `<i class="" name="SortIcon"></i>  `;
                                     }
                                 }
-                                
+
                                 colHtml += `</a>  `;
                                 tdColHead = colHtml;
                             } else {
@@ -765,7 +761,7 @@
                                 let reqSortType = button.data('sorttype');
                                 let iconSortType = '';
                                 var newSortVal = '';
-                                var curSort = $('#currentSort').val();
+                                var curSort = getProductSelectorCurrentSort();
                                 if (curSort === undefined || curSort === null || curSort.length === 0) {
                                     curSort = reqSort + ':desc';
                                 }
@@ -777,18 +773,18 @@
                                     iconSortType = "fas fa-sort-" + reqSortType + newSortIconType;
                                 } else {
                                     newSortVal = reqSort + ':asc';
-                                    iconSortType= "fas fa-sort-" + reqSortType + "-up";
+                                    iconSortType = "fas fa-sort-" + reqSortType + "-up";
                                 }
                                 let $btParent = button.parent();
-                                let $icon= $btParent.find('i:eq(0)');
-                                if($icon!==null){
-                                $icon.removeClass();
-                                $icon.addClass(iconSortType);    
+                                let $icon = $btParent.find('i:eq(0)');
+                                if ($icon !== null) {
+                                    $icon.removeClass();
+                                    $icon.addClass(iconSortType);
                                 }
-                                
-                                $('#currentSort').val(newSortVal);
+
+                                setProductSelectorCurrentSort(newSortVal);
                                 //$('#pageIndex').val(1);
-                                getProductsSelectorList(selCompanies,selNatures,searchFilter,newSortVal,1000);
+                                getProductsSelectorList(selCompanies, selNatures, searchFilter, newSortVal, 1000);
 
 
                             });
@@ -1069,9 +1065,14 @@
                     }
                     timeKey = setTimeout(function() {
                             console.log("Will execute get request in 1 sec!");
+                           
                             switch (curSelectorType) {
-                            case "ProductsSelector":
-                                getProductsSelectorList(selectedCompanies, selectedNatures, searchText,'', 100);
+                                case "ProductsSelector":
+                                    var curSort = getProductSelectorCurrentSort();
+                                    if (curSort === undefined || curSort === null || curSort.length === 0) {
+                                        curSort = '';
+                                    }
+                                     getProductsSelectorList(selectedCompanies, selectedNatures, searchText, curSort, 100);
                                 break;
                             case "SuppliersSelector":
                                 getTransactorSelectorList(selectedCompanies, selectedTransTypes, searchText, 100);
