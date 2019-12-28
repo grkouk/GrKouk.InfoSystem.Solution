@@ -633,7 +633,7 @@
                     }
                 });
             };
-            var getProductsSelectorList = (selCompanies, selNatures, searchFilter, sortData, pageSize) => {
+            var getProductsSelectorList = (selCompanies, selNatures, searchFilter, sortData, pageSize,selectionCallback) => {
                 var timeout;
                 var pageIndex = 1;
                 var uri = '/api/GrKoukInfoApi/GetSelectorWareHouseItems';
@@ -769,7 +769,7 @@
                                 var button = $(event.delegateTarget);
                                 var productId = button.data('itemid');
                                 console.log('Inside click event handler for selectItem');
-                                getWarehouseItemInfo(productId);
+                                selectionCallback(productId);
                                 $('#itemSelector').modal('hide');
 
                             });
@@ -803,7 +803,7 @@
 
                                 setProductSelectorCurrentSort(newSortVal);
                                 //$('#pageIndex').val(1);
-                                getProductsSelectorList(selCompanies, selNatures, searchFilter, newSortVal, 1000);
+                                getProductsSelectorList(selCompanies, selNatures, searchFilter, newSortVal, 1000,getWarehouseItemInfo);
 
 
                             });
@@ -834,7 +834,7 @@
                 });
             };
 
-            var getTransactorSelectorList = (selCompanies, selTransTypes, searchFilter, sortData, pageSize) => {
+            var getTransactorSelectorList = (selCompanies, selTransTypes, searchFilter, sortData, pageSize,selectionCallback) => {
                 var timeout;
                 var pageIndex = 1;
                 var uri = '/api/GrKoukInfoApi/GetSelectorTransactors';
@@ -971,7 +971,7 @@
                                 var button = $(event.delegateTarget);
                                 var transactorId = button.data('itemid');
                                 console.log('Inside click event handler for selectItem');
-                                $('#ItemVm_TransactorId').val(transactorId);
+                                selectionCallback(transactorId);
                                 $('#itemSelector').modal('hide');
 
                             });
@@ -1005,7 +1005,7 @@
 
                                 setTransactorSelectorCurrentSort(newSortVal);
                                 //$('#pageIndex').val(1);
-                                getTransactorSelectorList(selCompanies, selTransTypes, searchFilter, newSortVal, 1000);
+                                getTransactorSelectorList(selCompanies, selTransTypes, searchFilter, newSortVal, 1000,selectionCallback);
 
 
                             });
@@ -1162,14 +1162,15 @@
                                     if (curSort === undefined || curSort === null || curSort.length === 0) {
                                         curSort = '';
                                     }
-                                     getProductsSelectorList(selectedCompanies, selectedNatures, searchText, curSort, 100);
+                                    getProductsSelectorList(selectedCompanies, selectedNatures, searchText, curSort, 100,getWarehouseItemInfo);
                                      break;
                                 case "SuppliersSelector":
                                     var curSortTrans = getTransactorSelectorCurrentSort();
                                     if (curSortTrans === undefined || curSortTrans === null || curSortTrans.length === 0) {
                                         curSortTrans = '';
                                     }
-                                     getTransactorSelectorList(selectedCompanies, selectedTransTypes, searchText,curSortTrans, 100);
+                                    getTransactorSelectorList(selectedCompanies, selectedTransTypes, searchText,curSortTrans, 100,transactorSelected);
+
                                      break;
                             default:
                             }
@@ -1178,6 +1179,9 @@
                         },
                         1000);
                 });
+            const transactorSelected = (transactorId) => {
+                $('#ItemVm_TransactorId').val(transactorId);
+            }
             //#endregion
 
             var priceChanged = () => {
