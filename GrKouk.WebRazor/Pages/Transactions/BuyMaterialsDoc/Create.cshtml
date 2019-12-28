@@ -675,6 +675,14 @@
                                 class: 'small'
                             }
                         ];
+                        let curSortUndefined=false;
+                         let curSortAr=[]; 
+                         var curSort = $('#currentSort').val();
+                          if (curSort === undefined || curSort === null || curSort.length === 0) {
+                             curSortUndefined=true;
+                           } else{
+                              curSortAr = curSort.split(':');
+                           }
                         var $trHead = $('<tr>');
                         colDefs.forEach(function(item) {
                             //var $tdColHead = $('<th>').text(item.header).addClass(item.class);
@@ -686,7 +694,20 @@
                                 colHtml += `data-sortkey="${item.sortKey}" data-sorttype="${item.sortType}">  `;
                                 colHtml += `${item.header}  `;
                                 colHtml += `</a>  `;
-                                colHtml += `<i class="" name="SortIcon"></i>  `;
+                                if(curSortUndefined){
+                                    colHtml += `<i class="" name="SortIcon"></i>  `;    
+                                }
+                                else {
+                                    if(curSortAr[0]===item.sortKey) {
+                                        
+                                        var newSortIconType = curSortAr[1] === 'asc' ? '-down' : '-up';
+                                        var iconSortType = "fas fa-sort-" + item.sortType + newSortIconType;
+                                        colHtml += `<i class="${iconSortType}" name="SortIcon"></i>  `;
+                                    } else {
+                                        colHtml += `<i class="" name="SortIcon"></i>  `;
+                                    }
+                                }
+                                
                                 colHtml += `</a>  `;
                                 tdColHead = colHtml;
                             } else {
@@ -759,8 +780,12 @@
                                     iconSortType= "fas fa-sort-" + reqSortType + "-up";
                                 }
                                 let $btParent = button.parent();
-                                $btParent.find('td:eq(0)').addClass(iconSortType);
-
+                                let $icon= $btParent.find('i:eq(0)');
+                                if($icon!==null){
+                                $icon.removeClass();
+                                $icon.addClass(iconSortType);    
+                                }
+                                
                                 $('#currentSort').val(newSortVal);
                                 //$('#pageIndex').val(1);
                                 getProductsSelectorList(selCompanies,selNatures,searchFilter,newSortVal,1000);
