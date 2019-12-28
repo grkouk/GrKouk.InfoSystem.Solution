@@ -85,7 +85,7 @@
                 <div class="form-group col-sm-3">
                     <label class="small">LookUp</label>
                     <div class="input-group input-group-sm">
-                        <input class="form-control form-control-sm " style="font-size: 0.7rem" id="Lookup" />
+                        <input class="form-control form-control-sm " style="font-size: 0.7rem" id="Lookup" autocomplete="off" />
                         <div class="input-group-append" id="button-addon5">
                             <button class="btn btn-outline-secondary btn-sm " data-toggle="modal" data-target="#itemSelector" data-selectorType="ProductsSelector" style="font-size: 0.7rem" type="button"><i class="fab fa-asymmetrik"></i></button>
                         </div>
@@ -710,7 +710,7 @@
                             if (item.sortKey.length !== 0) {
                                 let colHtml = "";
                                 colHtml = `<th class="${item.class}"> `;
-                                colHtml += `<a href="#" role="button" name="SortHeader" `;
+                                colHtml += `<a href="#" role="button" name="SortHeader" tabindex="-1" `;
                                 colHtml += `data-sortkey="${item.sortKey}" data-sorttype="${item.sortType}">  `;
                                 colHtml += `${item.header}  `;
                                 colHtml += `</a>  `;
@@ -912,7 +912,7 @@
                             if (item.sortKey.length !== 0) {
                                 let colHtml = "";
                                 colHtml = `<th class="${item.class}"> `;
-                                colHtml += `<a href="#" role="button" name="SortHeader" `;
+                                colHtml += `<a href="#" role="button" name="SortHeader" tabindex="-1" `;
                                 colHtml += `data-sortkey="${item.sortKey}" data-sorttype="${item.sortType}">  `;
                                 colHtml += `${item.header}  `;
                                 colHtml += `</a>  `;
@@ -1788,17 +1788,7 @@
 
                 var $form = $('#transForm');
                 var f = document.getElementById("transForm");
-                //#region validation that didt perform well
-                // var isValidate = $form[0].checkValidity();
-                //var isValidate2 = f.checkValidity();
-                //console.log("Check Form validation is " + isValidate);
-                //console.log("Check Form validation2 is " + isValidate2);
-                //if (!isValidate) {
-                //    $form.addClass('was-validated');
-                //    //e.preventDefault();
-                //    return;
-                //}
-                //#endregion
+                
                 e.preventDefault();
 
                 $('#thisForm').prop("disabled", true);

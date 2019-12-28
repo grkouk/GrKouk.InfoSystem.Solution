@@ -86,7 +86,7 @@
                 <div class="form-group col-sm-3">
                     <label class="small">LookUp</label>
                     <div class="input-group input-group-sm">
-                        <input class="form-control form-control-sm " style="font-size: 0.7rem" id="Lookup" />
+                        <input class="form-control form-control-sm " style="font-size: 0.7rem" id="Lookup" autocomplete="off"/>
                         <div class="input-group-append" id="button-addon5">
                             <button class="btn btn-outline-secondary btn-sm " data-toggle="modal" data-target="#itemSelector" data-selectorType="ProductsSelector" style="font-size: 0.7rem" type="button"><i class="fab fa-asymmetrik"></i></button>
                         </div>
@@ -706,7 +706,7 @@
                             if (item.sortKey.length !== 0) {
                                 let colHtml = "";
                                 colHtml = `<th class="${item.class}"> `;
-                                colHtml += `<a href="#" role="button" name="SortHeader" `;
+                                colHtml += `<a href="#" role="button" name="SortHeader" tabindex="-1" `;
                                 colHtml += `data-sortkey="${item.sortKey}" data-sorttype="${item.sortType}">  `;
                                 colHtml += `${item.header}  `;
                                 colHtml += `</a>  `;
@@ -908,7 +908,7 @@
                             if (item.sortKey.length !== 0) {
                                 let colHtml = "";
                                 colHtml = `<th class="${item.class}"> `;
-                                colHtml += `<a href="#" role="button" name="SortHeader" `;
+                                colHtml += `<a href="#" role="button" name="SortHeader" tabindex="-1" `;
                                 colHtml += `data-sortkey="${item.sortKey}" data-sorttype="${item.sortType}">  `;
                                 colHtml += `${item.header}  `;
                                 colHtml += `</a>  `;
@@ -1410,6 +1410,50 @@
                 $amountSum.val(formatterCurrency.format(sumGross));
                 $amountSum.attr('data-actualValue', sumGross);
             };
+            var getWarehouseItemInfo = (itemId) => {
+                var uri = '@Configuration.GetSection("WebApiSettings")["WebApiLocal"]';
+                var finalUri = `${uri}/materials/materialdata?warehouseItemId=${itemId}`;
+                $materialId.val(itemId);
+                console.log(finalUri);
+
+                fetch(finalUri)
+                    .then(function(response) {
+                        if (response.ok) {
+                            return response.json();
+                        } else {
+                            return "";
+                        }
+
+                    })
+                    .then(function(myJson) {
+                        if (myJson) {
+                            console.log(JSON.stringify(myJson));
+                            var rate = myJson.fpaRate;
+                            var lastPrice = myJson.lastPrice;
+                            var fpaId = myJson.fpaId;
+                            //I Use main unit and Buy Unit as secondary
+                            $q1Label.text(`Q1(${myJson.mainUnitCode})`);
+                            $q2Label.text(`Q2(${myJson.buyUnitCode})`);
+                            $vatPercent.val(rate);
+                            $('#MaterialFpaId').val(fpaId);
+                            $price.val(lastPrice);
+                            $priceNet.val(lastPrice);
+                            $mainUnitId.val(myJson.mainUnitId);
+                            $secUnitId.val(myJson.buyUnitId);
+                            $factor.val(myJson.factorBuy);
+                            $discount.val('0');
+                            $lookUp.val(myJson.warehouseItemName);
+                            $lookupValueValid.val('OK');
+                        } else {
+                            $lookupValueValid.val('ERROR');
+                        }
+
+                    })
+                    .catch((error) => {
+                        $lookupValueValid.val('ERROR');
+                        console.log(error);
+                    });
+            };
             var autoCompleteNameDef = {
                  source: '/api/materials/SearchWarehouseItemsForBuy',
                 minLength: 2,
@@ -1419,48 +1463,7 @@
                     console.log(ui.item.value.toString());
                     this.value = ui.item.label;
                     //Get WarehouseItem data
-                    var uri = '@Configuration.GetSection("WebApiSettings")["WebApiLocal"]';
-                    var finalUri = `${uri}/materials/materialdata?warehouseItemId=${ui.item.value}`;
-
-                    console.log(finalUri);
-
-                    fetch(finalUri)
-                        .then(function(response) {
-                            if (response.ok) {
-                                return response.json();
-                            } else {
-                                return "";
-                            }
-
-                        })
-                        .then(function(myJson) {
-                            if (myJson) {
-                                console.log(JSON.stringify(myJson));
-                                var rate = myJson.fpaRate;
-                                var lastPrice = myJson.lastPrice;
-                                var fpaId = myJson.fpaId;
-                                //I Use main unit and Buy Unit as secondary
-                                $q1Label.text(`Q1(${myJson.mainUnitCode})`);
-                                $q2Label.text(`Q2(${myJson.buyUnitCode})`);
-                                $vatPercent.val(rate);
-                                $('#MaterialFpaId').val(fpaId);
-                                $price.val(lastPrice);
-                                $priceNet.val(lastPrice);
-                                $mainUnitId.val(myJson.mainUnitId);
-                                $secUnitId.val(myJson.buyUnitId);
-                                $factor.val(myJson.factorBuy);
-                                $discount.val('0');
-                                $lookupValueValid.val('OK');
-                            }
-                            else {
-                                $lookupValueValid.val('ERROR');
-                            }
-
-                        })
-                        .catch((error) => {
-                            $lookupValueValid.val('ERROR');
-                            console.log(error);
-                        });
+                    getWarehouseItemInfo(ui.item.value);
                     return false;
                  }
 
