@@ -136,14 +136,7 @@ namespace GrKouk.WebRazor.Controllers
         [HttpGet("SeekBarcode")]
         public async Task<IActionResult> GetMaterialFromBarcode(string barcode)
         {
-            //var sessionCompanyId = HttpContext.Session.GetString("CompanyId");
-            //var materials = await _context.WarehouseItemsCodes
-            //    .Include(p => p.WarehouseItem).ThenInclude(p=>p.FpaDef)
-            //    .Include(p => p.WarehouseItem).ThenInclude(p => p.MainMeasureUnit)
-            //    .Include(p => p.WarehouseItem).ThenInclude(p => p.SecondaryMeasureUnit)
-            //    .Include(p => p.WarehouseItem).ThenInclude(p => p.BuyMeasureUnit)
-            //    .Where(p => p.Code == barcode && p.CodeType == WarehouseItemCodeTypeEnum.CodeTypeEnumBarcode)
-            //    .ToListAsync();
+           
             var materials = await _context.WrItemCodes
                 .Include(p => p.WarehouseItem).ThenInclude(p => p.FpaDef)
                 .Include(p => p.WarehouseItem).ThenInclude(p => p.MainMeasureUnit)
@@ -182,11 +175,11 @@ namespace GrKouk.WebRazor.Controllers
                     unitToUse = "MAIN";
                     break;
                 case WarehouseItemCodeUsedUnitEnum.CodeUsedUnitEnumSecondary:
-                    unitFactor = material.SecondaryUnitToMainRate;
+                    unitFactor = materials[0].RateToMainUnit;
                     unitToUse = "SEC";
                     break;
                 case WarehouseItemCodeUsedUnitEnum.CodeUsedUnitEnumBuy:
-                    unitFactor = material.BuyUnitToMainRate;
+                    unitFactor =  materials[0].RateToMainUnit;
                     unitToUse = "BUY";
                     break;
                 default:
