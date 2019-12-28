@@ -803,7 +803,7 @@
 
                                 setProductSelectorCurrentSort(newSortVal);
                                 //$('#pageIndex').val(1);
-                                getProductsSelectorList(selCompanies, selNatures, searchFilter, newSortVal, 1000,getWarehouseItemInfo);
+                                getProductsSelectorList(selCompanies, selNatures, searchFilter, newSortVal, 1000,productSelected);
 
 
                             });
@@ -1162,7 +1162,7 @@
                                     if (curSort === undefined || curSort === null || curSort.length === 0) {
                                         curSort = '';
                                     }
-                                    getProductsSelectorList(selectedCompanies, selectedNatures, searchText, curSort, 100,getWarehouseItemInfo);
+                                    getProductsSelectorList(selectedCompanies, selectedNatures, searchText, curSort, 100,productSelected);
                                      break;
                                 case "SuppliersSelector":
                                     var curSortTrans = getTransactorSelectorCurrentSort();
@@ -1181,7 +1181,10 @@
                 });
             const transactorSelected = (transactorId) => {
                 $('#ItemVm_TransactorId').val(transactorId);
-            }
+            };
+            const productSelected = (productId) => {
+                getWarehouseItemInfo(productId);
+            };
             //#endregion
 
             var priceChanged = () => {
