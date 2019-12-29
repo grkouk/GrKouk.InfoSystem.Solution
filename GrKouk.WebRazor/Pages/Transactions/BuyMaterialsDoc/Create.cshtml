@@ -1357,11 +1357,15 @@
             };
 
             var seekBarcode = () => {
+                let lookupVal = $lookUp.val();
+                let trId = $('#ItemVm_TransactorId').val();
+                let cmId = $('#ItemVm_CompanyId').val();
+                let uri= `/api/Materials/SeekBarcode?barcode=${lookupVal}&companyId=${cmId}&transactorId=${trId}`;
                 return $.ajax({
                     contentType: 'application/json; charset=utf-8',
                     dataType: 'json',
                     type: 'GET',
-                    url: "/api/Materials/SeekBarcode?barcode=" + $lookUp.val(),
+                    url: uri,
 
                     success: function(result) {
 

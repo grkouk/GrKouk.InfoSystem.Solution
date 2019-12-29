@@ -134,38 +134,72 @@ namespace GrKouk.WebRazor.Controllers
             });
         }
         [HttpGet("SeekBarcode")]
-        public async Task<IActionResult> GetMaterialFromBarcode(string barcode)
+        public async Task<IActionResult> GetMaterialFromBarcode(string barcode,string companyId, string transactorId)
         {
            
-            var materials = await _context.WrItemCodes
+            var materials =  _context.WrItemCodes
                 .Include(p => p.WarehouseItem).ThenInclude(p => p.FpaDef)
                 .Include(p => p.WarehouseItem).ThenInclude(p => p.MainMeasureUnit)
                 .Include(p => p.WarehouseItem).ThenInclude(p => p.SecondaryMeasureUnit)
                 .Include(p => p.WarehouseItem).ThenInclude(p => p.BuyMeasureUnit)
-                .Where(p => p.Code == barcode && p.CodeType == WarehouseItemCodeTypeEnum.CodeTypeEnumBarcode)
-                .ToListAsync();
-            //.ProjectTo<WarehouseItemSearchListDto>(_mapper.ConfigurationProvider)
-            //.Select(p => new { label = p.Label, value = p.Id }).ToListAsync();
+                .Where(p => p.Code == barcode && p.CodeType == WarehouseItemCodeTypeEnum.CodeTypeEnumBarcode);
+            int transId = 0;
+            if (!String.IsNullOrEmpty(transactorId))
+            {
+                if (Int32.TryParse(transactorId, out transId))
+                {
+                    if (transId > 0)
+                    {
+                        materials = materials.Where(p => p.TransactorId == transId || p.TransactorId==0);
+                    }
+                }
+            }
+            int compId = 0;
+            if (!String.IsNullOrEmpty(companyId))
+            {
+                if (Int32.TryParse(companyId, out compId))
+                {
+                    if (compId > 0)
+                    {
+                        materials = materials.Where(p => p.CompanyId == compId || p.CompanyId==1);
+                    }
+                }
+            }
 
-            if (materials == null)
+            var materialList = await materials.ToListAsync();
+            
+            if (materialList == null)
             {
                 return NotFound( new
                 {
                     Error="WarehouseItem Not Found"
                 });
             }
-
-            if (materials.Count>1)
+            if (materialList.Count ==0)
             {
                 return NotFound(new
                 {
-                    Error = "More than one material found"
+                    Error = "WarehouseItem Not Found"
                 });
             }
 
-            var material = materials[0].WarehouseItem;
+            List<WrItemCode> retMaterials;
+            if (materialList.Count>1)
+            {
+                //return NotFound(new
+                //{
+                //    Error = "More than one material found"
+                //});
+                retMaterials= materialList.OrderByDescending(p => p.TransactorId).ToList();
+            }
+            else
+            {
+                retMaterials = materialList;
+            }
+
+            var material = retMaterials[0].WarehouseItem;
             
-            var usedUnit = materials[0].CodeUsedUnit;
+            var usedUnit = retMaterials[0].CodeUsedUnit;
             double unitFactor;
             string unitToUse;
             switch (usedUnit)
@@ -175,11 +209,11 @@ namespace GrKouk.WebRazor.Controllers
                     unitToUse = "MAIN";
                     break;
                 case WarehouseItemCodeUsedUnitEnum.CodeUsedUnitEnumSecondary:
-                    unitFactor = materials[0].RateToMainUnit;
+                    unitFactor = retMaterials[0].RateToMainUnit;
                     unitToUse = "SEC";
                     break;
                 case WarehouseItemCodeUsedUnitEnum.CodeUsedUnitEnumBuy:
-                    unitFactor =  materials[0].RateToMainUnit;
+                    unitFactor = retMaterials[0].RateToMainUnit;
                     unitToUse = "BUY";
                     break;
                 default:
