@@ -1,60 +1,59 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using GrKouk.InfoSystem.Definitions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using GrKouk.InfoSystem.Domain.Shared;
+using GrKouk.WebRazor.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using NToastNotify;
 
 namespace GrKouk.WebRazor.Pages.MainEntities.MaterialCodes
 {
     [Authorize(Roles = "Admin")]
     public class CreateModel : PageModel
     {
+       #region Fields
         private readonly GrKouk.WebApi.Data.ApiDbContext _context;
-
-        #region Fields
-     
-        public int ParentPageSize { get; set; }
-        public int ParentPageIndex { get; set; }
-        public string ParentSortOrder { get; set; }
-        public string ParentSearchString { get; set; }
-        public string ParentWarehouseItemNatureFilter { get; set; }
-        public bool ParentFiltersVisible { get; set; }
-        public bool ParentRowSelectorsVisible { get; set; }
-
+        private readonly IMapper _mapper;
+        private readonly IToastNotification _toastNotification;
+        public int CopyFromId { get; set; }
         #endregion
-        public CreateModel(GrKouk.WebApi.Data.ApiDbContext context)
+        public CreateModel(GrKouk.WebApi.Data.ApiDbContext context, IMapper mapper, IToastNotification toastNotification)
         {
             _context = context;
+            _mapper = mapper;
+            _toastNotification = toastNotification;
         }
-
-        public IActionResult OnGet(string parentSortOrder, string parentSearchString,  bool parentFiltersVisible
-            ,string parentWarehouseItemNatureFilter
-            , bool parentRowSelectorsVisible , int? parentPageIndex, int? parentPageSize)
+        public async Task<IActionResult> OnGetAsync(int? copyFromId)
         {
-            ParentFiltersVisible = parentFiltersVisible;
-            ParentRowSelectorsVisible = parentRowSelectorsVisible;
-            ParentSortOrder = parentSortOrder;
-            ParentSearchString = parentSearchString;
-            ParentWarehouseItemNatureFilter = parentWarehouseItemNatureFilter;
-            if (parentPageIndex != null)
+           await LoadCombos();
+            CopyFromId = 0;
+            if (copyFromId != null)
             {
-                ParentPageIndex =(int) parentPageIndex;
+                CopyFromId = (int)copyFromId;
+                var itemToCopy = await _context.WrItemCodes
+                    .FirstOrDefaultAsync(m => m.Id == CopyFromId);
+
+                if (itemToCopy == null)
+                {
+                    return NotFound();
+                }
+
+                //WarehouseItemVm = _mapper.Map<WarehouseItemCreateDto>(itemToCopy);
+                ItemVm = itemToCopy;
+
             }
 
-            if (parentPageSize != null)
-            {
-                ParentPageSize =(int) parentPageSize;
-            }
-            LoadCombos();
+
             return Page();
         }
 
-        private void LoadCombos()
+        private async Task LoadCombos()
         {
             List<SelectListItem> codeTypes = new List<SelectListItem>
             {
@@ -73,9 +72,12 @@ namespace GrKouk.WebRazor.Pages.MainEntities.MaterialCodes
             ViewData["CodeUsedUnit"] = new SelectList(codeUsedUnits, "Value", "Text");
 
             ViewData["WarehouseItemId"] = new SelectList(_context.WarehouseItems.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
+            //ViewData["CompanyId"] = FiltersHelper.GetCompaniesFilterList(_context);
+            ViewData["CompanyId"] = new SelectList(_context.Companies.OrderBy(p => p.Code).AsNoTracking(), "Id", "Code");
+            ViewData["TransactorId"] = await FiltersHelper.GetTransactorsForTypeFilterListAsync(_context, "SYS.SUPPLIER");
         }
         [BindProperty]
-        public WarehouseItemCode WarehouseItemCode { get; set; }
+        public WrItemCode ItemVm { get; set; }
 
         public async Task<IActionResult> OnPostAsync()
         {
@@ -84,7 +86,7 @@ namespace GrKouk.WebRazor.Pages.MainEntities.MaterialCodes
                 return Page();
             }
 
-            _context.WarehouseItemsCodes.Add(WarehouseItemCode);
+            _context.WrItemCodes.Add(ItemVm);
             await _context.SaveChangesAsync();
 
             return RedirectToPage("./Index");

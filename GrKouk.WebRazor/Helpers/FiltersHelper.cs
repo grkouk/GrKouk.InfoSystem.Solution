@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -54,7 +55,7 @@ namespace GrKouk.WebRazor.Helpers
 
         public static List<SelectListItem> GetCompaniesFilterList(ApiDbContext context)
         {
-            var dbCompanies = context.Companies.Where(t=>t.Id!=1).OrderBy(p => p.Code).AsNoTracking();
+            var dbCompanies = context.Companies.Where(t => t.Id != 1).OrderBy(p => p.Code).AsNoTracking();
             List<SelectListItem> companiesList = new List<SelectListItem>();
             companiesList.Add(new SelectListItem() { Value = 0.ToString(), Text = "{All Companies}" });
             foreach (var company in dbCompanies)
@@ -64,9 +65,61 @@ namespace GrKouk.WebRazor.Helpers
 
             return companiesList;
         }
+       
+        public static async Task<List<SelectListItem>> GetTransactorsForTypeFilterListAsync(ApiDbContext context, string trType)
+        {
+            var trTypeObject = await context.TransactorTypes.FirstOrDefaultAsync(p => p.Code == trType);
+            int trTypeId = 0;
+            if (trTypeObject != null)
+            {
+                trTypeId = trTypeObject.Id;
+            }
+
+            var dbTransactors = await context.Transactors.Where(t => t.TransactorTypeId == trTypeId)
+                .OrderBy(p => p.Name)
+                .AsNoTracking()
+                .ToListAsync();
+
+
+            List<SelectListItem> transactorsList = new List<SelectListItem>
+            {
+                new SelectListItem() {Value = 0.ToString(), Text = "{No Transactor}"}
+            };
+            foreach (var item in dbTransactors)
+            {
+                transactorsList.Add(new SelectListItem() { Value = item.Id.ToString(), Text = item.Code });
+            }
+
+            return transactorsList;
+        }
+        public static  List<SelectListItem> GetTransactorsForTypeFilterList(ApiDbContext context, string trType)
+        {
+            var trTypeObject = context.TransactorTypes.FirstOrDefault(p => p.Code == trType);
+            int trTypeId = 0;
+            if (trTypeObject != null)
+            {
+                trTypeId = trTypeObject.Id;
+            }
+
+            var dbTransactors = context.Transactors.Where(t => t.TransactorTypeId == trTypeId)
+                .OrderBy(p => p.Name)
+                .AsNoTracking();
+                
+            
+            List<SelectListItem> transactorsList = new List<SelectListItem>
+            {
+                new SelectListItem() {Value = 0.ToString(), Text = "{No Transactor}"}
+            };
+            foreach (var item in dbTransactors)
+            {
+                transactorsList.Add(new SelectListItem() { Value = item.Id.ToString(), Text = item.Code });
+            }
+
+            return transactorsList;
+        }
         public static List<SelectListItem> GetCurrenciesFilterList(ApiDbContext context)
         {
-            var dbItems = context.Currencies.OrderBy(p=> p.Name).AsNoTracking();
+            var dbItems = context.Currencies.OrderBy(p => p.Name).AsNoTracking();
             List<SelectListItem> itemsList = new List<SelectListItem>();
             //itemsList.Add(new SelectListItem() { Value = 0.ToString(), Text = "{All Companies}" });
             foreach (var item in dbItems)

@@ -3,8 +3,10 @@ using GrKouk.InfoSystem.Definitions;
 
 namespace GrKouk.InfoSystem.Domain.Shared
 {
-    public class WarehouseItemCode   
+    public class WrItemCode
     {
+        public int Id { get; set; }
+        public int CompanyId { get; set; }
         public WarehouseItemCodeTypeEnum CodeType { get; set; }
         [MaxLength(30)]
         public string Code { get; set; }
@@ -12,7 +14,7 @@ namespace GrKouk.InfoSystem.Domain.Shared
         public int WarehouseItemId { get; set; }
         public WarehouseItem WarehouseItem { get; set; }
         public WarehouseItemCodeUsedUnitEnum CodeUsedUnit { get; set; }
-        public double ToMainUnitRate { get; set; }
+        public double RateToMainUnit { get; set; }
 
     }
 }

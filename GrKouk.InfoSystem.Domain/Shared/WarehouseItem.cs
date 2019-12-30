@@ -7,7 +7,8 @@ namespace GrKouk.InfoSystem.Domain.Shared
 {
     public class WarehouseItem
     {
-        private ICollection<WarehouseItemCode> _warehouseItemCodes;
+        //private ICollection<WarehouseItemCode> _warehouseItemCodes;
+        private ICollection<WrItemCode> _warehouseItemCodes;
         public int Id { get; set; }
 
         [MaxLength(20)]
@@ -67,9 +68,9 @@ namespace GrKouk.InfoSystem.Domain.Shared
         public virtual Company Company { get; set; }
         public decimal PriceNetto { get; set; }
         public decimal PriceBrutto { get; set; }
-        public virtual ICollection<WarehouseItemCode> WarehouseItemCodes
+        public virtual ICollection<WrItemCode> WarehouseItemCodes
         {
-            get => _warehouseItemCodes ?? (_warehouseItemCodes = new List<WarehouseItemCode>());
+            get => _warehouseItemCodes ?? (_warehouseItemCodes = new List<WrItemCode>());
             set => _warehouseItemCodes = value;
         }
         [Timestamp]

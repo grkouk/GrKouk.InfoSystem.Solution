@@ -19,16 +19,16 @@ namespace GrKouk.WebRazor.Pages.MainEntities.MaterialCodes
         }
 
         [BindProperty]
-        public WarehouseItemCode WarehouseItemCode { get; set; }
+        public WrItemCode WarehouseItemCode { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(WarehouseItemCodeTypeEnum codeType, int materialId, string code )
+        public async Task<IActionResult> OnGetAsync(int id )
         {
-            if (code == null)
+            if (id == 0)
             {
                 return NotFound();
             }
-            WarehouseItemCode = await _context.WarehouseItemsCodes
-                .Include(m => m.WarehouseItem).FirstOrDefaultAsync(m => m.CodeType == codeType && m.WarehouseItemId==materialId && m.Code==code);
+            WarehouseItemCode = await _context.WrItemCodes
+                .Include(m => m.WarehouseItem).FirstOrDefaultAsync(m => m.Id==id);
 
             if (WarehouseItemCode == null)
             {
@@ -37,18 +37,18 @@ namespace GrKouk.WebRazor.Pages.MainEntities.MaterialCodes
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync(WarehouseItemCodeTypeEnum codeType, int materialId, string code)
+        public async Task<IActionResult> OnPostAsync(int id)
         {
-            if (code == null)
+            if (id == 0)
             {
                 return NotFound();
             }
 
-            WarehouseItemCode = await _context.WarehouseItemsCodes.FindAsync( codeType, materialId , code);
+            WarehouseItemCode = await _context.WrItemCodes.FindAsync( id);
 
             if (WarehouseItemCode != null)
             {
-                _context.WarehouseItemsCodes.Remove(WarehouseItemCode);
+                _context.WrItemCodes.Remove(WarehouseItemCode);
                 await _context.SaveChangesAsync();
             }
 

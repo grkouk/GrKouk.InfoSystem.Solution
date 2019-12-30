@@ -1243,7 +1243,7 @@ namespace GrKouk.WebRazor.Controllers
                 {
                     if (companyId > 0)
                     {
-                        var allCompaniesEntity = await _context.Companies.SingleOrDefaultAsync(s => s.Code == "ALLCOMP");
+                        var allCompaniesEntity = await _context.Companies.SingleOrDefaultAsync(s => s.Code == "{ALLCOMP}");
                         if (allCompaniesEntity != null)
                         {
                             var allCompaniesId = allCompaniesEntity.Id;
@@ -1318,6 +1318,137 @@ namespace GrKouk.WebRazor.Controllers
             };
             return Ok(response);
         }
+        [HttpGet("GetIndexTblDataWarehouseCodeItems")]
+        public async Task<IActionResult> GetIndexTblDataWarehouseCodeItems([FromQuery] IndexDataTableRequest request)
+        {
+            //Thread.Sleep(10000);
+            IQueryable<WrItemCode> fullListIq = _context.WrItemCodes.Include(p=>p.WarehouseItem);
+           
+            if (!String.IsNullOrEmpty(request.SortData))
+            {
+                switch (request.SortData.ToLower())
+                {
+
+                    case "namesort:asc":
+                        fullListIq = fullListIq.OrderBy(p => p.WarehouseItem.Name);
+                        break;
+                    case "namesort:desc":
+                        fullListIq = fullListIq.OrderByDescending(p => p.WarehouseItem.Name);
+                        break;
+                    case "codesort:asc":
+                        fullListIq = fullListIq.OrderBy(p => p.Code);
+                        break;
+                    case "codesort:desc":
+                        fullListIq = fullListIq.OrderByDescending(p => p.Code);
+                        break;
+                   default:
+                       fullListIq = fullListIq.OrderBy(p => p.Id);
+                       break;
+                }
+            }
+
+            if (!String.IsNullOrEmpty(request.CompanyFilter))
+            {
+                if (Int32.TryParse(request.CompanyFilter, out var companyId))
+                {
+                    if (companyId > 0)
+                    {
+                        var allCompaniesEntity = await _context.Companies.SingleOrDefaultAsync(s => s.Code == "{ALLCOMP}");
+                        if (allCompaniesEntity != null)
+                        {
+                            var allCompaniesId = allCompaniesEntity.Id;
+                            fullListIq = fullListIq.Where(p => p.CompanyId == companyId || p.CompanyId == allCompaniesId);
+                        }
+                        else
+                        {
+                            fullListIq = fullListIq.Where(p => p.CompanyId == companyId);
+                        }
+
+
+                    }
+                }
+            }
+            if (!String.IsNullOrEmpty(request.SearchFilter))
+            {
+                fullListIq = fullListIq.Where(p => p.WarehouseItem.Name.Contains(request.SearchFilter)
+                                                   || p.Code.Contains(request.SearchFilter)
+                                                   );
+            }
+
+            PagedList<WrItemCodeListDto> listItems;
+            try
+            {
+                var projectedList = fullListIq.ProjectTo<WrItemCodeListDto>(_mapper.ConfigurationProvider);
+                var pageIndex = request.PageIndex;
+
+                var pageSize = request.PageSize;
+
+                listItems = await PagedList<WrItemCodeListDto>.CreateAsync(projectedList, pageIndex, pageSize);
+                foreach (var item in listItems)
+                {
+                    if (item.CompanyId>0)
+                    {
+                        var com = await _context.Companies.FirstOrDefaultAsync(p => p.Id == item.CompanyId);
+                        if (com !=null)
+                        {
+                            item.CompanyCode = com.Code;
+                            item.CompanyName = com.Name;
+                        }
+                        else
+                        {
+                            item.CompanyCode = "##Err##";
+                            item.CompanyName = "##Err##";
+                        }
+                    }
+                    else
+                    {
+                        item.CompanyCode = "{All}";
+                        item.CompanyName = "{All Companies}";
+                    }
+                    if (item.TransactorId > 0)
+                    {
+                        var com = await _context.Transactors.FirstOrDefaultAsync(p => p.Id == item.TransactorId);
+                        if (com != null)
+                        {
+                            item.TransactorName = com.Name;
+                        }
+                        else
+                        {
+                            
+                            item.TransactorName = "##Err##";
+                        }
+                    }
+                    else
+                    {
+                        item.TransactorName = "{All Transactors}";
+                    }
+
+                    item.CodeUsedUnitName = item.CodeUsedUnit.GetDescription();
+                    item.CodeTypeName = item.CodeType.GetDescription();
+                }
+            }
+            catch (Exception e)
+            {
+                string msg = e.InnerException.Message;
+                return BadRequest(new
+                {
+                    error = e.Message + " " + msg
+                });
+
+            }
+            
+
+            var response = new IndexDataTableResponse<WrItemCodeListDto>
+            {
+                TotalRecords = listItems.TotalCount,
+                TotalPages = listItems.TotalPages,
+                HasPrevious = listItems.HasPrevious,
+                HasNext = listItems.HasNext,
+                // Diaries = relevantDiarys,
+                Data = listItems
+            };
+            return Ok(response);
+        }
         [HttpGet("GetIndexTblDataWarehouseItems")]
         public async Task<IActionResult> GetIndexTblDataWarehouseItems([FromQuery] IndexDataTableRequest request)
         {
@@ -1366,7 +1497,7 @@ namespace GrKouk.WebRazor.Controllers
                 {
                     if (companyId > 0)
                     {
-                        var allCompaniesEntity = await _context.Companies.SingleOrDefaultAsync(s => s.Code == "ALLCOMP");
+                        var allCompaniesEntity = await _context.Companies.SingleOrDefaultAsync(s => s.Code == "{ALLCOMP}");
                         if (allCompaniesEntity != null)
                         {
                             var allCompaniesId = allCompaniesEntity.Id;
@@ -1486,11 +1617,23 @@ namespace GrKouk.WebRazor.Controllers
             {
                 switch (request.SortData.ToLower())
                 {
-                    case "transactorname:asc":
+                    case "transactornamesort:asc":
                         fullListIq = fullListIq.OrderBy(p => p.Name);
                         break;
-                    case "transactorname:desc":
+                    case "transactornamesort:desc":
                         fullListIq = fullListIq.OrderByDescending(p => p.Name);
+                        break;
+                    case "transactorcodesort:asc":
+                        fullListIq = fullListIq.OrderBy(p => p.Code);
+                        break;
+                    case "transactorcodesort:desc":
+                        fullListIq = fullListIq.OrderByDescending(p => p.Code);
+                        break;
+                    case "companycodesort:asc":
+                        fullListIq = fullListIq.OrderBy(p => p.CompanyCode);
+                        break;
+                    case "companycodesort:desc":
+                        fullListIq = fullListIq.OrderByDescending(p => p.CompanyCode);
                         break;
                 }
             }
@@ -1502,7 +1645,7 @@ namespace GrKouk.WebRazor.Controllers
                     .Select(s => int.Parse(s))
                     .ToList();
                 // var companiesList = Array.ConvertAll(request.CompanyFilter.Split(","), int.Parse);
-                var allCompaniesEntity = await _context.Companies.SingleOrDefaultAsync(s => s.Code == "ALLCOMP");
+                var allCompaniesEntity = await _context.Companies.SingleOrDefaultAsync(s => s.Code == "{ALLCOMP}");
 
                 if (allCompaniesEntity != null)
                 {
@@ -1592,22 +1735,22 @@ namespace GrKouk.WebRazor.Controllers
                 switch (request.SortData.ToLower())
                 {
 
-                    case "namesort:asc":
+                    case "productnamesort:asc":
                         fullListIq = fullListIq.OrderBy(p => p.Name);
                         break;
-                    case "namesort:desc":
+                    case "productnamesort:desc":
                         fullListIq = fullListIq.OrderByDescending(p => p.Name);
                         break;
-                    case "codesort:asc":
+                    case "productcodesort:asc":
                         fullListIq = fullListIq.OrderBy(p => p.Code);
                         break;
-                    case "codesort:desc":
+                    case "productcodesort:desc":
                         fullListIq = fullListIq.OrderByDescending(p => p.Code);
                         break;
-                    case "categorysort:asc":
+                    case "companynamesort:asc":
                         fullListIq = fullListIq.OrderBy(p => p.MaterialCaterory.Name);
                         break;
-                    case "categorysort:desc":
+                    case "companynamesort:desc":
                         fullListIq = fullListIq.OrderByDescending(p => p.MaterialCaterory.Name);
                         break;
                 }
@@ -1618,7 +1761,7 @@ namespace GrKouk.WebRazor.Controllers
 
                 var tagIds = new List<int>(request.CompanyFilter.Split(',').Select(s => int.Parse(s)));
                 // var companiesList = Array.ConvertAll(request.CompanyFilter.Split(","), int.Parse);
-                var allCompaniesEntity = await _context.Companies.SingleOrDefaultAsync(s => s.Code == "ALLCOMP");
+                var allCompaniesEntity = await _context.Companies.SingleOrDefaultAsync(s => s.Code == "{ALLCOMP}");
 
                 if (allCompaniesEntity != null)
                 {
@@ -1743,7 +1886,7 @@ namespace GrKouk.WebRazor.Controllers
                 {
                     if (companyId > 0)
                     {
-                        var allCompaniesEntity = await _context.Companies.SingleOrDefaultAsync(s => s.Code == "ALLCOMP");
+                        var allCompaniesEntity = await _context.Companies.SingleOrDefaultAsync(s => s.Code == "{ALLCOMP}");
                         if (allCompaniesEntity != null)
                         {
                             var allCompaniesId = allCompaniesEntity.Id;
