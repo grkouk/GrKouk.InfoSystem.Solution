@@ -15,6 +15,10 @@ namespace GrKouk.InfoSystem.Domain.Shared
         public WarehouseItem WarehouseItem { get; set; }
         public WarehouseItemCodeUsedUnitEnum CodeUsedUnit { get; set; }
         public double RateToMainUnit { get; set; }
+        public WarehouseItemCodeUsedUnitEnum BuyCodeUsedUnit { get; set; }
+        public double BuyRateToMainUnit { get; set; }
+        public WarehouseItemCodeUsedUnitEnum SellCodeUsedUnit { get; set; }
+        public double SellRateToMainUnit { get; set; }
 
     }
 }
