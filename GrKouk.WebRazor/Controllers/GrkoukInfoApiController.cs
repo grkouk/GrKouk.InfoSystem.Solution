@@ -1423,8 +1423,10 @@ namespace GrKouk.WebRazor.Controllers
                         item.TransactorName = "{All Transactors}";
                     }
 
-                    item.CodeUsedUnitName = item.CodeUsedUnit.GetDescription();
                     item.CodeTypeName = item.CodeType.GetDescription();
+                    item.CodeUsedUnitName = item.CodeUsedUnit.GetDescription();
+                    item.BuyCodeUsedUnitName = item.BuyCodeUsedUnit.GetDescription();
+                    item.SellCodeUsedUnitName = item.SellCodeUsedUnit.GetDescription();
                 }
             }
             catch (Exception e)

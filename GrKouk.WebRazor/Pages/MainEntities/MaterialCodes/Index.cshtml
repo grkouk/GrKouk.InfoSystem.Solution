@@ -420,7 +420,22 @@
                                 class: 'small d-none d-md-table-cell'
                             },
                             {
-                                header: 'Unit',
+                                header: 'Buy Unit',
+                                text: '',
+                                class: 'small d-none d-md-table-cell'
+                            },
+                            {
+                                header: 'Buy Unit Rate',
+                                text: '',
+                                class: 'small d-none d-md-table-cell'
+                            },
+                            {
+                                header: 'Sell Unit',
+                                text: '',
+                                class: 'small d-none d-md-table-cell'
+                            },
+                            {
+                                header: 'Sell Unit Rate',
                                 text: '',
                                 class: 'small d-none d-md-table-cell'
                             },
@@ -444,8 +459,11 @@
                                 colDefs[1].text = value.companyCode;
                                 colDefs[2].text = value.transactorName;
                                 colDefs[3].text = value.codeTypeName;
-                                colDefs[4].text = value.codeUsedUnitName;
-                                colDefs[5].text = value.code;
+                                colDefs[4].text = value.buyCodeUsedUnitName;
+                                colDefs[5].text = value.buyRateToMainUnit;
+                                colDefs[6].text = value.sellCodeUsedUnitName;
+                                colDefs[7].text = value.sellRateToMainUnit;
+                                colDefs[8].text = value.code;
 
                                 var itemId = value.id;
                                 var $tr = $('<tr>');
