@@ -1972,7 +1972,19 @@ namespace GrKouk.WebRazor.Controllers
 
         private decimal test(int companyCurrencyId, decimal amount)
         {
-            return 10;
+            var r =  _context.ExchangeRates.Where(p => p.CurrencyId == companyCurrencyId)
+                .OrderByDescending(p => p.ClosingDate).FirstOrDefault();
+            decimal retAmount;
+            if (r != null)
+            {
+                retAmount = amount / r.Rate;
+
+            }
+            else
+            {
+                retAmount = 1;
+            }
+            return retAmount;
         }
         [HttpGet("LastDiaryTransactionData")]
         public async Task<IActionResult> GetLastDiaryTransactionDataAsync(int transactorId)
@@ -2098,7 +2110,7 @@ namespace GrKouk.WebRazor.Controllers
                 TransDiscountAmount = test(p.CompanyCurrencyId, p.TransDiscountAmount),
                 CompanyCode = p.CompanyCode,
                 CompanyCurrencyId = p.CompanyCurrencyId
-            });
+            }).ToList();
             var gransSumOfAmount = await t.SumAsync(p => p.TotalAmount);
             var gransSumOfDebit = await t.SumAsync(p => p.DebitAmount);
             var gransSumOfCredit = await t.SumAsync(p => p.CreditAmount);
