@@ -1969,6 +1969,11 @@ namespace GrKouk.WebRazor.Controllers
             };
             return Ok(response);
         }
+
+        private decimal test(int companyCurrencyId, decimal amount)
+        {
+            return 10;
+        }
         [HttpGet("LastDiaryTransactionData")]
         public async Task<IActionResult> GetLastDiaryTransactionDataAsync(int transactorId)
         {
@@ -2066,6 +2071,37 @@ namespace GrKouk.WebRazor.Controllers
             }
 
             var t = transactionsList.ProjectTo<TransactorTransListDto>(_mapper.ConfigurationProvider);
+            var t1 = t.Select(p => new TransactorTransListDto
+            {
+                //Id = p.Id,
+                //TransDate = p.TransDate,
+                //TransTransactorDocSeriesId = p.TransTransactorDocSeriesId,
+                //TransTransactorDocSeriesName = p.TransTransactorDocSeriesName,
+                //TransTransactorDocSeriesCode = p.TransTransactorDocSeriesCode,
+                //TransTransactorDocTypeId = p.TransTransactorDocTypeId,
+                //TransRefCode = p.TransRefCode,
+                //TransactorId = p.TransactorId,
+                //TransactorName = p.TransactorName,
+                //SectionId = p.SectionId,
+                //SectionCode = p.SectionCode,
+                //CreatorId = p.CreatorId,
+                //FiscalPeriodId = p.FiscalPeriodId,
+                //FinancialAction = p.FinancialAction,
+                //FpaRate = p.FpaRate,
+                //DiscountRate = p.DiscountRate,
+                AmountFpa =    test(p.CompanyCurrencyId, p.AmountFpa),
+                AmountNet = test(p.CompanyCurrencyId, p.AmountNet),
+                
+                AmountDiscount = test(p.CompanyCurrencyId, p.AmountDiscount),
+                TransFpaAmount = test(p.CompanyCurrencyId, p.TransFpaAmount),
+                TransNetAmount = test(p.CompanyCurrencyId, p.TransNetAmount),
+                TransDiscountAmount = test(p.CompanyCurrencyId, p.TransDiscountAmount),
+                CompanyCode = p.CompanyCode,
+                CompanyCurrencyId = p.CompanyCurrencyId
+            });
+            var gransSumOfAmount = await t.SumAsync(p => p.TotalAmount);
+            var gransSumOfDebit = await t.SumAsync(p => p.DebitAmount);
+            var gransSumOfCredit = await t.SumAsync(p => p.CreditAmount);
             var pageIndex = request.PageIndex;
 
             var pageSize = request.PageSize;
