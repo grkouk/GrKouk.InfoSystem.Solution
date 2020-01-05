@@ -394,7 +394,7 @@ namespace GrKouk.WebRazor.Controllers
                 CompanyCode = p.CompanyCode,
                 CompanyCurrencyId = p.CompanyCurrencyId
             });
-            var gransSumOfAmount = t1.Sum(p => p.TotalAmount);
+            var grandSumOfAmount = t1.Sum(p => p.TotalAmount);
             var gransSumOfNetAmount = t1.Sum(p => p.TotalNetAmount);
 
             var pageIndex = request.PageIndex;
@@ -406,8 +406,8 @@ namespace GrKouk.WebRazor.Controllers
             {
                 if (listItem.CompanyCurrencyId != 1)
                 {
-                    var r = await _context.ExchangeRates.Where(p => p.CurrencyId == listItem.CompanyCurrencyId)
-                        .OrderByDescending(p => p.ClosingDate).FirstOrDefaultAsync();
+                    var r = currencyRates.Where(p => p.CurrencyId == listItem.CompanyCurrencyId)
+                        .OrderByDescending(p => p.ClosingDate).FirstOrDefault();
                     if (r != null)
                     {
                         listItem.AmountFpa = listItem.AmountFpa / r.Rate;
@@ -417,8 +417,8 @@ namespace GrKouk.WebRazor.Controllers
                 }
                 if (request.DisplayCurrencyId != 1)
                 {
-                    var r = await _context.ExchangeRates.Where(p => p.CurrencyId == request.DisplayCurrencyId)
-                        .OrderByDescending(p => p.ClosingDate).FirstOrDefaultAsync();
+                    var r = currencyRates.Where(p => p.CurrencyId == request.DisplayCurrencyId)
+                        .OrderByDescending(p => p.ClosingDate).FirstOrDefault();
                     if (r != null)
                     {
                         listItem.AmountFpa = listItem.AmountFpa * r.Rate;
@@ -440,7 +440,7 @@ namespace GrKouk.WebRazor.Controllers
                 HasNext = listItems.HasNext,
                 SumOfAmount = sumAmountTotal,
                 
-                GrandSumOfAmount = gransSumOfAmount,
+                GrandSumOfAmount = grandSumOfAmount,
                 //GrandSumOfNetAmount = gransSumOfNetAmount,
                 Data = listItems
             };
@@ -2062,6 +2062,10 @@ namespace GrKouk.WebRazor.Controllers
             //var r =  rates.Where(p => p.CurrencyId == companyCurrencyId)
             //    .OrderByDescending(p => p.ClosingDate).FirstOrDefault();
             decimal retAmount=amount;
+            if (displayCurrencyId==companyCurrencyId)
+            {
+                return retAmount;
+            }
             if (companyCurrencyId != 1)
             {
                 var r = rates.Where(p => p.CurrencyId == companyCurrencyId)
@@ -2077,7 +2081,7 @@ namespace GrKouk.WebRazor.Controllers
                     .OrderByDescending(p => p.ClosingDate).FirstOrDefault();
                 if (r != null)
                 {
-                    retAmount = amount * r.Rate;
+                    retAmount = retAmount * r.Rate;
 
                 }
             }
