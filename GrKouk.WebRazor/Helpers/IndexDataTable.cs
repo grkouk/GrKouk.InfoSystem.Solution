@@ -31,6 +31,8 @@ namespace GrKouk.WebRazor.Helpers
         public bool HasPrevious { get; set; }
         public bool HasNext { get; set; }
         public decimal SumOfAmount { get; set; }
+        public decimal SumOfNetAmount { get; set; }
+        public decimal SumOfVatAmount { get; set; }
         public decimal SumOfDebit { get; set; }
         public decimal SumOfCredit { get; set; }
         public decimal SumOfDifference { get; set; }
@@ -39,6 +41,8 @@ namespace GrKouk.WebRazor.Helpers
         public decimal SumImportValue { get; set; }
         public decimal SumExportValue { get; set; }
         public decimal GrandSumOfAmount { get; set; }
+        public decimal GrandSumOfNetAmount { get; set; }
+        public decimal GrandSumOfVatAmount { get; set; }
         public decimal GrandSumOfDebit { get; set; }
         public decimal GrandSumOfCredit { get; set; }
         public decimal GrandSumOfDifference { get; set; }

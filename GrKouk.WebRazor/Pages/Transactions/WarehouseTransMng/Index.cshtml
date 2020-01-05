@@ -235,11 +235,11 @@
             //#region variables
             var $filtersVisible = $('#filtersVisible');
             var $filterCollapse = $('#filterCollapse');
-            var $checkAllRows = $('input[name=checkAllRows]');
+            
             var $filtersToggle = $('#filtersToggle');
             var $rowSelectorsToggle = $('#rowSelectorsToggle');
             var $rowSelectorsVisible = $('#rowSelectorsVisible');
-            var $selectAllSelector = $('th[name=selectAllRowsColumn]');
+            
             var $selectedRowsActionsMenu = $('#SelectedRowsActionsMenu');
             var $selectedRowsActionsLink = $('#ddSelectedRowsActions');
             var $deleteSelectedRowsLink = $('#deleteSelectedRows');
@@ -284,6 +284,7 @@
             };
             var handleSelectedRowsUi = () => {
                 var $rowSelectors = $('input[name=checkTableRow]');
+                var $checkAllRows = $('input[name=checkAllRows]');
                 var $selectedRowsActionsLink = $('#ddSelectedRowsActions');
                 var allRows = $rowSelectors.length;
                 var selectedRowsCount = $rowSelectors.filter(':checked').length;
@@ -297,6 +298,36 @@
                     $checkAllRows.prop('checked', true);
                 } else {
                     $checkAllRows.prop('checked', false);
+                }
+            };
+            const setTableCurrentSort = (currentSort) => {
+                $('#currentSort').val(currentSort);
+            };
+            const getTableCurrentSort = () => {
+                try {
+                    let cSort = $('#currentSort').val();
+
+                    return cSort;
+                } catch (e) {
+                    return "";
+                }
+            };
+            const handlePagingUi = (totalPages, totalRecords, pageIndex, hasPrevious, hasNext) => {
+                $totalPages.val(totalPages);
+                $totalRecords.val(totalRecords);
+                var pagingInfo =
+                    ` Page:${pageIndex} of ${totalPages} Total Items ${totalRecords}`;
+                $('[name=PagingInfo]').text(pagingInfo);
+               
+                if (hasPrevious) {
+                    $('#GoToFirst, #GoToPrevious').parent().removeClass('disabled');
+                } else {
+                    $('#GoToFirst, #GoToPrevious').parent().addClass('disabled');
+                }
+                if (hasNext) {
+                    $('#GoToLast, #GoToNext').parent().removeClass('disabled');
+                } else {
+                    $('#GoToLast, #GoToNext').parent().addClass('disabled');
                 }
             };
             var getTableData = (pageIndex, pageSize, sortData, dateRange, companyFilter, searchFilter,displayCurrencyId) => {
@@ -334,26 +365,11 @@
 
                     },
                     success: function(result) {
-                        var totalRecords = result.totalRecords;
-                        var totalPages = result.totalPages;
-
-                        $totalPages.val(totalPages);
-                        $totalRecords.val(totalRecords);
-                        var pagingInfo =
-                            ` Page:${pageIndex} of ${totalPages} Total Items ${totalRecords}`;
-                        $('[name=PagingInfo]').text(pagingInfo);
-                        var hasPrevious = result.hasPrevious;
-                        var hasNext = result.hasNext;
-                        if (hasPrevious) {
-                            $('#GoToFirst, #GoToPrevious').parent().removeClass('disabled');
-                        } else {
-                            $('#GoToFirst, #GoToPrevious').parent().addClass('disabled');
-                        }
-                        if (hasNext) {
-                            $('#GoToLast, #GoToNext').parent().removeClass('disabled');
-                        } else {
-                            $('#GoToLast, #GoToNext').parent().addClass('disabled');
-                        }
+                        handlePagingUi(result.totalPages,
+                            result.totalRecords,
+                            pageIndex,
+                            result.hasPrevious,
+                            result.hasNext);
                         $('#myTable > tbody').empty();
 
                         $.each(result.data,function(index, value) {
