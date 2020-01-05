@@ -2092,7 +2092,9 @@ namespace GrKouk.WebRazor.Controllers
                 transactionsList = transactionsList.Where(p => p.Transactor.Name.Contains(request.SearchFilter));
             }
 
-            var currencyRates = await _context.ExchangeRates.OrderByDescending(p => p.ClosingDate).ToListAsync();
+            var currencyRates = await _context.ExchangeRates.OrderByDescending(p => p.ClosingDate)
+                .Take(10)
+                .ToListAsync();
             var t = transactionsList.ProjectTo<TransactorTransListDto>(_mapper.ConfigurationProvider);
             var t1 = t.Select(p => new TransactorTransListDto
             {
@@ -2134,8 +2136,8 @@ namespace GrKouk.WebRazor.Controllers
             {
                 if (listItem.CompanyCurrencyId != 1)
                 {
-                    var r = await _context.ExchangeRates.Where(p => p.CurrencyId == listItem.CompanyCurrencyId)
-                        .OrderByDescending(p => p.ClosingDate).FirstOrDefaultAsync();
+                    var r = currencyRates.Where(p => p.CurrencyId == listItem.CompanyCurrencyId)
+                        .OrderByDescending(p => p.ClosingDate).FirstOrDefault();
                     if (r != null)
                     {
                         listItem.AmountFpa = listItem.AmountFpa / r.Rate;
@@ -2149,8 +2151,8 @@ namespace GrKouk.WebRazor.Controllers
                 }
                 if (request.DisplayCurrencyId != 1)
                 {
-                    var r = await _context.ExchangeRates.Where(p => p.CurrencyId == request.DisplayCurrencyId)
-                        .OrderByDescending(p => p.ClosingDate).FirstOrDefaultAsync();
+                    var r = currencyRates.Where(p => p.CurrencyId == request.DisplayCurrencyId)
+                        .OrderByDescending(p => p.ClosingDate).FirstOrDefault();
                     if (r != null)
                     {
                         listItem.AmountFpa = listItem.AmountFpa * r.Rate;
