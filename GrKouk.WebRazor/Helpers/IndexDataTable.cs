@@ -32,12 +32,20 @@ namespace GrKouk.WebRazor.Helpers
         public bool HasNext { get; set; }
         public decimal SumOfAmount { get; set; }
         public decimal SumOfDebit { get; set; }
-       public decimal SumOfCredit { get; set; }
-       public decimal SumOfDifference { get; set; }
+        public decimal SumOfCredit { get; set; }
+        public decimal SumOfDifference { get; set; }
         public decimal SumImportVolume { get; set; }
         public decimal SumExportVolume { get; set; }
         public decimal SumImportValue { get; set; }
         public decimal SumExportValue { get; set; }
+        public decimal GrandSumOfAmount { get; set; }
+        public decimal GrandSumOfDebit { get; set; }
+        public decimal GrandSumOfCredit { get; set; }
+        public decimal GrandSumOfDifference { get; set; }
+        public decimal GrandSumImportVolume { get; set; }
+        public decimal GrandSumExportVolume { get; set; }
+        public decimal GrandSumImportValue { get; set; }
+        public decimal GrandSumExportValue { get; set; }
         public List<T> Data { get; set; }
         public List<SearchListItem> Diaries { get; set; }
 

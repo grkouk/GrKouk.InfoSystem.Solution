@@ -1970,19 +1970,29 @@ namespace GrKouk.WebRazor.Controllers
             return Ok(response);
         }
 
-        private decimal test(int companyCurrencyId, decimal amount)
+        private decimal ConvertAmount(int companyCurrencyId,int displayCurrencyId,IList<ExchangeRate> rates,decimal amount)
         {
-            var r =  _context.ExchangeRates.Where(p => p.CurrencyId == companyCurrencyId)
-                .OrderByDescending(p => p.ClosingDate).FirstOrDefault();
-            decimal retAmount;
-            if (r != null)
+            //var r =  rates.Where(p => p.CurrencyId == companyCurrencyId)
+            //    .OrderByDescending(p => p.ClosingDate).FirstOrDefault();
+            decimal retAmount=amount;
+            if (companyCurrencyId != 1)
             {
-                retAmount = amount / r.Rate;
-
+                var r = rates.Where(p => p.CurrencyId == companyCurrencyId)
+                    .OrderByDescending(p => p.ClosingDate).FirstOrDefault();
+                if (r != null)
+                {
+                    retAmount = amount / r.Rate;
+                }
             }
-            else
+            if (displayCurrencyId != 1)
             {
-                retAmount = 1;
+                var r = rates.Where(p => p.CurrencyId == displayCurrencyId)
+                    .OrderByDescending(p => p.ClosingDate).FirstOrDefault();
+                if (r != null)
+                {
+                    retAmount = amount * r.Rate;
+
+                }
             }
             return retAmount;
         }
@@ -2082,38 +2092,39 @@ namespace GrKouk.WebRazor.Controllers
                 transactionsList = transactionsList.Where(p => p.Transactor.Name.Contains(request.SearchFilter));
             }
 
+            var currencyRates = await _context.ExchangeRates.OrderByDescending(p => p.ClosingDate).ToListAsync();
             var t = transactionsList.ProjectTo<TransactorTransListDto>(_mapper.ConfigurationProvider);
             var t1 = t.Select(p => new TransactorTransListDto
             {
                 //Id = p.Id,
                 //TransDate = p.TransDate,
-                //TransTransactorDocSeriesId = p.TransTransactorDocSeriesId,
+                TransTransactorDocSeriesId = p.TransTransactorDocSeriesId,
                 //TransTransactorDocSeriesName = p.TransTransactorDocSeriesName,
-                //TransTransactorDocSeriesCode = p.TransTransactorDocSeriesCode,
-                //TransTransactorDocTypeId = p.TransTransactorDocTypeId,
+                TransTransactorDocSeriesCode = p.TransTransactorDocSeriesCode,
+                TransTransactorDocTypeId = p.TransTransactorDocTypeId,
                 //TransRefCode = p.TransRefCode,
                 //TransactorId = p.TransactorId,
                 //TransactorName = p.TransactorName,
-                //SectionId = p.SectionId,
+                SectionId = p.SectionId,
                 //SectionCode = p.SectionCode,
                 //CreatorId = p.CreatorId,
-                //FiscalPeriodId = p.FiscalPeriodId,
-                //FinancialAction = p.FinancialAction,
-                //FpaRate = p.FpaRate,
-                //DiscountRate = p.DiscountRate,
-                AmountFpa =    test(p.CompanyCurrencyId, p.AmountFpa),
-                AmountNet = test(p.CompanyCurrencyId, p.AmountNet),
+                FiscalPeriodId = p.FiscalPeriodId,
+                FinancialAction = p.FinancialAction,
+                FpaRate = p.FpaRate,
+                DiscountRate = p.DiscountRate,
+                AmountFpa =    ConvertAmount(p.CompanyCurrencyId, request.DisplayCurrencyId, currencyRates, p.AmountFpa),
+                AmountNet = ConvertAmount(p.CompanyCurrencyId, request.DisplayCurrencyId, currencyRates, p.AmountNet),
                 
-                AmountDiscount = test(p.CompanyCurrencyId, p.AmountDiscount),
-                TransFpaAmount = test(p.CompanyCurrencyId, p.TransFpaAmount),
-                TransNetAmount = test(p.CompanyCurrencyId, p.TransNetAmount),
-                TransDiscountAmount = test(p.CompanyCurrencyId, p.TransDiscountAmount),
+                AmountDiscount = ConvertAmount(p.CompanyCurrencyId,request.DisplayCurrencyId,currencyRates, p.AmountDiscount),
+                TransFpaAmount = ConvertAmount(p.CompanyCurrencyId, request.DisplayCurrencyId, currencyRates, p.TransFpaAmount),
+                TransNetAmount = ConvertAmount(p.CompanyCurrencyId, request.DisplayCurrencyId, currencyRates, p.TransNetAmount),
+                TransDiscountAmount = ConvertAmount(p.CompanyCurrencyId, request.DisplayCurrencyId, currencyRates, p.TransDiscountAmount),
                 CompanyCode = p.CompanyCode,
                 CompanyCurrencyId = p.CompanyCurrencyId
             }).ToList();
-            var gransSumOfAmount = await t.SumAsync(p => p.TotalAmount);
-            var gransSumOfDebit = await t.SumAsync(p => p.DebitAmount);
-            var gransSumOfCredit = await t.SumAsync(p => p.CreditAmount);
+            var gransSumOfAmount =  t1.Sum(p => p.TotalAmount);
+            var gransSumOfDebit =  t1.Sum(p => p.DebitAmount);
+            var gransSumOfCredit =  t1.Sum(p => p.CreditAmount);
             var pageIndex = request.PageIndex;
 
             var pageSize = request.PageSize;
@@ -2165,6 +2176,9 @@ namespace GrKouk.WebRazor.Controllers
                 SumOfAmount = sumAmountTotal,
                 SumOfDebit = sumDebit,
                 SumOfCredit = sumCredit,
+                GrandSumOfAmount = gransSumOfAmount,
+                GrandSumOfDebit = gransSumOfDebit,
+                GrandSumOfCredit = gransSumOfCredit,
                 Data = listItems
             };
 

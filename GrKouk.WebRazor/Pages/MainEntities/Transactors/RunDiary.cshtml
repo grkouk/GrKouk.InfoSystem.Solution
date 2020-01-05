@@ -430,8 +430,8 @@
                             });
                         //console.log();
                        
-                        var sumImportsValue = formatterCurrency.format(result.sumOfDebit);
-                        var sumExportsValue = formatterCurrency.format(result.sumOfCredit);
+                        var sumOfDebitValue = formatterCurrency.format(result.sumOfDebit);
+                        var sumOfCreditValue = formatterCurrency.format(result.sumOfCredit);
                        // var sumDifference = formatterCurrency.format(result.sumOfDifference);
                         var $summaryRow = $('<tr class="table-info">').append(
                             $('<td name="selectRowColumn"> </td>  '),
@@ -439,13 +439,29 @@
                             $('<td>').text('Σύνολα Σελίδας').addClass('small font-weight-bold'),
                             $('<td>').text(''),
                             $('<td>').text(''),
-                            $('<td>').text(sumImportsValue).addClass('small text-right font-weight-bold'),
-                            $('<td>').text(sumExportsValue).addClass('small text-right font-weight-bold'),
+                            $('<td>').text(sumOfDebitValue).addClass('small text-right font-weight-bold'),
+                            $('<td>').text(sumOfCreditValue).addClass('small text-right font-weight-bold'),
                             $('<td>').text('').addClass('d-none d-md-table-cell'),
                             
                             $('<td>').addClass('d-none d-md-table-cell'),
                             $('<td>').addClass('d-table-cell d-sm-table-cell d-md-none')
-                        ).appendTo('#myTable > tbody:last');
+                            ).appendTo('#myTable > tbody:last');
+                        var grandSumOfDebitValue = formatterCurrency.format(result.grandSumOfDebit);
+                        var grandSumOfCreditValue = formatterCurrency.format(result.grandSumOfCredit);
+                        // var sumDifference = formatterCurrency.format(result.sumOfDifference);
+                        var $grandSummaryRow = $('<tr class="table-info">').append(
+                            $('<td name="selectRowColumn"> </td>  '),
+                            $('<td>'),
+                            $('<td>').text('Σύνολα Γενικά').addClass('small font-weight-bold'),
+                            $('<td>').text(''),
+                            $('<td>').text(''),
+                            $('<td>').text(grandSumOfDebitValue).addClass('small text-right font-weight-bold'),
+                            $('<td>').text(grandSumOfCreditValue).addClass('small text-right font-weight-bold'),
+                            $('<td>').text('').addClass('d-none d-md-table-cell'),
+                            
+                            $('<td>').addClass('d-none d-md-table-cell'),
+                            $('<td>').addClass('d-table-cell d-sm-table-cell d-md-none')
+                            ).appendTo('#myTable > tbody:last');
                         rowSelectorsUi();
                         handleSortUi();
                     },
