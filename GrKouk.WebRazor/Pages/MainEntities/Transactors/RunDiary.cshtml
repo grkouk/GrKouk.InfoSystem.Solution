@@ -236,40 +236,7 @@
             var reallyIsNaN = function(x) {
                 return x !== x;
             };
-            var handleSortUi = () => {
-                var curSort = $('#currentSort').val();
-                $('[name=SortIcon]').hide();
-                if (curSort === undefined || curSort === null || curSort.length === 0) {
-                    //hide all icons
-                    return;
-                }
-                var curSortAr = curSort.split(':');
-                switch (curSortAr[0]) {
-                case 'categorysort':
-                    if (curSortAr[1] === 'asc') {
-                        $('#CategorySortHeaderIcon').addClass('fas fa-sort-numeric-up').show();
-                    } else {
-                        $('#CategorySortHeaderIcon').addClass('fas fa-sort-numeric-down').show();
-                    }
-                    break;
-                case 'namesort':
-                    if (curSortAr[1] === 'asc') {
-                        $('#NameSortHeaderIcon').addClass('fas fa-sort-alpha-up').show();
-                    } else {
-                        $('#NameSortHeaderIcon').addClass('fas fa-sort-alpha-down').show();
-                    }
-                        break;
-                case 'datesort':
-                    if (curSortAr[1] === 'asc') {
-                        $('#DateSortHeaderIcon').addClass('fas fa-sort-alpha-up').show();
-                    } else {
-                        $('#DateSortHeaderIcon').addClass('fas fa-sort-alpha-down').show();
-                    }
-                    break;
-                default:
-                }
-
-            };
+           
             var handleSelectedRowsUi = () => {
                 var $rowSelectors = $('input[name=checkTableRow]');
                 var $checkAllRows = $('input[name=checkAllRows]');
