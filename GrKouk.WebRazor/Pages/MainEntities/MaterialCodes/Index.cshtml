@@ -276,11 +276,11 @@
             //#region variables
             var $filtersVisible = $('#filtersVisible');
             var $filterCollapse = $('#filterCollapse');
-            var $checkAllRows = $('input[name=checkAllRows]');
+           
             var $filtersToggle = $('#filtersToggle');
             var $rowSelectorsToggle = $('#rowSelectorsToggle');
             var $rowSelectorsVisible = $('#rowSelectorsVisible');
-            var $selectAllSelector = $('th[name=selectAllRowsColumn]');
+           
             var $selectedRowsActionsMenu = $('#SelectedRowsActionsMenu');
             var $selectedRowsActionsLink = $('#ddSelectedRowsActions');
             var $deleteSelectedRowsLink = $('#deleteSelectedRows');
@@ -325,6 +325,7 @@
             };
             var handleSelectedRowsUi = () => {
                 var $rowSelectors = $('input[name=checkTableRow]');
+                var $checkAllRows = $('input[name=checkAllRows]');
                 var $selectedRowsActionsLink = $('#ddSelectedRowsActions');
                 var allRows = $rowSelectors.length;
                 var selectedRowsCount = $rowSelectors.filter(':checked').length;
@@ -338,6 +339,36 @@
                     $checkAllRows.prop('checked', true);
                 } else {
                     $checkAllRows.prop('checked', false);
+                }
+            };
+            const setTableCurrentSort = (currentSort) => {
+                $('#currentSort').val(currentSort);
+            };
+            const getTableCurrentSort = () => {
+                try {
+                    let cSort = $('#currentSort').val();
+
+                    return cSort;
+                } catch (e) {
+                    return "";
+                }
+            };
+            const handlePagingUi = (totalPages, totalRecords, pageIndex, hasPrevious, hasNext) => {
+                $totalPages.val(totalPages);
+                $totalRecords.val(totalRecords);
+                var pagingInfo =
+                    ` Page:${pageIndex} of ${totalPages} Total Items ${totalRecords}`;
+                $('[name=PagingInfo]').text(pagingInfo);
+               
+                if (hasPrevious) {
+                    $('#GoToFirst, #GoToPrevious').parent().removeClass('disabled');
+                } else {
+                    $('#GoToFirst, #GoToPrevious').parent().addClass('disabled');
+                }
+                if (hasNext) {
+                    $('#GoToLast, #GoToNext').parent().removeClass('disabled');
+                } else {
+                    $('#GoToLast, #GoToNext').parent().addClass('disabled');
                 }
             };
             var getTableData =
@@ -374,119 +405,243 @@
 
                         },
                         success: function (result) {
-                             var totalRecords = result.totalRecords;
-                        var totalPages = result.totalPages;
+                            handlePagingUi(result.totalPages,
+                                result.totalRecords,
+                                pageIndex,
+                                result.hasPrevious,
+                                result.hasNext);
 
-                        $totalPages.val(totalPages);
-                        $totalRecords.val(totalRecords);
-                        var pagingInfo =
-                            ` Page:${pageIndex} of ${totalPages} Total Items ${totalRecords}`;
-                        $('[name=PagingInfo]').text(pagingInfo);
-                        var hasPrevious = result.hasPrevious;
-                        var hasNext = result.hasNext;
-                        if (hasPrevious) {
-                            $('#GoToFirst, #GoToPrevious').parent().removeClass('disabled');
-                        } else {
-                            $('#GoToFirst, #GoToPrevious').parent().addClass('disabled');
-                        }
-                        if (hasNext) {
-                            $('#GoToLast, #GoToNext').parent().removeClass('disabled');
-                        } else {
-                            $('#GoToLast, #GoToNext').parent().addClass('disabled');
-                        }
-
-                        $('#myTable > tbody').empty();
-                        $('#myTable > thead').empty();
+                             $('#myTable > tbody').empty();
+                             $('#myTable > thead').empty();
                         let colDefs = [
                             
                             {
+                                sortKey: 'ProductNameSort',
+                                sortType: 'alpha',
                                 header: 'Product',
                                 text: '',
                                 class: 'small'
                             },
                             {
+                                sortKey: '',
+                                sortType: '',
                                 header: 'Company',
                                 text: '',
                                 class: 'small d-none d-md-table-cell'
                             },
                             {
+                                sortKey: '',
+                                sortType: '',
                                 header: 'Transactor',
                                 text: '',
                                 class: 'small d-none d-md-table-cell'
                             },
                             {
+                                sortKey: '',
+                                sortType: '',
                                 header: 'Code Type',
                                 text: '',
                                 class: 'small d-none d-md-table-cell'
                             },
                             {
-                                header: 'Unit',
+                                sortKey: '',
+                                sortType: '',
+                                header: 'Buy Unit',
                                 text: '',
                                 class: 'small d-none d-md-table-cell'
                             },
                             {
+                                sortKey: '',
+                                sortType: '',
+                                header: 'Buy Unit Rate',
+                                text: '',
+                                class: 'small d-none d-md-table-cell'
+                            },
+                            {
+                                sortKey: '',
+                                sortType: '',
+                                header: 'Sell Unit',
+                                text: '',
+                                class: 'small d-none d-md-table-cell'
+                            },
+                            {
+                                sortKey: '',
+                                sortType: '',
+                                header: 'Sell Unit Rate',
+                                text: '',
+                                class: 'small d-none d-md-table-cell'
+                            },
+                            {
+                                sortKey: 'ProductCodeSort',
+                                sortType: 'alpha',
                                 header: 'Code',
                                 text: '',
                                 class: 'small '
                             },
                            
                         ];
-                        var $trHead = $('<tr>');
-                        colDefs.forEach(function(item) {
-                            var $tdColHead = $('<th>').text(item.header).addClass(item.class);
-                            $trHead.append($tdColHead);
-                        });
-                        $trHead.append($('<th>'));
-                        $trHead.appendTo('#myTable > thead');
+                        let curSortUndefined = false;
+                            let curSortAr = [];
+                            var curSort = getTableCurrentSort();
+                            if (curSort === undefined || curSort === null || curSort.length === 0) {
+                                curSortUndefined = true;
+                            } else {
+                                curSortAr = curSort.split(':');
+                            }
+                            var $trHead = $('<tr>');
+                            var $tdSelectCol = $(
+                                '<th name="selectAllRowsColumn"> <label class="custom-control custom-checkbox">  ' +
+                                ' <input type="checkbox" class="custom-control-input" name="checkAllRows" >' +
+                               
+                                '<span class="custom-control-indicator"></span></label></th>');
+                            $trHead.append($tdSelectCol);
+                            colDefs.forEach(function(item) {
+                                 var tdColHead = '';
+                                if (item.sortKey.length !== 0) {
+                                    let colHtml = "";
+                                    colHtml = `<th class="${item.class}"> `;
+                                    colHtml += `<a href="#" role="button" name="SortHeader" tabindex="-1" `;
+                                    colHtml += `data-sortkey="${item.sortKey}" data-sorttype="${item.sortType}">  `;
+                                    colHtml += `${item.header}  `;
+                                    colHtml += `</a>  `;
+                                    if (curSortUndefined) {
+                                        colHtml += `<i class="" name="SortIcon"></i>  `;
+                                    } else {
+                                        if (curSortAr[0] === item.sortKey) {
+
+                                            var newSortIconType = curSortAr[1] === 'asc' ? '-down' : '-up';
+                                            var iconSortType = "fas fa-sort-" + item.sortType + newSortIconType;
+                                            colHtml += `<i class="${iconSortType}" name="SortIcon"></i>  `;
+                                        } else {
+                                            colHtml += `<i class="" name="SortIcon"></i>  `;
+                                        }
+                                    }
+
+                                    colHtml += `</a>  `;
+                                    tdColHead = colHtml;
+                                } else {
+                                    tdColHead = $('<th>').text(item.header).addClass(item.class);
+                                }
+                                $trHead.append($(tdColHead));
+                            });
+                            $trHead.append($('<th>'));
+                            $trHead.appendTo('#myTable > thead');
                         $.each(result.data,
                             function (index, value) {
                                 colDefs[0].text = value.warehouseItemName;
                                 colDefs[1].text = value.companyCode;
                                 colDefs[2].text = value.transactorName;
                                 colDefs[3].text = value.codeTypeName;
-                                colDefs[4].text = value.codeUsedUnitName;
-                                colDefs[5].text = value.code;
+                                colDefs[4].text = value.buyCodeUsedUnitName;
+                                colDefs[5].text = value.buyRateToMainUnit;
+                                colDefs[6].text = value.sellCodeUsedUnitName;
+                                colDefs[7].text = value.sellRateToMainUnit;
+                                colDefs[8].text = value.code;
 
                                 var itemId = value.id;
+                                 //#region actionColumns
+                                    var urlEdit = `@Url.Page("./Edit")?id=${itemId}`;
+                                    var urlInfo = `@Url.Page("./Details")?id=${itemId}`;
+                                    var urlDel = `@Url.Page("./Delete")?id=${itemId}`;
+                                    var urlNewLikeThis = `@Url.Page("./Create")?copyFromId=${itemId}`;
+                                    var urlKartela = `@Url.Page("./Kartela")?transactorId=${itemId}`;
+                                    var actionsCol = '<td class="small text-center d-none d-md-table-cell">';
+                                    actionsCol += `<a href="${urlEdit}"><i class="fas fa-edit fa-lg" style="color:slategray"></i></a> |`;
+                                    actionsCol += `<a href="${urlInfo}"><i class="fas fa-info-circle fa-lg" style="color:slategray"></i></a> | `;
+                                    actionsCol += `<a href="${urlDel}"><i class="fas fa-trash fa-lg" style="color:slategray"></i></a> | `;
+                                    actionsCol += `<a href="${urlNewLikeThis}"><i class="fas fa-clone fa-lg" style="color:slategray"></i> | </a> `;
+                                    actionsCol += '<a class=" dropdown-toggle" role="button" id="dropdownMenuButton"';
+                                    actionsCol += 'data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">';
+                                    actionsCol += '<i class="fas fa-bars" style="color:slategray"></i></a>';
+                                    actionsCol += ' <div class="dropdown-menu small" aria-labelledby="dropdownMenuButton">';
+                                    actionsCol += `<a href="${urlKartela}" class="dropdown-item">Καρτέλα</a>`;
+                                    actionsCol += ' <a class="dropdown-item" href="#">Something else here</a>';
+                                    actionsCol += ' </div>';
+                                    actionsCol += '</td>';
+                                    var actionColMobile ='<td class="small text-center d-table-cell d-sm-table-cell d-md-none">';
+                                    actionColMobile +='<a class=" dropdown-toggle" role="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" ';
+                                    actionColMobile +='aria-expanded="false"><i class="fas fa-bars fa-lg" style="color:slategray"></i></a>';
+                                    actionColMobile +='<div class="dropdown-menu small" aria-labelledby="dropdownMenuButton">';
+                                    actionColMobile += `<a class="dropdown-item" href="${urlEdit}">`;
+                                    actionColMobile +=  '<i class="fas fa-edit fa-lg" style = "color:slategray" ></i> Edit</a>';
+                                    actionColMobile += `<a class="dropdown-item" href="${urlInfo}">`;
+                                    actionColMobile += '<i class="fas fa-info-circle fa-lg" style = "color:slategray" ></i> Details</a>';
+                                    actionColMobile += `<a class="dropdown-item" href="${urlDel}">`;
+                                    actionColMobile += '<i class="fas fa-trash fa-lg" style = "color:slategray" ></i> Delete</a>';
+                                    actionColMobile += `<a class="dropdown-item" href="${urlKartela}">`;
+                                    actionColMobile += '<i class="fas fa-receipt fa-lg" style = "color:slategray" ></i> Καρτέλα</a>' ;
+                                    actionColMobile += `<a class="dropdown-item" href="${urlNewLikeThis}">`;
+                                    actionColMobile += '<i class="fas fa-clone fa-lg" style="color:slategray"></i> Duplicate</a>';
+                                    actionColMobile += '</div></td>';
+                                    //#endregion
                                 var $tr = $('<tr>');
-
+                                var $td = $(
+                                    '<td name="selectRowColumn"> <label class="custom-control custom-checkbox">  ' +
+                                    ' <input type="checkbox" class="custom-control-input" name="checkTableRow" ' +
+                                    `data-itemId="${itemId}">` +
+                                    '<span class="custom-control-indicator"></span></label></td>');
+                                $tr.append($td);
                                 colDefs.forEach(function(item) {
                                     var $tdCol = $('<td>').text(item.text).addClass(item.class);
                                     $tr.append($tdCol);
 
                                 });
-                                var urlEdit = `@Url.Page("./Edit")?id=${itemId}`;
-                                var urlInfo = `@Url.Page("./Details")?id=${itemId}`;
-                                var urlDel = `@Url.Page("./Delete")?id=${itemId}`;
-                                var urlNewLikeThis=`@Url.Page("./Create")?copyFromId=${itemId}`;
-                                var actionsCol = '<td class="small text-center d-none d-md-table-cell">';
-                                actionsCol += `<a href="${urlEdit}"><i class="fas fa-edit fa-lg" style="color:slategray"></i></a> |`;
-                                actionsCol += `<a href="${urlInfo}"><i class="fas fa-info-circle fa-lg" style="color:slategray"></i></a> | `;
-                                actionsCol += `<a href="${urlDel}"><i class="fas fa-trash fa-lg" style="color:slategray"></i></a> | `;
-                                actionsCol += `<a href="${urlNewLikeThis}"><i class="fas fa-clone fa-lg" style="color:slategray"></i></a> `;
-                                actionsCol += '</td>';
-                                var actionColMobile = '<td class="small text-center d-table-cell d-sm-table-cell d-md-none">';
-                                actionColMobile +='<a class=" dropdown-toggle" role="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" ';
-                                actionColMobile +='aria-expanded="false"><i class="fas fa-bars fa-lg" style="color:slategray"></i></a>';
-                                actionColMobile +=
-                                    '<div class="dropdown-menu small" aria-labelledby="dropdownMenuButton">';
-                                actionColMobile += `<a class="dropdown-item" href="${urlEdit}"><i class="fas fa-edit fa-lg" style="color:slategray"></i>  Edit</a> `;
-                                actionColMobile += `<a class="dropdown-item" href="${urlInfo}"><i class="fas fa-info-circle fa-lg" style="color:slategray"></i> Details</a> `;
-                                actionColMobile += `<a class="dropdown-item" href="${urlDel}"><i class="fas fa-trash fa-lg" style="color:slategray"></i> Delete</a> `;
-                                actionColMobile += `<a class="dropdown-item" href="${urlNewLikeThis}"><i class="fas fa-clone fa-lg" style="color:slategray"></i> Duplicate</a> `;
-                                actionColMobile += '</div></td>';
                                 $tr.append(actionsCol);
+                                $tr.append(actionColMobile);
                                 $tr.appendTo('#myTable > tbody');
-                                
 
                             });
+                            $('input[name=checkAllRows]').on('change',
+                                function() {
+                                    var th = $(this).index();
+                                    var isChecked = $(this).prop('checked');
+                                    $('input[name=checkTableRow]').prop('checked', isChecked);
+                                    var selectedRowsCount = countSelectedRows();
+                                    if (selectedRowsCount > 0) {
+                                        $selectedRowsActionsLink.removeClass('disabled');
+                                    } else {
+                                        $selectedRowsActionsLink.addClass('disabled');
+                                    }
+                                });
                         $('input[name=checkTableRow]').on('change',
                             function() {
                                 handleSelectedRowsUi();
                             });
+                            $('[name=SortHeader]').on('click',
+                                function(event) {
+                                    var button = $(event.delegateTarget);
+                                    var reqSort = button.data('sortkey');
+                                    let reqSortType = button.data('sorttype');
+                                    let iconSortType = '';
+                                    var newSortVal = '';
+                                    var curSort = getTableCurrentSort();
+                                    if (curSort === undefined || curSort === null || curSort.length === 0) {
+                                        curSort = reqSort + ':desc';
+                                    }
+                                    var curSortAr = curSort.split(':');
+                                    if (curSortAr[0] === reqSort) {
+                                        var newSort = curSortAr[1] === 'asc' ? 'desc' : 'asc';
+                                        var newSortIconType = curSortAr[1] === 'asc' ? '-down' : '-up';
+                                        newSortVal = curSortAr[0] + ':' + newSort;
+                                        iconSortType = "fas fa-sort-" + reqSortType + newSortIconType;
+                                    } else {
+                                        newSortVal = reqSort + ':asc';
+                                        iconSortType = "fas fa-sort-" + reqSortType + "-up";
+                                    }
+                                    let $btParent = button.parent();
+                                    let $icon = $btParent.find('i:eq(0)');
+                                    if ($icon !== null) {
+                                        $icon.removeClass();
+                                        $icon.addClass(iconSortType);
+                                    }
+
+                                    setTableCurrentSort(newSortVal);
+                                    //$('#pageIndex').val(1);
+                                    refreshTableData();
+                                });
                         //console.log();
                         rowSelectorsUi();
-                        handleSortUi();
+                       // handleSortUi();
                         },
                         complete: function() {
                             if (timeout) {
@@ -515,6 +670,7 @@
 
             var rowSelectorsUi = () => {
                 var $selectSingleSelectors = $('td[name=selectRowColumn]');
+                var $selectAllSelector = $('th[name=selectAllRowsColumn]');
                 var selectorsVisible = $rowSelectorsVisible.val();
                 var newSelectorsVisible =
                     (selectorsVisible == 'True' || selectorsVisible == 'true' || selectorsVisible === true)
@@ -703,22 +859,12 @@
 
                     $filtersVisible.val(true);
                 });
-            $checkAllRows.on('change',
-                function() {
-                    var th = $(this).index();
-                    var isChecked = $(this).prop('checked');
-                    $('input[name=checkTableRow]').prop('checked', isChecked);
-                    var selectedRowsCount = countSelectedRows();
-                    if (selectedRowsCount > 0) {
-                        $selectedRowsActionsLink.removeClass('disabled');
-                    } else {
-                        $selectedRowsActionsLink.addClass('disabled');
-                    }
-                });
+           
 
 
             var rosSelectorsToggleHandler = () => {
                 var $selectSingleSelectors = $('td[name=selectRowColumn]');
+                var $selectAllSelector = $('th[name=selectAllRowsColumn]');
                 var selectorsVisible = $rowSelectorsVisible.val();
                 var newSelectorsVisible =
                     (selectorsVisible == 'True' || selectorsVisible == 'true' || selectorsVisible === true)
@@ -775,60 +921,14 @@
                 function() {
                     gotoPreviousPage();
                 });
-            $('#TransDateHeader').on('click',
-                function() {
-                    var newSortVal = '';
-                    var curSort = $('#currentSort').val();
-                    if (curSort === undefined || curSort === null || curSort.length === 0) {
-                        curSort = 'transactiondate:desc';
-                    }
-                    var curSortAr = curSort.split(':');
-                    if (curSortAr[0] === 'transactiondate') {
-                        var newSort = curSortAr[1] === 'asc' ? 'desc' : 'asc';
-                        newSortVal = curSortAr[0] + ':' + newSort;
-                    } else {
-                        newSortVal = 'transactiondate:asc';
-                    }
-                    $('#currentSort').val(newSortVal);
-                    $('#pageIndex').val(1);
-                    refreshTableData();
-
-                });
-            $('#TransactorNameHeader').on('click',
-                function() {
-                    var newSortVal = '';
-                    var curSort = $('#currentSort').val();
-                    if (curSort === undefined || curSort === null || curSort.length === 0) {
-                        curSort = 'transactorname:desc';
-                    }
-                    var curSortAr = curSort.split(':');
-                    if (curSortAr[0] === 'transactorname') {
-                        var newSort = curSortAr[1] === 'asc' ? 'desc' : 'asc';
-                        newSortVal = curSortAr[0] + ':' + newSort;
-                    } else {
-                        newSortVal = 'transactorname:asc';
-                    }
-                    $('#currentSort').val(newSortVal);
-                    $('#pageIndex').val(1);
-                    refreshTableData();
-                });
+           
+            
             $('#CreateNew').on('click',
                 function() {
                     var uri = '@Url.Page("Create")';
                     window.location.href = uri;
                 });
-            $('.search_icon').on('click',
-                function() {
-                    icon = $(this).find("svg");
-                    if (icon.hasClass('fa-search')) {
-                        icon.addClass("fa-times").removeClass("fa-search");
-                    } else {
-                        icon.addClass("fa-search").removeClass("fa-times");
-                        $('.search_input').val('');
-                    }
-
-                    refreshTableData();
-                });
+           
 
             $('#FiltersForm').on('submit',
                 function(e) {

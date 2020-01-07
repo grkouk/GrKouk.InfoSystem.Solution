@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using GrKouk.InfoSystem.Domain.Shared;
+using GrKouk.InfoSystem.Dtos.WebDtos.WarehouseItems;
 using GrKouk.WebRazor.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
@@ -45,7 +46,7 @@ namespace GrKouk.WebRazor.Pages.MainEntities.MaterialCodes
                 }
 
                 //WarehouseItemVm = _mapper.Map<WarehouseItemCreateDto>(itemToCopy);
-                ItemVm = itemToCopy;
+                ItemVm = WrItemCodeCreateDto.Map( itemToCopy);
 
             }
 
@@ -77,7 +78,7 @@ namespace GrKouk.WebRazor.Pages.MainEntities.MaterialCodes
             ViewData["TransactorId"] = await FiltersHelper.GetTransactorsForTypeFilterListAsync(_context, "SYS.SUPPLIER");
         }
         [BindProperty]
-        public WrItemCode ItemVm { get; set; }
+        public WrItemCodeCreateDto ItemVm { get; set; }
 
         public async Task<IActionResult> OnPostAsync()
         {
@@ -86,7 +87,7 @@ namespace GrKouk.WebRazor.Pages.MainEntities.MaterialCodes
                 return Page();
             }
 
-            _context.WrItemCodes.Add(ItemVm);
+            _context.WrItemCodes.Add(ItemVm.MapToEntity());
             await _context.SaveChangesAsync();
 
             return RedirectToPage("./Index");

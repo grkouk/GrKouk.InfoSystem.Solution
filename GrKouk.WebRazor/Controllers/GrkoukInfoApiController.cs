@@ -317,19 +317,31 @@ namespace GrKouk.WebRazor.Controllers
             {
                 switch (request.SortData.ToLower())
                 {
-                    case "transactiondate:asc":
+                    case "transactiondatesort:asc":
                         fullListIq = fullListIq.OrderBy(p => p.TransDate);
                         break;
-                    case "transactiondate:desc":
+                    case "transactiondatesort:desc":
                         fullListIq = fullListIq.OrderByDescending(p => p.TransDate);
                         break;
-                    case "transactorname:asc":
+                    case "transactornamesort:asc":
                         fullListIq = fullListIq.OrderBy(p => p.Transactor.Name);
                         break;
-                    case "transactorname:desc":
+                    case "transactornamesort:desc":
                         fullListIq = fullListIq.OrderByDescending(p => p.Transactor.Name);
                         break;
 
+                    case "seriescodesort:asc":
+                        fullListIq = fullListIq.OrderBy(p => p.BuyDocSeries.Code);
+                        break;
+                    case "seriescodesort:desc":
+                        fullListIq = fullListIq.OrderByDescending(p => p.BuyDocSeries.Code);
+                        break;
+                    case "companycodesort:asc":
+                        fullListIq = fullListIq.OrderBy(p => p.Company.Code);
+                        break;
+                    case "companycodesort:desc":
+                        fullListIq = fullListIq.OrderByDescending(p => p.Company.Code);
+                        break;
                 }
             }
 
@@ -359,7 +371,32 @@ namespace GrKouk.WebRazor.Controllers
                 fullListIq = fullListIq.Where(p => p.Transactor.Name.Contains(request.SearchFilter)
                                                    || p.TransRefCode.Contains(request.SearchFilter));
             }
+            var currencyRates = await _context.ExchangeRates.OrderByDescending(p => p.ClosingDate)
+                .Take(10)
+                .ToListAsync();
             var t = fullListIq.ProjectTo<BuyDocListDto>(_mapper.ConfigurationProvider);
+            var t1 = t.Select(p => new BuyDocListDto
+            {
+                Id = p.Id,
+                TransDate = p.TransDate,
+                TransRefCode = p.TransRefCode,
+                SectionId = p.SectionId,
+                SectionCode = p.SectionCode,
+                TransactorId = p.TransactorId,
+                TransactorName = p.TransactorName,
+                BuyDocSeriesId = p.BuyDocSeriesId,
+                BuyDocSeriesCode = p.BuyDocSeriesCode,
+                BuyDocSeriesName = p.BuyDocSeriesName,
+                AmountFpa = ConvertAmount(p.CompanyCurrencyId, request.DisplayCurrencyId, currencyRates, p.AmountFpa),
+                AmountNet = ConvertAmount(p.CompanyCurrencyId, request.DisplayCurrencyId, currencyRates, p.AmountNet),
+                AmountDiscount = ConvertAmount(p.CompanyCurrencyId, request.DisplayCurrencyId, currencyRates, p.AmountDiscount),
+                CompanyId = p.CompanyId,
+                CompanyCode = p.CompanyCode,
+                CompanyCurrencyId = p.CompanyCurrencyId
+            });
+            var grandSumOfAmount = t1.Sum(p => p.TotalAmount);
+            var gransSumOfNetAmount = t1.Sum(p => p.TotalNetAmount);
+
             var pageIndex = request.PageIndex;
 
             var pageSize = request.PageSize;
@@ -369,8 +406,8 @@ namespace GrKouk.WebRazor.Controllers
             {
                 if (listItem.CompanyCurrencyId != 1)
                 {
-                    var r = await _context.ExchangeRates.Where(p => p.CurrencyId == listItem.CompanyCurrencyId)
-                        .OrderByDescending(p => p.ClosingDate).FirstOrDefaultAsync();
+                    var r = currencyRates.Where(p => p.CurrencyId == listItem.CompanyCurrencyId)
+                        .OrderByDescending(p => p.ClosingDate).FirstOrDefault();
                     if (r != null)
                     {
                         listItem.AmountFpa = listItem.AmountFpa / r.Rate;
@@ -380,8 +417,8 @@ namespace GrKouk.WebRazor.Controllers
                 }
                 if (request.DisplayCurrencyId != 1)
                 {
-                    var r = await _context.ExchangeRates.Where(p => p.CurrencyId == request.DisplayCurrencyId)
-                        .OrderByDescending(p => p.ClosingDate).FirstOrDefaultAsync();
+                    var r = currencyRates.Where(p => p.CurrencyId == request.DisplayCurrencyId)
+                        .OrderByDescending(p => p.ClosingDate).FirstOrDefault();
                     if (r != null)
                     {
                         listItem.AmountFpa = listItem.AmountFpa * r.Rate;
@@ -402,6 +439,9 @@ namespace GrKouk.WebRazor.Controllers
                 HasPrevious = listItems.HasPrevious,
                 HasNext = listItems.HasNext,
                 SumOfAmount = sumAmountTotal,
+                
+                GrandSumOfAmount = grandSumOfAmount,
+                //GrandSumOfNetAmount = gransSumOfNetAmount,
                 Data = listItems
             };
             //return new JsonResult(response);
@@ -475,19 +515,30 @@ namespace GrKouk.WebRazor.Controllers
             {
                 switch (request.SortData.ToLower())
                 {
-                    case "transactiondate:asc":
+                    case "transactiondatesort:asc":
                         fullListIq = fullListIq.OrderBy(p => p.TransDate);
                         break;
-                    case "transactiondate:desc":
+                    case "transactiondatesort:desc":
                         fullListIq = fullListIq.OrderByDescending(p => p.TransDate);
                         break;
-                    case "transactorname:asc":
+                    case "transactornamesort:asc":
                         fullListIq = fullListIq.OrderBy(p => p.Transactor.Name);
                         break;
-                    case "transactorname:desc":
+                    case "transactornamesort:desc":
                         fullListIq = fullListIq.OrderByDescending(p => p.Transactor.Name);
                         break;
-
+                    case "seriescodesort:asc":
+                        fullListIq = fullListIq.OrderBy(p => p.SellDocSeries.Code);
+                        break;
+                    case "seriescodesort:desc":
+                        fullListIq = fullListIq.OrderByDescending(p => p.SellDocSeries.Code);
+                        break;
+                    case "companycodesort:asc":
+                        fullListIq = fullListIq.OrderBy(p => p.Company.Code);
+                        break;
+                    case "companycodesort:desc":
+                        fullListIq = fullListIq.OrderByDescending(p => p.Company.Code);
+                        break;
                 }
             }
 
@@ -512,8 +563,34 @@ namespace GrKouk.WebRazor.Controllers
                     }
                 }
             }
-
+            var currencyRates = await _context.ExchangeRates.OrderByDescending(p => p.ClosingDate)
+                .Take(10)
+                .ToListAsync();
             var t = fullListIq.ProjectTo<SellDocListDto>(_mapper.ConfigurationProvider);
+            var t1 = t.Select(p => new SellDocListDto
+            {
+                Id = p.Id,
+                TransDate = p.TransDate,
+                TransRefCode = p.TransRefCode,
+                SectionId = p.SectionId,
+                SectionCode = p.SectionCode,
+                TransactorId = p.TransactorId,
+                TransactorName = p.TransactorName,
+                SellDocSeriesId = p.SellDocSeriesId,
+                SellDocSeriesCode = p.SellDocSeriesCode,
+                SellDocSeriesName = p.SellDocSeriesName,
+                AmountFpa = ConvertAmount(p.CompanyCurrencyId, request.DisplayCurrencyId, currencyRates, p.AmountFpa),
+                AmountNet = ConvertAmount(p.CompanyCurrencyId, request.DisplayCurrencyId, currencyRates, p.AmountNet),
+                AmountDiscount = ConvertAmount(p.CompanyCurrencyId, request.DisplayCurrencyId, currencyRates, p.AmountDiscount),
+
+                CompanyId = p.CompanyId,
+                CompanyCode = p.CompanyCode,
+                CompanyCurrencyId = p.CompanyCurrencyId,
+                SalesChannelId = p.SalesChannelId
+            });
+            var gransSumOfAmount = t1.Sum(p => p.TotalAmount);
+            var gransSumOfNetAmount = t1.Sum(p => p.TotalNetAmount);
+            
             var pageIndex = request.PageIndex;
 
             var pageSize = request.PageSize;
@@ -523,8 +600,8 @@ namespace GrKouk.WebRazor.Controllers
             {
                 if (listItem.CompanyCurrencyId != 1)
                 {
-                    var r = await _context.ExchangeRates.Where(p => p.CurrencyId == listItem.CompanyCurrencyId)
-                        .OrderByDescending(p => p.ClosingDate).FirstOrDefaultAsync();
+                    var r = currencyRates.Where(p => p.CurrencyId == listItem.CompanyCurrencyId)
+                        .OrderByDescending(p => p.ClosingDate).FirstOrDefault();
                     if (r != null)
                     {
                         listItem.AmountFpa = listItem.AmountFpa / r.Rate;
@@ -534,8 +611,8 @@ namespace GrKouk.WebRazor.Controllers
                 }
                 if (request.DisplayCurrencyId != 1)
                 {
-                    var r = await _context.ExchangeRates.Where(p => p.CurrencyId == request.DisplayCurrencyId)
-                        .OrderByDescending(p => p.ClosingDate).FirstOrDefaultAsync();
+                    var r = currencyRates.Where(p => p.CurrencyId == request.DisplayCurrencyId)
+                        .OrderByDescending(p => p.ClosingDate).FirstOrDefault();
                     if (r != null)
                     {
                         listItem.AmountFpa = listItem.AmountFpa * r.Rate;
@@ -546,7 +623,7 @@ namespace GrKouk.WebRazor.Controllers
 
             }
             decimal sumAmountTotal = listItems.Sum(p => p.TotalAmount);
-
+            decimal sumAmountNet= listItems.Sum(p => p.TotalNetAmount);
             var response = new IndexDataTableResponse<SellDocListDto>
             {
                 TotalRecords = listItems.TotalCount,
@@ -554,6 +631,9 @@ namespace GrKouk.WebRazor.Controllers
                 HasPrevious = listItems.HasPrevious,
                 HasNext = listItems.HasNext,
                 SumOfAmount = sumAmountTotal,
+                SumOfNetAmount = sumAmountNet,
+                GrandSumOfAmount = gransSumOfAmount,
+                GrandSumOfNetAmount = gransSumOfNetAmount,
                 Data = listItems
             };
             //return new JsonResult(response);
@@ -568,19 +648,36 @@ namespace GrKouk.WebRazor.Controllers
             {
                 switch (request.SortData.ToLower())
                 {
-                    case "transactiondate:asc":
+                    case "transactiondatesort:asc":
                         fullListIq = fullListIq.OrderBy(p => p.TransDate);
                         break;
-                    case "transactiondate:desc":
+                    case "transactiondatesort:desc":
                         fullListIq = fullListIq.OrderByDescending(p => p.TransDate);
                         break;
-                    case "transactorname:asc":
+                    case "transactornamesort:asc":
                         fullListIq = fullListIq.OrderBy(p => p.Transactor.Name);
                         break;
-                    case "transactorname:desc":
+                    case "transactornamesort:desc":
                         fullListIq = fullListIq.OrderByDescending(p => p.Transactor.Name);
                         break;
-
+                    case "seriescodesort:asc":
+                        fullListIq = fullListIq.OrderBy(p => p.TransTransactorDocSeries.Code);
+                        break;
+                    case "seriescodesort:desc":
+                        fullListIq = fullListIq.OrderByDescending(p => p.TransTransactorDocSeries.Code);
+                        break;
+                    case "companycodesort:asc":
+                        fullListIq = fullListIq.OrderBy(p => p.Company.Code);
+                        break;
+                    case "companycodesort:desc":
+                        fullListIq = fullListIq.OrderByDescending(p => p.Company.Code);
+                        break;
+                    case "sectioncodesort:asc":
+                        fullListIq = fullListIq.OrderBy(p => p.Section.Code);
+                        break;
+                    case "sectioncodesort:desc":
+                        fullListIq = fullListIq.OrderByDescending(p => p.Section.Code);
+                        break;
                 }
             }
 
@@ -605,8 +702,44 @@ namespace GrKouk.WebRazor.Controllers
                     }
                 }
             }
-
+            var currencyRates = await _context.ExchangeRates.OrderByDescending(p => p.ClosingDate)
+                .Take(10)
+                .ToListAsync();
             var t = fullListIq.ProjectTo<TransactorTransListDto>(_mapper.ConfigurationProvider);
+            var t1 = t.Select(p => new TransactorTransListDto
+            {
+                Id = p.Id,
+                TransDate = p.TransDate,
+                TransTransactorDocSeriesId = p.TransTransactorDocSeriesId,
+                TransTransactorDocSeriesName = p.TransTransactorDocSeriesName,
+                TransTransactorDocSeriesCode = p.TransTransactorDocSeriesCode,
+                TransTransactorDocTypeId = p.TransTransactorDocTypeId,
+                TransRefCode = p.TransRefCode,
+                TransactorId = p.TransactorId,
+                TransactorName = p.TransactorName,
+                SectionId = p.SectionId,
+                SectionCode = p.SectionCode,
+                CreatorId = p.CreatorId,
+                FiscalPeriodId = p.FiscalPeriodId,
+                FinancialAction = p.FinancialAction,
+                FpaRate = p.FpaRate,
+                DiscountRate = p.DiscountRate,
+                AmountFpa = ConvertAmount(p.CompanyCurrencyId, request.DisplayCurrencyId, currencyRates, p.AmountFpa),
+                AmountNet = ConvertAmount(p.CompanyCurrencyId, request.DisplayCurrencyId, currencyRates, p.AmountNet),
+                AmountDiscount = ConvertAmount(p.CompanyCurrencyId, request.DisplayCurrencyId, currencyRates,
+                    p.AmountDiscount),
+                TransFpaAmount = ConvertAmount(p.CompanyCurrencyId, request.DisplayCurrencyId, currencyRates,
+                    p.TransFpaAmount),
+                TransNetAmount = ConvertAmount(p.CompanyCurrencyId, request.DisplayCurrencyId, currencyRates,
+                    p.TransNetAmount),
+                TransDiscountAmount = ConvertAmount(p.CompanyCurrencyId, request.DisplayCurrencyId, currencyRates,
+                    p.TransDiscountAmount),
+                CompanyCode = p.CompanyCode,
+                CompanyCurrencyId = p.CompanyCurrencyId
+            });
+            var grandSumOfAmount = t1.Sum(p => p.TotalAmount);
+            var grandSumOfDebit = t1.Sum(p => p.DebitAmount);
+            var grandSumOfCredit = t1.Sum(p => p.CreditAmount);
             var pageIndex = request.PageIndex;
 
             var pageSize = request.PageSize;
@@ -616,8 +749,8 @@ namespace GrKouk.WebRazor.Controllers
             {
                 if (listItem.CompanyCurrencyId != 1)
                 {
-                    var r = await _context.ExchangeRates.Where(p => p.CurrencyId == listItem.CompanyCurrencyId)
-                        .OrderByDescending(p => p.ClosingDate).FirstOrDefaultAsync();
+                    var r = currencyRates.Where(p => p.CurrencyId == listItem.CompanyCurrencyId)
+                        .OrderByDescending(p => p.ClosingDate).FirstOrDefault();
                     if (r != null)
                     {
                         listItem.AmountFpa = listItem.AmountFpa / r.Rate;
@@ -631,8 +764,8 @@ namespace GrKouk.WebRazor.Controllers
                 }
                 if (request.DisplayCurrencyId != 1)
                 {
-                    var r = await _context.ExchangeRates.Where(p => p.CurrencyId == request.DisplayCurrencyId)
-                        .OrderByDescending(p => p.ClosingDate).FirstOrDefaultAsync();
+                    var r = currencyRates.Where(p => p.CurrencyId == request.DisplayCurrencyId)
+                        .OrderByDescending(p => p.ClosingDate).FirstOrDefault();
                     if (r != null)
                     {
                         listItem.AmountFpa = listItem.AmountFpa * r.Rate;
@@ -658,6 +791,9 @@ namespace GrKouk.WebRazor.Controllers
                 SumOfAmount = sumAmountTotal,
                 SumOfDebit = sumDebit,
                 SumOfCredit = sumCredit,
+                GrandSumOfAmount = grandSumOfAmount,
+                GrandSumOfDebit = grandSumOfDebit,
+                GrandSumOfCredit = grandSumOfCredit,
                 Data = listItems
             };
             //return new JsonResult(response);
@@ -672,19 +808,36 @@ namespace GrKouk.WebRazor.Controllers
             {
                 switch (request.SortData.ToLower())
                 {
-                    case "transactiondate:asc":
+                    case "transactiondatesort:asc":
                         fullListIq = fullListIq.OrderBy(p => p.TransDate);
                         break;
-                    case "transactiondate:desc":
+                    case "transactiondatesort:desc":
                         fullListIq = fullListIq.OrderByDescending(p => p.TransDate);
                         break;
-                    case "transactorname:asc":
+                    case "warehouseitemnamesort:asc":
                         fullListIq = fullListIq.OrderBy(p => p.WarehouseItem.Name);
                         break;
-                    case "transactorname:desc":
+                    case "warehouseitemnamesort:desc":
                         fullListIq = fullListIq.OrderByDescending(p => p.WarehouseItem.Name);
                         break;
-
+                    case "seriescodesort:asc":
+                        fullListIq = fullListIq.OrderBy(p => p.TransWarehouseDocSeries.Code);
+                        break;
+                    case "seriescodesort:desc":
+                        fullListIq = fullListIq.OrderByDescending(p => p.TransWarehouseDocSeries.Code);
+                        break;
+                    case "companycodesort:asc":
+                        fullListIq = fullListIq.OrderBy(p => p.Company.Code);
+                        break;
+                    case "companycodesort:desc":
+                        fullListIq = fullListIq.OrderByDescending(p => p.Company.Code);
+                        break;
+                    case "sectioncodesort:asc":
+                        fullListIq = fullListIq.OrderBy(p => p.Section.Code);
+                        break;
+                    case "sectioncodesort:desc":
+                        fullListIq = fullListIq.OrderByDescending(p => p.Section.Code);
+                        break;
                 }
             }
 
@@ -709,8 +862,48 @@ namespace GrKouk.WebRazor.Controllers
                     }
                 }
             }
-
+            var currencyRates = await _context.ExchangeRates.OrderByDescending(p => p.ClosingDate)
+                .Take(10)
+                .ToListAsync();
             var t = fullListIq.ProjectTo<WarehouseTransListDto>(_mapper.ConfigurationProvider);
+            var t1 = t.Select(p => new WarehouseTransListDto
+            {
+                Id = p.Id,
+                TransDate = p.TransDate,
+                TransWarehouseDocSeriesId = p.TransWarehouseDocSeriesId,
+                TransWarehouseDocSeriesName = p.TransWarehouseDocSeriesName,
+                TransWarehouseDocSeriesCode = p.TransWarehouseDocSeriesCode,
+                TransRefCode = p.TransRefCode,
+                SectionCode = p.SectionCode,
+                WarehouseItemId = p.WarehouseItemId,
+                WarehouseItemName = p.WarehouseItemName,
+                TransactionType = p.TransactionType,
+                InventoryAction = p.InventoryAction,
+                InventoryValueAction = p.InventoryValueAction,
+                InvoicedVolumeAction = p.InvoicedVolumeAction,
+                InvoicedValueAction = p.InvoicedValueAction,
+                Quontity1 = p.Quontity1,
+                Quontity2 = p.Quontity2,
+                UnitPrice = ConvertAmount(p.CompanyCurrencyId, request.DisplayCurrencyId, currencyRates, p.UnitPrice),
+                UnitExpenses = ConvertAmount(p.CompanyCurrencyId, request.DisplayCurrencyId, currencyRates, p.UnitExpenses),
+                UnitPriceFinal = ConvertAmount(p.CompanyCurrencyId, request.DisplayCurrencyId, currencyRates, p.UnitPriceFinal),
+                AmountFpa = ConvertAmount(p.CompanyCurrencyId, request.DisplayCurrencyId, currencyRates, p.AmountFpa),
+                AmountNet = ConvertAmount(p.CompanyCurrencyId, request.DisplayCurrencyId, currencyRates, p.AmountNet),
+                AmountDiscount = ConvertAmount(p.CompanyCurrencyId, request.DisplayCurrencyId, currencyRates, p.AmountDiscount),
+                TransQ1 = p.TransQ1,
+                TransQ2 = p.TransQ2,
+                TransFpaAmount = ConvertAmount(p.CompanyCurrencyId, request.DisplayCurrencyId, currencyRates, p.TransFpaAmount),
+                TransNetAmount = ConvertAmount(p.CompanyCurrencyId, request.DisplayCurrencyId, currencyRates, p.TransNetAmount),
+                TransDiscountAmount = ConvertAmount(p.CompanyCurrencyId, request.DisplayCurrencyId, currencyRates, p.TransDiscountAmount),
+                CompanyId = p.CompanyId,
+                CompanyCode = p.CompanyCode,
+                CompanyCurrencyId = p.CompanyCurrencyId
+            });
+            decimal grandSumImportVolume = t1.Sum(p => p.ImportUnits);
+            decimal grandSumImportValue = t1.Sum(p => p.ImportAmount);
+            decimal grandSumExportVolume = t1.Sum(p => p.ExportUnits);
+            decimal grandSumExportValue = t1.Sum(p => p.ExportAmount);
+           
             var pageIndex = request.PageIndex;
 
             var pageSize = request.PageSize;
@@ -720,8 +913,8 @@ namespace GrKouk.WebRazor.Controllers
             {
                 if (listItem.CompanyCurrencyId != 1)
                 {
-                    var r = await _context.ExchangeRates.Where(p => p.CurrencyId == listItem.CompanyCurrencyId)
-                        .OrderByDescending(p => p.ClosingDate).FirstOrDefaultAsync();
+                    var r = currencyRates.Where(p => p.CurrencyId == listItem.CompanyCurrencyId)
+                        .OrderByDescending(p => p.ClosingDate).FirstOrDefault();
                     if (r != null)
                     {
                         listItem.AmountFpa = listItem.AmountFpa / r.Rate;
@@ -734,8 +927,8 @@ namespace GrKouk.WebRazor.Controllers
                 }
                 if (request.DisplayCurrencyId != 1)
                 {
-                    var r = await _context.ExchangeRates.Where(p => p.CurrencyId == request.DisplayCurrencyId)
-                        .OrderByDescending(p => p.ClosingDate).FirstOrDefaultAsync();
+                    var r = currencyRates.Where(p => p.CurrencyId == request.DisplayCurrencyId)
+                        .OrderByDescending(p => p.ClosingDate).FirstOrDefault();
                     if (r != null)
                     {
                         listItem.AmountFpa = listItem.AmountFpa * r.Rate;
@@ -763,7 +956,10 @@ namespace GrKouk.WebRazor.Controllers
                 SumImportValue = sumImportValue,
                 SumExportVolume = sumExportVolume,
                 SumExportValue = sumExportValue,
-
+                GrandSumImportVolume = grandSumImportVolume,
+                GrandSumImportValue = grandSumImportValue,
+                GrandSumExportVolume = grandSumExportVolume,
+                GrandSumExportValue = grandSumExportValue,
                 Data = listItems
             };
 
@@ -1228,10 +1424,16 @@ namespace GrKouk.WebRazor.Controllers
             {
                 switch (request.SortData.ToLower())
                 {
-                    case "transactorname:asc":
+                    case "transactorcodesort:asc":
+                        fullListIq = fullListIq.OrderBy(p => p.Code);
+                        break;
+                    case "transactorcodesort:desc":
+                        fullListIq = fullListIq.OrderByDescending(p => p.Code);
+                        break;
+                    case "transactornamesort:asc":
                         fullListIq = fullListIq.OrderBy(p => p.Name);
                         break;
-                    case "transactorname:desc":
+                    case "transactornamesort:desc":
                         fullListIq = fullListIq.OrderByDescending(p => p.Name);
                         break;
                 }
@@ -1329,19 +1531,20 @@ namespace GrKouk.WebRazor.Controllers
                 switch (request.SortData.ToLower())
                 {
 
-                    case "namesort:asc":
+                    case "productnamesort:asc":
                         fullListIq = fullListIq.OrderBy(p => p.WarehouseItem.Name);
                         break;
-                    case "namesort:desc":
+                    case "productnamesort:desc":
                         fullListIq = fullListIq.OrderByDescending(p => p.WarehouseItem.Name);
                         break;
-                    case "codesort:asc":
+                    case "productcodesort:asc":
                         fullListIq = fullListIq.OrderBy(p => p.Code);
                         break;
-                    case "codesort:desc":
+                    case "productcodesort:desc":
                         fullListIq = fullListIq.OrderByDescending(p => p.Code);
                         break;
-                   default:
+                   
+                    default:
                        fullListIq = fullListIq.OrderBy(p => p.Id);
                        break;
                 }
@@ -1423,8 +1626,10 @@ namespace GrKouk.WebRazor.Controllers
                         item.TransactorName = "{All Transactors}";
                     }
 
-                    item.CodeUsedUnitName = item.CodeUsedUnit.GetDescription();
                     item.CodeTypeName = item.CodeType.GetDescription();
+                    item.CodeUsedUnitName = item.CodeUsedUnit.GetDescription();
+                    item.BuyCodeUsedUnitName = item.BuyCodeUsedUnit.GetDescription();
+                    item.SellCodeUsedUnitName = item.SellCodeUsedUnit.GetDescription();
                 }
             }
             catch (Exception e)
@@ -1967,6 +2172,37 @@ namespace GrKouk.WebRazor.Controllers
             };
             return Ok(response);
         }
+
+        private decimal ConvertAmount(int companyCurrencyId,int displayCurrencyId,IList<ExchangeRate> rates,decimal amount)
+        {
+            //var r =  rates.Where(p => p.CurrencyId == companyCurrencyId)
+            //    .OrderByDescending(p => p.ClosingDate).FirstOrDefault();
+            decimal retAmount=amount;
+            if (displayCurrencyId==companyCurrencyId)
+            {
+                return retAmount;
+            }
+            if (companyCurrencyId != 1)
+            {
+                var r = rates.Where(p => p.CurrencyId == companyCurrencyId)
+                    .OrderByDescending(p => p.ClosingDate).FirstOrDefault();
+                if (r != null)
+                {
+                    retAmount = amount / r.Rate;
+                }
+            }
+            if (displayCurrencyId != 1)
+            {
+                var r = rates.Where(p => p.CurrencyId == displayCurrencyId)
+                    .OrderByDescending(p => p.ClosingDate).FirstOrDefault();
+                if (r != null)
+                {
+                    retAmount = retAmount * r.Rate;
+
+                }
+            }
+            return retAmount;
+        }
         [HttpGet("LastDiaryTransactionData")]
         public async Task<IActionResult> GetLastDiaryTransactionDataAsync(int transactorId)
         {
@@ -2024,19 +2260,30 @@ namespace GrKouk.WebRazor.Controllers
             {
                 switch (request.SortData.ToLower())
                 {
-                    case "datesort:asc":
+                    case "transactiondatesort:asc":
                         transactionsList = transactionsList.OrderBy(p => p.TransDate);
                         break;
-                    case "datesort:desc":
+                    case "transactiondatesort:desc":
                         transactionsList = transactionsList.OrderByDescending(p => p.TransDate);
                         break;
-                    case "namesort:asc":
+                    case "transactornamesort:asc":
                         transactionsList = transactionsList.OrderBy(p => p.Transactor.Name);
                         break;
-                    case "namesort:desc":
+                    case "transactornamesort:desc":
                         transactionsList = transactionsList.OrderByDescending(p => p.Transactor.Name);
                         break;
-
+                    case "seriescodesort:asc":
+                        transactionsList = transactionsList.OrderBy(p => p.TransTransactorDocSeries.Code);
+                        break;
+                    case "seriescodesort:desc":
+                        transactionsList = transactionsList.OrderByDescending(p => p.TransTransactorDocSeries.Name);
+                        break;
+                    case "companycodesort:asc":
+                        transactionsList = transactionsList.OrderBy(p => p.Company.Code);
+                        break;
+                    case "companycodesort:desc":
+                        transactionsList = transactionsList.OrderByDescending(p => p.Company.Name);
+                        break;
                 }
             }
             if (!String.IsNullOrEmpty(request.DateRange))
@@ -2063,7 +2310,41 @@ namespace GrKouk.WebRazor.Controllers
                 transactionsList = transactionsList.Where(p => p.Transactor.Name.Contains(request.SearchFilter));
             }
 
+            var currencyRates = await _context.ExchangeRates.OrderByDescending(p => p.ClosingDate)
+                .Take(10)
+                .ToListAsync();
             var t = transactionsList.ProjectTo<TransactorTransListDto>(_mapper.ConfigurationProvider);
+            var t1 = t.Select(p => new TransactorTransListDto
+            {
+                //Id = p.Id,
+                //TransDate = p.TransDate,
+                TransTransactorDocSeriesId = p.TransTransactorDocSeriesId,
+                //TransTransactorDocSeriesName = p.TransTransactorDocSeriesName,
+                TransTransactorDocSeriesCode = p.TransTransactorDocSeriesCode,
+                TransTransactorDocTypeId = p.TransTransactorDocTypeId,
+                //TransRefCode = p.TransRefCode,
+                //TransactorId = p.TransactorId,
+                //TransactorName = p.TransactorName,
+                SectionId = p.SectionId,
+                //SectionCode = p.SectionCode,
+                //CreatorId = p.CreatorId,
+                FiscalPeriodId = p.FiscalPeriodId,
+                FinancialAction = p.FinancialAction,
+                FpaRate = p.FpaRate,
+                DiscountRate = p.DiscountRate,
+                AmountFpa =    ConvertAmount(p.CompanyCurrencyId, request.DisplayCurrencyId, currencyRates, p.AmountFpa),
+                AmountNet = ConvertAmount(p.CompanyCurrencyId, request.DisplayCurrencyId, currencyRates, p.AmountNet),
+                
+                AmountDiscount = ConvertAmount(p.CompanyCurrencyId,request.DisplayCurrencyId,currencyRates, p.AmountDiscount),
+                TransFpaAmount = ConvertAmount(p.CompanyCurrencyId, request.DisplayCurrencyId, currencyRates, p.TransFpaAmount),
+                TransNetAmount = ConvertAmount(p.CompanyCurrencyId, request.DisplayCurrencyId, currencyRates, p.TransNetAmount),
+                TransDiscountAmount = ConvertAmount(p.CompanyCurrencyId, request.DisplayCurrencyId, currencyRates, p.TransDiscountAmount),
+                CompanyCode = p.CompanyCode,
+                CompanyCurrencyId = p.CompanyCurrencyId
+            }).ToList();
+            var gransSumOfAmount =  t1.Sum(p => p.TotalAmount);
+            var gransSumOfDebit =  t1.Sum(p => p.DebitAmount);
+            var gransSumOfCredit =  t1.Sum(p => p.CreditAmount);
             var pageIndex = request.PageIndex;
 
             var pageSize = request.PageSize;
@@ -2073,8 +2354,8 @@ namespace GrKouk.WebRazor.Controllers
             {
                 if (listItem.CompanyCurrencyId != 1)
                 {
-                    var r = await _context.ExchangeRates.Where(p => p.CurrencyId == listItem.CompanyCurrencyId)
-                        .OrderByDescending(p => p.ClosingDate).FirstOrDefaultAsync();
+                    var r = currencyRates.Where(p => p.CurrencyId == listItem.CompanyCurrencyId)
+                        .OrderByDescending(p => p.ClosingDate).FirstOrDefault();
                     if (r != null)
                     {
                         listItem.AmountFpa = listItem.AmountFpa / r.Rate;
@@ -2088,8 +2369,8 @@ namespace GrKouk.WebRazor.Controllers
                 }
                 if (request.DisplayCurrencyId != 1)
                 {
-                    var r = await _context.ExchangeRates.Where(p => p.CurrencyId == request.DisplayCurrencyId)
-                        .OrderByDescending(p => p.ClosingDate).FirstOrDefaultAsync();
+                    var r = currencyRates.Where(p => p.CurrencyId == request.DisplayCurrencyId)
+                        .OrderByDescending(p => p.ClosingDate).FirstOrDefault();
                     if (r != null)
                     {
                         listItem.AmountFpa = listItem.AmountFpa * r.Rate;
@@ -2115,6 +2396,9 @@ namespace GrKouk.WebRazor.Controllers
                 SumOfAmount = sumAmountTotal,
                 SumOfDebit = sumDebit,
                 SumOfCredit = sumCredit,
+                GrandSumOfAmount = gransSumOfAmount,
+                GrandSumOfDebit = gransSumOfDebit,
+                GrandSumOfCredit = gransSumOfCredit,
                 Data = listItems
             };
 
