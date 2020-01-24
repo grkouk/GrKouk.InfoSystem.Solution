@@ -563,6 +563,11 @@ namespace GrKouk.WebRazor.Controllers
                     }
                 }
             }
+            if (!String.IsNullOrEmpty(request.SearchFilter))
+            {
+                fullListIq = fullListIq.Where(p => p.Transactor.Name.Contains(request.SearchFilter)
+                                                   || p.TransRefCode.Contains(request.SearchFilter));
+            }
             var currencyRates = await _context.ExchangeRates.OrderByDescending(p => p.ClosingDate)
                 .Take(10)
                 .ToListAsync();
@@ -701,6 +706,11 @@ namespace GrKouk.WebRazor.Controllers
                         fullListIq = fullListIq.Where(p => p.CompanyId == companyId);
                     }
                 }
+            }
+            if (!String.IsNullOrEmpty(request.SearchFilter))
+            {
+                fullListIq = fullListIq.Where(p => p.Transactor.Name.Contains(request.SearchFilter)
+                                                   || p.TransRefCode.Contains(request.SearchFilter));
             }
             var currencyRates = await _context.ExchangeRates.OrderByDescending(p => p.ClosingDate)
                 .Take(10)
@@ -861,6 +871,12 @@ namespace GrKouk.WebRazor.Controllers
                         fullListIq = fullListIq.Where(p => p.CompanyId == companyId);
                     }
                 }
+            }
+            if (!String.IsNullOrEmpty(request.SearchFilter))
+            {
+                fullListIq = fullListIq.Where(p => p.WarehouseItem.Name.Contains(request.SearchFilter)
+                                                   || p.WarehouseItem.Code.Contains(request.SearchFilter)
+                                                   || p.TransRefCode.Contains(request.SearchFilter));
             }
             var currencyRates = await _context.ExchangeRates.OrderByDescending(p => p.ClosingDate)
                 .Take(10)
