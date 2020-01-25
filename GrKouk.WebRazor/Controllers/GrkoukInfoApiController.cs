@@ -2654,6 +2654,7 @@ namespace GrKouk.WebRazor.Controllers
             }
             beforePeriod.TransDate = beforePeriodDate;
             beforePeriod.DocSeriesCode = "Εκ.Μεταφ.";
+            beforePeriod.CreatorId = -1;
             beforePeriod.TransactorName = "";
 
             var listWithTotal = new List<KartelaLine>();
@@ -2688,6 +2689,8 @@ namespace GrKouk.WebRazor.Controllers
                     DocSeriesCode = dbTransaction.TransTransactorDocSeriesCode,
                     RefCode = dbTransaction.TransRefCode,
                     CompanyCode = dbTransaction.CompanyCode,
+                    SectionCode = dbTransaction.SectionCode,
+                    CreatorId = dbTransaction.SectionCode== "SCNTRANSACTORTRANS" ? dbTransaction.Id:dbTransaction.CreatorId,
                     RunningTotal = runningTotal,
                     TransactorName = dbTransaction.TransactorName,
                     Debit = dbTransaction.DebitAmount,

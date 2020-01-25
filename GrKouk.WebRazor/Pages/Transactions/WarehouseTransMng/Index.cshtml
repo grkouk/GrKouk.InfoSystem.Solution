@@ -451,7 +451,9 @@
                             colDefs[9].text = formatterCurrency.format(value.exportAmount);
 
                                 var itemId = value.id;
-                                    var urlEdit = `@Url.Page("./Edit")?id=${itemId}`;
+                            var urlEdit = `@Url.Page("./Edit")?id=${itemId}`;
+                            var sectionCode = value.sectionCode;
+                            
                                     var urlInfo = `@Url.Page("./Details")?id=${itemId}`;
                                     var urlDel = `@Url.Page("./Delete")?id=${itemId}`;
                                     var urlNewLikeThis = `@Url.Page("./Create")?copyFromId=${itemId}`;

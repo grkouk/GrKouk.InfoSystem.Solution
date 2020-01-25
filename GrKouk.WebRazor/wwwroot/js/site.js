@@ -10,7 +10,7 @@ var loadOptionsForSelect = () => {
         $select.append('<option></option>');
 
         $.ajax({
-            url: $select.attr('data-source'),
+            url: $select.attr('data-source')
         }).then(function (options) {
             options.map(function (option) {
                 var $option = $('<option>');
@@ -25,7 +25,38 @@ var loadOptionsForSelect = () => {
     });
 };
 
-var grkoukCommon = () => {
+var grkoukCommon = {
+    editPrototypeUrl: function (curSectionCode, sectionCode, creatorId) {
+        if (curSectionCode === sectionCode) {
+            return "#";
+        }
+        if (creatorId === -1) {
+            return "#";
+        }
+        let t = "";
+        switch (sectionCode) {
+            case "SCNTRANSACTORTRANS":
+                t = `/transactions/TransactorTransMng/Edit?id=${creatorId}`;
+                break;
+            case "SCNSELLCOMBINED":
+                t = `/transactions/sellmaterialdoc/Edit?id=${creatorId}`;
+                break;
+            case "SCNBUYMATTRANS":
+                t = `/transactions/buymaterialsdoc/Edit?id=${creatorId}`;
+                break;
 
+            default:
+        }
+        return t;
+    }
 
 };
+
+var myLibrary = {
+    makeStartRefresher: function(refresh, refreshTime) {
+        //function code
+    },
+    readData: function(address) {
+        //function code
+    }
+}; 
