@@ -38,6 +38,9 @@ var grkoukCommon = {
             case "SCNTRANSACTORTRANS":
                 t = `/transactions/TransactorTransMng/Edit?id=${creatorId}`;
                 break;
+            case "SCNWARHSETRANS":
+                t = `/transactions/WarehouseTransMng/Edit?id=${creatorId}`;
+                break;
             case "SCNSELLCOMBINED":
                 t = `/transactions/sellmaterialdoc/Edit?id=${creatorId}`;
                 break;

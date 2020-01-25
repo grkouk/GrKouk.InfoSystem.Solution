@@ -891,6 +891,7 @@ namespace GrKouk.WebRazor.Controllers
                 TransWarehouseDocSeriesCode = p.TransWarehouseDocSeriesCode,
                 TransRefCode = p.TransRefCode,
                 SectionCode = p.SectionCode,
+                CreatorId = p.CreatorId,
                 WarehouseItemId = p.WarehouseItemId,
                 WarehouseItemName = p.WarehouseItemName,
                 TransactionType = p.TransactionType,
@@ -2839,6 +2840,7 @@ namespace GrKouk.WebRazor.Controllers
                 TransWarehouseDocSeriesCode = p.TransWarehouseDocSeriesCode,
                 TransRefCode = p.TransRefCode,
                 SectionCode = p.SectionCode,
+                CreatorId = p.CreatorId,
                 WarehouseItemId = p.WarehouseItemId,
                 WarehouseItemName = p.WarehouseItemName,
                 TransactionType = p.TransactionType,
@@ -2969,6 +2971,7 @@ namespace GrKouk.WebRazor.Controllers
             beforePeriod.RunningTotalValue = bl1.ImportValue - bl1.ExportValue;
             beforePeriod.TransDate = beforePeriodDate;
             beforePeriod.DocSeriesCode = "Εκ.Μεταφ.";
+            beforePeriod.CreatorId = -1;
             beforePeriod.MaterialName = "";
 
             var listWithTotal = new List<WarehouseKartelaLine>();
@@ -2986,6 +2989,8 @@ namespace GrKouk.WebRazor.Controllers
                     DocSeriesCode = dbTransaction.TransWarehouseDocSeriesCode,
                     RefCode = dbTransaction.TransRefCode,
                     CompanyCode = dbTransaction.CompanyCode,
+                    SectionCode = dbTransaction.SectionCode,
+                    CreatorId = dbTransaction.SectionCode == "SCNWARHSETRANS" ? dbTransaction.Id : dbTransaction.CreatorId,
                     RunningTotalVolume = runningTotalVolume,
                     RunningTotalValue = runningTotalValue,
                     MaterialName = dbTransaction.WarehouseItemName,

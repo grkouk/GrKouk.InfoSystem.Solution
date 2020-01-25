@@ -22,7 +22,7 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.WarehouseTransactions
         public string TransRefCode { get; set; }
         [Display(Name = "Section")]
         public string SectionCode { get; set; }
-
+        public int CreatorId { get; set; }
         public int WarehouseItemId { get; set; }
         [Display(Name = "WarehouseItem")]
         public string WarehouseItemName { get; set; }

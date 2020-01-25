@@ -219,26 +219,7 @@
                     return "";
                 }
             };
-            const editPrototypeUrl1 = (curSectionCode, sectionCode, creatorId) => {
-                if (curSectionCode===sectionCode) {
-                    return "#";
-                }
-                let t = "";
-                switch (sectionCode) {
-                    case "SCNTRANSACTORTRANS":
-
-                        break;
-                    case "SCNSELLCOMBINED":
-                        t = `@Url.Page("/transactions/sellmaterialdoc/Edit")?id=${creatorId}`;
-                        break;
-                    case "SCNBUYMATTRANS":
-                        t = `@Url.Page("/transactions/buymaterialsdoc/Edit")?id=${creatorId}`;
-                        break;
-
-                default:
-                }
-                return t;
-            };
+           
             const handlePagingUi = (totalPages, totalRecords, pageIndex, hasPrevious, hasNext) => {
                 $totalPages.val(totalPages);
                 $totalRecords.val(totalRecords);
@@ -456,14 +437,12 @@
                                     var urlNewLikeThis = `@Url.Page("./Create")?copyFromId=${itemId}`;
                                     var urlKartela = `@Url.Page("./Kartela")?transactorId=${itemId}`;
                                     var actionsCol = '<td class="small text-center d-none d-md-table-cell">';
-                                    actionsCol += `<a href="${urlEdit
-                                        }"><i class="fas fa-edit fa-lg" style="color:slategray"></i></a> |`;
-                                    actionsCol += `<a href="${urlInfo
-                                        }"><i class="fas fa-info-circle fa-lg" style="color:slategray"></i></a> | `;
-                                    actionsCol += `<a href="${urlDel
-                                        }"><i class="fas fa-trash fa-lg" style="color:slategray"></i></a> | `;
-                                    actionsCol += `<a href="${urlNewLikeThis
-                                        }"><i class="fas fa-clone fa-lg" style="color:slategray"></i>|</a> `;
+                                    actionsCol += `<a href="${urlEdit}">`;
+                                    actionsCol += `<i class="fas fa-edit fa-lg" style="color:slategray"></i> `;
+                                    actionsCol += `</a> |`;
+                                    actionsCol += `<a href="${urlInfo}"><i class="fas fa-info-circle fa-lg" style="color:slategray"></i></a> | `;
+                                    actionsCol += `<a href="${urlDel}"><i class="fas fa-trash fa-lg" style="color:slategray"></i></a> | `;
+                                    actionsCol += `<a href="${urlNewLikeThis}"><i class="fas fa-clone fa-lg" style="color:slategray"></i>|</a> `;
                                     actionsCol += '<a class=" dropdown-toggle" role="button" id="dropdownMenuButton"';
                                     actionsCol += 'data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">';
                                     actionsCol += '<i class="fas fa-bars" style="color:slategray"></i></a>';
