@@ -991,7 +991,18 @@
                 var uri = '@Url.Page("Create")';
                 window.location.href = uri;
             });
+            $('.search_icon').on('click',
+                           function() {
+                               icon = $(this).find("svg");
+                               if (icon.hasClass('fa-search')) {
+                                   icon.addClass("fa-times").removeClass("fa-search");
+                               } else {
+                                   icon.addClass("fa-search").removeClass("fa-times");
+                                   $('.search_input').val('');
+                               }
            
+                               refreshTableData();
+                           });
 
             $('#FiltersForm').on('submit', function(e) {
                 e.preventDefault();
