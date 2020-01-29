@@ -53,13 +53,26 @@ var grkoukCommon = {
         return t;
     }
 
+
+};
+let grkoukTableColumns = {
+    getSelectAllRowsCol: function() {
+        let cl = '<th name="selectAllRowsColumn"> <label class="custom-control custom-checkbox">  ';
+        cl += '<input type="checkbox" class="custom-control-input" name="checkAllRows" >';
+        cl += '<span class="custom-control-indicator"></span></label></th>';
+        let $cl = $(cl);
+        return $cl;
+    },
+   aLinkTemplate: function (strings, ...keys) {
+        return (function (...values) {
+            let dict = values[values.length - 1] || {};
+            let result = [strings[0]];
+            keys.forEach(function (key, i) {
+                let value = Number.isInteger(key) ? values[key] : dict[key];
+                result.push(value, strings[i + 1]);
+            });
+            return result.join('');
+        });
+    }
 };
 
-var myLibrary = {
-    makeStartRefresher: function(refresh, refreshTime) {
-        //function code
-    },
-    readData: function(address) {
-        //function code
-    }
-}; 

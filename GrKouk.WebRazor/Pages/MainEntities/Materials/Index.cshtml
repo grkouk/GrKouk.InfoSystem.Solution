@@ -334,7 +334,7 @@
                     return "";
                 }
             };
-           const handlePagingUi = (totalPages, totalRecords, pageIndex, hasPrevious, hasNext) => {
+            const handlePagingUi = (totalPages, totalRecords, pageIndex, hasPrevious, hasNext) => {
                 $totalPages.val(totalPages);
                 $totalRecords.val(totalRecords);
                 var pagingInfo =
@@ -374,7 +374,7 @@
                     } else {
                         $('#NameSortHeaderIcon').addClass('fas fa-sort-alpha-down').show();
                     }
-                        break;
+                    break;
                 case 'codesort':
                     if (curSortAr[1] === 'asc') {
                         $('#CodeSortHeaderIcon').addClass('fas fa-sort-alpha-up').show();
@@ -445,6 +445,80 @@
 
                                 $('#myTable > tbody').empty();
                                 $('#myTable > thead').empty();
+                                let colActions = [
+                                    {
+                                        icon: '<i class="fas fa-edit fa-lg" style="color:slategray"></i>',
+                                        text: '|',
+                                        tag: grkoukTableColumns.aLinkTemplate`<a href="${0}${1}">${2}</a>`,
+                                        href: './materials/edit?id='
+                                    },
+                                    {
+                                        icon: '<i class="fas fa-info-circle fa-lg" style="color:slategray"></i>',
+                                        text: '|',
+                                        tag: grkoukTableColumns.aLinkTemplate`<a href="${0}${1}">${2}</a>`,
+                                        href: './materials/Details?id='
+                                    },
+                                    {
+                                        icon: '<i class="fas fa-trash fa-lg" style="color:slategray"></i>',
+                                        text: '|',
+                                        tag: grkoukTableColumns.aLinkTemplate`<a href="${0}${1}">${2}</a>`,
+                                        href: './materials/Delete?id='
+                                    },
+                                    {
+                                        icon: '<i class="fas fa-clone fa-lg" style="color:slategray"></i>',
+                                        text: '|',
+                                        tag: grkoukTableColumns.aLinkTemplate`<a href="${0}${1}">${2}</a>`,
+                                        href: './materials/Create?copyFromId='
+                                    }
+                                ];
+                                let colChildActions = [
+                                    {
+                                        icon: '',
+                                        text: 'Καρτέλα',
+                                        tag: grkoukTableColumns.aLinkTemplate`<a href="${0}${1}" class="dropdown-item">${2}${3}</a>`,
+                                        href: './materials/Kartela?warehouseItemId='
+                                    },
+                                    {
+                                        icon: '',
+                                        text: 'Unlink Images',
+                                        tag: grkoukTableColumns.aLinkTemplate
+                                            `<a name="UnlinkImageLink" href="#" class="dropdown-item" data-itemId="${1}" >${2}</a>`,
+                                        href: ''
+                                    }
+                                ];
+
+                                let colMobileActions = [
+                                    {
+                                        icon: '<i class="fas fa-edit fa-lg" style="color:slategray"></i>',
+                                        text: 'Edit',
+                                        tag: grkoukTableColumns.aLinkTemplate`<a class="dropdown-item" href="${0}${1}">${2}${3}</a>`,
+                                        href: './materials/edit?id='
+                                    },
+                                    {
+                                        icon: '<i class="fas fa-info-circle fa-lg" style="color:slategray"></i>',
+                                        text: 'Details',
+                                        tag: grkoukTableColumns.aLinkTemplate`<a class="dropdown-item" href="${0}${1}">${2}${3}</a>`,
+                                        href: './materials/Details?id='
+                                    },
+                                    {
+                                        icon: '<i class="fas fa-trash fa-lg" style="color:slategray"></i>',
+                                        text: 'Delete',
+                                        tag: grkoukTableColumns.aLinkTemplate`<a class="dropdown-item" href="${0}${1}">${2}${3}</a>`,
+                                        href: './materials/Delete?id='
+                                    },
+                                    {
+                                        icon: '<i class="fas fa-clone fa-lg" style="color:slategray"></i>',
+                                        text: 'Duplicate',
+                                        tag: grkoukTableColumns.aLinkTemplate`<a class="dropdown-item" href="${0}${1}">${2}${3}</a>`,
+                                        href: './materials/Create?copyFromId='
+                                    },
+                                    {
+                                        icon: '<i class="fas fa-receipt fa-lg" style="color:slategray"></i>',
+                                        text: 'Καρτέλα',
+                                        tag: grkoukTableColumns.aLinkTemplate`<a class="dropdown-item" href="${0}${1}">${2}${3}</a>`,
+                                        href: './materials/Kartela?warehouseItemId='
+                                    }
+                                ];
                                 let colDefs = [
                                     {
                                         totalKey: '',
@@ -454,6 +528,7 @@
                                         sortType: 'alpha',
                                         header: 'Code',
                                         text: '',
+                                        valueFormatter: '',
                                         headerClass: 'small text-center d-none d-md-table-cell',
                                         class: 'small d-none d-md-table-cell'
                                     },
@@ -544,11 +619,9 @@
                                     curSortAr = curSort.split(':');
                                 }
                                 var $trHead = $('<tr>');
-                                var $tdSelectCol = $(
-                                    '<th name="selectAllRowsColumn"> <label class="custom-control custom-checkbox">  ' +
-                                    ' <input type="checkbox" class="custom-control-input" name="checkAllRows" >' +
-                                    '<span class="custom-control-indicator"></span></label></th>');
+                                var $tdSelectCol = grkoukTableColumns.getSelectAllRowsCol();
                                 $trHead.append($tdSelectCol);
+                                $trHead.append($('<th class="small">Image</th>'));
                                 colDefs.forEach(function(item) {
                                     var tdColHead = '';
                                     if (item.sortKey.length !== 0) {
@@ -578,10 +651,10 @@
                                     }
                                     $trHead.append($(tdColHead));
                                 });
-                                $trHead.append($('<th>'));
+                                $trHead.append($('<th class=small>'));
                                 $trHead.appendTo('#myTable > thead');
                                 $.each(result.data,
-                                    function (index, value) {
+                                    function(index, value) {
                                         colDefs[0].text = value.code;
                                         colDefs[1].text = value.name;
                                         colDefs[2].text = value.materialCateroryName;
@@ -590,61 +663,49 @@
                                         colDefs[5].text = value.fpaDefName;
                                         colDefs[6].text = value.companyCode;
                                         colDefs[7].text = value.active;
-                                       
                                         var itemId = value.id;
-                                        var urlEdit = `@Url.Page("./Edit")?id=${itemId}`;
-                                        var urlInfo = `@Url.Page("./Details")?id=${itemId}`;
-                                        var urlDel = `@Url.Page("./Delete")?id=${itemId}`;
-                                        var urlNewLikeThis = `@Url.Page("./Create")?copyFromId=${itemId}`;
-                                        var urlKartela = `@Url.Page("./Kartela")?warehouseItemId=${itemId}`;
-                                        var urlUnlinkImages = `@Url.Page("./Kartela")?warehouseItemId=${itemId}`;
-                                        var actionsCol = '<td class="small text-center d-none d-md-table-cell">';
-                                        actionsCol += `<a href="${urlEdit
-                                            }"><i class="fas fa-edit fa-lg" style="color:slategray"></i></a> |`;
-                                        actionsCol += `<a href="${urlInfo
-                                            }"><i class="fas fa-info-circle fa-lg" style="color:slategray"></i></a> | `;
-                                        actionsCol += `<a href="${urlDel
-                                            }"><i class="fas fa-trash fa-lg" style="color:slategray"></i></a> | `;
-                                        actionsCol += `<a href="${urlNewLikeThis
-                                            }"><i class="fas fa-clone fa-lg" style="color:slategray"></i> | </a> `;
-                                        actionsCol +=
-                                            '<a class=" dropdown-toggle" role="button" id="dropdownMenuButton"';
-                                        actionsCol +=
-                                            'data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">';
-                                        actionsCol += '<i class="fas fa-bars" style="color:slategray"></i></a>';
-                                        actionsCol +=
-                                            ' <div class="dropdown-menu small" aria-labelledby="dropdownMenuButton">';
-                                        actionsCol += `<a href="${urlKartela}" class="dropdown-item">Καρτέλα</a>`;
-                                        actionsCol += '<a name="UnlinkImageLink" class="dropdown-item" href="#"';
-                                        actionsCol += ` data-itemId="${itemId}" `;
-                                        actionsCol += ">Unlink Images";
-                                        actionsCol += "</a>";
-                                        actionsCol += ' </div>';
-                                        actionsCol += '</td>';
-                                        var actionColMobile =
-                                            '<td class="small text-center d-table-cell d-sm-table-cell d-md-none">';
-                                        actionColMobile +=
+
+                                        let acCol = '<td class="small text-center d-none d-md-table-cell">';
+                                        let aTag = grkoukTableColumns.aLinkTemplate`<a href="${0}${1}">${2}${3}</a>`;
+                                        colActions.forEach(function(item) {
+                                            let aL = aTag(item.href, value.id, item.icon,item.text);
+                                            
+                                            acCol += aL;
+
+                                        });
+                                        acCol += '<a class=" dropdown-toggle" role="button" id="dropdownMenuButton"';
+                                        acCol += 'data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">';
+                                        acCol += '<i class="fas fa-bars" style="color:slategray"></i></a>';
+                                        acCol += ' <div class="dropdown-menu small" aria-labelledby="dropdownMenuButton">';
+
+                                        colChildActions.forEach(function(item) {
+                                            let aTagChild = item.tag;
+                                            let aL = aTagChild(item.href, value.id,item.text);
+                                            
+                                            acCol += aL;
+
+                                        });
+
+                                        acCol += ' </div>';
+                                        acCol += '</td>';
+                                        var actionsCol = acCol;
+                                        acCol = '<td class="small text-center d-table-cell d-sm-table-cell d-md-none">';
+                                        acCol +=
                                             '<a class=" dropdown-toggle" role="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" ';
-                                        actionColMobile +=
+                                        acCol +=
                                             'aria-expanded="false"><i class="fas fa-bars fa-lg" style="color:slategray"></i></a>';
-                                        actionColMobile +=
+                                        acCol +=
                                             '<div class="dropdown-menu small" aria-labelledby="dropdownMenuButton">';
-                                        actionColMobile += `<a class="dropdown-item" href="${urlEdit}">`;
-                                        actionColMobile +=
-                                            '<i class="fas fa-edit fa-lg" style = "color:slategray" ></i> Edit</a>';
-                                        actionColMobile += `<a class="dropdown-item" href="${urlInfo}">`;
-                                        actionColMobile +=
-                                            '<i class="fas fa-info-circle fa-lg" style = "color:slategray" ></i> Details</a>';
-                                        actionColMobile += `<a class="dropdown-item" href="${urlDel}">`;
-                                        actionColMobile +=
-                                            '<i class="fas fa-trash fa-lg" style = "color:slategray" ></i> Delete</a>';
-                                        actionColMobile += `<a class="dropdown-item" href="${urlKartela}">`;
-                                        actionColMobile +=
-                                            '<i class="fas fa-receipt fa-lg" style = "color:slategray" ></i> Καρτέλα</a>';
-                                        actionColMobile += `<a class="dropdown-item" href="${urlNewLikeThis}">`;
-                                        actionColMobile +=
-                                            '<i class="fas fa-clone fa-lg" style="color:slategray"></i> Duplicate</a>';
-                                        actionColMobile += '</div></td>';
+                                        colMobileActions.forEach(function(item) {
+                                            let aTagChild = item.tag;
+                                            let aL = aTagChild(item.href, value.id, item.icon,item.text);
+                                           
+                                            acCol += aL;
+
+                                        });
+                                        acCol += '</div></td>';
+                                        var actionColMobile = acCol;
+                                       
                                         var $tr = $('<tr>');
 
                                         var $td = $(
@@ -672,7 +733,7 @@
                                         $tr.appendTo('#myTable > tbody');
 
                                     });
-                                 $('input[name=checkAllRows]').on('change',
+                                $('input[name=checkAllRows]').on('change',
                                     function() {
                                         var th = $(this).index();
                                         var isChecked = $(this).prop('checked');
@@ -741,7 +802,8 @@
                                     var tdColTotal = '';
                                     if (item.totalKey.length !== 0) {
                                         if (item.totalKey === "label") {
-                                            tdColPage = $('<td>').text('Σύνολα Σελίδας').addClass('small font-weight-bold');
+                                            tdColPage = $('<td>').text('Σύνολα Σελίδας')
+                                                .addClass('small font-weight-bold');
                                         } else {
                                             if (item.totalFormatter === "currency") {
                                                 try {
@@ -762,7 +824,8 @@
                                     }
                                     if (item.grandTotalKey.length !== 0) {
                                         if (item.grandTotalKey === "label") {
-                                            tdColTotal = $('<td>').text('Γενικό Σύνολο').addClass('small font-weight-bold');
+                                            tdColTotal =
+                                                $('<td>').text('Γενικό Σύνολο').addClass('small font-weight-bold');
                                         } else {
                                             if (item.totalFormatter === "currency") {
                                                 try {
@@ -792,11 +855,11 @@
                                     $totalSummaryRow.append($('<td>'));
                                     $totalSummaryRow.appendTo('#myTable >  tbody:last');
                                 }
-                               
+
 
                                 //console.log();
                                 rowSelectorsUi();
-                               
+
                             },
                             complete: function() {
                                 if (timeout) {
@@ -1099,9 +1162,8 @@
                 function() {
                     gotoPreviousPage();
                 });
-           
-           
-           
+
+
             $('#CreateNew').on('click',
                 function() {
                     var uri = '@Url.Page("Create")';
