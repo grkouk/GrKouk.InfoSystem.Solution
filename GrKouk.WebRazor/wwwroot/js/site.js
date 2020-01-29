@@ -10,7 +10,7 @@ var loadOptionsForSelect = () => {
         $select.append('<option></option>');
 
         $.ajax({
-            url: $select.attr('data-source'),
+            url: $select.attr('data-source')
         }).then(function (options) {
             options.map(function (option) {
                 var $option = $('<option>');
@@ -25,7 +25,54 @@ var loadOptionsForSelect = () => {
     });
 };
 
-var grkoukCommon = () => {
+var grkoukCommon = {
+    editPrototypeUrl: function (curSectionCode, sectionCode, creatorId) {
+        if (curSectionCode === sectionCode) {
+            return "#";
+        }
+        if (creatorId === -1) {
+            return "#";
+        }
+        let t = "";
+        switch (sectionCode) {
+            case "SCNTRANSACTORTRANS":
+                t = `/transactions/TransactorTransMng/Edit?id=${creatorId}`;
+                break;
+            case "SCNWARHSETRANS":
+                t = `/transactions/WarehouseTransMng/Edit?id=${creatorId}`;
+                break;
+            case "SCNSELLCOMBINED":
+                t = `/transactions/sellmaterialdoc/Edit?id=${creatorId}`;
+                break;
+            case "SCNBUYMATTRANS":
+                t = `/transactions/buymaterialsdoc/Edit?id=${creatorId}`;
+                break;
+
+            default:
+        }
+        return t;
+    }
 
 
 };
+let grkoukTableColumns = {
+    getSelectAllRowsCol: function() {
+        let cl = '<th name="selectAllRowsColumn"> <label class="custom-control custom-checkbox">  ';
+        cl += '<input type="checkbox" class="custom-control-input" name="checkAllRows" >';
+        cl += '<span class="custom-control-indicator"></span></label></th>';
+        let $cl = $(cl);
+        return $cl;
+    },
+   aLinkTemplate: function (strings, ...keys) {
+        return (function (...values) {
+            let dict = values[values.length - 1] || {};
+            let result = [strings[0]];
+            keys.forEach(function (key, i) {
+                let value = Number.isInteger(key) ? values[key] : dict[key];
+                result.push(value, strings[i + 1]);
+            });
+            return result.join('');
+        });
+    }
+};
+

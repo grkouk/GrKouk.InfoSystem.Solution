@@ -8,9 +8,9 @@
     <Description>GrKouk Information System</Description>
     <Copyright>George Koukoudis</Copyright>
     <Configurations>Debug;Release;DebugWeb;RlsWeb</Configurations>
-    <Version>2.8.0.3</Version>
-    <AssemblyVersion>2.8.0.3</AssemblyVersion>
-    <FileVersion>2.8.0.3</FileVersion>
+    <Version>2.8.0.4</Version>
+    <AssemblyVersion>2.8.0.4</AssemblyVersion>
+    <FileVersion>2.8.0.4</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -103,6 +103,7 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="8.0.0" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="6.0.0" />
+    <PackageReference Include="BuildBundlerMinifier" Version="3.2.435" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="2.2.0" />

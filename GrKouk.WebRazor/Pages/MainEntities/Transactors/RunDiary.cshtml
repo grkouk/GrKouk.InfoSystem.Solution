@@ -98,50 +98,7 @@
 
 <table class="table table-bordered table-sm" id="myTable">
     <thead class="thead-light">
-        <tr>
-            <th name="selectAllRowsColumn">
-                <label class="custom-control custom-checkbox">
-                    <input type="checkbox" class="custom-control-input" name="checkAllRows">
-                    <span class="custom-control-indicator"></span>
-                </label>
-            </th>
-            <th class="small">
-                <a href="#" id="DateSortHeader">
-                    Date
-                </a>
-                <i class="fas fa-sort-alpha-down" id="DateSortHeaderIcon" name="SortIcon"></i>
-            </th>
-            <th class="small">
-                <a href="#" id="NameSortHeader">
-                    Transactor
-                </a>
-                <i class="fas fa-sort-alpha-down" id="NameSortHeaderIcon" name="SortIcon"></i>
-            </th>
-
-            <th class="small">
-                <a href="#" id="SeriesSortHeader">
-                    Series
-                </a>
-                <i class="fas fa-sort-alpha-down" id="SeriesSortHeaderIcon" name="SortIcon"></i>
-            </th>
-
-            <th class="small">
-                TransRefCode
-            </th>
-            <th class="small">
-                Debit
-            </th>
-            <th class="small">
-                Credit
-            </th>
-
-            <th class="small d-none d-md-table-cell">
-                Company
-            </th>
-            <th class="small d-none d-md-table-cell">Actions</th>
-            <th class="small d-table-cell d-sm-table-cell d-md-none"></th>
-
-        </tr>
+       
     </thead>
     <tbody></tbody>
 </table>
@@ -570,18 +527,28 @@
                                     if (item.totalKey === "label") {
                                         tdColPage = $('<td>').text('Σύνολα Σελίδας').addClass('small font-weight-bold');
                                     } else {
-                                        if (item.totalFormatter === "currency") {
-                                            try {
-                                                let fAmount = formatterCurrency.format(result[item.totalKey]);
-                                                tdColPage = `<td class="${item.class} font-weight-bold"> `;
-                                                tdColPage += `${fAmount} </td> `;
-                                                pageSummaryCount++;
-                                            } catch (e) {
-                                                tdColPage = `<td class="${item.class}"> `;
-                                                tdColPage += `#Err </td> `;
-                                            }
-
+                                        let tmpAmount = 0;
+                                        switch (item.totalFormatter) {
+                                            case "currency":
+                                                tmpAmount = formatterCurrency.format(result[item.totalKey]);
+                                                break;
+                                            case "number":
+                                                tmpAmount = formatterNumber.format(result[item.totalKey]);
+                                                break;
+                                            default:
+                                                tmpAmount=formatterNumber.format(result[item.totalKey]);
+                                                break;
                                         }
+                                        try {
+
+                                            tdColPage = `<td class="${item.class} font-weight-bold"> `;
+                                            tdColPage += `${tmpAmount} </td> `;
+                                            pageSummaryCount++;
+                                        } catch (e) {
+                                            tdColPage = `<td class="${item.class}"> `;
+                                            tdColPage += `#Err </td> `;
+                                        }
+
                                     }
                                 } else {
                                     tdColPage = `<td class="${item.class}"> `;
@@ -591,18 +558,28 @@
                                     if (item.grandTotalKey === "label") {
                                         tdColTotal = $('<td>').text('Γενικό Σύνολο').addClass('small font-weight-bold');
                                     } else {
-                                        if (item.totalFormatter === "currency") {
-                                            try {
-                                                let fAmount = formatterCurrency.format(result[item.grandTotalKey]);
-                                                tdColTotal = `<td class="${item.class} font-weight-bold"> `;
-                                                tdColTotal += `${fAmount} </td> `;
-                                                totalSummaryCount++;
-                                            } catch (e) {
-                                                tdColTotal = `<td class="${item.class}"> `;
-                                                tdColTotal += `#Err </td> `;
-                                            }
-
+                                        let tmpAmount = 0;
+                                        switch (item.totalFormatter) {
+                                            case "currency":
+                                                tmpAmount = formatterCurrency.format(result[item.grandTotalKey]);
+                                                break;
+                                            case "number":
+                                                tmpAmount = formatterNumber.format(result[item.grandTotalKey]);
+                                                break;
+                                            default:
+                                                tmpAmount=formatterNumber.format(result[item.grandTotalKey]);
+                                                break;
                                         }
+                                        try {
+
+                                            tdColTotal = `<td class="${item.class} font-weight-bold"> `;
+                                            tdColTotal += `${tmpAmount} </td> `;
+                                            totalSummaryCount++;
+                                        } catch (e) {
+                                            tdColTotal = `<td class="${item.class}"> `;
+                                            tdColTotal += `#Err </td> `;
+                                        }
+                                        
                                     }
                                 } else {
                                     tdColTotal = `<td class="${item.class}"> `;

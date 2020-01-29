@@ -12,6 +12,8 @@ namespace GrKouk.WebRazor.Helpers
         public string MaterialName { get; set; }
         public string DocSeriesCode { get; set; }
         public string RefCode { get; set; }
+        public string SectionCode { get; set; }
+        public int CreatorId { get; set; }
         public decimal ImportVolume { get; set; }
         public decimal ExportVolume { get; set; }
         public decimal ImportValue { get; set; }

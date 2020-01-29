@@ -7,7 +7,7 @@
 @section MyCss
     {
     <link rel="stylesheet" href="~/css/custom-checkbox.css" />
-    <link rel="stylesheet" href="~/css/searchbar.css"/>
+    <link rel="stylesheet" href="~/css/searchbar.css" />
 }
 <h4>Transactor Transactions Index</h4>
 
@@ -93,73 +93,11 @@
 
 <table class="table table-bordered table-sm" id="myTable">
     <thead class="thead-light">
-        <tr>
-            <th name="selectAllRowsColumn">
-                <label class="custom-control custom-checkbox">
-                    <input type="checkbox" class="custom-control-input" name="checkAllRows">
-                    <span class="custom-control-indicator"></span>
-                </label>
-            </th>
-            <th class="small text-center">
-                <a href="#" id="TransDateHeader" role="button">
-                    Date
-                </a>
-                <i class="fas fa-sort-numeric-down" id="TransDateHeaderIcon" name="SortIcon"></i>
-            </th>
-            <th class="small">
-                <a href="#" id="TransactorNameHeader">
-                    Transactor
-                </a>
-                <i class="fas fa-sort-alpha-down" id="TransactorNameHeaderIcon" name="SortIcon"></i>
-            </th>
-            <th class="small">
-                Series 
-            </th>
-            <th class="small d-none d-md-table-cell">
-                Section
-            </th>
-            <th class="small d-none d-sm-table-cell">
-                Ref Code
-            </th>
-            <th class="small">
-                Debit 
-            </th>
-            <th class="small">
-                Credit 
-            </th>
 
-            <th class="small d-none d-md-table-cell">
-                Company
-            </th>
-            <th class="small d-none d-md-table-cell">Actions</th>
-            <th class="small d-table-cell d-sm-table-cell d-md-none"></th>
-        </tr>
     </thead>
     <tbody>
-    <tr>
-        <td name="selectRowColumn">
-            <label class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input" name="checkTableRow">
-                <span class="custom-control-indicator"></span>
-            </label>
-        </td>
-        <td class="text-right small"></td>
-        <td class="small"></td>
-        <td class="small"></td>
-        <td class="small"></td>
-        <td class="small"></td>
-
-        <td class="text-right small"></td>
-        <td class="text-right small"></td>
-
-        <td class="small"></td>
-
-        <td class="small"></td>
-    </tr>
-        
-
     </tbody>
-   
+
 </table>
 
 <div class="row">
@@ -281,6 +219,7 @@
                     return "";
                 }
             };
+           
             const handlePagingUi = (totalPages, totalRecords, pageIndex, hasPrevious, hasNext) => {
                 $totalPages.val(totalPages);
                 $totalRecords.val(totalRecords);
@@ -492,26 +431,25 @@
                                     // var amountTotal = value.totalAmount;
                                     var itemId = value.id;
                                     var urlEdit = `@Url.Page("./Edit")?id=${itemId}`;
+                                    let urlEditPrototype =grkoukCommon.editPrototypeUrl("SCNTRANSACTORTRANS",value.sectionCode,value.creatorId);
                                     var urlInfo = `@Url.Page("./Details")?id=${itemId}`;
                                     var urlDel = `@Url.Page("./Delete")?id=${itemId}`;
                                     var urlNewLikeThis = `@Url.Page("./Create")?copyFromId=${itemId}`;
                                     var urlKartela = `@Url.Page("./Kartela")?transactorId=${itemId}`;
                                     var actionsCol = '<td class="small text-center d-none d-md-table-cell">';
-                                    actionsCol += `<a href="${urlEdit
-                                        }"><i class="fas fa-edit fa-lg" style="color:slategray"></i></a> |`;
-                                    actionsCol += `<a href="${urlInfo
-                                        }"><i class="fas fa-info-circle fa-lg" style="color:slategray"></i></a> | `;
-                                    actionsCol += `<a href="${urlDel
-                                        }"><i class="fas fa-trash fa-lg" style="color:slategray"></i></a> | `;
-                                    actionsCol += `<a href="${urlNewLikeThis
-                                        }"><i class="fas fa-clone fa-lg" style="color:slategray"></i>|</a> `;
+                                    actionsCol += `<a href="${urlEdit}">`;
+                                    actionsCol += `<i class="fas fa-edit fa-lg" style="color:slategray"></i> `;
+                                    actionsCol += `</a> |`;
+                                    actionsCol += `<a href="${urlInfo}"><i class="fas fa-info-circle fa-lg" style="color:slategray"></i></a> | `;
+                                    actionsCol += `<a href="${urlDel}"><i class="fas fa-trash fa-lg" style="color:slategray"></i></a> | `;
+                                    actionsCol += `<a href="${urlNewLikeThis}"><i class="fas fa-clone fa-lg" style="color:slategray"></i>|</a> `;
                                     actionsCol += '<a class=" dropdown-toggle" role="button" id="dropdownMenuButton"';
                                     actionsCol += 'data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">';
                                     actionsCol += '<i class="fas fa-bars" style="color:slategray"></i></a>';
                                     actionsCol +=
                                         ' <div class="dropdown-menu small" aria-labelledby="dropdownMenuButton">';
                                     actionsCol += `<a href="${urlKartela}" class="dropdown-item">Καρτέλα</a>`;
-                                    actionsCol += ' <a class="dropdown-item" href="#">Something else here</a>';
+                                    actionsCol += `<a class="dropdown-item" href="${urlEditPrototype}" target="_blank">Edit Prototype</a>`;
                                     actionsCol += ' </div>';
                                     actionsCol += '</td>';
                                     var actionColMobile =
@@ -524,6 +462,9 @@
                                         '<div class="dropdown-menu small" aria-labelledby="dropdownMenuButton">';
                                     actionColMobile += `<a class="dropdown-item" href="${urlEdit
                                         }"><i class="fas fa-edit fa-lg" style="color:slategray"></i>  Edit</a> `;
+                                    actionColMobile += `<a class="dropdown-item" href="${urlEditPrototype}"> target="_blank"`;
+                                    actionColMobile += `    <i class="fas fa-edit fa-lg" style="color:slategray"></i> `;
+                                    actionColMobile += ` Edit Prototype</a> `;
                                     actionColMobile += `<a class="dropdown-item" href="${urlInfo
                                         }"><i class="fas fa-info-circle fa-lg" style="color:slategray"></i> Details</a> `;
                                     actionColMobile += `<a class="dropdown-item" href="${urlDel
@@ -878,7 +819,7 @@
 
                     $filtersVisible.val(true);
                 });
-           
+
 
 
             var rosSelectorsToggleHandler = () => {
@@ -963,8 +904,8 @@
                 function() {
                     gotoPreviousPage();
                 });
-            
-            
+
+
             $('#CreateNew').on('click',
                 function() {
                     var uri = '@Url.Page("Create")';
@@ -979,7 +920,7 @@
                                    icon.addClass("fa-search").removeClass("fa-times");
                                    $('.search_input').val('');
                                }
-           
+
                                refreshTableData();
                            });
 

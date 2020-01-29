@@ -14,6 +14,8 @@ namespace GrKouk.WebRazor.Helpers
         public string CompanyCode { get; set; }
         public string DocSeriesCode { get; set; }
         public string RefCode { get; set; }
+        public string SectionCode { get; set; }
+        public int CreatorId { get; set; }
         public decimal Debit { get; set; }
         public decimal Credit { get; set; }
         public decimal RunningTotal { get; set; }
