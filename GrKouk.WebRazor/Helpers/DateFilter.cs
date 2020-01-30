@@ -22,6 +22,7 @@ namespace GrKouk.WebRazor.Helpers
                 new SelectListItem() {Value = "CURMONTH", Text = "Τρέχων Μήνας"},
                 new SelectListItem() {Value = "30DAYS", Text = "30 Ημέρες"},
                 new SelectListItem() {Value = "60DAYS", Text = "60 Ημέρες"},
+                new SelectListItem() {Value = "90DAYS", Text = "90 Ημέρες"},
                 new SelectListItem() {Value = "360DAYS", Text = "360 Ημέρες"},
                 new SelectListItem() {Value = "PREMONTH", Text = "Προηγ.Μήνας"},
                 new SelectListItem() {Value = "CURYEAR", Text = "Τρέχων Ετος"},
@@ -67,6 +68,10 @@ namespace GrKouk.WebRazor.Helpers
                     dateFilter.ToDate = DateTime.Now;
                     dateFilter.FromDate = dateFilter.ToDate.AddDays(-60);
                     break;
+                case "90DAYS":
+                    dateFilter.ToDate = DateTime.Now;
+                    dateFilter.FromDate = dateFilter.ToDate.AddDays(-90);
+                    break;
                 case "360DAYS":
                     dateFilter.ToDate = DateTime.Now;
                     dateFilter.FromDate = dateFilter.ToDate.AddDays(-360);
@@ -82,7 +87,7 @@ namespace GrKouk.WebRazor.Helpers
                     dateFilter.ToDate = new DateTime(ty, 12, DateTime.DaysInMonth(ty, 12));
                     break;
                 case "ALL":
-                    dateFilter.FromDate = DateTime.MinValue;
+                    dateFilter.FromDate = new DateTime(1966, 8, 1);
                     dateFilter.ToDate =  DateTime.MaxValue;
                     break;
                 default:
