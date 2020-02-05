@@ -218,4 +218,5 @@ namespace GrKouk.InfoSystem.Definitions
         [Description("Season 2020")]
         ProdCodeSeason2020 = 20
     }
+    
 }
