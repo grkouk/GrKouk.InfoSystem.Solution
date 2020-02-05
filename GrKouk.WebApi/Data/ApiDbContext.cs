@@ -66,6 +66,7 @@ namespace GrKouk.WebApi.Data
         public DbSet<TransactorCompanyMapping> TransactorCompanyMappings { get; set; }
         public DbSet<SalesChannel> SalesChannels { get; set; }
         public DbSet<WrItemCode> WrItemCodes { get; set; }
+        public DbSet<AppSetting> AppSettings { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
