@@ -544,6 +544,7 @@ namespace GrKouk.WebApi.Data
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasForeignKey(p => p.TransactorId);
             });
+            modelBuilder.Entity<AppSetting>(entity => { entity.HasKey(p => p.Code); });
         }
     }
 }

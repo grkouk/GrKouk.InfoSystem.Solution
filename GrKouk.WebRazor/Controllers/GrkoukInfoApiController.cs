@@ -1462,7 +1462,14 @@ namespace GrKouk.WebRazor.Controllers
                 {
                     if (companyId > 0)
                     {
-                        var allCompaniesEntity = await _context.Companies.SingleOrDefaultAsync(s => s.Code == "{ALLCOMP}");
+                        var allCompCode =
+                            await _context.AppSettings.SingleOrDefaultAsync(
+                                p => p.Code == Constants.AllCompaniesCodeKey);
+                        if (allCompCode==null)
+                        {
+                            return NotFound("All Companies Code Setting not found");
+                        }
+                        var allCompaniesEntity = await _context.Companies.SingleOrDefaultAsync(s => s.Code == allCompCode.Value);
                         if (allCompaniesEntity != null)
                         {
                             var allCompaniesId = allCompaniesEntity.Id;
@@ -1573,7 +1580,14 @@ namespace GrKouk.WebRazor.Controllers
                 {
                     if (companyId > 0)
                     {
-                        var allCompaniesEntity = await _context.Companies.SingleOrDefaultAsync(s => s.Code == "{ALLCOMP}");
+                        var allCompCode =
+                            await _context.AppSettings.SingleOrDefaultAsync(
+                                p => p.Code == Constants.AllCompaniesCodeKey);
+                        if (allCompCode == null)
+                        {
+                            return NotFound("All Companies Code Setting not found");
+                        }
+                        var allCompaniesEntity = await _context.Companies.SingleOrDefaultAsync(s => s.Code == allCompCode.Value);
                         if (allCompaniesEntity != null)
                         {
                             var allCompaniesId = allCompaniesEntity.Id;
@@ -1725,7 +1739,14 @@ namespace GrKouk.WebRazor.Controllers
                 {
                     if (companyId > 0)
                     {
-                        var allCompaniesEntity = await _context.Companies.SingleOrDefaultAsync(s => s.Code == "{ALLCOMP}");
+                        var allCompCode =
+                            await _context.AppSettings.SingleOrDefaultAsync(
+                                p => p.Code == Constants.AllCompaniesCodeKey);
+                        if (allCompCode == null)
+                        {
+                            return NotFound("All Companies Code Setting not found");
+                        }
+                        var allCompaniesEntity = await _context.Companies.SingleOrDefaultAsync(s => s.Code == allCompCode.Value);
                         if (allCompaniesEntity != null)
                         {
                             var allCompaniesId = allCompaniesEntity.Id;
@@ -1873,7 +1894,14 @@ namespace GrKouk.WebRazor.Controllers
                     .Select(s => int.Parse(s))
                     .ToList();
                 // var companiesList = Array.ConvertAll(request.CompanyFilter.Split(","), int.Parse);
-                var allCompaniesEntity = await _context.Companies.SingleOrDefaultAsync(s => s.Code == "{ALLCOMP}");
+                var allCompCode =
+                    await _context.AppSettings.SingleOrDefaultAsync(
+                        p => p.Code == Constants.AllCompaniesCodeKey);
+                if (allCompCode == null)
+                {
+                    return NotFound("All Companies Code Setting not found");
+                }
+                var allCompaniesEntity = await _context.Companies.SingleOrDefaultAsync(s => s.Code == allCompCode.Value);
 
                 if (allCompaniesEntity != null)
                 {
@@ -1989,7 +2017,14 @@ namespace GrKouk.WebRazor.Controllers
 
                 var tagIds = new List<int>(request.CompanyFilter.Split(',').Select(s => int.Parse(s)));
                 // var companiesList = Array.ConvertAll(request.CompanyFilter.Split(","), int.Parse);
-                var allCompaniesEntity = await _context.Companies.SingleOrDefaultAsync(s => s.Code == "{ALLCOMP}");
+                var allCompCode =
+                    await _context.AppSettings.SingleOrDefaultAsync(
+                        p => p.Code == Constants.AllCompaniesCodeKey);
+                if (allCompCode == null)
+                {
+                    return NotFound("All Companies Code Setting not found");
+                }
+                var allCompaniesEntity = await _context.Companies.SingleOrDefaultAsync(s => s.Code == allCompCode.Value);
 
                 if (allCompaniesEntity != null)
                 {
@@ -2114,7 +2149,14 @@ namespace GrKouk.WebRazor.Controllers
                 {
                     if (companyId > 0)
                     {
-                        var allCompaniesEntity = await _context.Companies.SingleOrDefaultAsync(s => s.Code == "{ALLCOMP}");
+                        var allCompCode =
+                            await _context.AppSettings.SingleOrDefaultAsync(
+                                p => p.Code == Constants.AllCompaniesCodeKey);
+                        if (allCompCode == null)
+                        {
+                            return NotFound("All Companies Code Setting not found");
+                        }
+                        var allCompaniesEntity = await _context.Companies.SingleOrDefaultAsync(s => s.Code == allCompCode.Value);
                         if (allCompaniesEntity != null)
                         {
                             var allCompaniesId = allCompaniesEntity.Id;

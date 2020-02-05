@@ -7,13 +7,15 @@
     ViewData["Title"] = "Application Settings";
 }
 <div class="container">
-    <form method="post" id="SettingsForm">
+    <form method="post" >
         <fieldset id="thisForm">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-row">
 
                 <div class="form-group col-md-3">
-                    <label for="CompanyCode" class="control-label" small>Select All Companies</label>
-                    <select id="CompanyCode" class="form-control form-control-sm small" asp-items="ViewBag.CompanyId"></select>
+                    <label asp-for="ItemVm[0].Code" class="control-label" small>All Companies Setting</label>
+                    <select asp-for="ItemVm[0].Code" class="form-control form-control-sm small" asp-items="ViewBag.CompanyId"></select>
+
                 </div>
 
             </div>
@@ -23,11 +25,4 @@
         </fieldset>
     </form>
 </div>
-@section Scripts
-{
-    <script>
-        $(document).ready(function() {
 
-        });
-    </script>
-}
