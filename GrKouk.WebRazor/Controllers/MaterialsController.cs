@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using GrKouk.InfoSystem.Definitions;
+using GrKouk.InfoSystem.Domain.FinConfig;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using GrKouk.InfoSystem.Domain.Shared;
@@ -39,33 +40,38 @@ namespace GrKouk.WebRazor.Controllers
         {
             return _context.WarehouseItems;
         }
+
         [HttpGet("SetCompanyInSession")]
         public IActionResult CompanyInSession(string companyId)
         {
-            HttpContext.Session.SetString ("CompanyId",companyId);
-            return Ok(new {});
+            HttpContext.Session.SetString("CompanyId", companyId);
+            return Ok(new { });
         }
+
         [HttpGet("SetBuySeriesInSession")]
         public IActionResult BuySeriesInSession(string seriesId)
         {
             HttpContext.Session.SetString("BuySeriesId", seriesId);
             return Ok(new { });
         }
+
         [HttpGet("SetSaleSeriesInSession")]
         public IActionResult SaleSeriesInSession(string seriesId)
         {
             HttpContext.Session.SetString("SalesSeriesId", seriesId);
             return Ok(new { });
         }
+
         [HttpGet("SeekCompanyBarcode")]
         public async Task<IActionResult> GetCompanyMaterialFromBarcode(string barcode, int companyId)
         {
-           var materials = await _context.WrItemCodes
+            var materials = await _context.WrItemCodes
                 .Include(p => p.WarehouseItem).ThenInclude(p => p.FpaDef)
                 .Include(p => p.WarehouseItem).ThenInclude(p => p.MainMeasureUnit)
                 .Include(p => p.WarehouseItem).ThenInclude(p => p.SecondaryMeasureUnit)
                 .Include(p => p.WarehouseItem).ThenInclude(p => p.BuyMeasureUnit)
-                .Where(p => p.Code == barcode && p.CodeType == WarehouseItemCodeTypeEnum.CodeTypeEnumBarcode && p.CompanyId==companyId)
+                .Where(p => p.Code == barcode && p.CodeType == WarehouseItemCodeTypeEnum.CodeTypeEnumBarcode &&
+                            p.CompanyId == companyId)
                 .ToListAsync();
 
             if (materials == null)
@@ -87,7 +93,7 @@ namespace GrKouk.WebRazor.Controllers
             var material = materials[0].WarehouseItem;
 
             var usedUnit = materials[0].CodeUsedUnit;
-            double unitFactor=materials[0].RateToMainUnit;
+            double unitFactor = materials[0].RateToMainUnit;
             string unitToUse;
             switch (usedUnit)
             {
@@ -130,14 +136,13 @@ namespace GrKouk.WebRazor.Controllers
                 buyUnitCode = material.BuyMeasureUnit.Code,
                 factorSeq = material.SecondaryUnitToMainRate,
                 factorBuy = material.BuyUnitToMainRate,
-
             });
         }
+
         [HttpGet("SeekBarcode")]
-        public async Task<IActionResult> GetMaterialFromBarcode(string barcode,string companyId, string transactorId)
+        public async Task<IActionResult> GetMaterialFromBarcode(string barcode, string companyId, string transactorId)
         {
-           
-            var materials =  _context.WrItemCodes
+            var materials = _context.WrItemCodes
                 .Include(p => p.WarehouseItem).ThenInclude(p => p.FpaDef)
                 .Include(p => p.WarehouseItem).ThenInclude(p => p.MainMeasureUnit)
                 .Include(p => p.WarehouseItem).ThenInclude(p => p.SecondaryMeasureUnit)
@@ -150,10 +155,11 @@ namespace GrKouk.WebRazor.Controllers
                 {
                     if (transId > 0)
                     {
-                        materials = materials.Where(p => p.TransactorId == transId || p.TransactorId==0);
+                        materials = materials.Where(p => p.TransactorId == transId || p.TransactorId == 0);
                     }
                 }
             }
+
             int compId = 0;
             if (!String.IsNullOrEmpty(companyId))
             {
@@ -161,21 +167,22 @@ namespace GrKouk.WebRazor.Controllers
                 {
                     if (compId > 0)
                     {
-                        materials = materials.Where(p => p.CompanyId == compId || p.CompanyId==1);
+                        materials = materials.Where(p => p.CompanyId == compId || p.CompanyId == 1);
                     }
                 }
             }
 
             var materialList = await materials.ToListAsync();
-            
+
             if (materialList == null)
             {
-                return NotFound( new
+                return NotFound(new
                 {
-                    Error="WarehouseItem Not Found"
+                    Error = "WarehouseItem Not Found"
                 });
             }
-            if (materialList.Count ==0)
+
+            if (materialList.Count == 0)
             {
                 return NotFound(new
                 {
@@ -184,13 +191,13 @@ namespace GrKouk.WebRazor.Controllers
             }
 
             List<WrItemCode> retMaterials;
-            if (materialList.Count>1)
+            if (materialList.Count > 1)
             {
                 //return NotFound(new
                 //{
                 //    Error = "More than one material found"
                 //});
-                retMaterials= materialList.OrderByDescending(p => p.TransactorId).ToList();
+                retMaterials = materialList.OrderByDescending(p => p.TransactorId).ToList();
             }
             else
             {
@@ -198,7 +205,7 @@ namespace GrKouk.WebRazor.Controllers
             }
 
             var material = retMaterials[0].WarehouseItem;
-            
+
             var usedUnit = retMaterials[0].CodeUsedUnit;
             double unitFactor;
             string unitToUse;
@@ -231,12 +238,12 @@ namespace GrKouk.WebRazor.Controllers
             return Ok(new
             {
                 Id = material.Id,
-                Name =material.Name,
+                Name = material.Name,
                 fpaId = material.FpaDefId,
                 lastPrice = lastPrice,
                 fpaRate = material.FpaDef.Rate,
-                unitToUse=unitToUse,
-                Factor=unitFactor,
+                unitToUse = unitToUse,
+                Factor = unitFactor,
                 mainUnitId = material.MainMeasureUnitId,
                 secUnitId = material.SecondaryMeasureUnitId,
                 buyUnitId = material.BuyMeasureUnitId,
@@ -245,24 +252,24 @@ namespace GrKouk.WebRazor.Controllers
                 buyUnitCode = material.BuyMeasureUnit.Code,
                 factorSeq = material.SecondaryUnitToMainRate,
                 factorBuy = material.BuyUnitToMainRate,
-
             });
         }
+
         [HttpGet("SearchWarehouseItemsForBuy")]
         public async Task<IActionResult> GetWarehouseItemsForBuy(string term)
         {
             var sessionCompanyId = HttpContext.Session.GetString("CompanyId");
-            var sessionSeriesId= HttpContext.Session.GetString("BuySeriesId");
+            var sessionSeriesId = HttpContext.Session.GetString("BuySeriesId");
             IQueryable<WarehouseItem> fullListIq = _context.WarehouseItems;
             if (sessionCompanyId != null)
             {
                 bool isInt = int.TryParse(sessionCompanyId, out var companyId);
                 if (isInt)
                 {
-                    if (companyId>1)
+                    if (companyId > 1)
                     {
                         //Not all companies 
-                       fullListIq= fullListIq.Where(p => p.CompanyId == companyId || p.CompanyId==1);
+                        fullListIq = fullListIq.Where(p => p.CompanyId == companyId || p.CompanyId == 1);
                     }
                 }
             }
@@ -274,7 +281,7 @@ namespace GrKouk.WebRazor.Controllers
                 var series = await _context.BuyDocSeriesDefs
                     .Include(p => p.BuyDocTypeDef)
                     .SingleOrDefaultAsync(p => p.Id == seriesId);
-                if (series!=null)
+                if (series != null)
                 {
                     var docType = series.BuyDocTypeDef;
                     var itemNatures = docType.SelectedWarehouseItemNatures;
@@ -282,7 +289,7 @@ namespace GrKouk.WebRazor.Controllers
                     {
                         var natures = Array.ConvertAll(docType.SelectedWarehouseItemNatures.Split(","), int.Parse);
                         //var natures = docType.SelectedWarehouseItemNatures;
-                        fullListIq = fullListIq.Where(p => natures.Contains( (int)p.WarehouseItemNature));
+                        fullListIq = fullListIq.Where(p => natures.Contains((int) p.WarehouseItemNature));
                     }
                 }
             }
@@ -291,7 +298,7 @@ namespace GrKouk.WebRazor.Controllers
             fullListIq = fullListIq.Where(p => p.Name.Contains(term) || p.Code.Contains(term));
             var materials = await fullListIq
                 .ProjectTo<WarehouseItemSearchListDto>(_mapper.ConfigurationProvider)
-                .Select(p => new { label = p.Label, value = p.Id }).ToListAsync();
+                .Select(p => new {label = p.Label, value = p.Id}).ToListAsync();
 
             if (materials == null)
             {
@@ -300,6 +307,7 @@ namespace GrKouk.WebRazor.Controllers
 
             return Ok(materials);
         }
+
         [HttpGet("SearchWarehouseItemsForSale")]
         public async Task<IActionResult> GetWarehouseItemsForSale(string term)
         {
@@ -315,7 +323,7 @@ namespace GrKouk.WebRazor.Controllers
                     if (companyId > 1)
                     {
                         //Not all companies 
-                       fullListIq= fullListIq.Where(p => p.CompanyId == companyId || p.CompanyId == 1);
+                        fullListIq = fullListIq.Where(p => p.CompanyId == companyId || p.CompanyId == 1);
                     }
                 }
             }
@@ -335,7 +343,7 @@ namespace GrKouk.WebRazor.Controllers
                     {
                         var natures = Array.ConvertAll(docType.SelectedWarehouseItemNatures.Split(","), int.Parse);
                         //var natures = docType.SelectedWarehouseItemNatures;
-                        fullListIq = fullListIq.Where(p => natures.Contains((int)p.WarehouseItemNature));
+                        fullListIq = fullListIq.Where(p => natures.Contains((int) p.WarehouseItemNature));
                     }
                 }
             }
@@ -346,7 +354,7 @@ namespace GrKouk.WebRazor.Controllers
             //    .Select(p => new { label = p.Label, value = p.Id }).ToListAsync();
             var materials = await fullListIq
                 .ProjectTo<WarehouseItemSearchListDto>(_mapper.ConfigurationProvider)
-                .Select(p => new { label = p.Label, value = p.Id }).ToListAsync();
+                .Select(p => new {label = p.Label, value = p.Id}).ToListAsync();
             if (materials == null)
             {
                 return NotFound();
@@ -354,12 +362,14 @@ namespace GrKouk.WebRazor.Controllers
 
             return Ok(materials);
         }
+
         [HttpGet("SearchForServices")]
         public async Task<IActionResult> GetServices(string term)
         {
-
-            var materials = await _context.WarehouseItems.Where(p => p.Name.Contains(term) && p.WarehouseItemNature == WarehouseItemNatureEnum.WarehouseItemNatureService)
-                .Select(p => new { label = p.Name, value = p.Id }).ToListAsync();
+            var materials = await _context.WarehouseItems.Where(p =>
+                    p.Name.Contains(term) &&
+                    p.WarehouseItemNature == WarehouseItemNatureEnum.WarehouseItemNatureService)
+                .Select(p => new {label = p.Name, value = p.Id}).ToListAsync();
 
             if (materials == null)
             {
@@ -368,12 +378,14 @@ namespace GrKouk.WebRazor.Controllers
 
             return Ok(materials);
         }
+
         [HttpGet("SearchForExpenses")]
         public async Task<IActionResult> GetExpenses(string term)
         {
-
-            var materials = await _context.WarehouseItems.Where(p => p.Name.Contains(term) && p.WarehouseItemNature == WarehouseItemNatureEnum.WarehouseItemNatureExpense)
-                .Select(p => new { label = p.Name, value = p.Id }).ToListAsync();
+            var materials = await _context.WarehouseItems.Where(p =>
+                    p.Name.Contains(term) &&
+                    p.WarehouseItemNature == WarehouseItemNatureEnum.WarehouseItemNatureExpense)
+                .Select(p => new {label = p.Name, value = p.Id}).ToListAsync();
 
             if (materials == null)
             {
@@ -382,11 +394,12 @@ namespace GrKouk.WebRazor.Controllers
 
             return Ok(materials);
         }
+
         [HttpGet("materialdata")]
         public async Task<IActionResult> GetMaterialData(int warehouseItemId)
         {
             //TODO: Να βρίσκει τιμές μόνο για κινήσεις αγοράς ισως LasrPriceImport LastPriceExport???
-            var lastPr = await _context.WarehouseTransactions.OrderByDescending(p=>p.TransDate)
+            var lastPr = await _context.WarehouseTransactions.OrderByDescending(p => p.TransDate)
                 .Where(m => m.WarehouseItemId == warehouseItemId)
                 .Select(k => new
                 {
@@ -408,9 +421,9 @@ namespace GrKouk.WebRazor.Controllers
                     factorBuy = p.BuyUnitToMainRate,
                     fpaId = p.FpaDefId,
                     lastPrice = lastPrice,
-                    priceNetto=p.PriceNetto,
-                    priceBrutto=p.PriceBrutto,
-                    warehouseItemName=p.Name,
+                    priceNetto = p.PriceNetto,
+                    priceBrutto = p.PriceBrutto,
+                    warehouseItemName = p.Name,
                     fpaRate = p.FpaDef.Rate
                 }).FirstOrDefaultAsync();
 
@@ -421,9 +434,11 @@ namespace GrKouk.WebRazor.Controllers
                     error = "WarehouseItem not found "
                 });
             }
+
             //Thread.Sleep(10000);
             return Ok(materialData);
         }
+
         [HttpGet("FiscalPeriod")]
         public async Task<IActionResult> GetFiscalPeriod(DateTime forDate)
         {
@@ -433,14 +448,14 @@ namespace GrKouk.WebRazor.Controllers
                 dateOfTrans >= p.StartDate && dateOfTrans <= p.EndDate);
             if (fiscalPeriod == null)
             {
-                Debug.Print("******Inside GetFiscal period No Fiscal Period found" );
+                Debug.Print("******Inside GetFiscal period No Fiscal Period found");
                 ModelState.AddModelError(string.Empty, "No Fiscal Period covers Transaction Date");
                 return NotFound(new
                 {
                     error = "No fiscal period includes date"
                 });
-
             }
+
             Debug.Print("******Inside GetFiscal period Returning period id " + fiscalPeriod.Id);
             return Ok(new {PeriodId = fiscalPeriod.Id});
         }
@@ -449,7 +464,7 @@ namespace GrKouk.WebRazor.Controllers
         public async Task<IActionResult> GetSalesSeriesData(int seriesId)
         {
             Debug.Print("Inside GetSalesSeriesData " + seriesId.ToString());
-            var salesSeriesDef = await _context.SellDocSeriesDefs.SingleOrDefaultAsync(p =>p.Id==seriesId);
+            var salesSeriesDef = await _context.SellDocSeriesDefs.SingleOrDefaultAsync(p => p.Id == seriesId);
             if (salesSeriesDef == null)
             {
                 Debug.Print("Inside GetSalesSeriesData No Series found");
@@ -466,8 +481,9 @@ namespace GrKouk.WebRazor.Controllers
             var usedPrice = salesTypeDef.UsedPrice;
 
             Debug.Print("Inside GetSalesSeriesData Returning usedPrice " + usedPrice.ToString());
-            return Ok(new { UsedPrice = usedPrice });
+            return Ok(new {UsedPrice = usedPrice});
         }
+
         [HttpGet("BuySeriesData")]
         public async Task<IActionResult> GetBuySeriesData(int seriesId)
         {
@@ -490,15 +506,16 @@ namespace GrKouk.WebRazor.Controllers
             var usedPrice = buyTypeDef.UsedPrice;
 
             Debug.Print("Inside GetBuySeriesData Returning usedPrice " + usedPrice.ToString());
-            return Ok(new { UsedPrice = usedPrice });
+            return Ok(new {UsedPrice = usedPrice});
         }
+
         [HttpGet("WarehouseTransType")]
         public async Task<IActionResult> GetWarehouseTransType(int seriesId)
         {
             Debug.Print("******Inside GetWarehouseTransType for series ID " + seriesId.ToString());
-            
+
             var transWarehouseDocSeriesDef = await _context.TransWarehouseDocSeriesDefs.FirstOrDefaultAsync(p =>
-                p.Id==seriesId);
+                p.Id == seriesId);
             if (transWarehouseDocSeriesDef == null)
             {
                 Debug.Print("******Inside GetWarehouseTransType No Series found");
@@ -507,21 +524,21 @@ namespace GrKouk.WebRazor.Controllers
                 {
                     error = "No Series found"
                 });
-
             }
+
             await _context.Entry(transWarehouseDocSeriesDef).Reference(t => t.TransWarehouseDocTypeDef).LoadAsync();
             var transWarehouseDocTypeDef = transWarehouseDocSeriesDef.TransWarehouseDocTypeDef;
             await _context.Entry(transWarehouseDocTypeDef).Reference(t => t.TransWarehouseDef).LoadAsync();
             var transWarehouseDef = transWarehouseDocTypeDef.TransWarehouseDef;
             var inventoryActionType = transWarehouseDef.MaterialInventoryAction;
-            string transType="";
+            string transType = "";
             switch (inventoryActionType)
             {
                 case InventoryActionEnum.InventoryActionEnumNoChange:
                     transType = "WarehouseTransactionTypeIgnore";
                     break;
                 case InventoryActionEnum.InventoryActionEnumImport:
-                    transType= "WarehouseTransactionTypeImport";
+                    transType = "WarehouseTransactionTypeImport";
                     break;
                 case InventoryActionEnum.InventoryActionEnumExport:
                     transType = "WarehouseTransactionTypeExport";
@@ -535,14 +552,55 @@ namespace GrKouk.WebRazor.Controllers
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+
             Debug.Print("******Inside GetWarehouseTransType Returning Action value " + transType);
-            return Ok(new { TransType = transType });
+            return Ok(new {TransType = transType});
         }
+
+        void TransactorFinAction(FinActionsEnum finAction, TransactorTransaction transaction)
+        {
+            switch (finAction)
+            {
+                case FinActionsEnum.FinActionsEnumNoChange:
+                    transaction.FinancialAction = FinActionsEnum.FinActionsEnumNoChange;
+                    transaction.TransDiscountAmount = 0;
+                    transaction.TransFpaAmount = 0;
+                    transaction.TransNetAmount = 0;
+                    break;
+                case FinActionsEnum.FinActionsEnumDebit:
+                    transaction.FinancialAction = FinActionsEnum.FinActionsEnumDebit;
+                    transaction.TransDiscountAmount = transaction.AmountDiscount;
+                    transaction.TransFpaAmount = transaction.AmountFpa;
+                    transaction.TransNetAmount = transaction.AmountNet;
+                    break;
+                case FinActionsEnum.FinActionsEnumCredit:
+                    transaction.FinancialAction = FinActionsEnum.FinActionsEnumCredit;
+                    transaction.TransDiscountAmount = transaction.AmountDiscount;
+                    transaction.TransFpaAmount = transaction.AmountFpa;
+                    transaction.TransNetAmount = transaction.AmountNet;
+                    break;
+                case FinActionsEnum.FinActionsEnumNegativeDebit:
+                    transaction.FinancialAction = FinActionsEnum.FinActionsEnumNegativeDebit;
+                    transaction.TransDiscountAmount = transaction.AmountDiscount * -1;
+                    transaction.TransFpaAmount = transaction.AmountFpa * -1;
+                    transaction.TransNetAmount = transaction.AmountNet * -1;
+                    break;
+                case FinActionsEnum.FinActionsEnumNegativeCredit:
+                    transaction.FinancialAction = FinActionsEnum.FinActionsEnumNegativeCredit;
+                    transaction.TransDiscountAmount = transaction.AmountDiscount * -1;
+                    transaction.TransFpaAmount = transaction.AmountFpa * -1;
+                    transaction.TransNetAmount = transaction.AmountNet * -1;
+                    break;
+                default:
+                    break;
+            }
+        }
+
         [HttpPost("MaterialBuyDoc")]
         public async Task<IActionResult> PostMaterialBuyDoc([FromBody] BuyDocCreateAjaxDto data)
         {
             const string sectionCode = "SYS-BUY-MATERIALS-SCN";
-           // bool noSupplierTrans = false;
+            // bool noSupplierTrans = false;
             bool noWarehouseTrans = false;
 
 
@@ -557,11 +615,12 @@ namespace GrKouk.WebRazor.Controllers
                     error = "Empty request data"
                 });
             }
+
             try
             {
-                 transToAttachNoLines = _mapper.Map<BuyDocCreateAjaxNoLinesDto>(data);
-                 transToAttach = _mapper.Map<BuyDocument>(transToAttachNoLines);
-                 dateOfTrans = data.TransDate;
+                transToAttachNoLines = _mapper.Map<BuyDocCreateAjaxNoLinesDto>(data);
+                transToAttach = _mapper.Map<BuyDocument>(transToAttachNoLines);
+                dateOfTrans = data.TransDate;
             }
             catch (Exception e)
             {
@@ -570,11 +629,11 @@ namespace GrKouk.WebRazor.Controllers
                     error = e.Message
                 });
             }
+
             using (var transaction = _context.Database.BeginTransaction())
             {
-
                 #region Section Management
-               
+
                 var section = await _context.Sections.SingleOrDefaultAsync(s => s.SystemName == sectionCode);
                 if (section == null)
                 {
@@ -587,11 +646,12 @@ namespace GrKouk.WebRazor.Controllers
                 }
 
                 #endregion
+
                 #region Fiscal Period
 
                 var fiscalPeriod = await _context.FiscalPeriods.FirstOrDefaultAsync(p =>
                     dateOfTrans >= p.StartDate && dateOfTrans <= p.EndDate);
-                if (fiscalPeriod==null)
+                if (fiscalPeriod == null)
                 {
                     transaction.Rollback();
                     ModelState.AddModelError(string.Empty, "No Fiscal Period covers Transaction Date");
@@ -600,7 +660,9 @@ namespace GrKouk.WebRazor.Controllers
                         error = "No Fiscal Period covers Transaction Date"
                     });
                 }
+
                 #endregion
+
                 var docSeries = await
                     _context.BuyDocSeriesDefs.SingleOrDefaultAsync(m => m.Id == data.BuyDocSeriesId);
 
@@ -638,7 +700,6 @@ namespace GrKouk.WebRazor.Controllers
                 try
                 {
                     await _context.SaveChangesAsync();
-
                 }
                 catch (Exception e)
                 {
@@ -649,16 +710,16 @@ namespace GrKouk.WebRazor.Controllers
                     {
                         error = e.Message + " " + msg
                     });
-
                 }
+
                 var docId = _context.Entry(transToAttach).Entity.Id;
 
-               
+
                 if (transTransactorDef.DefaultDocSeriesId > 0)
                 {
                     var transTransactorDefaultSeries = await
-                         _context.TransTransactorDocSeriesDefs.FirstOrDefaultAsync(p =>
-                             p.Id == transTransactorDef.DefaultDocSeriesId);
+                        _context.TransTransactorDocSeriesDefs.FirstOrDefaultAsync(p =>
+                            p.Id == transTransactorDef.DefaultDocSeriesId);
                     if (transTransactorDefaultSeries == null)
                     {
                         transaction.Rollback();
@@ -668,54 +729,56 @@ namespace GrKouk.WebRazor.Controllers
                             error = "Default series for transactor transaction not found"
                         });
                     }
+
                     var sTransactorTransaction = _mapper.Map<TransactorTransaction>(data);
                     sTransactorTransaction.TransactorId = data.TransactorId;
                     sTransactorTransaction.SectionId = section.Id;
-                    sTransactorTransaction.TransTransactorDocTypeId = transTransactorDefaultSeries.TransTransactorDocTypeDefId;
+                    sTransactorTransaction.TransTransactorDocTypeId =
+                        transTransactorDefaultSeries.TransTransactorDocTypeDefId;
                     sTransactorTransaction.TransTransactorDocSeriesId = transTransactorDefaultSeries.Id;
                     sTransactorTransaction.FiscalPeriodId = fiscalPeriod.Id;
                     sTransactorTransaction.CreatorId = docId;
+                    TransactorFinAction(transTransactorDef.FinancialTransAction, sTransactorTransaction);
+                    // switch (transTransactorDef.FinancialTransAction)
+                    // {
+                    //     case FinActionsEnum.FinActionsEnumNoChange:
+                    //         sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumNoChange;
+                    //         sTransactorTransaction.TransDiscountAmount = 0;
+                    //         sTransactorTransaction.TransFpaAmount = 0;
+                    //         sTransactorTransaction.TransNetAmount = 0;
+                    //         break;
+                    //     case FinActionsEnum.FinActionsEnumDebit:
+                    //         sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumDebit;
+                    //         sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount;
+                    //         sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa;
+                    //         sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet;
+                    //         break;
+                    //     case FinActionsEnum.FinActionsEnumCredit:
+                    //         sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumCredit;
+                    //         sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount;
+                    //         sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa;
+                    //         sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet;
+                    //         break;
+                    //     case FinActionsEnum.FinActionsEnumNegativeDebit:
+                    //         sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumNegativeDebit;
+                    //         sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount * -1;
+                    //         sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa * -1;
+                    //         sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet * -1;
+                    //         break;
+                    //     case FinActionsEnum.FinActionsEnumNegativeCredit:
+                    //         sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumNegativeCredit;
+                    //         sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount * -1;
+                    //         sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa * -1;
+                    //         sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet * -1;
+                    //         break;
+                    //     default:
+                    //         break;
+                    // }
 
-                    switch (transTransactorDef.FinancialTransAction)
-                    {
-                        case FinActionsEnum.FinActionsEnumNoChange:
-                            sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumNoChange;
-                            sTransactorTransaction.TransDiscountAmount = 0;
-                            sTransactorTransaction.TransFpaAmount = 0;
-                            sTransactorTransaction.TransNetAmount = 0;
-                            break;
-                        case FinActionsEnum.FinActionsEnumDebit:
-                            sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumDebit;
-                            sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount;
-                            sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa;
-                            sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet;
-                            break;
-                        case FinActionsEnum.FinActionsEnumCredit:
-                            sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumCredit;
-                            sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount;
-                            sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa;
-                            sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet;
-                            break;
-                        case FinActionsEnum.FinActionsEnumNegativeDebit:
-                            sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumNegativeDebit;
-                            sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount*-1;
-                            sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa*-1;
-                            sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet*-1;
-                            break;
-                        case FinActionsEnum.FinActionsEnumNegativeCredit:
-                            sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumNegativeCredit;
-                            sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount * -1;
-                            sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa * -1;
-                            sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet * -1;
-                            break;
-                        default:
-                            break;
-                    }
                     _context.TransactorTransactions.Add(sTransactorTransaction);
                     try
                     {
                         await _context.SaveChangesAsync();
-
                     }
                     catch (Exception e)
                     {
@@ -731,7 +794,7 @@ namespace GrKouk.WebRazor.Controllers
 
                 //Αυτόματη εξόφληση
                 var paymentMethod =
-                   await _context.PaymentMethods.FirstOrDefaultAsync(p => p.Id == transToAttach.PaymentMethodId);
+                    await _context.PaymentMethods.FirstOrDefaultAsync(p => p.Id == transToAttach.PaymentMethodId);
                 if (paymentMethod is null)
                 {
                     transaction.Rollback();
@@ -741,14 +804,15 @@ namespace GrKouk.WebRazor.Controllers
                         error = "Δεν βρέθηκε ο τρόπος πληρωμής"
                     });
                 }
+
                 if (paymentMethod.AutoPayoffWay == SeriesAutoPayoffEnum.SeriesAutoPayoffEnumAuto)
                 {
                     var autoPaySeriesId = transToAttach.BuyDocSeries.PayoffSeriesId;
                     if (autoPaySeriesId > 0)
                     {
                         var transTransactorPayOffSeries = await
-                         _context.TransTransactorDocSeriesDefs.FirstOrDefaultAsync(p =>
-                             p.Id == autoPaySeriesId);
+                            _context.TransTransactorDocSeriesDefs.FirstOrDefaultAsync(p =>
+                                p.Id == autoPaySeriesId);
                         if (transTransactorPayOffSeries == null)
                         {
                             transaction.Rollback();
@@ -758,10 +822,12 @@ namespace GrKouk.WebRazor.Controllers
                                 error = "AutoPayOff series not found"
                             });
                         }
+
                         var sTransactorTransaction = _mapper.Map<TransactorTransaction>(data);
                         sTransactorTransaction.TransactorId = data.TransactorId;
                         sTransactorTransaction.SectionId = section.Id;
-                        sTransactorTransaction.TransTransactorDocTypeId = transTransactorPayOffSeries.TransTransactorDocTypeDefId;
+                        sTransactorTransaction.TransTransactorDocTypeId =
+                            transTransactorPayOffSeries.TransTransactorDocTypeDefId;
                         sTransactorTransaction.TransTransactorDocSeriesId = transTransactorPayOffSeries.Id;
                         sTransactorTransaction.FiscalPeriodId = fiscalPeriod.Id;
                         sTransactorTransaction.Etiology = "AutoPayOff";
@@ -775,46 +841,12 @@ namespace GrKouk.WebRazor.Controllers
                             .Reference(t => t.TransTransactorDef)
                             .LoadAsync();
                         var transPaymentTransactorDef = transTransactorDocTypeDef.TransTransactorDef;
-                        switch (transPaymentTransactorDef.FinancialTransAction)
-                        {
-                            case FinActionsEnum.FinActionsEnumNoChange:
-                                sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumNoChange;
-                                sTransactorTransaction.TransDiscountAmount = 0;
-                                sTransactorTransaction.TransFpaAmount = 0;
-                                sTransactorTransaction.TransNetAmount = 0;
-                                break;
-                            case FinActionsEnum.FinActionsEnumDebit:
-                                sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumDebit;
-                                sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount;
-                                sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa;
-                                sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet;
-                                break;
-                            case FinActionsEnum.FinActionsEnumCredit:
-                                sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumCredit;
-                                sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount;
-                                sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa;
-                                sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet;
-                                break;
-                            case FinActionsEnum.FinActionsEnumNegativeDebit:
-                                sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumNegativeDebit;
-                                sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount * -1;
-                                sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa * -1;
-                                sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet * -1;
-                                break;
-                            case FinActionsEnum.FinActionsEnumNegativeCredit:
-                                sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumNegativeCredit;
-                                sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount * -1;
-                                sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa * -1;
-                                sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet * -1;
-                                break;
-                            default:
-                                break;
-                        }
+
+                        TransactorFinAction(transPaymentTransactorDef.FinancialTransAction, sTransactorTransaction);
                         _context.TransactorTransactions.Add(sTransactorTransaction);
                         try
                         {
                             await _context.SaveChangesAsync();
-
                         }
                         catch (Exception e)
                         {
@@ -826,15 +858,13 @@ namespace GrKouk.WebRazor.Controllers
                             });
                         }
                     }
-
                 }
 
-                int warehouseSeriesId =0;
-                int warehouseTypeId=0;
+                int warehouseSeriesId = 0;
+                int warehouseTypeId = 0;
 
                 if (transWarehouseDef.DefaultDocSeriesId > 0)
                 {
-                    
                     var transWarehouseDefaultSeries =
                         await _context.TransWarehouseDocSeriesDefs.FirstOrDefaultAsync(p =>
                             p.Id == transWarehouseDef.DefaultDocSeriesId);
@@ -847,6 +877,7 @@ namespace GrKouk.WebRazor.Controllers
                             error = "Default series for warehouse transaction not found"
                         });
                     }
+
                     noWarehouseTrans = false;
                     warehouseSeriesId = transWarehouseDef.DefaultDocSeriesId;
                     warehouseTypeId = transWarehouseDefaultSeries.TransWarehouseDocTypeDefId;
@@ -870,12 +901,14 @@ namespace GrKouk.WebRazor.Controllers
                             error = "Could not locate material in Doc Line "
                         });
                     }
+
                     #region MaterialLine
+
                     var buyMaterialLine = new BuyDocLine();
                     decimal unitPrice = dataBuyDocLine.Price;
-                    decimal units = (decimal)dataBuyDocLine.Q1;
-                    decimal fpaRate = (decimal)dataBuyDocLine.FpaRate;
-                    decimal discountRate = (decimal)dataBuyDocLine.DiscountRate;
+                    decimal units = (decimal) dataBuyDocLine.Q1;
+                    decimal fpaRate = (decimal) dataBuyDocLine.FpaRate;
+                    decimal discountRate = (decimal) dataBuyDocLine.DiscountRate;
                     decimal lineNetAmount = unitPrice * units;
                     decimal lineDiscountAmount = lineNetAmount * discountRate;
                     decimal lineFpaAmount = (lineNetAmount - lineDiscountAmount) * fpaRate;
@@ -895,11 +928,13 @@ namespace GrKouk.WebRazor.Controllers
                     buyMaterialLine.Etiology = transToAttach.Etiology;
                     //_context.Entry(transToAttach).Entity
                     transToAttach.BuyDocLines.Add(buyMaterialLine);
+
                     #endregion
 
                     if (!noWarehouseTrans)
                     {
                         #region Warehouse transaction
+
                         var warehouseTrans = new WarehouseTransaction();
                         warehouseTrans.FpaRate = fpaRate;
                         warehouseTrans.DiscountRate = discountRate;
@@ -918,141 +953,19 @@ namespace GrKouk.WebRazor.Controllers
                         warehouseTrans.CreatorId = transToAttach.Id;
                         warehouseTrans.TransDate = transToAttach.TransDate;
                         warehouseTrans.TransRefCode = transToAttach.TransRefCode;
-                        warehouseTrans.UnitFactor = (decimal)dataBuyDocLine.Factor;
+                        warehouseTrans.UnitFactor = (decimal) dataBuyDocLine.Factor;
 
                         warehouseTrans.TransWarehouseDocSeriesId = warehouseSeriesId;
                         warehouseTrans.TransWarehouseDocTypeId = warehouseTypeId;
 
-                        switch (material.WarehouseItemNature)
-                        {
-                            case WarehouseItemNatureEnum.WarehouseItemNatureUndefined:
-                                throw new ArgumentOutOfRangeException();
-                            case WarehouseItemNatureEnum.WarehouseItemNatureMaterial:
-                                warehouseTrans.InventoryAction = transWarehouseDef.MaterialInventoryAction;
-                                warehouseTrans.InventoryValueAction = transWarehouseDef.MaterialInventoryValueAction;
-                                warehouseTrans.InvoicedVolumeAction = transWarehouseDef.MaterialInvoicedVolumeAction;
-                                warehouseTrans.InvoicedValueAction = transWarehouseDef.MaterialInvoicedValueAction;
-                                break;
-                            case WarehouseItemNatureEnum.WarehouseItemNatureService:
-                                warehouseTrans.InventoryAction = transWarehouseDef.ServiceInventoryAction;
-                                warehouseTrans.InventoryValueAction = transWarehouseDef.ServiceInventoryValueAction;
-                                warehouseTrans.InvoicedVolumeAction = transWarehouseDef.MaterialInvoicedVolumeAction;
-                                warehouseTrans.InvoicedValueAction = transWarehouseDef.MaterialInvoicedValueAction;
-                                break;
-                            case WarehouseItemNatureEnum.WarehouseItemNatureExpense:
-                                warehouseTrans.InventoryAction = transWarehouseDef.ExpenseInventoryAction;
-                                warehouseTrans.InventoryValueAction = transWarehouseDef.ExpenseInventoryValueAction;
-                                warehouseTrans.InvoicedVolumeAction = transWarehouseDef.MaterialInvoicedVolumeAction;
-                                warehouseTrans.InvoicedValueAction = transWarehouseDef.MaterialInvoicedValueAction;
-                                break;
-                            case WarehouseItemNatureEnum.WarehouseItemNatureIncome:
-                                warehouseTrans.InventoryAction = transWarehouseDef.IncomeInventoryAction;
-                                warehouseTrans.InventoryValueAction = transWarehouseDef.IncomeInventoryValueAction;
-                                warehouseTrans.InvoicedVolumeAction = transWarehouseDef.MaterialInvoicedVolumeAction;
-                                warehouseTrans.InvoicedValueAction = transWarehouseDef.MaterialInvoicedValueAction;
-                                break;
-                            case WarehouseItemNatureEnum.WarehouseItemNatureFixedAsset:
-                                warehouseTrans.InventoryAction = transWarehouseDef.FixedAssetInventoryAction;
-                                warehouseTrans.InventoryValueAction = transWarehouseDef.FixedAssetInventoryValueAction;
-                                warehouseTrans.InvoicedVolumeAction = transWarehouseDef.MaterialInvoicedVolumeAction;
-                                warehouseTrans.InvoicedValueAction = transWarehouseDef.MaterialInvoicedValueAction;
-                                break;
-                            case WarehouseItemNatureEnum.WarehouseItemNatureRawMaterial:
-                                warehouseTrans.InventoryAction = transWarehouseDef.RawMaterialInventoryAction;
-                                warehouseTrans.InventoryValueAction = transWarehouseDef.RawMaterialInventoryValueAction;
-                                warehouseTrans.InvoicedVolumeAction = transWarehouseDef.MaterialInvoicedVolumeAction;
-                                warehouseTrans.InvoicedValueAction = transWarehouseDef.MaterialInvoicedValueAction;
-                                break;
-                            default:
-                                throw new ArgumentOutOfRangeException();
-                        }
-                        
-                        switch (warehouseTrans.InventoryAction)
-                        {
-                            case InventoryActionEnum.InventoryActionEnumNoChange:
-                                warehouseTrans.TransactionType =
-                                    WarehouseTransactionTypeEnum.WarehouseTransactionTypeIgnore;
-                                warehouseTrans.TransQ1 = 0;
-                                warehouseTrans.TransQ2 = 0;
-                                break;
-                            case InventoryActionEnum.InventoryActionEnumImport:
-
-                                warehouseTrans.TransactionType =
-                                    WarehouseTransactionTypeEnum.WarehouseTransactionTypeImport;
-                                warehouseTrans.Quontity1 = dataBuyDocLine.Q1;
-                                warehouseTrans.Quontity2 = dataBuyDocLine.Q2;
-                                warehouseTrans.TransQ1 = (decimal)warehouseTrans.Quontity1;
-                                warehouseTrans.TransQ2 = (decimal)warehouseTrans.Quontity2; 
-                                break;
-                            case InventoryActionEnum.InventoryActionEnumExport:
-
-                                warehouseTrans.TransactionType =
-                                    WarehouseTransactionTypeEnum.WarehouseTransactionTypeExport;
-                                warehouseTrans.Quontity1 = dataBuyDocLine.Q1;
-                                warehouseTrans.Quontity2 = dataBuyDocLine.Q2;
-                                warehouseTrans.TransQ1 = (decimal)warehouseTrans.Quontity1;
-                                warehouseTrans.TransQ2 = (decimal)warehouseTrans.Quontity2;
-                                break;
-                            case InventoryActionEnum.InventoryActionEnumNegativeImport:
-
-                                warehouseTrans.TransactionType =
-                                    WarehouseTransactionTypeEnum.WarehouseTransactionTypeImport;
-                                warehouseTrans.Quontity1 = dataBuyDocLine.Q1;
-                                warehouseTrans.Quontity2 = dataBuyDocLine.Q2 ;
-                                warehouseTrans.TransQ1 = (decimal)warehouseTrans.Quontity1*-1;
-                                warehouseTrans.TransQ2 = (decimal)warehouseTrans.Quontity2*-1;
-                                break;
-                            case InventoryActionEnum.InventoryActionEnumNegativeExport:
-
-                                warehouseTrans.TransactionType =
-                                    WarehouseTransactionTypeEnum.WarehouseTransactionTypeExport;
-                                warehouseTrans.Quontity1 = dataBuyDocLine.Q1 ;
-                                warehouseTrans.Quontity2 = dataBuyDocLine.Q2 ;
-                                warehouseTrans.TransQ1 = (decimal)warehouseTrans.Quontity1 * -1;
-                                warehouseTrans.TransQ2 = (decimal)warehouseTrans.Quontity2 * -1;
-                                break;
-                            default:
-                                throw new ArgumentOutOfRangeException();
-                        }
-
-
-                        switch (warehouseTrans.InventoryValueAction)
-                        {
-                            case InventoryValueActionEnum.InventoryValueActionEnumNoChange:
-                                warehouseTrans.TransNetAmount = 0 ;
-                                warehouseTrans.TransFpaAmount = 0;
-                                warehouseTrans.TransDiscountAmount = 0;
-                                break;
-                            case InventoryValueActionEnum.InventoryValueActionEnumIncrease:
-                                warehouseTrans.TransNetAmount = warehouseTrans.AmountNet;
-                                warehouseTrans.TransFpaAmount = warehouseTrans.AmountFpa;
-                                warehouseTrans.TransDiscountAmount = warehouseTrans.AmountDiscount;
-                                break;
-                            case InventoryValueActionEnum.InventoryValueActionEnumDecrease:
-                                warehouseTrans.TransNetAmount = warehouseTrans.AmountNet;
-                                warehouseTrans.TransFpaAmount = warehouseTrans.AmountFpa;
-                                warehouseTrans.TransDiscountAmount = warehouseTrans.AmountDiscount;
-                                break;
-                            case InventoryValueActionEnum.InventoryValueActionEnumNegativeIncrease:
-                                warehouseTrans.TransNetAmount = warehouseTrans.AmountNet*-1;
-                                warehouseTrans.TransFpaAmount = warehouseTrans.AmountFpa*-1;
-                                warehouseTrans.TransDiscountAmount = warehouseTrans.AmountDiscount*-1;
-                               
-                                break;
-                            case InventoryValueActionEnum.InventoryValueActionEnumNegativeDecrease:
-                                warehouseTrans.TransNetAmount = warehouseTrans.AmountNet * -1;
-                                warehouseTrans.TransFpaAmount = warehouseTrans.AmountFpa * -1;
-                                warehouseTrans.TransDiscountAmount = warehouseTrans.AmountDiscount * -1;
-                                break;
-                            default:
-                                throw new ArgumentOutOfRangeException();
-                        }
-
+                        ItemNatureHandler(material.WarehouseItemNature, warehouseTrans, transWarehouseDef);
+                        ItemInventoryActionHandler(warehouseTrans.InventoryAction, dataBuyDocLine.Q1, dataBuyDocLine.Q2,
+                            warehouseTrans);
+                        ItemInventoryValueActionHandler(warehouseTrans.InventoryValueAction, warehouseTrans);
                         _context.WarehouseTransactions.Add(warehouseTrans);
 
                         #endregion
                     }
-
                 }
 
                 try
@@ -1075,6 +988,163 @@ namespace GrKouk.WebRazor.Controllers
             return Ok(new { });
         }
 
+        /// <summary>
+        /// Manipulates item Trans based on material nature
+        /// </summary>
+        /// <param name="itemNature"></param>
+        /// <param name="itemTrans"></param>
+        /// <param name="itemTransDef"></param>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
+        private void ItemNatureHandler(WarehouseItemNatureEnum itemNature, WarehouseTransaction itemTrans,
+            TransWarehouseDef itemTransDef)
+        {
+            switch (itemNature)
+            {
+                case WarehouseItemNatureEnum.WarehouseItemNatureUndefined:
+                    throw new ArgumentOutOfRangeException();
+                case WarehouseItemNatureEnum.WarehouseItemNatureMaterial:
+                    itemTrans.InventoryAction = itemTransDef.MaterialInventoryAction;
+                    itemTrans.InventoryValueAction = itemTransDef.MaterialInventoryValueAction;
+                    itemTrans.InvoicedVolumeAction = itemTransDef.MaterialInvoicedVolumeAction;
+                    itemTrans.InvoicedValueAction = itemTransDef.MaterialInvoicedValueAction;
+                    break;
+                case WarehouseItemNatureEnum.WarehouseItemNatureService:
+                    itemTrans.InventoryAction = itemTransDef.ServiceInventoryAction;
+                    itemTrans.InventoryValueAction = itemTransDef.ServiceInventoryValueAction;
+                    itemTrans.InvoicedVolumeAction = itemTransDef.MaterialInvoicedVolumeAction;
+                    itemTrans.InvoicedValueAction = itemTransDef.MaterialInvoicedValueAction;
+                    break;
+                case WarehouseItemNatureEnum.WarehouseItemNatureExpense:
+                    itemTrans.InventoryAction = itemTransDef.ExpenseInventoryAction;
+                    itemTrans.InventoryValueAction = itemTransDef.ExpenseInventoryValueAction;
+                    itemTrans.InvoicedVolumeAction = itemTransDef.MaterialInvoicedVolumeAction;
+                    itemTrans.InvoicedValueAction = itemTransDef.MaterialInvoicedValueAction;
+                    break;
+                case WarehouseItemNatureEnum.WarehouseItemNatureIncome:
+                    itemTrans.InventoryAction = itemTransDef.IncomeInventoryAction;
+                    itemTrans.InventoryValueAction = itemTransDef.IncomeInventoryValueAction;
+                    itemTrans.InvoicedVolumeAction = itemTransDef.MaterialInvoicedVolumeAction;
+                    itemTrans.InvoicedValueAction = itemTransDef.MaterialInvoicedValueAction;
+                    break;
+                case WarehouseItemNatureEnum.WarehouseItemNatureFixedAsset:
+                    itemTrans.InventoryAction = itemTransDef.FixedAssetInventoryAction;
+                    itemTrans.InventoryValueAction = itemTransDef.FixedAssetInventoryValueAction;
+                    itemTrans.InvoicedVolumeAction = itemTransDef.MaterialInvoicedVolumeAction;
+                    itemTrans.InvoicedValueAction = itemTransDef.MaterialInvoicedValueAction;
+                    break;
+                case WarehouseItemNatureEnum.WarehouseItemNatureRawMaterial:
+                    itemTrans.InventoryAction = itemTransDef.RawMaterialInventoryAction;
+                    itemTrans.InventoryValueAction = itemTransDef.RawMaterialInventoryValueAction;
+                    itemTrans.InvoicedVolumeAction = itemTransDef.MaterialInvoicedVolumeAction;
+                    itemTrans.InvoicedValueAction = itemTransDef.MaterialInvoicedValueAction;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        /// <summary>
+        /// Manipulates warehouse item transaction object based on the inventory action
+        /// </summary>
+        /// <param name="inventoryAction"></param>
+        /// <param name="q1"></param>
+        /// <param name="q2"></param>
+        /// <param name="itemTrans"></param>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
+        private void ItemInventoryActionHandler(InventoryActionEnum inventoryAction, double q1, double q2,
+            WarehouseTransaction itemTrans)
+        {
+            switch (inventoryAction)
+            {
+                case InventoryActionEnum.InventoryActionEnumNoChange:
+                    itemTrans.TransactionType =
+                        WarehouseTransactionTypeEnum.WarehouseTransactionTypeIgnore;
+                    itemTrans.TransQ1 = 0;
+                    itemTrans.TransQ2 = 0;
+                    break;
+                case InventoryActionEnum.InventoryActionEnumImport:
+
+                    itemTrans.TransactionType =
+                        WarehouseTransactionTypeEnum.WarehouseTransactionTypeImport;
+                    itemTrans.Quontity1 = q1;
+                    itemTrans.Quontity2 = q2;
+                    itemTrans.TransQ1 = (decimal) itemTrans.Quontity1;
+                    itemTrans.TransQ2 = (decimal) itemTrans.Quontity2;
+                    break;
+                case InventoryActionEnum.InventoryActionEnumExport:
+
+                    itemTrans.TransactionType =
+                        WarehouseTransactionTypeEnum.WarehouseTransactionTypeExport;
+                    itemTrans.Quontity1 = q1;
+                    itemTrans.Quontity2 = q2;
+                    itemTrans.TransQ1 = (decimal) itemTrans.Quontity1;
+                    itemTrans.TransQ2 = (decimal) itemTrans.Quontity2;
+                    break;
+                case InventoryActionEnum.InventoryActionEnumNegativeImport:
+
+                    itemTrans.TransactionType =
+                        WarehouseTransactionTypeEnum.WarehouseTransactionTypeImport;
+                    itemTrans.Quontity1 = q1;
+                    itemTrans.Quontity2 = q2;
+                    itemTrans.TransQ1 = (decimal) itemTrans.Quontity1 * -1;
+                    itemTrans.TransQ2 = (decimal) itemTrans.Quontity2 * -1;
+                    break;
+                case InventoryActionEnum.InventoryActionEnumNegativeExport:
+
+                    itemTrans.TransactionType =
+                        WarehouseTransactionTypeEnum.WarehouseTransactionTypeExport;
+                    itemTrans.Quontity1 = q1;
+                    itemTrans.Quontity2 = q2;
+                    itemTrans.TransQ1 = (decimal) itemTrans.Quontity1 * -1;
+                    itemTrans.TransQ2 = (decimal) itemTrans.Quontity2 * -1;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        /// <summary>
+        /// Manipulates warehouse item transaction object based on the inventory value action
+        /// </summary>
+        /// <param name="inventoryValueAction"></param>
+        /// <param name="itemTrans"></param>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
+        private void ItemInventoryValueActionHandler(InventoryValueActionEnum inventoryValueAction,
+            WarehouseTransaction itemTrans)
+        {
+            switch (inventoryValueAction)
+            {
+                case InventoryValueActionEnum.InventoryValueActionEnumNoChange:
+                    itemTrans.TransNetAmount = 0;
+                    itemTrans.TransFpaAmount = 0;
+                    itemTrans.TransDiscountAmount = 0;
+                    break;
+                case InventoryValueActionEnum.InventoryValueActionEnumIncrease:
+                    itemTrans.TransNetAmount = itemTrans.AmountNet;
+                    itemTrans.TransFpaAmount = itemTrans.AmountFpa;
+                    itemTrans.TransDiscountAmount = itemTrans.AmountDiscount;
+                    break;
+                case InventoryValueActionEnum.InventoryValueActionEnumDecrease:
+                    itemTrans.TransNetAmount = itemTrans.AmountNet;
+                    itemTrans.TransFpaAmount = itemTrans.AmountFpa;
+                    itemTrans.TransDiscountAmount = itemTrans.AmountDiscount;
+                    break;
+                case InventoryValueActionEnum.InventoryValueActionEnumNegativeIncrease:
+                    itemTrans.TransNetAmount = itemTrans.AmountNet * -1;
+                    itemTrans.TransFpaAmount = itemTrans.AmountFpa * -1;
+                    itemTrans.TransDiscountAmount = itemTrans.AmountDiscount * -1;
+
+                    break;
+                case InventoryValueActionEnum.InventoryValueActionEnumNegativeDecrease:
+                    itemTrans.TransNetAmount = itemTrans.AmountNet * -1;
+                    itemTrans.TransFpaAmount = itemTrans.AmountFpa * -1;
+                    itemTrans.TransDiscountAmount = itemTrans.AmountDiscount * -1;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
         [HttpPost("MaterialBuyDocUpdate")]
         public async Task<IActionResult> PutMaterialBuyDoc([FromBody] BuyDocModifyAjaxDto data)
         {
@@ -1091,6 +1161,7 @@ namespace GrKouk.WebRazor.Controllers
                     error = "Empty request data"
                 });
             }
+
             try
             {
                 transToAttachNoLines = _mapper.Map<BuyDocModifyAjaxNoLinesDto>(data);
@@ -1104,10 +1175,9 @@ namespace GrKouk.WebRazor.Controllers
                     error = e.Message
                 });
             }
-           
+
             using (var transaction = _context.Database.BeginTransaction())
             {
-
                 #region Section Management
 
                 var section = await _context.Sections.SingleOrDefaultAsync(s => s.SystemName == sectionCode);
@@ -1122,10 +1192,14 @@ namespace GrKouk.WebRazor.Controllers
                 }
 
                 #endregion
-                _context.BuyDocLines.RemoveRange(_context.BuyDocLines.Where(p=>p.BuyDocumentId==data.Id));
-                _context.TransactorTransactions.RemoveRange(_context.TransactorTransactions.Where(p => p.SectionId == section.Id && p.CreatorId == data.Id));
+
+                _context.BuyDocLines.RemoveRange(_context.BuyDocLines.Where(p => p.BuyDocumentId == data.Id));
+                _context.TransactorTransactions.RemoveRange(
+                    _context.TransactorTransactions.Where(p => p.SectionId == section.Id && p.CreatorId == data.Id));
                 //_context.SupplierTransactions.RemoveRange(_context.SupplierTransactions.Where(p=>p.SectionId==section.Id && p.CreatorId==data.Id));
-                _context.WarehouseTransactions.RemoveRange(_context.WarehouseTransactions.Where(p => p.SectionId == section.Id && p.CreatorId == data.Id));
+                _context.WarehouseTransactions.RemoveRange(
+                    _context.WarehouseTransactions.Where(p => p.SectionId == section.Id && p.CreatorId == data.Id));
+
                 #region Fiscal Period
 
                 var fiscalPeriod = await _context.FiscalPeriods.FirstOrDefaultAsync(p =>
@@ -1139,7 +1213,9 @@ namespace GrKouk.WebRazor.Controllers
                         error = "No Fiscal Period covers Transaction Date"
                     });
                 }
+
                 #endregion
+
                 var docSeries = await
                     _context.BuyDocSeriesDefs.SingleOrDefaultAsync(m => m.Id == data.BuyDocSeriesId);
 
@@ -1155,13 +1231,13 @@ namespace GrKouk.WebRazor.Controllers
 
                 await _context.Entry(docSeries).Reference(t => t.BuyDocTypeDef).LoadAsync();
                 var docTypeDef = docSeries.BuyDocTypeDef;
-               
+
                 await _context.Entry(docTypeDef).Reference(t => t.TransTransactorDef)
                     .LoadAsync();
                 await _context.Entry(docTypeDef).Reference(t => t.TransWarehouseDef)
                     .LoadAsync();
 
-               
+
                 var transTransactorDef = docTypeDef.TransTransactorDef;
                 //var transSupplierDef = docTypeDef.TransSupplierDef;
                 var transWarehouseDef = docTypeDef.TransWarehouseDef;
@@ -1176,8 +1252,8 @@ namespace GrKouk.WebRazor.Controllers
                 if (transTransactorDef.DefaultDocSeriesId > 0)
                 {
                     var transTransactorDefaultSeries = await
-                         _context.TransTransactorDocSeriesDefs.FirstOrDefaultAsync(p =>
-                             p.Id == transTransactorDef.DefaultDocSeriesId);
+                        _context.TransTransactorDocSeriesDefs.FirstOrDefaultAsync(p =>
+                            p.Id == transTransactorDef.DefaultDocSeriesId);
                     if (transTransactorDefaultSeries == null)
                     {
                         transaction.Rollback();
@@ -1196,7 +1272,8 @@ namespace GrKouk.WebRazor.Controllers
 
                         sTransactorTransaction.TransactorId = data.TransactorId;
                         sTransactorTransaction.SectionId = section.Id;
-                        sTransactorTransaction.TransTransactorDocTypeId = transTransactorDefaultSeries.TransTransactorDocTypeDefId;
+                        sTransactorTransaction.TransTransactorDocTypeId =
+                            transTransactorDefaultSeries.TransTransactorDocTypeDefId;
                         sTransactorTransaction.TransTransactorDocSeriesId = transTransactorDefaultSeries.Id;
                         sTransactorTransaction.FiscalPeriodId = fiscalPeriod.Id;
                         sTransactorTransaction.CreatorId = docId;
@@ -1236,6 +1313,7 @@ namespace GrKouk.WebRazor.Controllers
                             default:
                                 break;
                         }
+
                         _context.TransactorTransactions.Add(sTransactorTransaction);
                     }
                     catch (Exception e)
@@ -1246,13 +1324,12 @@ namespace GrKouk.WebRazor.Controllers
                         {
                             error = e.Message + " " + msg
                         });
-
                     }
-
                 }
+
                 //Αυτόματη εξόφληση
                 var paymentMethod =
-                   await _context.PaymentMethods.FirstOrDefaultAsync(p => p.Id == transToAttach.PaymentMethodId);
+                    await _context.PaymentMethods.FirstOrDefaultAsync(p => p.Id == transToAttach.PaymentMethodId);
                 if (paymentMethod is null)
                 {
                     transaction.Rollback();
@@ -1262,14 +1339,15 @@ namespace GrKouk.WebRazor.Controllers
                         error = "Δεν βρέθηκε ο τρόπος πληρωμής"
                     });
                 }
+
                 if (paymentMethod.AutoPayoffWay == SeriesAutoPayoffEnum.SeriesAutoPayoffEnumAuto)
                 {
                     var autoPaySeriesId = transToAttach.BuyDocSeries.PayoffSeriesId;
                     if (autoPaySeriesId > 0)
                     {
                         var transTransactorPayOffSeries = await
-                         _context.TransTransactorDocSeriesDefs.FirstOrDefaultAsync(p =>
-                             p.Id == autoPaySeriesId);
+                            _context.TransTransactorDocSeriesDefs.FirstOrDefaultAsync(p =>
+                                p.Id == autoPaySeriesId);
                         if (transTransactorPayOffSeries == null)
                         {
                             transaction.Rollback();
@@ -1279,13 +1357,15 @@ namespace GrKouk.WebRazor.Controllers
                                 error = "AutoPayOff series not found"
                             });
                         }
+
                         var spTransactorCreateDto = _mapper.Map<TransactorTransCreateDto>(data);
                         //Ετσι δεν μεταφέρει το Id απο το data
                         var sTransactorTransaction = _mapper.Map<TransactorTransaction>(spTransactorCreateDto);
-                       
+
                         sTransactorTransaction.TransactorId = data.TransactorId;
                         sTransactorTransaction.SectionId = section.Id;
-                        sTransactorTransaction.TransTransactorDocTypeId = transTransactorPayOffSeries.TransTransactorDocTypeDefId;
+                        sTransactorTransaction.TransTransactorDocTypeId =
+                            transTransactorPayOffSeries.TransTransactorDocTypeDefId;
                         sTransactorTransaction.TransTransactorDocSeriesId = transTransactorPayOffSeries.Id;
                         sTransactorTransaction.FiscalPeriodId = fiscalPeriod.Id;
                         sTransactorTransaction.Etiology = "AutoPayOff";
@@ -1334,11 +1414,11 @@ namespace GrKouk.WebRazor.Controllers
                             default:
                                 break;
                         }
+
                         _context.TransactorTransactions.Add(sTransactorTransaction);
                         try
                         {
                             await _context.SaveChangesAsync();
-
                         }
                         catch (Exception e)
                         {
@@ -1350,7 +1430,6 @@ namespace GrKouk.WebRazor.Controllers
                             });
                         }
                     }
-
                 }
 
 
@@ -1359,7 +1438,6 @@ namespace GrKouk.WebRazor.Controllers
 
                 if (transWarehouseDef.DefaultDocSeriesId > 0)
                 {
-
                     var transWarehouseDefaultSeries =
                         await _context.TransWarehouseDocSeriesDefs.FirstOrDefaultAsync(p =>
                             p.Id == transWarehouseDef.DefaultDocSeriesId);
@@ -1372,6 +1450,7 @@ namespace GrKouk.WebRazor.Controllers
                             error = "Default series for warehouse transaction not found"
                         });
                     }
+
                     noWarehouseTrans = false;
                     warehouseSeriesId = transWarehouseDef.DefaultDocSeriesId;
                     warehouseTypeId = transWarehouseDefaultSeries.TransWarehouseDocTypeDefId;
@@ -1380,6 +1459,7 @@ namespace GrKouk.WebRazor.Controllers
                 {
                     noWarehouseTrans = true;
                 }
+
                 foreach (var dataBuyDocLine in data.BuyDocLines)
                 {
                     var warehouseItemId = dataBuyDocLine.WarehouseItemId;
@@ -1394,12 +1474,14 @@ namespace GrKouk.WebRazor.Controllers
                             error = "Could not locate material in Doc Line "
                         });
                     }
+
                     #region MaterialLine
+
                     var warehouseItemLine = new BuyDocLine();
                     decimal unitPrice = dataBuyDocLine.Price;
-                    decimal units = (decimal)dataBuyDocLine.Q1;
-                    decimal fpaRate = (decimal)dataBuyDocLine.FpaRate;
-                    decimal discountRate = (decimal)dataBuyDocLine.DiscountRate;
+                    decimal units = (decimal) dataBuyDocLine.Q1;
+                    decimal fpaRate = (decimal) dataBuyDocLine.FpaRate;
+                    decimal discountRate = (decimal) dataBuyDocLine.DiscountRate;
                     decimal lineNetAmount = unitPrice * units;
                     decimal lineDiscountAmount = lineNetAmount * discountRate;
                     decimal lineFpaAmount = (lineNetAmount - lineDiscountAmount) * fpaRate;
@@ -1432,11 +1514,13 @@ namespace GrKouk.WebRazor.Controllers
                             error = e.Message + " " + msg
                         });
                     }
+
                     #endregion
 
                     if (!noWarehouseTrans)
                     {
                         #region Warehouse transaction
+
                         var warehouseTrans = new WarehouseTransaction();
                         warehouseTrans.FpaRate = fpaRate;
                         warehouseTrans.DiscountRate = discountRate;
@@ -1455,7 +1539,7 @@ namespace GrKouk.WebRazor.Controllers
                         warehouseTrans.CreatorId = transToAttach.Id;
                         warehouseTrans.TransDate = transToAttach.TransDate;
                         warehouseTrans.TransRefCode = transToAttach.TransRefCode;
-                        warehouseTrans.UnitFactor = (decimal)dataBuyDocLine.Factor;
+                        warehouseTrans.UnitFactor = (decimal) dataBuyDocLine.Factor;
 
                         warehouseTrans.TransWarehouseDocSeriesId = warehouseSeriesId;
                         warehouseTrans.TransWarehouseDocTypeId = warehouseTypeId;
@@ -1502,6 +1586,7 @@ namespace GrKouk.WebRazor.Controllers
                             default:
                                 throw new ArgumentOutOfRangeException();
                         }
+
                         switch (warehouseTrans.InventoryAction)
                         {
                             case InventoryActionEnum.InventoryActionEnumNoChange:
@@ -1516,8 +1601,8 @@ namespace GrKouk.WebRazor.Controllers
                                     WarehouseTransactionTypeEnum.WarehouseTransactionTypeImport;
                                 warehouseTrans.Quontity1 = dataBuyDocLine.Q1;
                                 warehouseTrans.Quontity2 = dataBuyDocLine.Q2;
-                                warehouseTrans.TransQ1 = (decimal)warehouseTrans.Quontity1;
-                                warehouseTrans.TransQ2 = (decimal)warehouseTrans.Quontity2;
+                                warehouseTrans.TransQ1 = (decimal) warehouseTrans.Quontity1;
+                                warehouseTrans.TransQ2 = (decimal) warehouseTrans.Quontity2;
                                 break;
                             case InventoryActionEnum.InventoryActionEnumExport:
 
@@ -1525,8 +1610,8 @@ namespace GrKouk.WebRazor.Controllers
                                     WarehouseTransactionTypeEnum.WarehouseTransactionTypeExport;
                                 warehouseTrans.Quontity1 = dataBuyDocLine.Q1;
                                 warehouseTrans.Quontity2 = dataBuyDocLine.Q2;
-                                warehouseTrans.TransQ1 = (decimal)warehouseTrans.Quontity1;
-                                warehouseTrans.TransQ2 = (decimal)warehouseTrans.Quontity2;
+                                warehouseTrans.TransQ1 = (decimal) warehouseTrans.Quontity1;
+                                warehouseTrans.TransQ2 = (decimal) warehouseTrans.Quontity2;
                                 break;
                             case InventoryActionEnum.InventoryActionEnumNegativeImport:
 
@@ -1534,8 +1619,8 @@ namespace GrKouk.WebRazor.Controllers
                                     WarehouseTransactionTypeEnum.WarehouseTransactionTypeImport;
                                 warehouseTrans.Quontity1 = dataBuyDocLine.Q1;
                                 warehouseTrans.Quontity2 = dataBuyDocLine.Q2;
-                                warehouseTrans.TransQ1 = (decimal)warehouseTrans.Quontity1 * -1;
-                                warehouseTrans.TransQ2 = (decimal)warehouseTrans.Quontity2 * -1;
+                                warehouseTrans.TransQ1 = (decimal) warehouseTrans.Quontity1 * -1;
+                                warehouseTrans.TransQ2 = (decimal) warehouseTrans.Quontity2 * -1;
                                 break;
                             case InventoryActionEnum.InventoryActionEnumNegativeExport:
 
@@ -1543,8 +1628,8 @@ namespace GrKouk.WebRazor.Controllers
                                     WarehouseTransactionTypeEnum.WarehouseTransactionTypeExport;
                                 warehouseTrans.Quontity1 = dataBuyDocLine.Q1;
                                 warehouseTrans.Quontity2 = dataBuyDocLine.Q2;
-                                warehouseTrans.TransQ1 = (decimal)warehouseTrans.Quontity1 * -1;
-                                warehouseTrans.TransQ2 = (decimal)warehouseTrans.Quontity2 * -1;
+                                warehouseTrans.TransQ1 = (decimal) warehouseTrans.Quontity1 * -1;
+                                warehouseTrans.TransQ2 = (decimal) warehouseTrans.Quontity2 * -1;
                                 break;
                             default:
                                 throw new ArgumentOutOfRangeException();
@@ -1583,7 +1668,7 @@ namespace GrKouk.WebRazor.Controllers
                                 throw new ArgumentOutOfRangeException();
                         }
 
-                      
+
                         try
                         {
                             _context.WarehouseTransactions.Add(warehouseTrans);
@@ -1597,9 +1682,9 @@ namespace GrKouk.WebRazor.Controllers
                                 error = e.Message + " " + msg
                             });
                         }
+
                         #endregion
                     }
-
                 }
 
 
@@ -1610,7 +1695,6 @@ namespace GrKouk.WebRazor.Controllers
                 }
                 catch (Exception e)
                 {
-
                     transaction.Rollback();
                     string msg = e.InnerException.Message;
                     return BadRequest(new
@@ -1621,8 +1705,6 @@ namespace GrKouk.WebRazor.Controllers
             }
 
             return Ok(new { });
-
-
         }
 
 
@@ -1633,7 +1715,7 @@ namespace GrKouk.WebRazor.Controllers
 
             var sessionCompanyId = HttpContext.Session.GetString("CompanyId");
 
-           // bool noSupplierTrans = false;
+            // bool noSupplierTrans = false;
             bool noWarehouseTrans = false;
 
             SellDocCreateAjaxNoLinesDto transToAttachNoLines;
@@ -1647,6 +1729,7 @@ namespace GrKouk.WebRazor.Controllers
                     error = "Empty request data"
                 });
             }
+
             try
             {
                 transToAttachNoLines = _mapper.Map<SellDocCreateAjaxNoLinesDto>(data);
@@ -1660,10 +1743,9 @@ namespace GrKouk.WebRazor.Controllers
                     error = e.Message
                 });
             }
-            
+
             using (var transaction = _context.Database.BeginTransaction())
             {
-
                 #region Section Management
 
                 var section = await _context.Sections.SingleOrDefaultAsync(s => s.SystemName == sectionCode);
@@ -1678,6 +1760,7 @@ namespace GrKouk.WebRazor.Controllers
                 }
 
                 #endregion
+
                 #region Fiscal Period
 
                 var fiscalPeriod = await _context.FiscalPeriods.FirstOrDefaultAsync(p =>
@@ -1691,7 +1774,9 @@ namespace GrKouk.WebRazor.Controllers
                         error = "No Fiscal Period covers Transaction Date"
                     });
                 }
+
                 #endregion
+
                 var docSeries = await
                     _context.SellDocSeriesDefs.SingleOrDefaultAsync(m => m.Id == data.SellDocSeriesId);
 
@@ -1707,7 +1792,7 @@ namespace GrKouk.WebRazor.Controllers
 
                 await _context.Entry(docSeries).Reference(t => t.SellDocTypeDef).LoadAsync();
                 var docTypeDef = docSeries.SellDocTypeDef;
-               
+
                 await _context.Entry(docTypeDef)
                     .Reference(t => t.TransTransactorDef)
                     .LoadAsync();
@@ -1726,7 +1811,6 @@ namespace GrKouk.WebRazor.Controllers
                 try
                 {
                     await _context.SaveChangesAsync();
-
                 }
                 catch (Exception e)
                 {
@@ -1738,14 +1822,15 @@ namespace GrKouk.WebRazor.Controllers
                         error = e.Message + " " + msg
                     });
                 }
+
                 var docId = _context.Entry(transToAttach).Entity.Id;
 
-               
+
                 if (transTransactorDef.DefaultDocSeriesId > 0)
                 {
                     var transTransactorDefaultSeries = await
-                         _context.TransTransactorDocSeriesDefs.FirstOrDefaultAsync(p =>
-                             p.Id == transTransactorDef.DefaultDocSeriesId);
+                        _context.TransTransactorDocSeriesDefs.FirstOrDefaultAsync(p =>
+                            p.Id == transTransactorDef.DefaultDocSeriesId);
                     if (transTransactorDefaultSeries == null)
                     {
                         transaction.Rollback();
@@ -1755,10 +1840,12 @@ namespace GrKouk.WebRazor.Controllers
                             error = "Default series for transactor transaction not found"
                         });
                     }
+
                     var sTransactorTransaction = _mapper.Map<TransactorTransaction>(data);
                     sTransactorTransaction.TransactorId = data.TransactorId;
                     sTransactorTransaction.SectionId = section.Id;
-                    sTransactorTransaction.TransTransactorDocTypeId = transTransactorDefaultSeries.TransTransactorDocTypeDefId;
+                    sTransactorTransaction.TransTransactorDocTypeId =
+                        transTransactorDefaultSeries.TransTransactorDocTypeDefId;
                     sTransactorTransaction.TransTransactorDocSeriesId = transTransactorDefaultSeries.Id;
                     sTransactorTransaction.FiscalPeriodId = fiscalPeriod.Id;
                     sTransactorTransaction.CreatorId = docId;
@@ -1798,11 +1885,11 @@ namespace GrKouk.WebRazor.Controllers
                         default:
                             break;
                     }
+
                     _context.TransactorTransactions.Add(sTransactorTransaction);
                     try
                     {
                         await _context.SaveChangesAsync();
-
                     }
                     catch (Exception e)
                     {
@@ -1814,6 +1901,7 @@ namespace GrKouk.WebRazor.Controllers
                         });
                     }
                 }
+
                 //Αυτόματη εξόφληση
                 var paymentMethod =
                     await _context.PaymentMethods.FirstOrDefaultAsync(p => p.Id == transToAttach.PaymentMethodId);
@@ -1826,14 +1914,15 @@ namespace GrKouk.WebRazor.Controllers
                         error = "Δεν βρέθηκε ο τρόπος πληρωμής"
                     });
                 }
-                if (paymentMethod.AutoPayoffWay==SeriesAutoPayoffEnum.SeriesAutoPayoffEnumAuto)
+
+                if (paymentMethod.AutoPayoffWay == SeriesAutoPayoffEnum.SeriesAutoPayoffEnumAuto)
                 {
                     var autoPaySeriesId = transToAttach.SellDocSeries.PayoffSeriesId;
-                    if (autoPaySeriesId >0)
+                    if (autoPaySeriesId > 0)
                     {
                         var transTransactorPayOffSeries = await
-                         _context.TransTransactorDocSeriesDefs.FirstOrDefaultAsync(p =>
-                             p.Id == autoPaySeriesId);
+                            _context.TransTransactorDocSeriesDefs.FirstOrDefaultAsync(p =>
+                                p.Id == autoPaySeriesId);
                         if (transTransactorPayOffSeries == null)
                         {
                             transaction.Rollback();
@@ -1843,10 +1932,12 @@ namespace GrKouk.WebRazor.Controllers
                                 error = "AutoPayOff series not found"
                             });
                         }
+
                         var sTransactorTransaction = _mapper.Map<TransactorTransaction>(data);
                         sTransactorTransaction.TransactorId = data.TransactorId;
                         sTransactorTransaction.SectionId = section.Id;
-                        sTransactorTransaction.TransTransactorDocTypeId = transTransactorPayOffSeries.TransTransactorDocTypeDefId;
+                        sTransactorTransaction.TransTransactorDocTypeId =
+                            transTransactorPayOffSeries.TransTransactorDocTypeDefId;
                         sTransactorTransaction.TransTransactorDocSeriesId = transTransactorPayOffSeries.Id;
                         sTransactorTransaction.FiscalPeriodId = fiscalPeriod.Id;
                         sTransactorTransaction.Etiology = "AutoPayOff";
@@ -1895,11 +1986,11 @@ namespace GrKouk.WebRazor.Controllers
                             default:
                                 break;
                         }
+
                         _context.TransactorTransactions.Add(sTransactorTransaction);
                         try
                         {
                             await _context.SaveChangesAsync();
-
                         }
                         catch (Exception e)
                         {
@@ -1911,7 +2002,6 @@ namespace GrKouk.WebRazor.Controllers
                             });
                         }
                     }
-
                 }
 
                 int warehouseSeriesId = 0;
@@ -1919,7 +2009,6 @@ namespace GrKouk.WebRazor.Controllers
 
                 if (transWarehouseDef.DefaultDocSeriesId > 0)
                 {
-
                     var transWarehouseDefaultSeries =
                         await _context.TransWarehouseDocSeriesDefs.FirstOrDefaultAsync(p =>
                             p.Id == transWarehouseDef.DefaultDocSeriesId);
@@ -1932,6 +2021,7 @@ namespace GrKouk.WebRazor.Controllers
                             error = "Default series for warehouse transaction not found"
                         });
                     }
+
                     noWarehouseTrans = false;
                     warehouseSeriesId = transWarehouseDef.DefaultDocSeriesId;
                     warehouseTypeId = transWarehouseDefaultSeries.TransWarehouseDocTypeDefId;
@@ -1955,12 +2045,14 @@ namespace GrKouk.WebRazor.Controllers
                             error = "Could not locate material in Doc Line "
                         });
                     }
+
                     #region MaterialLine
+
                     var sellDocLine = new SellDocLine();
                     decimal unitPrice = docLine.Price;
-                    decimal units = (decimal)docLine.Q1;
-                    decimal fpaRate = (decimal)docLine.FpaRate;
-                    decimal discountRate = (decimal)docLine.DiscountRate;
+                    decimal units = (decimal) docLine.Q1;
+                    decimal fpaRate = (decimal) docLine.FpaRate;
+                    decimal discountRate = (decimal) docLine.DiscountRate;
                     decimal lineNetAmount = unitPrice * units;
                     decimal lineDiscountAmount = lineNetAmount * discountRate;
                     decimal lineFpaAmount = (lineNetAmount - lineDiscountAmount) * fpaRate;
@@ -1980,11 +2072,13 @@ namespace GrKouk.WebRazor.Controllers
                     sellDocLine.Etiology = transToAttach.Etiology;
                     //_context.Entry(transToAttach).Entity
                     transToAttach.SellDocLines.Add(sellDocLine);
+
                     #endregion
 
                     if (!noWarehouseTrans)
                     {
                         #region Warehouse transaction
+
                         var warehouseTrans = new WarehouseTransaction();
                         warehouseTrans.FpaRate = fpaRate;
                         warehouseTrans.DiscountRate = discountRate;
@@ -2003,7 +2097,7 @@ namespace GrKouk.WebRazor.Controllers
                         warehouseTrans.CreatorId = transToAttach.Id;
                         warehouseTrans.TransDate = transToAttach.TransDate;
                         warehouseTrans.TransRefCode = transToAttach.TransRefCode;
-                        warehouseTrans.UnitFactor = (decimal)docLine.Factor;
+                        warehouseTrans.UnitFactor = (decimal) docLine.Factor;
 
                         warehouseTrans.TransWarehouseDocSeriesId = warehouseSeriesId;
                         warehouseTrans.TransWarehouseDocTypeId = warehouseTypeId;
@@ -2067,8 +2161,8 @@ namespace GrKouk.WebRazor.Controllers
                                     WarehouseTransactionTypeEnum.WarehouseTransactionTypeImport;
                                 warehouseTrans.Quontity1 = docLine.Q1;
                                 warehouseTrans.Quontity2 = docLine.Q2;
-                                warehouseTrans.TransQ1 = (decimal)warehouseTrans.Quontity1;
-                                warehouseTrans.TransQ2 = (decimal)warehouseTrans.Quontity2;
+                                warehouseTrans.TransQ1 = (decimal) warehouseTrans.Quontity1;
+                                warehouseTrans.TransQ2 = (decimal) warehouseTrans.Quontity2;
                                 break;
                             case InventoryActionEnum.InventoryActionEnumExport:
 
@@ -2076,8 +2170,8 @@ namespace GrKouk.WebRazor.Controllers
                                     WarehouseTransactionTypeEnum.WarehouseTransactionTypeExport;
                                 warehouseTrans.Quontity1 = docLine.Q1;
                                 warehouseTrans.Quontity2 = docLine.Q2;
-                                warehouseTrans.TransQ1 = (decimal)warehouseTrans.Quontity1;
-                                warehouseTrans.TransQ2 = (decimal)warehouseTrans.Quontity2;
+                                warehouseTrans.TransQ1 = (decimal) warehouseTrans.Quontity1;
+                                warehouseTrans.TransQ2 = (decimal) warehouseTrans.Quontity2;
                                 break;
                             case InventoryActionEnum.InventoryActionEnumNegativeImport:
 
@@ -2085,8 +2179,8 @@ namespace GrKouk.WebRazor.Controllers
                                     WarehouseTransactionTypeEnum.WarehouseTransactionTypeImport;
                                 warehouseTrans.Quontity1 = docLine.Q1;
                                 warehouseTrans.Quontity2 = docLine.Q2;
-                                warehouseTrans.TransQ1 = (decimal)warehouseTrans.Quontity1 * -1;
-                                warehouseTrans.TransQ2 = (decimal)warehouseTrans.Quontity2 * -1;
+                                warehouseTrans.TransQ1 = (decimal) warehouseTrans.Quontity1 * -1;
+                                warehouseTrans.TransQ2 = (decimal) warehouseTrans.Quontity2 * -1;
                                 break;
                             case InventoryActionEnum.InventoryActionEnumNegativeExport:
 
@@ -2094,8 +2188,8 @@ namespace GrKouk.WebRazor.Controllers
                                     WarehouseTransactionTypeEnum.WarehouseTransactionTypeExport;
                                 warehouseTrans.Quontity1 = docLine.Q1;
                                 warehouseTrans.Quontity2 = docLine.Q2;
-                                warehouseTrans.TransQ1 = (decimal)warehouseTrans.Quontity1 * -1;
-                                warehouseTrans.TransQ2 = (decimal)warehouseTrans.Quontity2 * -1;
+                                warehouseTrans.TransQ1 = (decimal) warehouseTrans.Quontity1 * -1;
+                                warehouseTrans.TransQ2 = (decimal) warehouseTrans.Quontity2 * -1;
                                 break;
                             default:
                                 throw new ArgumentOutOfRangeException();
@@ -2138,7 +2232,6 @@ namespace GrKouk.WebRazor.Controllers
 
                         #endregion
                     }
-
                 }
 
                 try
@@ -2176,6 +2269,7 @@ namespace GrKouk.WebRazor.Controllers
                     error = "Empty request data"
                 });
             }
+
             try
             {
                 transToAttachNoLines = _mapper.Map<SellDocModifyAjaxNoLinesDto>(data);
@@ -2189,10 +2283,9 @@ namespace GrKouk.WebRazor.Controllers
                     error = e.Message
                 });
             }
-            
+
             using (var transaction = _context.Database.BeginTransaction())
             {
-
                 #region Section Management
 
                 var section = await _context.Sections.SingleOrDefaultAsync(s => s.SystemName == sectionCode);
@@ -2207,9 +2300,13 @@ namespace GrKouk.WebRazor.Controllers
                 }
 
                 #endregion
+
                 _context.SellDocLines.RemoveRange(_context.SellDocLines.Where(p => p.SellDocumentId == data.Id));
-                _context.TransactorTransactions.RemoveRange(_context.TransactorTransactions.Where(p => p.SectionId == section.Id && p.CreatorId == data.Id));
-                _context.WarehouseTransactions.RemoveRange(_context.WarehouseTransactions.Where(p => p.SectionId == section.Id && p.CreatorId == data.Id));
+                _context.TransactorTransactions.RemoveRange(
+                    _context.TransactorTransactions.Where(p => p.SectionId == section.Id && p.CreatorId == data.Id));
+                _context.WarehouseTransactions.RemoveRange(
+                    _context.WarehouseTransactions.Where(p => p.SectionId == section.Id && p.CreatorId == data.Id));
+
                 #region Fiscal Period
 
                 var fiscalPeriod = await _context.FiscalPeriods.FirstOrDefaultAsync(p =>
@@ -2223,7 +2320,9 @@ namespace GrKouk.WebRazor.Controllers
                         error = "No Fiscal Period covers Transaction Date"
                     });
                 }
+
                 #endregion
+
                 var docSeries = await
                     _context.SellDocSeriesDefs.SingleOrDefaultAsync(m => m.Id == data.SellDocSeriesId);
 
@@ -2240,8 +2339,8 @@ namespace GrKouk.WebRazor.Controllers
                 await _context.Entry(docSeries).Reference(t => t.SellDocTypeDef).LoadAsync();
                 var docTypeDef = docSeries.SellDocTypeDef;
                 await _context.Entry(docTypeDef)
-                      .Reference(t => t.TransTransactorDef)
-                      .LoadAsync();
+                    .Reference(t => t.TransTransactorDef)
+                    .LoadAsync();
                 await _context.Entry(docTypeDef).Reference(t => t.TransTransactorDef)
                     .LoadAsync();
                 await _context.Entry(docTypeDef).Reference(t => t.TransWarehouseDef)
@@ -2249,7 +2348,7 @@ namespace GrKouk.WebRazor.Controllers
 
 
                 var transTransactorDef = docTypeDef.TransTransactorDef;
-               // var transSupplierDef = docTypeDef.TransSupplierDef;
+                // var transSupplierDef = docTypeDef.TransSupplierDef;
                 var transWarehouseDef = docTypeDef.TransWarehouseDef;
 
                 transToAttach.SectionId = section.Id;
@@ -2262,8 +2361,8 @@ namespace GrKouk.WebRazor.Controllers
                 if (transTransactorDef.DefaultDocSeriesId > 0)
                 {
                     var transTransactorDefaultSeries = await
-                         _context.TransTransactorDocSeriesDefs.FirstOrDefaultAsync(p =>
-                             p.Id == transTransactorDef.DefaultDocSeriesId);
+                        _context.TransTransactorDocSeriesDefs.FirstOrDefaultAsync(p =>
+                            p.Id == transTransactorDef.DefaultDocSeriesId);
                     if (transTransactorDefaultSeries == null)
                     {
                         transaction.Rollback();
@@ -2273,13 +2372,15 @@ namespace GrKouk.WebRazor.Controllers
                             error = "Default series for transactor transaction not found"
                         });
                     }
+
                     var spTransactorCreateDto = _mapper.Map<TransactorTransCreateDto>(data);
                     //Ετσι δεν μεταφέρει το Id απο το data
                     var sTransactorTransaction = _mapper.Map<TransactorTransaction>(spTransactorCreateDto);
 
                     sTransactorTransaction.TransactorId = data.TransactorId;
                     sTransactorTransaction.SectionId = section.Id;
-                    sTransactorTransaction.TransTransactorDocTypeId = transTransactorDefaultSeries.TransTransactorDocTypeDefId;
+                    sTransactorTransaction.TransTransactorDocTypeId =
+                        transTransactorDefaultSeries.TransTransactorDocTypeDefId;
                     sTransactorTransaction.TransTransactorDocSeriesId = transTransactorDefaultSeries.Id;
                     sTransactorTransaction.FiscalPeriodId = fiscalPeriod.Id;
                     sTransactorTransaction.CreatorId = docId;
@@ -2319,12 +2420,13 @@ namespace GrKouk.WebRazor.Controllers
                         default:
                             break;
                     }
-                    _context.TransactorTransactions.Add(sTransactorTransaction);
 
+                    _context.TransactorTransactions.Add(sTransactorTransaction);
                 }
+
                 //Αυτόματη εξόφληση
                 var paymentMethod =
-                   await _context.PaymentMethods.FirstOrDefaultAsync(p => p.Id == transToAttach.PaymentMethodId);
+                    await _context.PaymentMethods.FirstOrDefaultAsync(p => p.Id == transToAttach.PaymentMethodId);
                 if (paymentMethod is null)
                 {
                     transaction.Rollback();
@@ -2334,14 +2436,15 @@ namespace GrKouk.WebRazor.Controllers
                         error = "Δεν βρέθηκε ο τρόπος πληρωμής"
                     });
                 }
+
                 if (paymentMethod.AutoPayoffWay == SeriesAutoPayoffEnum.SeriesAutoPayoffEnumAuto)
                 {
                     var autoPaySeriesId = transToAttach.SellDocSeries.PayoffSeriesId;
                     if (autoPaySeriesId > 0)
                     {
                         var transTransactorPayOffSeries = await
-                         _context.TransTransactorDocSeriesDefs.FirstOrDefaultAsync(p =>
-                             p.Id == autoPaySeriesId);
+                            _context.TransTransactorDocSeriesDefs.FirstOrDefaultAsync(p =>
+                                p.Id == autoPaySeriesId);
                         if (transTransactorPayOffSeries == null)
                         {
                             transaction.Rollback();
@@ -2351,12 +2454,14 @@ namespace GrKouk.WebRazor.Controllers
                                 error = "AutoPayOff series not found"
                             });
                         }
+
                         var spTransactorCreateDto = _mapper.Map<TransactorTransCreateDto>(data);
                         //Ετσι δεν μεταφέρει το Id απο το data
                         var sTransactorTransaction = _mapper.Map<TransactorTransaction>(spTransactorCreateDto);
                         sTransactorTransaction.TransactorId = data.TransactorId;
                         sTransactorTransaction.SectionId = section.Id;
-                        sTransactorTransaction.TransTransactorDocTypeId = transTransactorPayOffSeries.TransTransactorDocTypeDefId;
+                        sTransactorTransaction.TransTransactorDocTypeId =
+                            transTransactorPayOffSeries.TransTransactorDocTypeDefId;
                         sTransactorTransaction.TransTransactorDocSeriesId = transTransactorPayOffSeries.Id;
                         sTransactorTransaction.FiscalPeriodId = fiscalPeriod.Id;
                         sTransactorTransaction.Etiology = "AutoPayOff";
@@ -2405,11 +2510,11 @@ namespace GrKouk.WebRazor.Controllers
                             default:
                                 break;
                         }
+
                         _context.TransactorTransactions.Add(sTransactorTransaction);
                         try
                         {
                             await _context.SaveChangesAsync();
-
                         }
                         catch (Exception e)
                         {
@@ -2421,7 +2526,6 @@ namespace GrKouk.WebRazor.Controllers
                             });
                         }
                     }
-
                 }
 
                 int warehouseSeriesId = 0;
@@ -2429,7 +2533,6 @@ namespace GrKouk.WebRazor.Controllers
 
                 if (transWarehouseDef.DefaultDocSeriesId > 0)
                 {
-
                     var transWarehouseDefaultSeries =
                         await _context.TransWarehouseDocSeriesDefs.FirstOrDefaultAsync(p =>
                             p.Id == transWarehouseDef.DefaultDocSeriesId);
@@ -2442,6 +2545,7 @@ namespace GrKouk.WebRazor.Controllers
                             error = "Default series for warehouse transaction not found"
                         });
                     }
+
                     noWarehouseTrans = false;
                     warehouseSeriesId = transWarehouseDef.DefaultDocSeriesId;
                     warehouseTypeId = transWarehouseDefaultSeries.TransWarehouseDocTypeDefId;
@@ -2450,6 +2554,7 @@ namespace GrKouk.WebRazor.Controllers
                 {
                     noWarehouseTrans = true;
                 }
+
                 foreach (var docLine in data.SellDocLines)
                 {
                     var warehouseItemId = docLine.WarehouseItemId;
@@ -2464,12 +2569,14 @@ namespace GrKouk.WebRazor.Controllers
                             error = "Could not locate material in Doc Line "
                         });
                     }
+
                     #region MaterialLine
+
                     var sellDocLine = new SellDocLine();
                     decimal unitPrice = docLine.Price;
-                    decimal units = (decimal)docLine.Q1;
-                    decimal fpaRate = (decimal)docLine.FpaRate;
-                    decimal discountRate = (decimal)docLine.DiscountRate;
+                    decimal units = (decimal) docLine.Q1;
+                    decimal fpaRate = (decimal) docLine.FpaRate;
+                    decimal discountRate = (decimal) docLine.DiscountRate;
                     decimal lineNetAmount = unitPrice * units;
                     decimal lineDiscountAmount = lineNetAmount * discountRate;
                     decimal lineFpaAmount = (lineNetAmount - lineDiscountAmount) * fpaRate;
@@ -2489,11 +2596,13 @@ namespace GrKouk.WebRazor.Controllers
                     sellDocLine.Etiology = transToAttach.Etiology;
                     //_context.Entry(transToAttach).Entity
                     transToAttach.SellDocLines.Add(sellDocLine);
+
                     #endregion
 
                     if (!noWarehouseTrans)
                     {
                         #region Warehouse transaction
+
                         var warehouseTrans = new WarehouseTransaction();
                         warehouseTrans.FpaRate = fpaRate;
                         warehouseTrans.DiscountRate = discountRate;
@@ -2512,7 +2621,7 @@ namespace GrKouk.WebRazor.Controllers
                         warehouseTrans.CreatorId = transToAttach.Id;
                         warehouseTrans.TransDate = transToAttach.TransDate;
                         warehouseTrans.TransRefCode = transToAttach.TransRefCode;
-                        warehouseTrans.UnitFactor = (decimal)docLine.Factor;
+                        warehouseTrans.UnitFactor = (decimal) docLine.Factor;
 
                         warehouseTrans.TransWarehouseDocSeriesId = warehouseSeriesId;
                         warehouseTrans.TransWarehouseDocTypeId = warehouseTypeId;
@@ -2559,6 +2668,7 @@ namespace GrKouk.WebRazor.Controllers
                             default:
                                 throw new ArgumentOutOfRangeException();
                         }
+
                         switch (warehouseTrans.InventoryAction)
                         {
                             case InventoryActionEnum.InventoryActionEnumNoChange:
@@ -2573,8 +2683,8 @@ namespace GrKouk.WebRazor.Controllers
                                     WarehouseTransactionTypeEnum.WarehouseTransactionTypeImport;
                                 warehouseTrans.Quontity1 = docLine.Q1;
                                 warehouseTrans.Quontity2 = docLine.Q2;
-                                warehouseTrans.TransQ1 = (decimal)warehouseTrans.Quontity1;
-                                warehouseTrans.TransQ2 = (decimal)warehouseTrans.Quontity2;
+                                warehouseTrans.TransQ1 = (decimal) warehouseTrans.Quontity1;
+                                warehouseTrans.TransQ2 = (decimal) warehouseTrans.Quontity2;
                                 break;
                             case InventoryActionEnum.InventoryActionEnumExport:
 
@@ -2582,8 +2692,8 @@ namespace GrKouk.WebRazor.Controllers
                                     WarehouseTransactionTypeEnum.WarehouseTransactionTypeExport;
                                 warehouseTrans.Quontity1 = docLine.Q1;
                                 warehouseTrans.Quontity2 = docLine.Q2;
-                                warehouseTrans.TransQ1 = (decimal)warehouseTrans.Quontity1;
-                                warehouseTrans.TransQ2 = (decimal)warehouseTrans.Quontity2;
+                                warehouseTrans.TransQ1 = (decimal) warehouseTrans.Quontity1;
+                                warehouseTrans.TransQ2 = (decimal) warehouseTrans.Quontity2;
                                 break;
                             case InventoryActionEnum.InventoryActionEnumNegativeImport:
 
@@ -2591,8 +2701,8 @@ namespace GrKouk.WebRazor.Controllers
                                     WarehouseTransactionTypeEnum.WarehouseTransactionTypeImport;
                                 warehouseTrans.Quontity1 = docLine.Q1;
                                 warehouseTrans.Quontity2 = docLine.Q2;
-                                warehouseTrans.TransQ1 = (decimal)warehouseTrans.Quontity1 * -1;
-                                warehouseTrans.TransQ2 = (decimal)warehouseTrans.Quontity2 * -1;
+                                warehouseTrans.TransQ1 = (decimal) warehouseTrans.Quontity1 * -1;
+                                warehouseTrans.TransQ2 = (decimal) warehouseTrans.Quontity2 * -1;
                                 break;
                             case InventoryActionEnum.InventoryActionEnumNegativeExport:
 
@@ -2600,8 +2710,8 @@ namespace GrKouk.WebRazor.Controllers
                                     WarehouseTransactionTypeEnum.WarehouseTransactionTypeExport;
                                 warehouseTrans.Quontity1 = docLine.Q1;
                                 warehouseTrans.Quontity2 = docLine.Q2;
-                                warehouseTrans.TransQ1 = (decimal)warehouseTrans.Quontity1 * -1;
-                                warehouseTrans.TransQ2 = (decimal)warehouseTrans.Quontity2 * -1;
+                                warehouseTrans.TransQ1 = (decimal) warehouseTrans.Quontity1 * -1;
+                                warehouseTrans.TransQ2 = (decimal) warehouseTrans.Quontity2 * -1;
                                 break;
                             default:
                                 throw new ArgumentOutOfRangeException();
@@ -2644,8 +2754,8 @@ namespace GrKouk.WebRazor.Controllers
 
                         #endregion
                     }
-
                 }
+
                 try
                 {
                     await _context.SaveChangesAsync();
@@ -2663,8 +2773,6 @@ namespace GrKouk.WebRazor.Controllers
             }
 
             return Ok(new { });
-
-
         }
     }
 }
