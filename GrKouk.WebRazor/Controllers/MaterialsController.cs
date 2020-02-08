@@ -15,6 +15,7 @@ using GrKouk.InfoSystem.Dtos.WebDtos.SellDocuments;
 using GrKouk.InfoSystem.Dtos.WebDtos.TransactorTransactions;
 using GrKouk.InfoSystem.Dtos.WebDtos.WarehouseItems;
 using GrKouk.WebApi.Data;
+using GrKouk.WebRazor.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 
@@ -557,44 +558,7 @@ namespace GrKouk.WebRazor.Controllers
             return Ok(new {TransType = transType});
         }
 
-        void TransactorFinAction(FinActionsEnum finAction, TransactorTransaction transaction)
-        {
-            switch (finAction)
-            {
-                case FinActionsEnum.FinActionsEnumNoChange:
-                    transaction.FinancialAction = FinActionsEnum.FinActionsEnumNoChange;
-                    transaction.TransDiscountAmount = 0;
-                    transaction.TransFpaAmount = 0;
-                    transaction.TransNetAmount = 0;
-                    break;
-                case FinActionsEnum.FinActionsEnumDebit:
-                    transaction.FinancialAction = FinActionsEnum.FinActionsEnumDebit;
-                    transaction.TransDiscountAmount = transaction.AmountDiscount;
-                    transaction.TransFpaAmount = transaction.AmountFpa;
-                    transaction.TransNetAmount = transaction.AmountNet;
-                    break;
-                case FinActionsEnum.FinActionsEnumCredit:
-                    transaction.FinancialAction = FinActionsEnum.FinActionsEnumCredit;
-                    transaction.TransDiscountAmount = transaction.AmountDiscount;
-                    transaction.TransFpaAmount = transaction.AmountFpa;
-                    transaction.TransNetAmount = transaction.AmountNet;
-                    break;
-                case FinActionsEnum.FinActionsEnumNegativeDebit:
-                    transaction.FinancialAction = FinActionsEnum.FinActionsEnumNegativeDebit;
-                    transaction.TransDiscountAmount = transaction.AmountDiscount * -1;
-                    transaction.TransFpaAmount = transaction.AmountFpa * -1;
-                    transaction.TransNetAmount = transaction.AmountNet * -1;
-                    break;
-                case FinActionsEnum.FinActionsEnumNegativeCredit:
-                    transaction.FinancialAction = FinActionsEnum.FinActionsEnumNegativeCredit;
-                    transaction.TransDiscountAmount = transaction.AmountDiscount * -1;
-                    transaction.TransFpaAmount = transaction.AmountFpa * -1;
-                    transaction.TransNetAmount = transaction.AmountNet * -1;
-                    break;
-                default:
-                    break;
-            }
-        }
+        
 
         [HttpPost("MaterialBuyDoc")]
         public async Task<IActionResult> PostMaterialBuyDoc([FromBody] BuyDocCreateAjaxDto data)
@@ -738,42 +702,7 @@ namespace GrKouk.WebRazor.Controllers
                     sTransactorTransaction.TransTransactorDocSeriesId = transTransactorDefaultSeries.Id;
                     sTransactorTransaction.FiscalPeriodId = fiscalPeriod.Id;
                     sTransactorTransaction.CreatorId = docId;
-                    TransactorFinAction(transTransactorDef.FinancialTransAction, sTransactorTransaction);
-                    // switch (transTransactorDef.FinancialTransAction)
-                    // {
-                    //     case FinActionsEnum.FinActionsEnumNoChange:
-                    //         sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumNoChange;
-                    //         sTransactorTransaction.TransDiscountAmount = 0;
-                    //         sTransactorTransaction.TransFpaAmount = 0;
-                    //         sTransactorTransaction.TransNetAmount = 0;
-                    //         break;
-                    //     case FinActionsEnum.FinActionsEnumDebit:
-                    //         sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumDebit;
-                    //         sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount;
-                    //         sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa;
-                    //         sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet;
-                    //         break;
-                    //     case FinActionsEnum.FinActionsEnumCredit:
-                    //         sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumCredit;
-                    //         sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount;
-                    //         sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa;
-                    //         sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet;
-                    //         break;
-                    //     case FinActionsEnum.FinActionsEnumNegativeDebit:
-                    //         sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumNegativeDebit;
-                    //         sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount * -1;
-                    //         sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa * -1;
-                    //         sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet * -1;
-                    //         break;
-                    //     case FinActionsEnum.FinActionsEnumNegativeCredit:
-                    //         sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumNegativeCredit;
-                    //         sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount * -1;
-                    //         sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa * -1;
-                    //         sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet * -1;
-                    //         break;
-                    //     default:
-                    //         break;
-                    // }
+                    ActionHandlers.TransactorFinAction(transTransactorDef.FinancialTransAction, sTransactorTransaction);
 
                     _context.TransactorTransactions.Add(sTransactorTransaction);
                     try
@@ -842,7 +771,7 @@ namespace GrKouk.WebRazor.Controllers
                             .LoadAsync();
                         var transPaymentTransactorDef = transTransactorDocTypeDef.TransTransactorDef;
 
-                        TransactorFinAction(transPaymentTransactorDef.FinancialTransAction, sTransactorTransaction);
+                        ActionHandlers.TransactorFinAction(transPaymentTransactorDef.FinancialTransAction, sTransactorTransaction);
                         _context.TransactorTransactions.Add(sTransactorTransaction);
                         try
                         {
@@ -958,10 +887,10 @@ namespace GrKouk.WebRazor.Controllers
                         warehouseTrans.TransWarehouseDocSeriesId = warehouseSeriesId;
                         warehouseTrans.TransWarehouseDocTypeId = warehouseTypeId;
 
-                        ItemNatureHandler(material.WarehouseItemNature, warehouseTrans, transWarehouseDef);
-                        ItemInventoryActionHandler(warehouseTrans.InventoryAction, dataBuyDocLine.Q1, dataBuyDocLine.Q2,
+                        ActionHandlers.ItemNatureHandler(material.WarehouseItemNature, warehouseTrans, transWarehouseDef);
+                        ActionHandlers.ItemInventoryActionHandler(warehouseTrans.InventoryAction, dataBuyDocLine.Q1, dataBuyDocLine.Q2,
                             warehouseTrans);
-                        ItemInventoryValueActionHandler(warehouseTrans.InventoryValueAction, warehouseTrans);
+                        ActionHandlers.ItemInventoryValueActionHandler(warehouseTrans.InventoryValueAction, warehouseTrans);
                         _context.WarehouseTransactions.Add(warehouseTrans);
 
                         #endregion
@@ -988,163 +917,7 @@ namespace GrKouk.WebRazor.Controllers
             return Ok(new { });
         }
 
-        /// <summary>
-        /// Manipulates item Trans based on material nature
-        /// </summary>
-        /// <param name="itemNature"></param>
-        /// <param name="itemTrans"></param>
-        /// <param name="itemTransDef"></param>
-        /// <exception cref="ArgumentOutOfRangeException"></exception>
-        private void ItemNatureHandler(WarehouseItemNatureEnum itemNature, WarehouseTransaction itemTrans,
-            TransWarehouseDef itemTransDef)
-        {
-            switch (itemNature)
-            {
-                case WarehouseItemNatureEnum.WarehouseItemNatureUndefined:
-                    throw new ArgumentOutOfRangeException();
-                case WarehouseItemNatureEnum.WarehouseItemNatureMaterial:
-                    itemTrans.InventoryAction = itemTransDef.MaterialInventoryAction;
-                    itemTrans.InventoryValueAction = itemTransDef.MaterialInventoryValueAction;
-                    itemTrans.InvoicedVolumeAction = itemTransDef.MaterialInvoicedVolumeAction;
-                    itemTrans.InvoicedValueAction = itemTransDef.MaterialInvoicedValueAction;
-                    break;
-                case WarehouseItemNatureEnum.WarehouseItemNatureService:
-                    itemTrans.InventoryAction = itemTransDef.ServiceInventoryAction;
-                    itemTrans.InventoryValueAction = itemTransDef.ServiceInventoryValueAction;
-                    itemTrans.InvoicedVolumeAction = itemTransDef.MaterialInvoicedVolumeAction;
-                    itemTrans.InvoicedValueAction = itemTransDef.MaterialInvoicedValueAction;
-                    break;
-                case WarehouseItemNatureEnum.WarehouseItemNatureExpense:
-                    itemTrans.InventoryAction = itemTransDef.ExpenseInventoryAction;
-                    itemTrans.InventoryValueAction = itemTransDef.ExpenseInventoryValueAction;
-                    itemTrans.InvoicedVolumeAction = itemTransDef.MaterialInvoicedVolumeAction;
-                    itemTrans.InvoicedValueAction = itemTransDef.MaterialInvoicedValueAction;
-                    break;
-                case WarehouseItemNatureEnum.WarehouseItemNatureIncome:
-                    itemTrans.InventoryAction = itemTransDef.IncomeInventoryAction;
-                    itemTrans.InventoryValueAction = itemTransDef.IncomeInventoryValueAction;
-                    itemTrans.InvoicedVolumeAction = itemTransDef.MaterialInvoicedVolumeAction;
-                    itemTrans.InvoicedValueAction = itemTransDef.MaterialInvoicedValueAction;
-                    break;
-                case WarehouseItemNatureEnum.WarehouseItemNatureFixedAsset:
-                    itemTrans.InventoryAction = itemTransDef.FixedAssetInventoryAction;
-                    itemTrans.InventoryValueAction = itemTransDef.FixedAssetInventoryValueAction;
-                    itemTrans.InvoicedVolumeAction = itemTransDef.MaterialInvoicedVolumeAction;
-                    itemTrans.InvoicedValueAction = itemTransDef.MaterialInvoicedValueAction;
-                    break;
-                case WarehouseItemNatureEnum.WarehouseItemNatureRawMaterial:
-                    itemTrans.InventoryAction = itemTransDef.RawMaterialInventoryAction;
-                    itemTrans.InventoryValueAction = itemTransDef.RawMaterialInventoryValueAction;
-                    itemTrans.InvoicedVolumeAction = itemTransDef.MaterialInvoicedVolumeAction;
-                    itemTrans.InvoicedValueAction = itemTransDef.MaterialInvoicedValueAction;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-        }
-
-        /// <summary>
-        /// Manipulates warehouse item transaction object based on the inventory action
-        /// </summary>
-        /// <param name="inventoryAction"></param>
-        /// <param name="q1"></param>
-        /// <param name="q2"></param>
-        /// <param name="itemTrans"></param>
-        /// <exception cref="ArgumentOutOfRangeException"></exception>
-        private void ItemInventoryActionHandler(InventoryActionEnum inventoryAction, double q1, double q2,
-            WarehouseTransaction itemTrans)
-        {
-            switch (inventoryAction)
-            {
-                case InventoryActionEnum.InventoryActionEnumNoChange:
-                    itemTrans.TransactionType =
-                        WarehouseTransactionTypeEnum.WarehouseTransactionTypeIgnore;
-                    itemTrans.TransQ1 = 0;
-                    itemTrans.TransQ2 = 0;
-                    break;
-                case InventoryActionEnum.InventoryActionEnumImport:
-
-                    itemTrans.TransactionType =
-                        WarehouseTransactionTypeEnum.WarehouseTransactionTypeImport;
-                    itemTrans.Quontity1 = q1;
-                    itemTrans.Quontity2 = q2;
-                    itemTrans.TransQ1 = (decimal) itemTrans.Quontity1;
-                    itemTrans.TransQ2 = (decimal) itemTrans.Quontity2;
-                    break;
-                case InventoryActionEnum.InventoryActionEnumExport:
-
-                    itemTrans.TransactionType =
-                        WarehouseTransactionTypeEnum.WarehouseTransactionTypeExport;
-                    itemTrans.Quontity1 = q1;
-                    itemTrans.Quontity2 = q2;
-                    itemTrans.TransQ1 = (decimal) itemTrans.Quontity1;
-                    itemTrans.TransQ2 = (decimal) itemTrans.Quontity2;
-                    break;
-                case InventoryActionEnum.InventoryActionEnumNegativeImport:
-
-                    itemTrans.TransactionType =
-                        WarehouseTransactionTypeEnum.WarehouseTransactionTypeImport;
-                    itemTrans.Quontity1 = q1;
-                    itemTrans.Quontity2 = q2;
-                    itemTrans.TransQ1 = (decimal) itemTrans.Quontity1 * -1;
-                    itemTrans.TransQ2 = (decimal) itemTrans.Quontity2 * -1;
-                    break;
-                case InventoryActionEnum.InventoryActionEnumNegativeExport:
-
-                    itemTrans.TransactionType =
-                        WarehouseTransactionTypeEnum.WarehouseTransactionTypeExport;
-                    itemTrans.Quontity1 = q1;
-                    itemTrans.Quontity2 = q2;
-                    itemTrans.TransQ1 = (decimal) itemTrans.Quontity1 * -1;
-                    itemTrans.TransQ2 = (decimal) itemTrans.Quontity2 * -1;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-        }
-
-        /// <summary>
-        /// Manipulates warehouse item transaction object based on the inventory value action
-        /// </summary>
-        /// <param name="inventoryValueAction"></param>
-        /// <param name="itemTrans"></param>
-        /// <exception cref="ArgumentOutOfRangeException"></exception>
-        private void ItemInventoryValueActionHandler(InventoryValueActionEnum inventoryValueAction,
-            WarehouseTransaction itemTrans)
-        {
-            switch (inventoryValueAction)
-            {
-                case InventoryValueActionEnum.InventoryValueActionEnumNoChange:
-                    itemTrans.TransNetAmount = 0;
-                    itemTrans.TransFpaAmount = 0;
-                    itemTrans.TransDiscountAmount = 0;
-                    break;
-                case InventoryValueActionEnum.InventoryValueActionEnumIncrease:
-                    itemTrans.TransNetAmount = itemTrans.AmountNet;
-                    itemTrans.TransFpaAmount = itemTrans.AmountFpa;
-                    itemTrans.TransDiscountAmount = itemTrans.AmountDiscount;
-                    break;
-                case InventoryValueActionEnum.InventoryValueActionEnumDecrease:
-                    itemTrans.TransNetAmount = itemTrans.AmountNet;
-                    itemTrans.TransFpaAmount = itemTrans.AmountFpa;
-                    itemTrans.TransDiscountAmount = itemTrans.AmountDiscount;
-                    break;
-                case InventoryValueActionEnum.InventoryValueActionEnumNegativeIncrease:
-                    itemTrans.TransNetAmount = itemTrans.AmountNet * -1;
-                    itemTrans.TransFpaAmount = itemTrans.AmountFpa * -1;
-                    itemTrans.TransDiscountAmount = itemTrans.AmountDiscount * -1;
-
-                    break;
-                case InventoryValueActionEnum.InventoryValueActionEnumNegativeDecrease:
-                    itemTrans.TransNetAmount = itemTrans.AmountNet * -1;
-                    itemTrans.TransFpaAmount = itemTrans.AmountFpa * -1;
-                    itemTrans.TransDiscountAmount = itemTrans.AmountDiscount * -1;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-        }
-
+       
         [HttpPost("MaterialBuyDocUpdate")]
         public async Task<IActionResult> PutMaterialBuyDoc([FromBody] BuyDocModifyAjaxDto data)
         {
@@ -1277,42 +1050,8 @@ namespace GrKouk.WebRazor.Controllers
                         sTransactorTransaction.TransTransactorDocSeriesId = transTransactorDefaultSeries.Id;
                         sTransactorTransaction.FiscalPeriodId = fiscalPeriod.Id;
                         sTransactorTransaction.CreatorId = docId;
-
-                        switch (transTransactorDef.FinancialTransAction)
-                        {
-                            case FinActionsEnum.FinActionsEnumNoChange:
-                                sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumNoChange;
-                                sTransactorTransaction.TransDiscountAmount = 0;
-                                sTransactorTransaction.TransFpaAmount = 0;
-                                sTransactorTransaction.TransNetAmount = 0;
-                                break;
-                            case FinActionsEnum.FinActionsEnumDebit:
-                                sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumDebit;
-                                sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount;
-                                sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa;
-                                sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet;
-                                break;
-                            case FinActionsEnum.FinActionsEnumCredit:
-                                sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumCredit;
-                                sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount;
-                                sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa;
-                                sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet;
-                                break;
-                            case FinActionsEnum.FinActionsEnumNegativeDebit:
-                                sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumNegativeDebit;
-                                sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount * -1;
-                                sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa * -1;
-                                sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet * -1;
-                                break;
-                            case FinActionsEnum.FinActionsEnumNegativeCredit:
-                                sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumNegativeCredit;
-                                sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount * -1;
-                                sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa * -1;
-                                sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet * -1;
-                                break;
-                            default:
-                                break;
-                        }
+                        ActionHandlers.TransactorFinAction(transTransactorDef.FinancialTransAction,
+                            sTransactorTransaction);
 
                         _context.TransactorTransactions.Add(sTransactorTransaction);
                     }
@@ -1379,41 +1118,8 @@ namespace GrKouk.WebRazor.Controllers
                             .Reference(t => t.TransTransactorDef)
                             .LoadAsync();
                         var transPaymentTransactorDef = transTransactorDocTypeDef.TransTransactorDef;
-                        switch (transPaymentTransactorDef.FinancialTransAction)
-                        {
-                            case FinActionsEnum.FinActionsEnumNoChange:
-                                sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumNoChange;
-                                sTransactorTransaction.TransDiscountAmount = 0;
-                                sTransactorTransaction.TransFpaAmount = 0;
-                                sTransactorTransaction.TransNetAmount = 0;
-                                break;
-                            case FinActionsEnum.FinActionsEnumDebit:
-                                sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumDebit;
-                                sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount;
-                                sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa;
-                                sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet;
-                                break;
-                            case FinActionsEnum.FinActionsEnumCredit:
-                                sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumCredit;
-                                sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount;
-                                sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa;
-                                sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet;
-                                break;
-                            case FinActionsEnum.FinActionsEnumNegativeDebit:
-                                sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumNegativeDebit;
-                                sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount * -1;
-                                sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa * -1;
-                                sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet * -1;
-                                break;
-                            case FinActionsEnum.FinActionsEnumNegativeCredit:
-                                sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumNegativeCredit;
-                                sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount * -1;
-                                sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa * -1;
-                                sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet * -1;
-                                break;
-                            default:
-                                break;
-                        }
+                        ActionHandlers.TransactorFinAction(transPaymentTransactorDef.FinancialTransAction,
+                            sTransactorTransaction);
 
                         _context.TransactorTransactions.Add(sTransactorTransaction);
                         try
@@ -1543,131 +1249,10 @@ namespace GrKouk.WebRazor.Controllers
 
                         warehouseTrans.TransWarehouseDocSeriesId = warehouseSeriesId;
                         warehouseTrans.TransWarehouseDocTypeId = warehouseTypeId;
-                        switch (material.WarehouseItemNature)
-                        {
-                            case WarehouseItemNatureEnum.WarehouseItemNatureUndefined:
-                                throw new ArgumentOutOfRangeException();
-                            case WarehouseItemNatureEnum.WarehouseItemNatureMaterial:
-                                warehouseTrans.InventoryAction = transWarehouseDef.MaterialInventoryAction;
-                                warehouseTrans.InventoryValueAction = transWarehouseDef.MaterialInventoryValueAction;
-                                warehouseTrans.InvoicedVolumeAction = transWarehouseDef.MaterialInvoicedVolumeAction;
-                                warehouseTrans.InvoicedValueAction = transWarehouseDef.MaterialInvoicedValueAction;
-                                break;
-                            case WarehouseItemNatureEnum.WarehouseItemNatureService:
-                                warehouseTrans.InventoryAction = transWarehouseDef.ServiceInventoryAction;
-                                warehouseTrans.InventoryValueAction = transWarehouseDef.ServiceInventoryValueAction;
-                                warehouseTrans.InvoicedVolumeAction = transWarehouseDef.MaterialInvoicedVolumeAction;
-                                warehouseTrans.InvoicedValueAction = transWarehouseDef.MaterialInvoicedValueAction;
-                                break;
-                            case WarehouseItemNatureEnum.WarehouseItemNatureExpense:
-                                warehouseTrans.InventoryAction = transWarehouseDef.ExpenseInventoryAction;
-                                warehouseTrans.InventoryValueAction = transWarehouseDef.ExpenseInventoryValueAction;
-                                warehouseTrans.InvoicedVolumeAction = transWarehouseDef.MaterialInvoicedVolumeAction;
-                                warehouseTrans.InvoicedValueAction = transWarehouseDef.MaterialInvoicedValueAction;
-                                break;
-                            case WarehouseItemNatureEnum.WarehouseItemNatureIncome:
-                                warehouseTrans.InventoryAction = transWarehouseDef.IncomeInventoryAction;
-                                warehouseTrans.InventoryValueAction = transWarehouseDef.IncomeInventoryValueAction;
-                                warehouseTrans.InvoicedVolumeAction = transWarehouseDef.MaterialInvoicedVolumeAction;
-                                warehouseTrans.InvoicedValueAction = transWarehouseDef.MaterialInvoicedValueAction;
-                                break;
-                            case WarehouseItemNatureEnum.WarehouseItemNatureFixedAsset:
-                                warehouseTrans.InventoryAction = transWarehouseDef.FixedAssetInventoryAction;
-                                warehouseTrans.InventoryValueAction = transWarehouseDef.FixedAssetInventoryValueAction;
-                                warehouseTrans.InvoicedVolumeAction = transWarehouseDef.MaterialInvoicedVolumeAction;
-                                warehouseTrans.InvoicedValueAction = transWarehouseDef.MaterialInvoicedValueAction;
-                                break;
-                            case WarehouseItemNatureEnum.WarehouseItemNatureRawMaterial:
-                                warehouseTrans.InventoryAction = transWarehouseDef.RawMaterialInventoryAction;
-                                warehouseTrans.InventoryValueAction = transWarehouseDef.RawMaterialInventoryValueAction;
-                                warehouseTrans.InvoicedVolumeAction = transWarehouseDef.MaterialInvoicedVolumeAction;
-                                warehouseTrans.InvoicedValueAction = transWarehouseDef.MaterialInvoicedValueAction;
-                                break;
-                            default:
-                                throw new ArgumentOutOfRangeException();
-                        }
-
-                        switch (warehouseTrans.InventoryAction)
-                        {
-                            case InventoryActionEnum.InventoryActionEnumNoChange:
-                                warehouseTrans.TransactionType =
-                                    WarehouseTransactionTypeEnum.WarehouseTransactionTypeIgnore;
-                                warehouseTrans.TransQ1 = 0;
-                                warehouseTrans.TransQ2 = 0;
-                                break;
-                            case InventoryActionEnum.InventoryActionEnumImport:
-
-                                warehouseTrans.TransactionType =
-                                    WarehouseTransactionTypeEnum.WarehouseTransactionTypeImport;
-                                warehouseTrans.Quontity1 = dataBuyDocLine.Q1;
-                                warehouseTrans.Quontity2 = dataBuyDocLine.Q2;
-                                warehouseTrans.TransQ1 = (decimal) warehouseTrans.Quontity1;
-                                warehouseTrans.TransQ2 = (decimal) warehouseTrans.Quontity2;
-                                break;
-                            case InventoryActionEnum.InventoryActionEnumExport:
-
-                                warehouseTrans.TransactionType =
-                                    WarehouseTransactionTypeEnum.WarehouseTransactionTypeExport;
-                                warehouseTrans.Quontity1 = dataBuyDocLine.Q1;
-                                warehouseTrans.Quontity2 = dataBuyDocLine.Q2;
-                                warehouseTrans.TransQ1 = (decimal) warehouseTrans.Quontity1;
-                                warehouseTrans.TransQ2 = (decimal) warehouseTrans.Quontity2;
-                                break;
-                            case InventoryActionEnum.InventoryActionEnumNegativeImport:
-
-                                warehouseTrans.TransactionType =
-                                    WarehouseTransactionTypeEnum.WarehouseTransactionTypeImport;
-                                warehouseTrans.Quontity1 = dataBuyDocLine.Q1;
-                                warehouseTrans.Quontity2 = dataBuyDocLine.Q2;
-                                warehouseTrans.TransQ1 = (decimal) warehouseTrans.Quontity1 * -1;
-                                warehouseTrans.TransQ2 = (decimal) warehouseTrans.Quontity2 * -1;
-                                break;
-                            case InventoryActionEnum.InventoryActionEnumNegativeExport:
-
-                                warehouseTrans.TransactionType =
-                                    WarehouseTransactionTypeEnum.WarehouseTransactionTypeExport;
-                                warehouseTrans.Quontity1 = dataBuyDocLine.Q1;
-                                warehouseTrans.Quontity2 = dataBuyDocLine.Q2;
-                                warehouseTrans.TransQ1 = (decimal) warehouseTrans.Quontity1 * -1;
-                                warehouseTrans.TransQ2 = (decimal) warehouseTrans.Quontity2 * -1;
-                                break;
-                            default:
-                                throw new ArgumentOutOfRangeException();
-                        }
-
-
-                        switch (warehouseTrans.InventoryValueAction)
-                        {
-                            case InventoryValueActionEnum.InventoryValueActionEnumNoChange:
-                                warehouseTrans.TransNetAmount = 0;
-                                warehouseTrans.TransFpaAmount = 0;
-                                warehouseTrans.TransDiscountAmount = 0;
-                                break;
-                            case InventoryValueActionEnum.InventoryValueActionEnumIncrease:
-                                warehouseTrans.TransNetAmount = warehouseTrans.AmountNet;
-                                warehouseTrans.TransFpaAmount = warehouseTrans.AmountFpa;
-                                warehouseTrans.TransDiscountAmount = warehouseTrans.AmountDiscount;
-                                break;
-                            case InventoryValueActionEnum.InventoryValueActionEnumDecrease:
-                                warehouseTrans.TransNetAmount = warehouseTrans.AmountNet;
-                                warehouseTrans.TransFpaAmount = warehouseTrans.AmountFpa;
-                                warehouseTrans.TransDiscountAmount = warehouseTrans.AmountDiscount;
-                                break;
-                            case InventoryValueActionEnum.InventoryValueActionEnumNegativeIncrease:
-                                warehouseTrans.TransNetAmount = warehouseTrans.AmountNet * -1;
-                                warehouseTrans.TransFpaAmount = warehouseTrans.AmountFpa * -1;
-                                warehouseTrans.TransDiscountAmount = warehouseTrans.AmountDiscount * -1;
-
-                                break;
-                            case InventoryValueActionEnum.InventoryValueActionEnumNegativeDecrease:
-                                warehouseTrans.TransNetAmount = warehouseTrans.AmountNet * -1;
-                                warehouseTrans.TransFpaAmount = warehouseTrans.AmountFpa * -1;
-                                warehouseTrans.TransDiscountAmount = warehouseTrans.AmountDiscount * -1;
-                                break;
-                            default:
-                                throw new ArgumentOutOfRangeException();
-                        }
-
+                        ActionHandlers.ItemNatureHandler(material.WarehouseItemNature, warehouseTrans, transWarehouseDef);
+                        ActionHandlers.ItemInventoryActionHandler(warehouseTrans.InventoryAction, dataBuyDocLine.Q1, dataBuyDocLine.Q2,
+                            warehouseTrans);
+                        ActionHandlers.ItemInventoryValueActionHandler(warehouseTrans.InventoryValueAction, warehouseTrans);
 
                         try
                         {
@@ -1849,42 +1434,8 @@ namespace GrKouk.WebRazor.Controllers
                     sTransactorTransaction.TransTransactorDocSeriesId = transTransactorDefaultSeries.Id;
                     sTransactorTransaction.FiscalPeriodId = fiscalPeriod.Id;
                     sTransactorTransaction.CreatorId = docId;
-
-                    switch (transTransactorDef.FinancialTransAction)
-                    {
-                        case FinActionsEnum.FinActionsEnumNoChange:
-                            sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumNoChange;
-                            sTransactorTransaction.TransDiscountAmount = 0;
-                            sTransactorTransaction.TransFpaAmount = 0;
-                            sTransactorTransaction.TransNetAmount = 0;
-                            break;
-                        case FinActionsEnum.FinActionsEnumDebit:
-                            sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumDebit;
-                            sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount;
-                            sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa;
-                            sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet;
-                            break;
-                        case FinActionsEnum.FinActionsEnumCredit:
-                            sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumCredit;
-                            sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount;
-                            sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa;
-                            sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet;
-                            break;
-                        case FinActionsEnum.FinActionsEnumNegativeDebit:
-                            sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumNegativeDebit;
-                            sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount * -1;
-                            sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa * -1;
-                            sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet * -1;
-                            break;
-                        case FinActionsEnum.FinActionsEnumNegativeCredit:
-                            sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumNegativeCredit;
-                            sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount * -1;
-                            sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa * -1;
-                            sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet * -1;
-                            break;
-                        default:
-                            break;
-                    }
+                    ActionHandlers.TransactorFinAction(transTransactorDef.FinancialTransAction,
+                        sTransactorTransaction);
 
                     _context.TransactorTransactions.Add(sTransactorTransaction);
                     try
@@ -1901,6 +1452,8 @@ namespace GrKouk.WebRazor.Controllers
                         });
                     }
                 }
+
+                #region Αυτόματη Εξόφληση
 
                 //Αυτόματη εξόφληση
                 var paymentMethod =
@@ -1951,41 +1504,8 @@ namespace GrKouk.WebRazor.Controllers
                             .Reference(t => t.TransTransactorDef)
                             .LoadAsync();
                         var transPaymentTransactorDef = transTransactorDocTypeDef.TransTransactorDef;
-                        switch (transPaymentTransactorDef.FinancialTransAction)
-                        {
-                            case FinActionsEnum.FinActionsEnumNoChange:
-                                sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumNoChange;
-                                sTransactorTransaction.TransDiscountAmount = 0;
-                                sTransactorTransaction.TransFpaAmount = 0;
-                                sTransactorTransaction.TransNetAmount = 0;
-                                break;
-                            case FinActionsEnum.FinActionsEnumDebit:
-                                sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumDebit;
-                                sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount;
-                                sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa;
-                                sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet;
-                                break;
-                            case FinActionsEnum.FinActionsEnumCredit:
-                                sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumCredit;
-                                sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount;
-                                sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa;
-                                sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet;
-                                break;
-                            case FinActionsEnum.FinActionsEnumNegativeDebit:
-                                sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumNegativeDebit;
-                                sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount * -1;
-                                sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa * -1;
-                                sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet * -1;
-                                break;
-                            case FinActionsEnum.FinActionsEnumNegativeCredit:
-                                sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumNegativeCredit;
-                                sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount * -1;
-                                sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa * -1;
-                                sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet * -1;
-                                break;
-                            default:
-                                break;
-                        }
+                        ActionHandlers.TransactorFinAction(transPaymentTransactorDef.FinancialTransAction,
+                            sTransactorTransaction);
 
                         _context.TransactorTransactions.Add(sTransactorTransaction);
                         try
@@ -2003,6 +1523,8 @@ namespace GrKouk.WebRazor.Controllers
                         }
                     }
                 }
+
+                #endregion
 
                 int warehouseSeriesId = 0;
                 int warehouseTypeId = 0;
@@ -2101,132 +1623,10 @@ namespace GrKouk.WebRazor.Controllers
 
                         warehouseTrans.TransWarehouseDocSeriesId = warehouseSeriesId;
                         warehouseTrans.TransWarehouseDocTypeId = warehouseTypeId;
-
-                        switch (material.WarehouseItemNature)
-                        {
-                            case WarehouseItemNatureEnum.WarehouseItemNatureUndefined:
-                                throw new ArgumentOutOfRangeException();
-                            case WarehouseItemNatureEnum.WarehouseItemNatureMaterial:
-                                warehouseTrans.InventoryAction = transWarehouseDef.MaterialInventoryAction;
-                                warehouseTrans.InventoryValueAction = transWarehouseDef.MaterialInventoryValueAction;
-                                warehouseTrans.InvoicedVolumeAction = transWarehouseDef.MaterialInvoicedVolumeAction;
-                                warehouseTrans.InvoicedValueAction = transWarehouseDef.MaterialInvoicedValueAction;
-
-                                break;
-                            case WarehouseItemNatureEnum.WarehouseItemNatureService:
-                                warehouseTrans.InventoryAction = transWarehouseDef.ServiceInventoryAction;
-                                warehouseTrans.InventoryValueAction = transWarehouseDef.ServiceInventoryValueAction;
-                                warehouseTrans.InvoicedVolumeAction = transWarehouseDef.MaterialInvoicedVolumeAction;
-                                warehouseTrans.InvoicedValueAction = transWarehouseDef.MaterialInvoicedValueAction;
-                                break;
-                            case WarehouseItemNatureEnum.WarehouseItemNatureExpense:
-                                warehouseTrans.InventoryAction = transWarehouseDef.ExpenseInventoryAction;
-                                warehouseTrans.InventoryValueAction = transWarehouseDef.ExpenseInventoryValueAction;
-                                warehouseTrans.InvoicedVolumeAction = transWarehouseDef.MaterialInvoicedVolumeAction;
-                                warehouseTrans.InvoicedValueAction = transWarehouseDef.MaterialInvoicedValueAction;
-                                break;
-                            case WarehouseItemNatureEnum.WarehouseItemNatureIncome:
-                                warehouseTrans.InventoryAction = transWarehouseDef.IncomeInventoryAction;
-                                warehouseTrans.InventoryValueAction = transWarehouseDef.IncomeInventoryValueAction;
-                                warehouseTrans.InvoicedVolumeAction = transWarehouseDef.MaterialInvoicedVolumeAction;
-                                warehouseTrans.InvoicedValueAction = transWarehouseDef.MaterialInvoicedValueAction;
-                                break;
-                            case WarehouseItemNatureEnum.WarehouseItemNatureFixedAsset:
-                                warehouseTrans.InventoryAction = transWarehouseDef.FixedAssetInventoryAction;
-                                warehouseTrans.InventoryValueAction = transWarehouseDef.FixedAssetInventoryValueAction;
-                                warehouseTrans.InvoicedVolumeAction = transWarehouseDef.MaterialInvoicedVolumeAction;
-                                warehouseTrans.InvoicedValueAction = transWarehouseDef.MaterialInvoicedValueAction;
-                                break;
-                            case WarehouseItemNatureEnum.WarehouseItemNatureRawMaterial:
-                                warehouseTrans.InventoryAction = transWarehouseDef.RawMaterialInventoryAction;
-                                warehouseTrans.InventoryValueAction = transWarehouseDef.RawMaterialInventoryValueAction;
-                                warehouseTrans.InvoicedVolumeAction = transWarehouseDef.MaterialInvoicedVolumeAction;
-                                warehouseTrans.InvoicedValueAction = transWarehouseDef.MaterialInvoicedValueAction;
-                                break;
-                            default:
-                                throw new ArgumentOutOfRangeException();
-                        }
-
-                        switch (warehouseTrans.InventoryAction)
-                        {
-                            case InventoryActionEnum.InventoryActionEnumNoChange:
-                                warehouseTrans.TransactionType =
-                                    WarehouseTransactionTypeEnum.WarehouseTransactionTypeIgnore;
-                                warehouseTrans.TransQ1 = 0;
-                                warehouseTrans.TransQ2 = 0;
-                                break;
-                            case InventoryActionEnum.InventoryActionEnumImport:
-
-                                warehouseTrans.TransactionType =
-                                    WarehouseTransactionTypeEnum.WarehouseTransactionTypeImport;
-                                warehouseTrans.Quontity1 = docLine.Q1;
-                                warehouseTrans.Quontity2 = docLine.Q2;
-                                warehouseTrans.TransQ1 = (decimal) warehouseTrans.Quontity1;
-                                warehouseTrans.TransQ2 = (decimal) warehouseTrans.Quontity2;
-                                break;
-                            case InventoryActionEnum.InventoryActionEnumExport:
-
-                                warehouseTrans.TransactionType =
-                                    WarehouseTransactionTypeEnum.WarehouseTransactionTypeExport;
-                                warehouseTrans.Quontity1 = docLine.Q1;
-                                warehouseTrans.Quontity2 = docLine.Q2;
-                                warehouseTrans.TransQ1 = (decimal) warehouseTrans.Quontity1;
-                                warehouseTrans.TransQ2 = (decimal) warehouseTrans.Quontity2;
-                                break;
-                            case InventoryActionEnum.InventoryActionEnumNegativeImport:
-
-                                warehouseTrans.TransactionType =
-                                    WarehouseTransactionTypeEnum.WarehouseTransactionTypeImport;
-                                warehouseTrans.Quontity1 = docLine.Q1;
-                                warehouseTrans.Quontity2 = docLine.Q2;
-                                warehouseTrans.TransQ1 = (decimal) warehouseTrans.Quontity1 * -1;
-                                warehouseTrans.TransQ2 = (decimal) warehouseTrans.Quontity2 * -1;
-                                break;
-                            case InventoryActionEnum.InventoryActionEnumNegativeExport:
-
-                                warehouseTrans.TransactionType =
-                                    WarehouseTransactionTypeEnum.WarehouseTransactionTypeExport;
-                                warehouseTrans.Quontity1 = docLine.Q1;
-                                warehouseTrans.Quontity2 = docLine.Q2;
-                                warehouseTrans.TransQ1 = (decimal) warehouseTrans.Quontity1 * -1;
-                                warehouseTrans.TransQ2 = (decimal) warehouseTrans.Quontity2 * -1;
-                                break;
-                            default:
-                                throw new ArgumentOutOfRangeException();
-                        }
-
-
-                        switch (warehouseTrans.InventoryValueAction)
-                        {
-                            case InventoryValueActionEnum.InventoryValueActionEnumNoChange:
-                                warehouseTrans.TransNetAmount = 0;
-                                warehouseTrans.TransFpaAmount = 0;
-                                warehouseTrans.TransDiscountAmount = 0;
-                                break;
-                            case InventoryValueActionEnum.InventoryValueActionEnumIncrease:
-                                warehouseTrans.TransNetAmount = warehouseTrans.AmountNet;
-                                warehouseTrans.TransFpaAmount = warehouseTrans.AmountFpa;
-                                warehouseTrans.TransDiscountAmount = warehouseTrans.AmountDiscount;
-                                break;
-                            case InventoryValueActionEnum.InventoryValueActionEnumDecrease:
-                                warehouseTrans.TransNetAmount = warehouseTrans.AmountNet;
-                                warehouseTrans.TransFpaAmount = warehouseTrans.AmountFpa;
-                                warehouseTrans.TransDiscountAmount = warehouseTrans.AmountDiscount;
-                                break;
-                            case InventoryValueActionEnum.InventoryValueActionEnumNegativeIncrease:
-                                warehouseTrans.TransNetAmount = warehouseTrans.AmountNet * -1;
-                                warehouseTrans.TransFpaAmount = warehouseTrans.AmountFpa * -1;
-                                warehouseTrans.TransDiscountAmount = warehouseTrans.AmountDiscount * -1;
-
-                                break;
-                            case InventoryValueActionEnum.InventoryValueActionEnumNegativeDecrease:
-                                warehouseTrans.TransNetAmount = warehouseTrans.AmountNet * -1;
-                                warehouseTrans.TransFpaAmount = warehouseTrans.AmountFpa * -1;
-                                warehouseTrans.TransDiscountAmount = warehouseTrans.AmountDiscount * -1;
-                                break;
-                            default:
-                                throw new ArgumentOutOfRangeException();
-                        }
+                        ActionHandlers.ItemNatureHandler(material.WarehouseItemNature, warehouseTrans, transWarehouseDef);
+                        ActionHandlers.ItemInventoryActionHandler(warehouseTrans.InventoryAction, docLine.Q1, docLine.Q2,
+                            warehouseTrans);
+                        ActionHandlers.ItemInventoryValueActionHandler(warehouseTrans.InventoryValueAction, warehouseTrans);
 
                         _context.WarehouseTransactions.Add(warehouseTrans);
 
@@ -2384,42 +1784,8 @@ namespace GrKouk.WebRazor.Controllers
                     sTransactorTransaction.TransTransactorDocSeriesId = transTransactorDefaultSeries.Id;
                     sTransactorTransaction.FiscalPeriodId = fiscalPeriod.Id;
                     sTransactorTransaction.CreatorId = docId;
-
-                    switch (transTransactorDef.FinancialTransAction)
-                    {
-                        case InfoSystem.Definitions.FinActionsEnum.FinActionsEnumNoChange:
-                            sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumNoChange;
-                            sTransactorTransaction.TransDiscountAmount = 0;
-                            sTransactorTransaction.TransFpaAmount = 0;
-                            sTransactorTransaction.TransNetAmount = 0;
-                            break;
-                        case InfoSystem.Definitions.FinActionsEnum.FinActionsEnumDebit:
-                            sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumDebit;
-                            sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount;
-                            sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa;
-                            sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet;
-                            break;
-                        case InfoSystem.Definitions.FinActionsEnum.FinActionsEnumCredit:
-                            sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumCredit;
-                            sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount;
-                            sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa;
-                            sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet;
-                            break;
-                        case InfoSystem.Definitions.FinActionsEnum.FinActionsEnumNegativeDebit:
-                            sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumNegativeDebit;
-                            sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount * -1;
-                            sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa * -1;
-                            sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet * -1;
-                            break;
-                        case InfoSystem.Definitions.FinActionsEnum.FinActionsEnumNegativeCredit:
-                            sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumNegativeCredit;
-                            sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount * -1;
-                            sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa * -1;
-                            sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet * -1;
-                            break;
-                        default:
-                            break;
-                    }
+                    ActionHandlers.TransactorFinAction(transTransactorDef.FinancialTransAction,
+                        sTransactorTransaction);
 
                     _context.TransactorTransactions.Add(sTransactorTransaction);
                 }
@@ -2475,41 +1841,8 @@ namespace GrKouk.WebRazor.Controllers
                             .Reference(t => t.TransTransactorDef)
                             .LoadAsync();
                         var transPaymentTransactorDef = transTransactorDocTypeDef.TransTransactorDef;
-                        switch (transPaymentTransactorDef.FinancialTransAction)
-                        {
-                            case FinActionsEnum.FinActionsEnumNoChange:
-                                sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumNoChange;
-                                sTransactorTransaction.TransDiscountAmount = 0;
-                                sTransactorTransaction.TransFpaAmount = 0;
-                                sTransactorTransaction.TransNetAmount = 0;
-                                break;
-                            case FinActionsEnum.FinActionsEnumDebit:
-                                sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumDebit;
-                                sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount;
-                                sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa;
-                                sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet;
-                                break;
-                            case FinActionsEnum.FinActionsEnumCredit:
-                                sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumCredit;
-                                sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount;
-                                sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa;
-                                sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet;
-                                break;
-                            case FinActionsEnum.FinActionsEnumNegativeDebit:
-                                sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumNegativeDebit;
-                                sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount * -1;
-                                sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa * -1;
-                                sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet * -1;
-                                break;
-                            case FinActionsEnum.FinActionsEnumNegativeCredit:
-                                sTransactorTransaction.FinancialAction = FinActionsEnum.FinActionsEnumNegativeCredit;
-                                sTransactorTransaction.TransDiscountAmount = sTransactorTransaction.AmountDiscount * -1;
-                                sTransactorTransaction.TransFpaAmount = sTransactorTransaction.AmountFpa * -1;
-                                sTransactorTransaction.TransNetAmount = sTransactorTransaction.AmountNet * -1;
-                                break;
-                            default:
-                                break;
-                        }
+                        ActionHandlers.TransactorFinAction(transPaymentTransactorDef.FinancialTransAction,
+                            sTransactorTransaction);
 
                         _context.TransactorTransactions.Add(sTransactorTransaction);
                         try
@@ -2625,130 +1958,10 @@ namespace GrKouk.WebRazor.Controllers
 
                         warehouseTrans.TransWarehouseDocSeriesId = warehouseSeriesId;
                         warehouseTrans.TransWarehouseDocTypeId = warehouseTypeId;
-                        switch (material.WarehouseItemNature)
-                        {
-                            case WarehouseItemNatureEnum.WarehouseItemNatureUndefined:
-                                throw new ArgumentOutOfRangeException();
-                            case WarehouseItemNatureEnum.WarehouseItemNatureMaterial:
-                                warehouseTrans.InventoryAction = transWarehouseDef.MaterialInventoryAction;
-                                warehouseTrans.InventoryValueAction = transWarehouseDef.MaterialInventoryValueAction;
-                                warehouseTrans.InvoicedVolumeAction = transWarehouseDef.MaterialInvoicedVolumeAction;
-                                warehouseTrans.InvoicedValueAction = transWarehouseDef.MaterialInvoicedValueAction;
-                                break;
-                            case WarehouseItemNatureEnum.WarehouseItemNatureService:
-                                warehouseTrans.InventoryAction = transWarehouseDef.ServiceInventoryAction;
-                                warehouseTrans.InventoryValueAction = transWarehouseDef.ServiceInventoryValueAction;
-                                warehouseTrans.InvoicedVolumeAction = transWarehouseDef.MaterialInvoicedVolumeAction;
-                                warehouseTrans.InvoicedValueAction = transWarehouseDef.MaterialInvoicedValueAction;
-                                break;
-                            case WarehouseItemNatureEnum.WarehouseItemNatureExpense:
-                                warehouseTrans.InventoryAction = transWarehouseDef.ExpenseInventoryAction;
-                                warehouseTrans.InventoryValueAction = transWarehouseDef.ExpenseInventoryValueAction;
-                                warehouseTrans.InvoicedVolumeAction = transWarehouseDef.MaterialInvoicedVolumeAction;
-                                warehouseTrans.InvoicedValueAction = transWarehouseDef.MaterialInvoicedValueAction;
-                                break;
-                            case WarehouseItemNatureEnum.WarehouseItemNatureIncome:
-                                warehouseTrans.InventoryAction = transWarehouseDef.IncomeInventoryAction;
-                                warehouseTrans.InventoryValueAction = transWarehouseDef.IncomeInventoryValueAction;
-                                warehouseTrans.InvoicedVolumeAction = transWarehouseDef.MaterialInvoicedVolumeAction;
-                                warehouseTrans.InvoicedValueAction = transWarehouseDef.MaterialInvoicedValueAction;
-                                break;
-                            case WarehouseItemNatureEnum.WarehouseItemNatureFixedAsset:
-                                warehouseTrans.InventoryAction = transWarehouseDef.FixedAssetInventoryAction;
-                                warehouseTrans.InventoryValueAction = transWarehouseDef.FixedAssetInventoryValueAction;
-                                warehouseTrans.InvoicedVolumeAction = transWarehouseDef.MaterialInvoicedVolumeAction;
-                                warehouseTrans.InvoicedValueAction = transWarehouseDef.MaterialInvoicedValueAction;
-                                break;
-                            case WarehouseItemNatureEnum.WarehouseItemNatureRawMaterial:
-                                warehouseTrans.InventoryAction = transWarehouseDef.RawMaterialInventoryAction;
-                                warehouseTrans.InventoryValueAction = transWarehouseDef.RawMaterialInventoryValueAction;
-                                warehouseTrans.InvoicedVolumeAction = transWarehouseDef.MaterialInvoicedVolumeAction;
-                                warehouseTrans.InvoicedValueAction = transWarehouseDef.MaterialInvoicedValueAction;
-                                break;
-                            default:
-                                throw new ArgumentOutOfRangeException();
-                        }
-
-                        switch (warehouseTrans.InventoryAction)
-                        {
-                            case InventoryActionEnum.InventoryActionEnumNoChange:
-                                warehouseTrans.TransactionType =
-                                    WarehouseTransactionTypeEnum.WarehouseTransactionTypeIgnore;
-                                warehouseTrans.TransQ1 = 0;
-                                warehouseTrans.TransQ2 = 0;
-                                break;
-                            case InventoryActionEnum.InventoryActionEnumImport:
-
-                                warehouseTrans.TransactionType =
-                                    WarehouseTransactionTypeEnum.WarehouseTransactionTypeImport;
-                                warehouseTrans.Quontity1 = docLine.Q1;
-                                warehouseTrans.Quontity2 = docLine.Q2;
-                                warehouseTrans.TransQ1 = (decimal) warehouseTrans.Quontity1;
-                                warehouseTrans.TransQ2 = (decimal) warehouseTrans.Quontity2;
-                                break;
-                            case InventoryActionEnum.InventoryActionEnumExport:
-
-                                warehouseTrans.TransactionType =
-                                    WarehouseTransactionTypeEnum.WarehouseTransactionTypeExport;
-                                warehouseTrans.Quontity1 = docLine.Q1;
-                                warehouseTrans.Quontity2 = docLine.Q2;
-                                warehouseTrans.TransQ1 = (decimal) warehouseTrans.Quontity1;
-                                warehouseTrans.TransQ2 = (decimal) warehouseTrans.Quontity2;
-                                break;
-                            case InventoryActionEnum.InventoryActionEnumNegativeImport:
-
-                                warehouseTrans.TransactionType =
-                                    WarehouseTransactionTypeEnum.WarehouseTransactionTypeImport;
-                                warehouseTrans.Quontity1 = docLine.Q1;
-                                warehouseTrans.Quontity2 = docLine.Q2;
-                                warehouseTrans.TransQ1 = (decimal) warehouseTrans.Quontity1 * -1;
-                                warehouseTrans.TransQ2 = (decimal) warehouseTrans.Quontity2 * -1;
-                                break;
-                            case InventoryActionEnum.InventoryActionEnumNegativeExport:
-
-                                warehouseTrans.TransactionType =
-                                    WarehouseTransactionTypeEnum.WarehouseTransactionTypeExport;
-                                warehouseTrans.Quontity1 = docLine.Q1;
-                                warehouseTrans.Quontity2 = docLine.Q2;
-                                warehouseTrans.TransQ1 = (decimal) warehouseTrans.Quontity1 * -1;
-                                warehouseTrans.TransQ2 = (decimal) warehouseTrans.Quontity2 * -1;
-                                break;
-                            default:
-                                throw new ArgumentOutOfRangeException();
-                        }
-
-
-                        switch (warehouseTrans.InventoryValueAction)
-                        {
-                            case InventoryValueActionEnum.InventoryValueActionEnumNoChange:
-                                warehouseTrans.TransNetAmount = 0;
-                                warehouseTrans.TransFpaAmount = 0;
-                                warehouseTrans.TransDiscountAmount = 0;
-                                break;
-                            case InventoryValueActionEnum.InventoryValueActionEnumIncrease:
-                                warehouseTrans.TransNetAmount = warehouseTrans.AmountNet;
-                                warehouseTrans.TransFpaAmount = warehouseTrans.AmountFpa;
-                                warehouseTrans.TransDiscountAmount = warehouseTrans.AmountDiscount;
-                                break;
-                            case InventoryValueActionEnum.InventoryValueActionEnumDecrease:
-                                warehouseTrans.TransNetAmount = warehouseTrans.AmountNet;
-                                warehouseTrans.TransFpaAmount = warehouseTrans.AmountFpa;
-                                warehouseTrans.TransDiscountAmount = warehouseTrans.AmountDiscount;
-                                break;
-                            case InventoryValueActionEnum.InventoryValueActionEnumNegativeIncrease:
-                                warehouseTrans.TransNetAmount = warehouseTrans.AmountNet * -1;
-                                warehouseTrans.TransFpaAmount = warehouseTrans.AmountFpa * -1;
-                                warehouseTrans.TransDiscountAmount = warehouseTrans.AmountDiscount * -1;
-
-                                break;
-                            case InventoryValueActionEnum.InventoryValueActionEnumNegativeDecrease:
-                                warehouseTrans.TransNetAmount = warehouseTrans.AmountNet * -1;
-                                warehouseTrans.TransFpaAmount = warehouseTrans.AmountFpa * -1;
-                                warehouseTrans.TransDiscountAmount = warehouseTrans.AmountDiscount * -1;
-                                break;
-                            default:
-                                throw new ArgumentOutOfRangeException();
-                        }
+                        ActionHandlers.ItemNatureHandler(material.WarehouseItemNature, warehouseTrans, transWarehouseDef);
+                        ActionHandlers.ItemInventoryActionHandler(warehouseTrans.InventoryAction, docLine.Q1, docLine.Q2,
+                            warehouseTrans);
+                        ActionHandlers.ItemInventoryValueActionHandler(warehouseTrans.InventoryValueAction, warehouseTrans);
 
                         _context.WarehouseTransactions.Add(warehouseTrans);
 
