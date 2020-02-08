@@ -55,7 +55,8 @@ namespace GrKouk.WebRazor.Helpers
 
         public static List<SelectListItem> GetCompaniesFilterList(ApiDbContext context)
         {
-            //TODO: Use All Companies code from settings page?
+           
+            //TODO: Use All Companies code from settings page and chenge author?
             var dbCompanies = context.Companies.Where(t => t.Id != 1).OrderBy(p => p.Code).AsNoTracking();
             List<SelectListItem> companiesList = new List<SelectListItem>();
             companiesList.Add(new SelectListItem() { Value = 0.ToString(), Text = "{All Companies}" });
