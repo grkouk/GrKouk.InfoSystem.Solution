@@ -178,8 +178,6 @@ namespace GrKouk.WebApi.Controllers
                     throw e;
                 }
             }
-
-            return NoContent();
         }
 
         // POST: api/Transactions

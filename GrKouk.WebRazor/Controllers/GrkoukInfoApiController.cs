@@ -206,8 +206,7 @@ namespace GrKouk.WebRazor.Controllers
 
             if (!String.IsNullOrEmpty(request.CompanyFilter))
             {
-                int companyId;
-                if (Int32.TryParse(request.CompanyFilter, out companyId))
+                if (Int32.TryParse(request.CompanyFilter, out var companyId))
                 {
                     if (companyId > 0)
                     {
@@ -239,9 +238,9 @@ namespace GrKouk.WebRazor.Controllers
                         .OrderByDescending(p => p.ClosingDate).FirstOrDefaultAsync();
                     if (r != null)
                     {
-                        listItem.AmountFpa = listItem.AmountFpa / r.Rate;
-                        listItem.AmountNet = listItem.AmountNet / r.Rate;
-                        listItem.AmountTotal = listItem.AmountTotal / r.Rate;
+                        listItem.AmountFpa /= r.Rate;
+                        listItem.AmountNet /= r.Rate;
+                        listItem.AmountTotal /= r.Rate;
                     }
                 }
                 if (request.DisplayCurrencyId != 1)
@@ -250,9 +249,9 @@ namespace GrKouk.WebRazor.Controllers
                         .OrderByDescending(p => p.ClosingDate).FirstOrDefaultAsync();
                     if (r != null)
                     {
-                        listItem.AmountFpa = listItem.AmountFpa * r.Rate;
-                        listItem.AmountNet = listItem.AmountNet * r.Rate;
-                        listItem.AmountTotal = listItem.AmountTotal * r.Rate;
+                        listItem.AmountFpa *= r.Rate;
+                        listItem.AmountNet *= r.Rate;
+                        listItem.AmountTotal *= r.Rate;
                     }
                 }
 
@@ -357,8 +356,7 @@ namespace GrKouk.WebRazor.Controllers
 
             if (!String.IsNullOrEmpty(request.CompanyFilter))
             {
-                int companyId;
-                if (Int32.TryParse(request.CompanyFilter, out companyId))
+                if (Int32.TryParse(request.CompanyFilter, out var companyId))
                 {
                     if (companyId > 0)
                     {
@@ -410,9 +408,9 @@ namespace GrKouk.WebRazor.Controllers
                         .OrderByDescending(p => p.ClosingDate).FirstOrDefault();
                     if (r != null)
                     {
-                        listItem.AmountFpa = listItem.AmountFpa / r.Rate;
-                        listItem.AmountNet = listItem.AmountNet / r.Rate;
-                        listItem.AmountDiscount = listItem.AmountDiscount / r.Rate;
+                        listItem.AmountFpa /= r.Rate;
+                        listItem.AmountNet /= r.Rate;
+                        listItem.AmountDiscount /= r.Rate;
                     }
                 }
                 if (request.DisplayCurrencyId != 1)
@@ -421,9 +419,9 @@ namespace GrKouk.WebRazor.Controllers
                         .OrderByDescending(p => p.ClosingDate).FirstOrDefault();
                     if (r != null)
                     {
-                        listItem.AmountFpa = listItem.AmountFpa * r.Rate;
-                        listItem.AmountNet = listItem.AmountNet * r.Rate;
-                        listItem.AmountDiscount = listItem.AmountDiscount * r.Rate;
+                        listItem.AmountFpa *= r.Rate;
+                        listItem.AmountNet *= r.Rate;
+                        listItem.AmountDiscount *= r.Rate;
                     }
                 }
 
@@ -554,8 +552,7 @@ namespace GrKouk.WebRazor.Controllers
 
             if (!String.IsNullOrEmpty(request.CompanyFilter))
             {
-                int companyId;
-                if (Int32.TryParse(request.CompanyFilter, out companyId))
+                if (Int32.TryParse(request.CompanyFilter, out var companyId))
                 {
                     if (companyId > 0)
                     {
@@ -609,9 +606,9 @@ namespace GrKouk.WebRazor.Controllers
                         .OrderByDescending(p => p.ClosingDate).FirstOrDefault();
                     if (r != null)
                     {
-                        listItem.AmountFpa = listItem.AmountFpa / r.Rate;
-                        listItem.AmountNet = listItem.AmountNet / r.Rate;
-                        listItem.AmountDiscount = listItem.AmountDiscount / r.Rate;
+                        listItem.AmountFpa /= r.Rate;
+                        listItem.AmountNet /= r.Rate;
+                        listItem.AmountDiscount /= r.Rate;
                     }
                 }
                 if (request.DisplayCurrencyId != 1)
@@ -698,8 +695,7 @@ namespace GrKouk.WebRazor.Controllers
 
             if (!String.IsNullOrEmpty(request.CompanyFilter))
             {
-                int companyId;
-                if (Int32.TryParse(request.CompanyFilter, out companyId))
+                if (Int32.TryParse(request.CompanyFilter, out var companyId))
                 {
                     if (companyId > 0)
                     {
@@ -863,8 +859,7 @@ namespace GrKouk.WebRazor.Controllers
 
             if (!String.IsNullOrEmpty(request.CompanyFilter))
             {
-                int companyId;
-                if (Int32.TryParse(request.CompanyFilter, out companyId))
+                if (Int32.TryParse(request.CompanyFilter, out var companyId))
                 {
                     if (companyId > 0)
                     {
@@ -1012,8 +1007,7 @@ namespace GrKouk.WebRazor.Controllers
             #endregion
             if (!String.IsNullOrEmpty(request.CompanyFilter))
             {
-                int companyId;
-                if (Int32.TryParse(request.CompanyFilter, out companyId))
+                if (Int32.TryParse(request.CompanyFilter, out var companyId))
                 {
                     if (companyId > 0)
                     {
@@ -2262,7 +2256,7 @@ namespace GrKouk.WebRazor.Controllers
                     .OrderByDescending(p => p.ClosingDate).FirstOrDefault();
                 if (r != null)
                 {
-                    retAmount = retAmount * r.Rate;
+                    retAmount *= r.Rate;
 
                 }
             }

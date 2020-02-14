@@ -26,9 +26,9 @@ namespace GrKouk.WebRazor.Pages.Tools
 
         public IList<ExchangeRate> ExchangeRate { get;set; }
 
-        public async Task OnGetAsync()
+        public  void OnGet()
         {
-           
+
 
         }
 

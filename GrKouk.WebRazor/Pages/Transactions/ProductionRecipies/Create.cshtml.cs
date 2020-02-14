@@ -58,16 +58,12 @@ namespace GrKouk.WebRazor.Pages.Transactions.ProductionRecipies
         [BindProperty]
         public BuyDocCreateAjaxDto ItemVm { get; set; }
 
-        public async Task<IActionResult> OnPostAsync()
+        public  IActionResult OnPostAsync()
         {
             if (!ModelState.IsValid)
             {
                 return Page();
             }
-
-            //var itemToAttach = _mapper.Map<BuyDocument>(ItemVm);
-            //_context.BuyDocuments.Add(itemToAttach);
-            //await _context.SaveChangesAsync();
 
             return RedirectToPage("./Index");
         }

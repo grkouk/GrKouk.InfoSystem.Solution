@@ -25,15 +25,8 @@ namespace GrKouk.WebRazor.Pages.MainEntities.MaterialCodes
 
         public WarehouseItemCode WarehouseItemCode { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(int id)
+        public  IActionResult OnGetAsync(int id)
         {
-            //WarehouseItemCode = await _context.WrItemCodes
-            //    .Include(m => m.WarehouseItem).FirstOrDefaultAsync(m => m.Id == id);
-
-            //if (WarehouseItemCode == null)
-            //{
-            //    return NotFound();
-            //}
             return Page();
         }
     }
