@@ -6,6 +6,7 @@
     <Authors>George Koukoudis</Authors>
     <Copyright>George Koukoudis</Copyright>
     <Configurations>Debug;Release;DebugWeb;RlsWeb</Configurations>
+    <Company>GrKouk</Company>
   </PropertyGroup>
 
   <ItemGroup>

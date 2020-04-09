@@ -1,15 +1,15 @@
 ﻿@page
-@model GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc.IndexModel
+@model GrKouk.WebRazor.Pages.Transactions.RecurringTransactions.IndexModel
 
 @{
-    ViewData["Title"] = "Παραστατικά Αγορών";
+    ViewData["Title"] = "Συνδρομές";
 }
 @section MyCss
 {
     <link rel="stylesheet" href="~/css/custom-checkbox.css" />
     <link rel="stylesheet" href="~/css/searchbar.css" />
 }
-<h4>Λίστα Αγορές Υλικών</h4>
+<h4>Λίστα Συνδρομών</h4>
 
 
 <div class="container ">
@@ -490,7 +490,7 @@
                                     actionsCol +=
                                         ' <div class="dropdown-menu small" aria-labelledby="dropdownMenuButton">';
                                     actionsCol += `<a href="${urlKartela}" class="dropdown-item">Καρτέλα</a>`;
-                                    actionsCol += ' <a class="dropdown-item" href="#">Δημιουργία Συνδρομής</a>';
+                                    actionsCol += ' <a class="dropdown-item" href="#">Something else here</a>';
                                     actionsCol += ' </div>';
                                     actionsCol += '</td>';
                                     var actionColMobile =

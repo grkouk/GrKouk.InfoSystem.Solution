@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 using GrKouk.InfoSystem.Definitions;
 using GrKouk.InfoSystem.Domain.FinConfig;
+using GrKouk.InfoSystem.Domain.Shared;
 
 namespace GrKouk.InfoSystem.Domain.RecurringTransactions
 {
@@ -26,7 +27,7 @@ namespace GrKouk.InfoSystem.Domain.RecurringTransactions
         //public virtual Section Section { get; set; }
         [Required]
         public int TransactorId { get; set; }
-        //public virtual Transactor Transactor { get; set; }
+        public virtual Transactor Transactor { get; set; }
 
         //public int FiscalPeriodId { get; set; }
         //public virtual FiscalPeriod FiscalPeriod { get; set; }
@@ -46,9 +47,9 @@ namespace GrKouk.InfoSystem.Domain.RecurringTransactions
 
         [Required]
         public int CompanyId { get; set; }
-        //public virtual Company Company { get; set; }
+        public virtual Company Company { get; set; }
         public int PaymentMethodId { get; set; }
-        //public virtual PaymentMethod PaymentMethod { get; set; }
+        public virtual PaymentMethod PaymentMethod { get; set; }
 
         [Timestamp]
         public byte[] Timestamp { get; set; }
