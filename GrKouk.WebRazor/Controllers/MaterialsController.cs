@@ -277,8 +277,7 @@ namespace GrKouk.WebRazor.Controllers
 
             if (sessionSeriesId != null)
             {
-                int seriesId;
-                bool isInt = int.TryParse(sessionSeriesId, out seriesId);
+                bool isInt = int.TryParse(sessionSeriesId, out int seriesId);
                 var series = await _context.BuyDocSeriesDefs
                     .Include(p => p.BuyDocTypeDef)
                     .SingleOrDefaultAsync(p => p.Id == seriesId);
@@ -317,8 +316,7 @@ namespace GrKouk.WebRazor.Controllers
             IQueryable<WarehouseItem> fullListIq = _context.WarehouseItems;
             if (sessionCompanyId != null)
             {
-                int companyId;
-                bool isInt = int.TryParse(sessionCompanyId, out companyId);
+                bool isInt = int.TryParse(sessionCompanyId, out var companyId);
                 if (isInt)
                 {
                     if (companyId > 1)
@@ -331,8 +329,7 @@ namespace GrKouk.WebRazor.Controllers
 
             if (sessionSeriesId != null)
             {
-                int seriesId;
-                bool isInt = int.TryParse(sessionSeriesId, out seriesId);
+                bool isInt = int.TryParse(sessionSeriesId, out int seriesId);
                 var series = await _context.SellDocSeriesDefs
                     .Include(p => p.SellDocTypeDef)
                     .SingleOrDefaultAsync(p => p.Id == seriesId);
@@ -669,7 +666,7 @@ namespace GrKouk.WebRazor.Controllers
                 {
                     Console.WriteLine(e);
                     transaction.Rollback();
-                    string msg = e.InnerException.Message;
+                    string msg = e.InnerException?.Message;
                     return BadRequest(new
                     {
                         error = e.Message + " " + msg
@@ -864,28 +861,28 @@ namespace GrKouk.WebRazor.Controllers
                     {
                         #region Warehouse transaction
 
-                        var warehouseTrans = new WarehouseTransaction();
-                        warehouseTrans.FpaRate = fpaRate;
-                        warehouseTrans.DiscountRate = discountRate;
-                        warehouseTrans.UnitPrice = unitPrice;
-                        warehouseTrans.AmountDiscount = lineDiscountAmount;
-                        warehouseTrans.AmountNet = lineNetAmount;
-                        warehouseTrans.AmountFpa = lineFpaAmount;
-                        warehouseTrans.CompanyId = transToAttach.CompanyId;
-                        warehouseTrans.Etiology = transToAttach.Etiology;
-                        warehouseTrans.FiscalPeriodId = transToAttach.FiscalPeriodId;
-
-                        warehouseTrans.WarehouseItemId = warehouseItemId;
-                        warehouseTrans.PrimaryUnitId = dataBuyDocLine.MainUnitId;
-                        warehouseTrans.SecondaryUnitId = dataBuyDocLine.SecUnitId;
-                        warehouseTrans.SectionId = section.Id;
-                        warehouseTrans.CreatorId = transToAttach.Id;
-                        warehouseTrans.TransDate = transToAttach.TransDate;
-                        warehouseTrans.TransRefCode = transToAttach.TransRefCode;
-                        warehouseTrans.UnitFactor = (decimal) dataBuyDocLine.Factor;
-
-                        warehouseTrans.TransWarehouseDocSeriesId = warehouseSeriesId;
-                        warehouseTrans.TransWarehouseDocTypeId = warehouseTypeId;
+                        var warehouseTrans = new WarehouseTransaction
+                        {
+                            FpaRate = fpaRate,
+                            DiscountRate = discountRate,
+                            UnitPrice = unitPrice,
+                            AmountDiscount = lineDiscountAmount,
+                            AmountNet = lineNetAmount,
+                            AmountFpa = lineFpaAmount,
+                            CompanyId = transToAttach.CompanyId,
+                            Etiology = transToAttach.Etiology,
+                            FiscalPeriodId = transToAttach.FiscalPeriodId,
+                            WarehouseItemId = warehouseItemId,
+                            PrimaryUnitId = dataBuyDocLine.MainUnitId,
+                            SecondaryUnitId = dataBuyDocLine.SecUnitId,
+                            SectionId = section.Id,
+                            CreatorId = transToAttach.Id,
+                            TransDate = transToAttach.TransDate,
+                            TransRefCode = transToAttach.TransRefCode,
+                            UnitFactor = (decimal) dataBuyDocLine.Factor,
+                            TransWarehouseDocSeriesId = warehouseSeriesId,
+                            TransWarehouseDocTypeId = warehouseTypeId
+                        };
 
                         ActionHandlers.ItemNatureHandler(material.WarehouseItemNature, warehouseTrans, transWarehouseDef);
                         ActionHandlers.ItemInventoryActionHandler(warehouseTrans.InventoryAction, dataBuyDocLine.Q1, dataBuyDocLine.Q2,
@@ -1227,28 +1224,29 @@ namespace GrKouk.WebRazor.Controllers
                     {
                         #region Warehouse transaction
 
-                        var warehouseTrans = new WarehouseTransaction();
-                        warehouseTrans.FpaRate = fpaRate;
-                        warehouseTrans.DiscountRate = discountRate;
-                        warehouseTrans.UnitPrice = unitPrice;
-                        warehouseTrans.AmountDiscount = lineDiscountAmount;
-                        warehouseTrans.AmountNet = lineNetAmount;
-                        warehouseTrans.AmountFpa = lineFpaAmount;
-                        warehouseTrans.CompanyId = transToAttach.CompanyId;
-                        warehouseTrans.Etiology = transToAttach.Etiology;
-                        warehouseTrans.FiscalPeriodId = transToAttach.FiscalPeriodId;
+                        var warehouseTrans = new WarehouseTransaction
+                        {
+                            FpaRate = fpaRate,
+                            DiscountRate = discountRate,
+                            UnitPrice = unitPrice,
+                            AmountDiscount = lineDiscountAmount,
+                            AmountNet = lineNetAmount,
+                            AmountFpa = lineFpaAmount,
+                            CompanyId = transToAttach.CompanyId,
+                            Etiology = transToAttach.Etiology,
+                            FiscalPeriodId = transToAttach.FiscalPeriodId,
+                            WarehouseItemId = warehouseItemId,
+                            PrimaryUnitId = dataBuyDocLine.MainUnitId,
+                            SecondaryUnitId = dataBuyDocLine.SecUnitId,
+                            SectionId = section.Id,
+                            CreatorId = transToAttach.Id,
+                            TransDate = transToAttach.TransDate,
+                            TransRefCode = transToAttach.TransRefCode,
+                            UnitFactor = (decimal) dataBuyDocLine.Factor,
+                            TransWarehouseDocSeriesId = warehouseSeriesId,
+                            TransWarehouseDocTypeId = warehouseTypeId
+                        };
 
-                        warehouseTrans.WarehouseItemId = warehouseItemId;
-                        warehouseTrans.PrimaryUnitId = dataBuyDocLine.MainUnitId;
-                        warehouseTrans.SecondaryUnitId = dataBuyDocLine.SecUnitId;
-                        warehouseTrans.SectionId = section.Id;
-                        warehouseTrans.CreatorId = transToAttach.Id;
-                        warehouseTrans.TransDate = transToAttach.TransDate;
-                        warehouseTrans.TransRefCode = transToAttach.TransRefCode;
-                        warehouseTrans.UnitFactor = (decimal) dataBuyDocLine.Factor;
-
-                        warehouseTrans.TransWarehouseDocSeriesId = warehouseSeriesId;
-                        warehouseTrans.TransWarehouseDocTypeId = warehouseTypeId;
                         ActionHandlers.ItemNatureHandler(material.WarehouseItemNature, warehouseTrans, transWarehouseDef);
                         ActionHandlers.ItemInventoryActionHandler(warehouseTrans.InventoryAction, dataBuyDocLine.Q1, dataBuyDocLine.Q2,
                             warehouseTrans);
@@ -1936,28 +1934,29 @@ namespace GrKouk.WebRazor.Controllers
                     {
                         #region Warehouse transaction
 
-                        var warehouseTrans = new WarehouseTransaction();
-                        warehouseTrans.FpaRate = fpaRate;
-                        warehouseTrans.DiscountRate = discountRate;
-                        warehouseTrans.UnitPrice = unitPrice;
-                        warehouseTrans.AmountDiscount = lineDiscountAmount;
-                        warehouseTrans.AmountNet = lineNetAmount;
-                        warehouseTrans.AmountFpa = lineFpaAmount;
-                        warehouseTrans.CompanyId = transToAttach.CompanyId;
-                        warehouseTrans.Etiology = transToAttach.Etiology;
-                        warehouseTrans.FiscalPeriodId = transToAttach.FiscalPeriodId;
+                        var warehouseTrans = new WarehouseTransaction
+                        {
+                            FpaRate = fpaRate,
+                            DiscountRate = discountRate,
+                            UnitPrice = unitPrice,
+                            AmountDiscount = lineDiscountAmount,
+                            AmountNet = lineNetAmount,
+                            AmountFpa = lineFpaAmount,
+                            CompanyId = transToAttach.CompanyId,
+                            Etiology = transToAttach.Etiology,
+                            FiscalPeriodId = transToAttach.FiscalPeriodId,
+                            WarehouseItemId = warehouseItemId,
+                            PrimaryUnitId = docLine.MainUnitId,
+                            SecondaryUnitId = docLine.SecUnitId,
+                            SectionId = section.Id,
+                            CreatorId = transToAttach.Id,
+                            TransDate = transToAttach.TransDate,
+                            TransRefCode = transToAttach.TransRefCode,
+                            UnitFactor = (decimal) docLine.Factor,
+                            TransWarehouseDocSeriesId = warehouseSeriesId,
+                            TransWarehouseDocTypeId = warehouseTypeId
+                        };
 
-                        warehouseTrans.WarehouseItemId = warehouseItemId;
-                        warehouseTrans.PrimaryUnitId = docLine.MainUnitId;
-                        warehouseTrans.SecondaryUnitId = docLine.SecUnitId;
-                        warehouseTrans.SectionId = section.Id;
-                        warehouseTrans.CreatorId = transToAttach.Id;
-                        warehouseTrans.TransDate = transToAttach.TransDate;
-                        warehouseTrans.TransRefCode = transToAttach.TransRefCode;
-                        warehouseTrans.UnitFactor = (decimal) docLine.Factor;
-
-                        warehouseTrans.TransWarehouseDocSeriesId = warehouseSeriesId;
-                        warehouseTrans.TransWarehouseDocTypeId = warehouseTypeId;
                         ActionHandlers.ItemNatureHandler(material.WarehouseItemNature, warehouseTrans, transWarehouseDef);
                         ActionHandlers.ItemInventoryActionHandler(warehouseTrans.InventoryAction, docLine.Q1, docLine.Q2,
                             warehouseTrans);

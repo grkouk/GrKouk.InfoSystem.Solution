@@ -99,9 +99,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc
                 return Page();
             }
 
-            //var itemToAttach = _mapper.Map<BuyDocument>(ItemVm);
-            //_context.BuyDocuments.Add(itemToAttach);
-            //await _context.SaveChangesAsync();
+           
 
             return RedirectToPage("./Index");
         }

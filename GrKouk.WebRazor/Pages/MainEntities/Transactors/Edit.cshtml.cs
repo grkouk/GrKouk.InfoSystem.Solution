@@ -97,11 +97,10 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Transactors
             if (!String.IsNullOrEmpty(ItemVm.SelectedCompanies))
             {
                 var listOfCompanies = ItemVm.SelectedCompanies.Split(",");
-                bool fl = true;
+                //bool fl = true;
                 foreach (var listOfCompany in listOfCompanies)
                 {
-                    int companyId;
-                    int.TryParse(listOfCompany, out companyId);
+                    int.TryParse(listOfCompany, out var companyId);
                     if (companyId > 0)
                     {
                         transactorToAdd.TransactorCompanyMappings.Add(new TransactorCompanyMapping
