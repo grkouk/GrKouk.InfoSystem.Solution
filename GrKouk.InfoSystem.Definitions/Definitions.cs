@@ -3,6 +3,13 @@ using System.ComponentModel;
 
 namespace GrKouk.InfoSystem.Definitions
 {
+    public enum RecurringDocType
+    {
+        [Description("Buy Type")]
+        BuyType =1,
+        [Description("Sell Type")]
+        SellType =2
+    }
     public enum DiaryTransactionsKindEnum
     {
         Expence = 1,

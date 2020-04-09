@@ -12,6 +12,21 @@ namespace GrKouk.WebRazor.Helpers
 {
     public static class FiltersHelper
     {
+        public static List<SelectListItem> GetRecurringFrequencyList()
+        {
+            List<SelectListItem> filtersSelectList = new List<SelectListItem>
+            {
+                new SelectListItem() {Value = "1D", Text = "Ημερήσια"},
+                new SelectListItem() {Value = "7D", Text = "Εβδομαδιαία"},
+                new SelectListItem() {Value = "1M", Text = "Μηνιαία"},
+                new SelectListItem() {Value = "2M", Text = "Διμηνιαία"},
+                new SelectListItem() {Value = "3M", Text = "Τριμηνιαία"},
+                new SelectListItem() {Value = "6M", Text = "Εξαμηνιαία"},
+                new SelectListItem() {Value = "1Y", Text = "Ετήσια"}
+
+            };
+            return filtersSelectList;
+        }
         public static List<SelectListItem> GetPageSizeFiltersSelectList()
         {
             List<SelectListItem> filtersSelectList = new List<SelectListItem>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
+using GrKouk.InfoSystem.Definitions;
 using GrKouk.InfoSystem.Domain.FinConfig;
 
 namespace GrKouk.InfoSystem.Domain.RecurringTransactions
@@ -11,9 +12,13 @@ namespace GrKouk.InfoSystem.Domain.RecurringTransactions
     {
         private ICollection<RecurringTransDocLine> _docLines;
         public int Id { get; set; }
+        [MaxLength(2)]
+        public string RecurringFrequency { get; set; }
+
+        public RecurringDocType RecurringDocType { get; set; }
         [Required]
         [DataType(DataType.Date)]
-        public DateTime TransDate { get; set; }
+        public DateTime NextTransDate { get; set; }
 
         public string TransRefCode { get; set; }
         [Required]
@@ -23,7 +28,7 @@ namespace GrKouk.InfoSystem.Domain.RecurringTransactions
         public int TransactorId { get; set; }
         //public virtual Transactor Transactor { get; set; }
 
-        public int FiscalPeriodId { get; set; }
+        //public int FiscalPeriodId { get; set; }
         //public virtual FiscalPeriod FiscalPeriod { get; set; }
         [Required]
         public int DocSeriesId { get; set; }
