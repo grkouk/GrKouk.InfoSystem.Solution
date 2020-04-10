@@ -43,15 +43,23 @@
             <input type="hidden" id="LookupValueValid" />
             <div class="form-row">
                 <div class="form-group col-md-2">
+                    <label asp-for="ItemVm.RecurringDocType" class="control-label small"></label>
+                    <select asp-for="ItemVm.RecurringDocType" class="form-control form-control-sm small" asp-items="ViewBag.DocType"></select>
+                </div>
+                <div class="form-group col-md-2">
+                    <label asp-for="ItemVm.RecurringFrequency" class="control-label small"></label>
+                    <select asp-for="ItemVm.RecurringFrequency" class="form-control form-control-sm small" asp-items="ViewBag.RecurringFrequency"></select>
+                </div>
+                <div class="form-group col-md-2">
                     <label asp-for="ItemVm.NextTransDate" class="control-label small "></label>
                     <input asp-for="ItemVm.NextTransDate" class="form-control form-control-sm small" autofocus />
                     <span asp-validation-for="ItemVm.NextTransDate" class="text-danger small"></span>
                 </div>
-                <div class="form-group col-md-7">
+                <div class="form-group col-md-4">
                     <label asp-for="ItemVm.DocSeriesId" class="control-label small"></label>
                     <select asp-for="ItemVm.DocSeriesId" class="form-control form-control-sm small" asp-items="ViewBag.DocSeriesId"></select>
                 </div>
-                <div class="form-group col-md-3">
+                <div class="form-group col-md-2">
                     <label asp-for="ItemVm.TransRefCode" class="control-label small"></label>
                     <input asp-for="ItemVm.TransRefCode" class="form-control form-control-sm small" />
                     <span asp-validation-for="ItemVm.TransRefCode" class="text-danger small"></span>

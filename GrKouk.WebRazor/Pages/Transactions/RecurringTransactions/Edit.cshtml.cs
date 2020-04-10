@@ -12,17 +12,17 @@ using GrKouk.InfoSystem.Dtos.WebDtos.BuyDocuments;
 using GrKouk.WebApi.Data;
 using NToastNotify;
 
-namespace GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc
+namespace GrKouk.WebRazor.Pages.Transactions.RecurringTransactions
 {
     public class EditModel : PageModel
     {
-        private readonly GrKouk.WebApi.Data.ApiDbContext _context;
+        private readonly ApiDbContext _context;
         private readonly IMapper _mapper;
         private readonly IToastNotification _toastNotification;
         public string SeekType { get; set; }
         public bool InitialLoad = true;
 
-        public EditModel(GrKouk.WebApi.Data.ApiDbContext context, IMapper mapper, IToastNotification toastNotification)
+        public EditModel(ApiDbContext context, IMapper mapper, IToastNotification toastNotification)
         {
             _context = context;
             _mapper = mapper;
@@ -56,7 +56,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc
             {
                 return NotFound();
             }
-            
+
             LoadCombos();
             return Page();
         }

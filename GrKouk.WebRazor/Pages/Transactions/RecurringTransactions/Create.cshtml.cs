@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using GrKouk.InfoSystem.Definitions;
 using GrKouk.InfoSystem.Dtos.WebDtos.BuyDocuments;
 using GrKouk.InfoSystem.Dtos.WebDtos.RecurringTransactions;
+using GrKouk.WebRazor.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -96,8 +98,15 @@ namespace GrKouk.WebRazor.Pages.Transactions.RecurringTransactions
                 new SelectListItem() {Value = "BARCODE", Text = "Barcode"}
             };
             ViewData["SeekType"] = new SelectList(seekTypes, "Value", "Text");
-
-           
+            var docTypes = Enum.GetValues(typeof(RecurringDocTypeEnum))
+               .Cast<RecurringDocTypeEnum>()
+               .Select(c => new SelectListItem()
+               {
+                   Value = c.ToString(),
+                   Text = c.GetDescription()
+               }).ToList();
+            ViewData["DocType"] = new SelectList(docTypes, "Value", "Text");
+            ViewData["RecurringFrequency"] = FiltersHelper.GetRecurringFrequencyList();
             ViewData["CompanyId"] = new SelectList(_context.Companies.OrderBy(p => p.Code).AsNoTracking(), "Id", "Code");
             ViewData["PaymentMethodId"] = new SelectList(_context.PaymentMethods.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
             IQueryable transactorList;
