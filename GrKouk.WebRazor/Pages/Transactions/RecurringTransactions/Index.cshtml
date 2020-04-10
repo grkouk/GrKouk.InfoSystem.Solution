@@ -307,7 +307,7 @@
                     //#region getTableData
                     var timeout;
 
-                    var uri = `/api/GrKoukInfoApi/GetIndexTblDataBuyDocuments`;
+                    var uri = `/api/GrKoukInfoApi/GetIndexTblDataRecurringDocuments`;
                     uri += `?pageIndex=${pageIndex}`;
                     uri += `&pageSize=${pageSize}`;
                     uri += `&companyFilter=${companyFilter}`;
@@ -352,9 +352,31 @@
                                     totalFormatter: '',
                                     sortKey: 'TransactionDateSort',
                                     sortType: 'numeric',
-                                    header: 'Date',
+                                    header: 'Next Date',
                                     text: '',
                                     headerClass:'small text-center d-none d-md-table-cell',
+                                    class: 'small d-none d-md-table-cell'
+                                },
+                                {
+                                    totalKey: '',
+                                    grandTotalKey: '',
+                                    totalFormatter: '',
+                                    sortKey: '',
+                                    sortType: '',
+                                    header: 'Type',
+                                    text: '',
+                                    headerClass: 'small text-center d-none d-md-table-cell',
+                                    class: 'small d-none d-md-table-cell '
+                                },
+                                {
+                                    totalKey: '',
+                                    grandTotalKey: '',
+                                    totalFormatter: '',
+                                    sortKey: '',
+                                    sortType: 'numeric',
+                                    header: 'Frequency',
+                                    text: '',
+                                    headerClass: 'small text-center d-none d-md-table-cell',
                                     class: 'small d-none d-md-table-cell'
                                 },
                                 {
@@ -379,17 +401,7 @@
                                     headerClass:'small text-center d-none d-md-table-cell',
                                     class: 'small d-none d-md-table-cell '
                                 },
-                                {
-                                    totalKey: '',
-                                    grandTotalKey: '',
-                                    totalFormatter: '',
-                                    sortKey: '',
-                                    sortType: '',
-                                    header: 'Ref Number',
-                                    text: '',
-                                    headerClass:'small text-center d-none d-md-table-cell',
-                                    class: 'small d-none d-md-table-cell '
-                                },
+                                
                                 {
                                     totalKey: '',
                                     grandTotalKey: '',
@@ -461,12 +473,15 @@
 
                             $.each(result.data,
                                 function(index, value) {
-                                    colDefs[0].text = moment(value.transDate).format('DD/MM/YYYY');
-                                    colDefs[1].text = value.transactorName;
-                                    colDefs[2].text = value.buyDocSeriesCode;
-                                    colDefs[3].text = value.transRefCode;
-                                    colDefs[4].text = value.companyCode;
-                                    colDefs[5].text = formatterCurrency.format(value.totalAmount);
+                                    colDefs[0].text = moment(value.nextTransDate).format('DD/MM/YYYY');
+                                    colDefs[1].text = value.recurringDocTypeName;
+                                    colDefs[2].text = value.recurringFrequency;
+                                    
+                                    colDefs[3].text = value.transactorName;
+                                    colDefs[4].text = value.docSeriesCode;
+                                   
+                                    colDefs[5].text = value.companyCode;
+                                    colDefs[6].text = formatterCurrency.format(value.totalAmount);
 
 
                                     var itemId = value.id;

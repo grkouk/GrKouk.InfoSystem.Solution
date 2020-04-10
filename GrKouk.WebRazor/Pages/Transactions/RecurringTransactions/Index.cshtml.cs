@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using AutoMapper;
-using GrKouk.InfoSystem.Dtos.WebDtos.BuyDocuments;
+using GrKouk.InfoSystem.Dtos.WebDtos.RecurringTransactions;
 using GrKouk.WebRazor.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -28,7 +28,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.RecurringTransactions
         }
 
        
-        public PagedList<BuyDocListDto> ListItems { get; set; }
+        public PagedList<RecurringDocListDto> ListItems { get; set; }
         public void OnGet()
         {
             LoadFilters();
