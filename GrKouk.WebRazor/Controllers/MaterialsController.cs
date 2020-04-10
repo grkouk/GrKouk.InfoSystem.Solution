@@ -18,6 +18,7 @@ using GrKouk.WebApi.Data;
 using GrKouk.WebRazor.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using GrKouk.InfoSystem.Dtos.WebDtos.RecurringTransactions;
 
 namespace GrKouk.WebRazor.Controllers
 {

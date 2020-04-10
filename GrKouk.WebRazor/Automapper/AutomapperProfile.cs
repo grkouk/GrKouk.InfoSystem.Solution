@@ -14,6 +14,7 @@ using GrKouk.InfoSystem.Dtos.WebDtos.CustomerTransactions;
 using GrKouk.InfoSystem.Dtos.WebDtos.Diaries;
 using GrKouk.InfoSystem.Dtos.WebDtos.Media;
 using GrKouk.InfoSystem.Dtos.WebDtos.ProductRecipies;
+using GrKouk.InfoSystem.Dtos.WebDtos.RecurringTransactions;
 using GrKouk.InfoSystem.Dtos.WebDtos.SellDocuments;
 using GrKouk.InfoSystem.Dtos.WebDtos.Transactors;
 using GrKouk.InfoSystem.Dtos.WebDtos.TransactorTransactions;

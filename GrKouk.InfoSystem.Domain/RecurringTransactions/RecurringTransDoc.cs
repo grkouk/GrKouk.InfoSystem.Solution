@@ -16,7 +16,7 @@ namespace GrKouk.InfoSystem.Domain.RecurringTransactions
         [MaxLength(2)]
         public string RecurringFrequency { get; set; }
 
-        public RecurringDocType RecurringDocType { get; set; }
+        public RecurringDocTypeEnum RecurringDocType { get; set; }
         [Required]
         [DataType(DataType.Date)]
         public DateTime NextTransDate { get; set; }
