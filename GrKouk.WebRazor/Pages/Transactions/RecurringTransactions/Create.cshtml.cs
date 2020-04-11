@@ -83,7 +83,50 @@ namespace GrKouk.WebRazor.Pages.Transactions.RecurringTransactions
             //}
             if (CreateFromId>0)
             {
+                //RecurringTransDocCreateAjaxDto vm;
+                switch (CreateFromType)
+                {
+                    case RecurringDocTypeEnum.BuyType:
+                       
+                            var buyMatDoc = await _context.BuyDocuments
+                                .Include(b => b.Company)
+                                .Include(b => b.FiscalPeriod)
+                                .Include(b => b.BuyDocSeries)
+                                .Include(b => b.BuyDocType)
+                                .Include(b => b.Section)
 
+                                .Include(b => b.Transactor)
+                                .Include(b => b.BuyDocLines)
+                                .ThenInclude(m => m.WarehouseItem)
+                                .FirstOrDefaultAsync(m => m.Id == CreateFromId);
+                            if (buyMatDoc == null)
+                            {
+                                return NotFound();
+                            }
+                            //ItemVm = _mapper.Map<BuyDocCreateAjaxDto>(buyMatDoc);
+                            CopyFromItemVm = _mapper.Map<RecurringDocModifyDto>(buyMatDoc);
+                            ItemVm = new RecurringTransDocCreateAjaxDto
+                            {
+                                NextTransDate=DateTime.Now.AddMonths(1),
+                                RecurringFrequency="3M",
+                                RecurringDocType=RecurringDocTypeEnum.BuyType,
+                                AmountDiscount = CopyFromItemVm.AmountDiscount,
+                                AmountFpa = CopyFromItemVm.AmountFpa,
+                                AmountNet = CopyFromItemVm.AmountNet,
+                                DocSeriesId = CopyFromItemVm.DocSeriesId,
+                                CompanyId = CopyFromItemVm.CompanyId,
+                                Etiology = CopyFromItemVm.Etiology,
+                                PaymentMethodId = CopyFromItemVm.PaymentMethodId,
+                                TransactorId = CopyFromItemVm.TransactorId
+                            };
+                            
+                        
+                        break;
+                    case RecurringDocTypeEnum.SellType:
+                        break;
+                    default:
+                        break;
+                }
             }
             LoadCombos();
             return Page();
@@ -129,7 +172,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.RecurringTransactions
 
         [BindProperty]
         public RecurringTransDocCreateAjaxDto ItemVm { get; set; }
-        public BuyDocModifyDto CopyFromItemVm { get; set; }
+        public RecurringDocModifyDto CopyFromItemVm { get; set; }
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)

@@ -28,7 +28,8 @@
         <fieldset id="thisForm">
             <div asp-validation-summary="ModelOnly" class="text-danger small"></div>
             <input type="hidden" asp-for="@Model.CopyFromId" id="CopyFromId" />
-            <input type="hidden" asp-for="@Model.CopyFromId" id="CopyFromId" />
+            <input type="hidden" asp-for="@Model.CreateFromId" id="CreateFromId" />
+            <input type="hidden" asp-for="@Model.CreateFromType" id="CreateFromType" />
             <input type="hidden" asp-for="@Model.InitialLoad" id="IsInitialLoad" />
 
             <input type="hidden" id="MaterialId" />
@@ -180,7 +181,7 @@
                                     var factor = docLine.Factor;
                                     var materialName = docLine.WarehouseItemName;
                                     var disRate = docLine.DiscountRate;
-                                    var disAmount = docLine.DiscountRate;
+                                    var disAmount = docLine.AmountDiscount;
                                     var vatAmount = docLine.AmountFpa;
                                     var netAmount = docLine.AmountNet;
                                     var grosAmount = netAmount - disAmount + vatAmount;
@@ -397,7 +398,7 @@
 
                 });
             //#region variables
-            var $transDate = $('#ItemVm_TransDate');
+            var $transDate = $('#ItemVm_NextTransDate');
             var securityToken = $('[name=__RequestVerificationToken]').val();
 
             var $lookUp = $('#Lookup');
@@ -423,7 +424,7 @@
             var $priceBrutto = $('#MaterialBruttoPrice');
             var $seriesUsedPrice = $('#SeriesUsedPrice');
             var $priceLabel = $('#priceLabel');
-            var $transDocSeriesId = $('#ItemVm_BuyDocSeriesId');
+            var $transDocSeriesId = $('#ItemVm_DocSeriesId');
             var $companyId = $('#ItemVm_CompanyId');
             var $price = $("#Price");
             var $priceNet = $("#PriceNet");
@@ -1837,12 +1838,12 @@
                     });
 
                 var data = JSON.stringify({
-                    transDate: $("#ItemVm_TransDate").val(),
+                    transDate: $("#ItemVm_NextTransDate").val(),
                     transRefCode: $("#ItemVm_TransRefCode").val(),
                     transactorId: $("#ItemVm_TransactorId").val(),
                     companyId: $("#ItemVm_CompanyId").val(),
                     paymentMethodId: $("#ItemVm_PaymentMethodId").val(),
-                    buyDocSeriesId: $("#ItemVm_BuyDocSeriesId").val(),
+                    buyDocSeriesId: $("#ItemVm_DocSeriesId").val(),
                     Etiology: $("#ItemVm_Etiology").val(),
                     amountFpa: $("#ItemVm_AmountFpa").attr('data-actualValue'),
                     amountNet: $("#ItemVm_AmountNet").attr('data-actualValue'),
@@ -1866,8 +1867,8 @@
             //-------------
             $transDate.val(new Date().toISOString().slice(0, 10));
             var copyFromId = parseInt($('#CopyFromId').val());
-
-            if (copyFromId === 0) {
+            var createFromId = parseInt($('#CreateFromId').val());
+            if (copyFromId === 0 && createFromId===0) {
                 $materialCounter.val(0);
 
                 $amountNet.attr('data-actualValue', '0');
@@ -1881,6 +1882,7 @@
             } else {
                 updateCounter();
             }
+           
             if ($initialLoad.val() == 'True') {
                 console.log("Initial load is true setting initial values");
                 // $companyId.val('@Model.RoutedCompanyId');

@@ -236,11 +236,11 @@
             //#region variables
             var $filtersVisible = $('#filtersVisible');
             var $filterCollapse = $('#filterCollapse');
-          
+
             var $filtersToggle = $('#filtersToggle');
             var $rowSelectorsToggle = $('#rowSelectorsToggle');
             var $rowSelectorsVisible = $('#rowSelectorsVisible');
-           
+
             var $selectedRowsActionsMenu = $('#SelectedRowsActionsMenu');
             var $selectedRowsActionsLink = $('#ddSelectedRowsActions');
             var $deleteSelectedRowsLink = $('#deleteSelectedRows');
@@ -253,7 +253,7 @@
             var reallyIsNaN = function(x) {
                 return x !== x;
             };
-           
+
             var handleSelectedRowsUi = () => {
                 var $rowSelectors = $('input[name=checkTableRow]');
                 var $checkAllRows = $('input[name=checkAllRows]');
@@ -402,6 +402,17 @@
                                     class: 'small '
                                 },
                                 {
+                                    totalKey: 'sumOfNetAmount',
+                                    grandTotalKey: 'grandSumOfNetAmount',
+                                    totalFormatter: 'currency',
+                                    sortKey: '',
+                                    sortType: '',
+                                    header: 'Net Amount',
+                                    text: '',
+                                    headerClass: 'small text-center',
+                                    class: 'small text-right '
+                                },
+                                {
                                     totalKey: 'sumOfAmount',
                                     grandTotalKey: 'grandSumOfAmount',
                                     totalFormatter: 'currency',
@@ -460,13 +471,15 @@
                             $trHead.appendTo('#myTable > thead');
 
                             $.each(result.data,
-                                function(index, value) {
-                                    colDefs[0].text = moment(value.transDate).format('DD/MM/YYYY');
-                                    colDefs[1].text = value.transactorName;
-                                    colDefs[2].text = value.buyDocSeriesCode;
-                                    colDefs[3].text = value.transRefCode;
-                                    colDefs[4].text = value.companyCode;
-                                    colDefs[5].text = formatterCurrency.format(value.totalAmount);
+                                function (index, value) {
+                                    let i=0
+                                    colDefs[i++].text = moment(value.transDate).format('DD/MM/YYYY');
+                                    colDefs[i++].text = value.transactorName;
+                                    colDefs[i++].text = value.buyDocSeriesCode;
+                                    colDefs[i++].text = value.transRefCode;
+                                    colDefs[i++].text = value.companyCode;
+                                    colDefs[i++].text = formatterCurrency.format(value.totalNetAmount);
+                                    colDefs[i++].text = formatterCurrency.format(value.totalAmount);
 
 
                                     var itemId = value.id;
@@ -475,6 +488,8 @@
                                     var urlDel = `@Url.Page("./Delete")?id=${itemId}`;
                                     var urlNewLikeThis = `@Url.Page("./Create")?copyFromId=${itemId}`;
                                     var urlKartela = `@Url.Page("./Kartela")?transactorId=${itemId}`;
+                                    var urlRecurring = `@Url.Page("/Transactions/RecurringTransactions/Create")?createFromId=${itemId}&createFromType=1`;
+
                                     var actionsCol = '<td class="small text-center d-none d-md-table-cell">';
                                     actionsCol += `<a href="${urlEdit
                                         }"><i class="fas fa-edit fa-lg" style="color:slategray"></i></a> |`;
@@ -490,7 +505,7 @@
                                     actionsCol +=
                                         ' <div class="dropdown-menu small" aria-labelledby="dropdownMenuButton">';
                                     actionsCol += `<a href="${urlKartela}" class="dropdown-item">Καρτέλα</a>`;
-                                    actionsCol += ' <a class="dropdown-item" href="#">Δημιουργία Συνδρομής</a>';
+                                    actionsCol += ` <a class="dropdown-item" href="${urlRecurring}" target="_blanc">Δημιουργία Συνδρομής</a>`;
                                     actionsCol += ' </div>';
                                     actionsCol += '</td>';
                                     var actionColMobile =
@@ -577,7 +592,7 @@
                                     refreshTableData();
                                 });
                             //console.log();
-                           
+
                             let pageSummaryCount = 0;
                             let totalSummaryCount = 0;
                             let $pageSummaryRow = $('<tr class="table-info">');
@@ -642,7 +657,7 @@
                                 $totalSummaryRow.appendTo('#myTable >  tbody:last');
                             }
                             rowSelectorsUi();
-                           
+
                         },
                         complete: function() {
                             if (timeout) {
@@ -863,7 +878,7 @@
 
                     $filtersVisible.val(true);
                 });
-           
+
 
 
             var rosSelectorsToggleHandler = () => {
@@ -1157,7 +1172,7 @@
                 function() {
                     gotoPreviousPage();
                 });
-            
+
             $('#CreateNew').on('click',
                 function() {
                     var uri = '@Url.Page("Create")';
@@ -1172,7 +1187,7 @@
                                    icon.addClass("fa-search").removeClass("fa-times");
                                    $('.search_input').val('');
                                }
-           
+
                                refreshTableData();
                            });
 
