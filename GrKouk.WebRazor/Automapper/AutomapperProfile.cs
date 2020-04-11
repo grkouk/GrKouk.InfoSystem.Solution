@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using GrKouk.InfoSystem.Domain.FinConfig;
 using GrKouk.InfoSystem.Domain.MediaEntities;
+using GrKouk.InfoSystem.Domain.RecurringTransactions;
 using GrKouk.InfoSystem.Domain.Shared;
 using GrKouk.InfoSystem.Dtos;
 using GrKouk.InfoSystem.Dtos.WebDtos;
@@ -122,6 +123,12 @@ namespace GrKouk.WebRazor.Automapper
             //CreateMap<SellDocTypeDef, DiaryDocTypeItem>()
             //    .ForMember(dest => dest.Value, opt => opt.MapFrom(src => src.Id))
             //    .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Name));
+            CreateMap<RecurringTransDoc, RecurringDocCreateAjaxNoLinesDto>().ReverseMap();
+            //CreateMap<RecurringTransDoc, BuyDocModifyAjaxNoLinesDto>().ReverseMap();
+           // CreateMap<BuyDocCreateAjaxNoLinesDto, BuyDocLineAjaxDto>().ReverseMap();
+            CreateMap<RecurringTransDoc, RecurringDocListDto>()
+                .ForMember(dest => dest.CompanyCurrencyId,
+                    opt => opt.MapFrom(src => src.Company.CurrencyId)).ReverseMap();
         }
     }
 }

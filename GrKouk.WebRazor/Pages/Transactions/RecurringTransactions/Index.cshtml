@@ -1204,7 +1204,7 @@
                     }
                     refreshTableData();
                 });
-            var storageItemJs = localStorage.getItem('BuyDocIndexView');
+            var storageItemJs = localStorage.getItem('RecurringDocIndexView');
             if (storageItemJs === undefined || storageItemJs === null) {
                 $('#pageIndex').val(1);
                 $('#filtersVisible').val(true);
@@ -1305,7 +1305,7 @@
 
                 var sessionVal = JSON.stringify(filtersArr);
 
-                localStorage.setItem('BuyDocIndexView', sessionVal);
+                localStorage.setItem('RecurringDocIndexView', sessionVal);
                 //#endregion
 
             });

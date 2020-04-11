@@ -9,6 +9,8 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.RecurringTransactions
         public int Id { get; set; }
         [Display(Name = "Frequency")]
         public string RecurringFrequency { get; set; }
+        
+        public RecurringDocTypeEnum RecurringDocType { get; set; }
         [Display(Name = "Doc Type")]
         public string RecurringDocTypeName { get; set; }
         [DataType(DataType.Date)]

@@ -68,8 +68,8 @@ namespace GrKouk.WebApi.Data
         public DbSet<SalesChannel> SalesChannels { get; set; }
         public DbSet<WrItemCode> WrItemCodes { get; set; }
         public DbSet<AppSetting> AppSettings { get; set; }
-        public RecurringTransDocLine  RecurringTransDocLines        { get; set; }
-        public RecurringTransDoc RecurringTransDocs { get; set; }
+        public DbSet<RecurringTransDocLine>  RecurringTransDocLines        { get; set; }
+        public DbSet<RecurringTransDoc> RecurringTransDocs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

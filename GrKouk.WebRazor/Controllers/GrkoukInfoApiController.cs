@@ -11,6 +11,7 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using GrKouk.InfoSystem.Definitions;
 using GrKouk.InfoSystem.Domain.MediaEntities;
+using GrKouk.InfoSystem.Domain.RecurringTransactions;
 using GrKouk.InfoSystem.Domain.Shared;
 using GrKouk.InfoSystem.Dtos;
 using GrKouk.InfoSystem.Dtos.WebDtos;
@@ -20,6 +21,7 @@ using GrKouk.InfoSystem.Dtos.WebDtos.Diaries;
 using GrKouk.InfoSystem.Dtos.WebDtos.DiaryTransactions;
 using GrKouk.InfoSystem.Dtos.WebDtos.Media;
 using GrKouk.InfoSystem.Dtos.WebDtos.ProductRecipies;
+using GrKouk.InfoSystem.Dtos.WebDtos.RecurringTransactions;
 using GrKouk.InfoSystem.Dtos.WebDtos.SellDocuments;
 using GrKouk.InfoSystem.Dtos.WebDtos.Transactors;
 using GrKouk.InfoSystem.Dtos.WebDtos.TransactorTransactions;
@@ -448,17 +450,17 @@ namespace GrKouk.WebRazor.Controllers
         [HttpGet("GetIndexTblDataRecurringDocuments")]
         public async Task<IActionResult> GetIndexTblDataRecurringDocuments([FromQuery] IndexDataTableRequest request)
         {
-            IQueryable<BuyDocument> fullListIq = _context.BuyDocuments;
+            IQueryable<RecurringTransDoc> fullListIq = _context.RecurringTransDocs;
 
             if (!String.IsNullOrEmpty(request.SortData))
             {
                 switch (request.SortData.ToLower())
                 {
                     case "transactiondatesort:asc":
-                        fullListIq = fullListIq.OrderBy(p => p.TransDate);
+                        fullListIq = fullListIq.OrderBy(p => p.NextTransDate);
                         break;
                     case "transactiondatesort:desc":
-                        fullListIq = fullListIq.OrderByDescending(p => p.TransDate);
+                        fullListIq = fullListIq.OrderByDescending(p => p.NextTransDate);
                         break;
                     case "transactornamesort:asc":
                         fullListIq = fullListIq.OrderBy(p => p.Transactor.Name);
@@ -467,12 +469,12 @@ namespace GrKouk.WebRazor.Controllers
                         fullListIq = fullListIq.OrderByDescending(p => p.Transactor.Name);
                         break;
 
-                    case "seriescodesort:asc":
-                        fullListIq = fullListIq.OrderBy(p => p.BuyDocSeries.Code);
-                        break;
-                    case "seriescodesort:desc":
-                        fullListIq = fullListIq.OrderByDescending(p => p.BuyDocSeries.Code);
-                        break;
+                    //case "seriescodesort:asc":
+                    //    fullListIq = fullListIq.OrderBy(p => p.BuyDocSeries.Code);
+                    //    break;
+                    //case "seriescodesort:desc":
+                    //    fullListIq = fullListIq.OrderByDescending(p => p.BuyDocSeries.Code);
+                    //    break;
                     case "companycodesort:asc":
                         fullListIq = fullListIq.OrderBy(p => p.Company.Code);
                         break;
@@ -489,7 +491,7 @@ namespace GrKouk.WebRazor.Controllers
                 DateTime fromDate = dfDates.FromDate;
                 DateTime toDate = dfDates.ToDate;
 
-                fullListIq = fullListIq.Where(p => p.TransDate >= fromDate && p.TransDate <= toDate);
+                fullListIq = fullListIq.Where(p => p.NextTransDate >= fromDate && p.NextTransDate <= toDate);
             }
 
             if (!String.IsNullOrEmpty(request.CompanyFilter))
@@ -510,19 +512,21 @@ namespace GrKouk.WebRazor.Controllers
             var currencyRates = await _context.ExchangeRates.OrderByDescending(p => p.ClosingDate)
                 .Take(10)
                 .ToListAsync();
-            var t = fullListIq.ProjectTo<BuyDocListDto>(_mapper.ConfigurationProvider);
-            var t1 = await t.Select(p => new BuyDocListDto
+            var t = fullListIq.ProjectTo<RecurringDocListDto>(_mapper.ConfigurationProvider);
+            var t1 = await t.Select(p => new RecurringDocListDto
             {
                 Id = p.Id,
-                TransDate = p.TransDate,
+                NextTransDate = p.NextTransDate,
+                RecurringDocTypeName=p.RecurringDocTypeName,
+                RecurringFrequency=p.RecurringFrequency,
                 TransRefCode = p.TransRefCode,
                 SectionId = p.SectionId,
                 SectionCode = p.SectionCode,
                 TransactorId = p.TransactorId,
                 TransactorName = p.TransactorName,
-                BuyDocSeriesId = p.BuyDocSeriesId,
-                BuyDocSeriesCode = p.BuyDocSeriesCode,
-                BuyDocSeriesName = p.BuyDocSeriesName,
+                DocSeriesId = p.DocSeriesId,
+                DocSeriesCode = GetDocSeriesCode(p.RecurringDocType,p.DocSeriesId),
+                DocSeriesName = GetDocSeriesName(p.RecurringDocType, p.DocSeriesId),
                 AmountFpa = ConvertAmount(p.CompanyCurrencyId, request.DisplayCurrencyId, currencyRates, p.AmountFpa),
                 AmountNet = ConvertAmount(p.CompanyCurrencyId, request.DisplayCurrencyId, currencyRates, p.AmountNet),
                 AmountDiscount = ConvertAmount(p.CompanyCurrencyId, request.DisplayCurrencyId, currencyRates, p.AmountDiscount),
@@ -537,7 +541,7 @@ namespace GrKouk.WebRazor.Controllers
 
             var pageSize = request.PageSize;
 
-            var listItems = await PagedList<BuyDocListDto>.CreateAsync(t, pageIndex, pageSize);
+            var listItems = await PagedList<RecurringDocListDto>.CreateAsync(t, pageIndex, pageSize);
             foreach (var listItem in listItems)
             {
                 if (listItem.CompanyCurrencyId != 1)
@@ -568,7 +572,7 @@ namespace GrKouk.WebRazor.Controllers
             //decimal sumAmountTotal = listItems.Sum(p => p.TotalAmount);
             //decimal sumDebit = listItems.Sum(p => p.DebitAmount);
             //decimal sumCredit = listItems.Sum(p => p.CreditAmount);
-            var response = new IndexDataTableResponse<BuyDocListDto>
+            var response = new IndexDataTableResponse<RecurringDocListDto>
             {
                 TotalRecords = listItems.TotalCount,
                 TotalPages = listItems.TotalPages,
@@ -2369,7 +2373,64 @@ namespace GrKouk.WebRazor.Controllers
             };
             return Ok(response);
         }
+        private string GetDocSeriesName(RecurringDocTypeEnum docType, int docSeriesId)
+        {
+            string docName=string.Empty;
+            string docCode=string.Empty;
 
+            switch (docType)
+            {
+                case RecurringDocTypeEnum.BuyType:
+                    var docBuySeries = _context.BuyDocSeriesDefs.FirstOrDefault(p => p.Id == docSeriesId);
+                    if (docBuySeries != null)
+                    {
+                        docName = docBuySeries.Name;
+                        docCode = docBuySeries.Code;
+                    }
+                    break;
+                case RecurringDocTypeEnum.SellType:
+                    var docSellSeries = _context.SellDocSeriesDefs.FirstOrDefault(p => p.Id == docSeriesId);
+                    if (docSellSeries != null)
+                    {
+                        docName = docSellSeries.Name;
+                        docCode = docSellSeries.Code;
+                    }
+                    break;
+                default:
+                    break;
+            }
+
+            return docName;
+        }
+        private string GetDocSeriesCode(RecurringDocTypeEnum docType, int docSeriesId)
+        {
+            string docName = string.Empty;
+            string docCode = string.Empty;
+
+            switch (docType)
+            {
+                case RecurringDocTypeEnum.BuyType:
+                    var docBuySeries = _context.BuyDocSeriesDefs.FirstOrDefault(p => p.Id == docSeriesId);
+                    if (docBuySeries != null)
+                    {
+                        docName = docBuySeries.Name;
+                        docCode = docBuySeries.Code;
+                    }
+                    break;
+                case RecurringDocTypeEnum.SellType:
+                    var docSellSeries = _context.SellDocSeriesDefs.FirstOrDefault(p => p.Id == docSeriesId);
+                    if (docSellSeries != null)
+                    {
+                        docName = docSellSeries.Name;
+                        docCode = docSellSeries.Code;
+                    }
+                    break;
+                default:
+                    break;
+            }
+
+            return docCode;
+        }
         private decimal ConvertAmount(int companyCurrencyId,int displayCurrencyId,IList<ExchangeRate> rates,decimal amount)
         {
             //var r =  rates.Where(p => p.CurrencyId == companyCurrencyId)
