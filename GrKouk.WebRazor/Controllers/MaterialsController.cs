@@ -297,7 +297,7 @@ namespace GrKouk.WebRazor.Controllers
                     {
                         var natures = Array.ConvertAll(docType.SelectedWarehouseItemNatures.Split(","), int.Parse);
                         //var natures = docType.SelectedWarehouseItemNatures;
-                        fullListIq = fullListIq.Where(p => natures.Contains((int) p.WarehouseItemNature));
+                        fullListIq = fullListIq.Where(p => natures.Contains((int)p.WarehouseItemNature));
                     }
                 }
             }
@@ -306,7 +306,7 @@ namespace GrKouk.WebRazor.Controllers
             fullListIq = fullListIq.Where(p => p.Name.Contains(term) || p.Code.Contains(term));
             var materials = await fullListIq
                 .ProjectTo<WarehouseItemSearchListDto>(_mapper.ConfigurationProvider)
-                .Select(p => new {label = p.Label, value = p.Id}).ToListAsync();
+                .Select(p => new { label = p.Label, value = p.Id }).ToListAsync();
 
             if (materials == null)
             {
@@ -349,7 +349,7 @@ namespace GrKouk.WebRazor.Controllers
                     {
                         var natures = Array.ConvertAll(docType.SelectedWarehouseItemNatures.Split(","), int.Parse);
                         //var natures = docType.SelectedWarehouseItemNatures;
-                        fullListIq = fullListIq.Where(p => natures.Contains((int) p.WarehouseItemNature));
+                        fullListIq = fullListIq.Where(p => natures.Contains((int)p.WarehouseItemNature));
                     }
                 }
             }
@@ -360,7 +360,7 @@ namespace GrKouk.WebRazor.Controllers
             //    .Select(p => new { label = p.Label, value = p.Id }).ToListAsync();
             var materials = await fullListIq
                 .ProjectTo<WarehouseItemSearchListDto>(_mapper.ConfigurationProvider)
-                .Select(p => new {label = p.Label, value = p.Id}).ToListAsync();
+                .Select(p => new { label = p.Label, value = p.Id }).ToListAsync();
             if (materials == null)
             {
                 return NotFound();
@@ -375,7 +375,7 @@ namespace GrKouk.WebRazor.Controllers
             var materials = await _context.WarehouseItems.Where(p =>
                     p.Name.Contains(term) &&
                     p.WarehouseItemNature == WarehouseItemNatureEnum.WarehouseItemNatureService)
-                .Select(p => new {label = p.Name, value = p.Id}).ToListAsync();
+                .Select(p => new { label = p.Name, value = p.Id }).ToListAsync();
 
             if (materials == null)
             {
@@ -391,7 +391,7 @@ namespace GrKouk.WebRazor.Controllers
             var materials = await _context.WarehouseItems.Where(p =>
                     p.Name.Contains(term) &&
                     p.WarehouseItemNature == WarehouseItemNatureEnum.WarehouseItemNatureExpense)
-                .Select(p => new {label = p.Name, value = p.Id}).ToListAsync();
+                .Select(p => new { label = p.Name, value = p.Id }).ToListAsync();
 
             if (materials == null)
             {
@@ -463,7 +463,7 @@ namespace GrKouk.WebRazor.Controllers
             }
 
             Debug.Print("******Inside GetFiscal period Returning period id " + fiscalPeriod.Id);
-            return Ok(new {PeriodId = fiscalPeriod.Id});
+            return Ok(new { PeriodId = fiscalPeriod.Id });
         }
 
         [HttpGet("SalesSeriesData")]
@@ -487,7 +487,7 @@ namespace GrKouk.WebRazor.Controllers
             var usedPrice = salesTypeDef.UsedPrice;
 
             Debug.Print("Inside GetSalesSeriesData Returning usedPrice " + usedPrice.ToString());
-            return Ok(new {UsedPrice = usedPrice});
+            return Ok(new { UsedPrice = usedPrice });
         }
 
         [HttpGet("BuySeriesData")]
@@ -512,7 +512,7 @@ namespace GrKouk.WebRazor.Controllers
             var usedPrice = buyTypeDef.UsedPrice;
 
             Debug.Print("Inside GetBuySeriesData Returning usedPrice " + usedPrice.ToString());
-            return Ok(new {UsedPrice = usedPrice});
+            return Ok(new { UsedPrice = usedPrice });
         }
 
         [HttpGet("WarehouseTransType")]
@@ -560,7 +560,7 @@ namespace GrKouk.WebRazor.Controllers
             }
 
             Debug.Print("******Inside GetWarehouseTransType Returning Action value " + transType);
-            return Ok(new {TransType = transType});
+            return Ok(new { TransType = transType });
         }
 
         [HttpPost("CreateRecurringDoc")]
@@ -599,39 +599,47 @@ namespace GrKouk.WebRazor.Controllers
 
             using (var transaction = _context.Database.BeginTransaction())
             {
+                int docSeriesId = 0;
 
-                var docSeries = await
-                    _context.BuyDocSeriesDefs.SingleOrDefaultAsync(m => m.Id == data.DocSeriesId);
-
-                if (docSeries is null)
+                switch (transToAttach.RecurringDocType)
                 {
-                    transaction.Rollback();
-                    ModelState.AddModelError(string.Empty, "Δεν βρέθηκε η σειρά παραστατικού");
-                    return NotFound(new
-                    {
-                        error = "Buy Doc Series not found"
-                    });
+                    case RecurringDocTypeEnum.BuyType:
+                        var buySeries = await _context.BuyDocSeriesDefs.SingleOrDefaultAsync(m => m.Id == data.DocSeriesId);
+
+                        if (buySeries is null)
+                        {
+                            transaction.Rollback();
+                            ModelState.AddModelError(string.Empty, "Δεν βρέθηκε η σειρά παραστατικού");
+                            return NotFound(new
+                            {
+                                error = "Buy Doc Series not found"
+                            });
+                        }
+                        docSeriesId = buySeries.BuyDocTypeDefId;
+                        break;
+                    case RecurringDocTypeEnum.SellType:
+                        var sellSeries = await _context.SellDocSeriesDefs.SingleOrDefaultAsync(m => m.Id == data.DocSeriesId);
+
+                        if (sellSeries is null)
+                        {
+                            transaction.Rollback();
+                            ModelState.AddModelError(string.Empty, "Δεν βρέθηκε η σειρά παραστατικού");
+                            return NotFound(new
+                            {
+                                error = "Sell Doc Series not found"
+                            });
+                        }
+                        docSeriesId = sellSeries.SellDocTypeDefId;
+                        break;
+                    default:
+                        break;
                 }
+               
 
-                await _context.Entry(docSeries).Reference(t => t.BuyDocTypeDef).LoadAsync();
-                var docTypeDef = docSeries.BuyDocTypeDef;
-                //await _context.Entry(docTypeDef)
-                //      .Reference(t => t.TransSupplierDef)
-                //      .LoadAsync();
-                await _context.Entry(docTypeDef)
-                    .Reference(t => t.TransTransactorDef)
-                    .LoadAsync();
 
-                await _context.Entry(docTypeDef).Reference(t => t.TransWarehouseDef)
-                    .LoadAsync();
 
-                //var transSupplierDef = docTypeDef.TransSupplierDef;
-                var transTransactorDef = docTypeDef.TransTransactorDef;
-                var transWarehouseDef = docTypeDef.TransWarehouseDef;
 
-                //transToAttach.SectionId = section.Id;
-               // transToAttach.FiscalPeriodId = fiscalPeriod.Id;
-                transToAttach.DocTypeId = docSeries.BuyDocTypeDefId;
+                transToAttach.DocTypeId = docSeriesId;
                 _context.RecurringTransDocs.Add(transToAttach);
 
                 try
@@ -690,7 +698,7 @@ namespace GrKouk.WebRazor.Controllers
                     buyMaterialLine.Etiology = transToAttach.Etiology;
                     //_context.Entry(transToAttach).Entity
                     transToAttach.DocLines.Add(buyMaterialLine);
-                    
+
                 }
 
                 try
@@ -989,9 +997,9 @@ namespace GrKouk.WebRazor.Controllers
 
                     var buyMaterialLine = new BuyDocLine();
                     decimal unitPrice = dataBuyDocLine.Price;
-                    decimal units = (decimal) dataBuyDocLine.Q1;
-                    decimal fpaRate = (decimal) dataBuyDocLine.FpaRate;
-                    decimal discountRate = (decimal) dataBuyDocLine.DiscountRate;
+                    decimal units = (decimal)dataBuyDocLine.Q1;
+                    decimal fpaRate = (decimal)dataBuyDocLine.FpaRate;
+                    decimal discountRate = (decimal)dataBuyDocLine.DiscountRate;
                     decimal lineNetAmount = unitPrice * units;
                     decimal lineDiscountAmount = lineNetAmount * discountRate;
                     decimal lineFpaAmount = (lineNetAmount - lineDiscountAmount) * fpaRate;
@@ -1036,7 +1044,7 @@ namespace GrKouk.WebRazor.Controllers
                             CreatorId = transToAttach.Id,
                             TransDate = transToAttach.TransDate,
                             TransRefCode = transToAttach.TransRefCode,
-                            UnitFactor = (decimal) dataBuyDocLine.Factor,
+                            UnitFactor = (decimal)dataBuyDocLine.Factor,
                             TransWarehouseDocSeriesId = warehouseSeriesId,
                             TransWarehouseDocTypeId = warehouseTypeId
                         };
@@ -1071,7 +1079,7 @@ namespace GrKouk.WebRazor.Controllers
             return Ok(new { });
         }
 
-       
+
         [HttpPost("MaterialBuyDocUpdate")]
         public async Task<IActionResult> PutMaterialBuyDoc([FromBody] BuyDocModifyAjaxDto data)
         {
@@ -1339,9 +1347,9 @@ namespace GrKouk.WebRazor.Controllers
 
                     var warehouseItemLine = new BuyDocLine();
                     decimal unitPrice = dataBuyDocLine.Price;
-                    decimal units = (decimal) dataBuyDocLine.Q1;
-                    decimal fpaRate = (decimal) dataBuyDocLine.FpaRate;
-                    decimal discountRate = (decimal) dataBuyDocLine.DiscountRate;
+                    decimal units = (decimal)dataBuyDocLine.Q1;
+                    decimal fpaRate = (decimal)dataBuyDocLine.FpaRate;
+                    decimal discountRate = (decimal)dataBuyDocLine.DiscountRate;
                     decimal lineNetAmount = unitPrice * units;
                     decimal lineDiscountAmount = lineNetAmount * discountRate;
                     decimal lineFpaAmount = (lineNetAmount - lineDiscountAmount) * fpaRate;
@@ -1399,7 +1407,7 @@ namespace GrKouk.WebRazor.Controllers
                             CreatorId = transToAttach.Id,
                             TransDate = transToAttach.TransDate,
                             TransRefCode = transToAttach.TransRefCode,
-                            UnitFactor = (decimal) dataBuyDocLine.Factor,
+                            UnitFactor = (decimal)dataBuyDocLine.Factor,
                             TransWarehouseDocSeriesId = warehouseSeriesId,
                             TransWarehouseDocTypeId = warehouseTypeId
                         };
@@ -1727,9 +1735,9 @@ namespace GrKouk.WebRazor.Controllers
 
                     var sellDocLine = new SellDocLine();
                     decimal unitPrice = docLine.Price;
-                    decimal units = (decimal) docLine.Q1;
-                    decimal fpaRate = (decimal) docLine.FpaRate;
-                    decimal discountRate = (decimal) docLine.DiscountRate;
+                    decimal units = (decimal)docLine.Q1;
+                    decimal fpaRate = (decimal)docLine.FpaRate;
+                    decimal discountRate = (decimal)docLine.DiscountRate;
                     decimal lineNetAmount = unitPrice * units;
                     decimal lineDiscountAmount = lineNetAmount * discountRate;
                     decimal lineFpaAmount = (lineNetAmount - lineDiscountAmount) * fpaRate;
@@ -1774,7 +1782,7 @@ namespace GrKouk.WebRazor.Controllers
                         warehouseTrans.CreatorId = transToAttach.Id;
                         warehouseTrans.TransDate = transToAttach.TransDate;
                         warehouseTrans.TransRefCode = transToAttach.TransRefCode;
-                        warehouseTrans.UnitFactor = (decimal) docLine.Factor;
+                        warehouseTrans.UnitFactor = (decimal)docLine.Factor;
 
                         warehouseTrans.TransWarehouseDocSeriesId = warehouseSeriesId;
                         warehouseTrans.TransWarehouseDocTypeId = warehouseTypeId;
@@ -2062,9 +2070,9 @@ namespace GrKouk.WebRazor.Controllers
 
                     var sellDocLine = new SellDocLine();
                     decimal unitPrice = docLine.Price;
-                    decimal units = (decimal) docLine.Q1;
-                    decimal fpaRate = (decimal) docLine.FpaRate;
-                    decimal discountRate = (decimal) docLine.DiscountRate;
+                    decimal units = (decimal)docLine.Q1;
+                    decimal fpaRate = (decimal)docLine.FpaRate;
+                    decimal discountRate = (decimal)docLine.DiscountRate;
                     decimal lineNetAmount = unitPrice * units;
                     decimal lineDiscountAmount = lineNetAmount * discountRate;
                     decimal lineFpaAmount = (lineNetAmount - lineDiscountAmount) * fpaRate;
@@ -2109,7 +2117,7 @@ namespace GrKouk.WebRazor.Controllers
                             CreatorId = transToAttach.Id,
                             TransDate = transToAttach.TransDate,
                             TransRefCode = transToAttach.TransRefCode,
-                            UnitFactor = (decimal) docLine.Factor,
+                            UnitFactor = (decimal)docLine.Factor,
                             TransWarehouseDocSeriesId = warehouseSeriesId,
                             TransWarehouseDocTypeId = warehouseTypeId
                         };
