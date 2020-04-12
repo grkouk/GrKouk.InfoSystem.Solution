@@ -124,6 +124,39 @@ namespace GrKouk.WebRazor.Pages.Transactions.RecurringTransactions
                         
                         break;
                     case RecurringDocTypeEnum.SellType:
+                        var sellMatDoc = await _context.SellDocuments
+                               .Include(b => b.Company)
+                               .Include(b => b.FiscalPeriod)
+                               .Include(b => b.SellDocSeries)
+                               .Include(b => b.SellDocType)
+                               .Include(b => b.Section)
+
+                               .Include(b => b.Transactor)
+                               .Include(b => b.SellDocLines)
+                               .ThenInclude(m => m.WarehouseItem)
+                               .FirstOrDefaultAsync(m => m.Id == CreateFromId);
+                        if (sellMatDoc == null)
+                        {
+                            return NotFound();
+                        }
+                        //ItemVm = _mapper.Map<BuyDocCreateAjaxDto>(buyMatDoc);
+                        _mapper.ConfigurationProvider.AssertConfigurationIsValid();
+                        CopyFromItemVm = _mapper.Map<RecurringDocModifyDto>(sellMatDoc);
+                        ItemVm = new RecurringTransDocCreateAjaxDto
+                        {
+                            NextTransDate = DateTime.Now.AddMonths(1),
+                            RecurringFrequency = "1M",
+                            RecurringDocType = RecurringDocTypeEnum.SellType,
+                            SectionId = CopyFromItemVm.SectionId,
+                            AmountDiscount = CopyFromItemVm.AmountDiscount,
+                            AmountFpa = CopyFromItemVm.AmountFpa,
+                            AmountNet = CopyFromItemVm.AmountNet,
+                            DocSeriesId = CopyFromItemVm.DocSeriesId,
+                            CompanyId = CopyFromItemVm.CompanyId,
+                            Etiology = CopyFromItemVm.Etiology,
+                            PaymentMethodId = CopyFromItemVm.PaymentMethodId,
+                            TransactorId = CopyFromItemVm.TransactorId
+                        };
                         break;
                     default:
                         break;

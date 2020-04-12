@@ -134,6 +134,11 @@ namespace GrKouk.WebRazor.Automapper
                     opt => opt.MapFrom(src => src.BuyDocSeriesId))
                 .ReverseMap();
             CreateMap<BuyDocLine, RecurringDocLineModifyDto>().ReverseMap();
+            CreateMap<SellDocument, RecurringDocModifyDto>()
+               .ForMember(dest => dest.DocSeriesId,
+                   opt => opt.MapFrom(src => src.SellDocSeriesId))
+               .ReverseMap();
+            CreateMap<SellDocLine, RecurringDocLineModifyDto>();
         }
     }
 }
