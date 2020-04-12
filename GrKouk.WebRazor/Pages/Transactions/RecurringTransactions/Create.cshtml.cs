@@ -140,7 +140,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.RecurringTransactions
                             return NotFound();
                         }
                         //ItemVm = _mapper.Map<BuyDocCreateAjaxDto>(buyMatDoc);
-                        _mapper.ConfigurationProvider.AssertConfigurationIsValid();
+                       // _mapper.ConfigurationProvider.AssertConfigurationIsValid();
                         CopyFromItemVm = _mapper.Map<RecurringDocModifyDto>(sellMatDoc);
                         ItemVm = new RecurringTransDocCreateAjaxDto
                         {

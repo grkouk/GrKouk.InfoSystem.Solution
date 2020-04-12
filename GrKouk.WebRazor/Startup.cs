@@ -88,12 +88,12 @@ namespace GrKouk.WebRazor
                 })
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
+            services.AddAutoMapper(typeof(Startup));
+            //services.AddAutoMapper(cfg =>
+            //{
+            //    cfg.AddProfile(new AutoMapperProfile());
 
-            services.AddAutoMapper(cfg =>
-            {
-                cfg.AddProfile(new AutoMapperProfile());
-
-            });
+            //});
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

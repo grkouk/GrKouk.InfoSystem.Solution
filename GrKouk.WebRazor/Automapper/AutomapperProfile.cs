@@ -65,10 +65,15 @@ namespace GrKouk.WebRazor.Automapper
             CreateMap<TransWarehouseDef, TransWarehouseDefListDto>()
                 .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.Company.Name));
 
-            CreateMap<WarehouseItem, WarehouseItemListDto>();
+            CreateMap<WarehouseItem, WarehouseItemListDto>()
+                .ForMember(dest => dest.Url, opt => opt.Ignore());
                 //.ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.Company.Name));
-            CreateMap<WarehouseItem, WarehouseItemCreateDto>().ReverseMap();
-            CreateMap<WarehouseItem, WarehouseItemModifyDto>().ReverseMap();
+            CreateMap<WarehouseItem, WarehouseItemCreateDto>()
+                .ForMember(dest => dest.CashRegCategoryId, opt => opt.Ignore())
+                .ReverseMap();
+            CreateMap<WarehouseItem, WarehouseItemModifyDto>()
+                .ForMember(dest => dest.CashRegCategoryId, opt => opt.Ignore())
+                .ReverseMap();
 
             CreateMap<BuyDocument, BuyDocCreateAjaxNoLinesDto>().ReverseMap();
             CreateMap<BuyDocument, BuyDocModifyAjaxNoLinesDto>().ReverseMap();
@@ -100,7 +105,7 @@ namespace GrKouk.WebRazor.Automapper
             CreateMap<SellDocument, SellDocCreateAjaxNoLinesDto>().ReverseMap();
             CreateMap<SellDocument, SellDocModifyAjaxNoLinesDto>().ReverseMap();
             CreateMap<SellDocument, SellDocLineAjaxDto>().ReverseMap();
-            CreateMap<SellDocument, SellDocListDto>().ReverseMap();
+            //CreateMap<SellDocument, SellDocListDto>().ReverseMap();
             CreateMap<SellDocLine, SellDocLineModifyDto>().ReverseMap();
 
             CreateMap<TransactorTransaction, SellDocCreateAjaxDto>().ReverseMap();
@@ -137,6 +142,8 @@ namespace GrKouk.WebRazor.Automapper
             CreateMap<SellDocument, RecurringDocModifyDto>()
                .ForMember(dest => dest.DocSeriesId,
                    opt => opt.MapFrom(src => src.SellDocSeriesId))
+               .ForMember(dest=>dest.BuyDocLines,
+               opt=>opt.MapFrom(src=>src.SellDocLines))
                .ReverseMap();
             CreateMap<SellDocLine, RecurringDocLineModifyDto>();
         }
