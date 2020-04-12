@@ -30,6 +30,7 @@
             <input type="hidden" asp-for="@Model.CopyFromId" id="CopyFromId" />
             <input type="hidden" asp-for="@Model.CreateFromId" id="CreateFromId" />
             <input type="hidden" asp-for="@Model.CreateFromType" id="CreateFromType" />
+            <input type="hidden" asp-for="ItemVm.SectionId"  />
             <input type="hidden" asp-for="@Model.InitialLoad" id="IsInitialLoad" />
 
             <input type="hidden" id="MaterialId" />
@@ -1253,7 +1254,7 @@
 
                     dataType: 'json',
                     type: 'GET',
-                    url: "/api/Materials/SetBuySeriesInSession?seriesId=" + $transDocSeriesId.val(),
+                    url: "/api/Materials/SetDocSeriesInSession?seriesId=" + $transDocSeriesId.val(),
 
                     success: function(result) {
 
@@ -1786,7 +1787,7 @@
 
                     dataType: 'json',
                     type: 'POST',
-                    url: "/api/Materials/MaterialBuyDoc",
+                    url: "/api/Materials/CreateRecurringDoc",
                     data: data,
                     headers: {
                         'RequestVerificationToken': securityToken
@@ -1838,18 +1839,20 @@
                     });
 
                 var data = JSON.stringify({
-                    transDate: $("#ItemVm_NextTransDate").val(),
+                    nextTransDate: $("#ItemVm_NextTransDate").val(),
                     transRefCode: $("#ItemVm_TransRefCode").val(),
                     transactorId: $("#ItemVm_TransactorId").val(),
                     companyId: $("#ItemVm_CompanyId").val(),
+                    sectionId: $("#ItemVm_SectionId").val(),
                     paymentMethodId: $("#ItemVm_PaymentMethodId").val(),
-                    buyDocSeriesId: $("#ItemVm_DocSeriesId").val(),
+                    docSeriesId: $("#ItemVm_DocSeriesId").val(),
                     Etiology: $("#ItemVm_Etiology").val(),
                     amountFpa: $("#ItemVm_AmountFpa").attr('data-actualValue'),
                     amountNet: $("#ItemVm_AmountNet").attr('data-actualValue'),
                     amountDiscount: $("#ItemVm_AmountDiscount").attr('data-actualValue'),
-
-                    buyDocLines: linesArr
+                    recurringDocType: $("#ItemVm_RecurringDocType").val(),
+                    recurringFrequency: $("#ItemVm_RecurringFrequency").val(),
+                    docLines: linesArr
 
                 });
                 console.log("Data->" + data);
@@ -1865,7 +1868,7 @@
                     });
             });
             //-------------
-            $transDate.val(new Date().toISOString().slice(0, 10));
+            //$transDate.val(new Date().toISOString().slice(0, 10));
             var copyFromId = parseInt($('#CopyFromId').val());
             var createFromId = parseInt($('#CreateFromId').val());
             if (copyFromId === 0 && createFromId===0) {
@@ -1879,6 +1882,7 @@
                 $amountDiscount.val(0);
                 $amountSum.attr('data-actualValue', '0');
                 $amountSum.val(0);
+                $transDate.val(new Date().toISOString().slice(0, 10));
             } else {
                 updateCounter();
             }

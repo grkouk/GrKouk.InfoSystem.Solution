@@ -19,6 +19,7 @@ using GrKouk.WebRazor.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using GrKouk.InfoSystem.Dtos.WebDtos.RecurringTransactions;
+using GrKouk.InfoSystem.Domain.RecurringTransactions;
 
 namespace GrKouk.WebRazor.Controllers
 {
@@ -57,6 +58,12 @@ namespace GrKouk.WebRazor.Controllers
             return Ok(new { });
         }
 
+        [HttpGet("SetDocSeriesInSession")]
+        public IActionResult DocSeriesInSession(string seriesId)
+        {
+            HttpContext.Session.SetString("SeriesId", seriesId);
+            return Ok(new { });
+        }
         [HttpGet("SetSaleSeriesInSession")]
         public IActionResult SaleSeriesInSession(string seriesId)
         {
@@ -556,7 +563,156 @@ namespace GrKouk.WebRazor.Controllers
             return Ok(new {TransType = transType});
         }
 
-        
+        [HttpPost("CreateRecurringDoc")]
+        public async Task<IActionResult> CreateRecurringDoc([FromBody] RecurringTransDocCreateAjaxDto data)
+        {
+            //const string sectionCode = "SYS-BUY-MATERIALS-SCN";
+            // bool noSupplierTrans = false;
+            bool noWarehouseTrans = false;
+            //ToDO: Continue from here
+
+            RecurringDocCreateAjaxNoLinesDto transToAttachNoLines;
+            RecurringTransDoc transToAttach;
+            DateTime dateOfTrans;
+
+            if (data == null)
+            {
+                return BadRequest(new
+                {
+                    error = "Empty request data"
+                });
+            }
+
+            try
+            {
+                transToAttachNoLines = _mapper.Map<RecurringDocCreateAjaxNoLinesDto>(data);
+                transToAttach = _mapper.Map<RecurringTransDoc>(transToAttachNoLines);
+                dateOfTrans = data.NextTransDate;
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new
+                {
+                    error = e.Message
+                });
+            }
+
+            using (var transaction = _context.Database.BeginTransaction())
+            {
+
+                var docSeries = await
+                    _context.BuyDocSeriesDefs.SingleOrDefaultAsync(m => m.Id == data.DocSeriesId);
+
+                if (docSeries is null)
+                {
+                    transaction.Rollback();
+                    ModelState.AddModelError(string.Empty, "Δεν βρέθηκε η σειρά παραστατικού");
+                    return NotFound(new
+                    {
+                        error = "Buy Doc Series not found"
+                    });
+                }
+
+                await _context.Entry(docSeries).Reference(t => t.BuyDocTypeDef).LoadAsync();
+                var docTypeDef = docSeries.BuyDocTypeDef;
+                //await _context.Entry(docTypeDef)
+                //      .Reference(t => t.TransSupplierDef)
+                //      .LoadAsync();
+                await _context.Entry(docTypeDef)
+                    .Reference(t => t.TransTransactorDef)
+                    .LoadAsync();
+
+                await _context.Entry(docTypeDef).Reference(t => t.TransWarehouseDef)
+                    .LoadAsync();
+
+                //var transSupplierDef = docTypeDef.TransSupplierDef;
+                var transTransactorDef = docTypeDef.TransTransactorDef;
+                var transWarehouseDef = docTypeDef.TransWarehouseDef;
+
+                //transToAttach.SectionId = section.Id;
+               // transToAttach.FiscalPeriodId = fiscalPeriod.Id;
+                transToAttach.DocTypeId = docSeries.BuyDocTypeDefId;
+                _context.RecurringTransDocs.Add(transToAttach);
+
+                try
+                {
+                    await _context.SaveChangesAsync();
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    transaction.Rollback();
+                    string msg = e.InnerException?.Message;
+                    return BadRequest(new
+                    {
+                        error = e.Message + " " + msg
+                    });
+                }
+
+                var docId = _context.Entry(transToAttach).Entity.Id;
+
+                foreach (var dataBuyDocLine in data.DocLines)
+                {
+                    var warehouseItemId = dataBuyDocLine.WarehouseItemId;
+                    var material = await _context.WarehouseItems.SingleOrDefaultAsync(p => p.Id == warehouseItemId);
+                    if (material is null)
+                    {
+                        //Handle error
+                        transaction.Rollback();
+                        ModelState.AddModelError(string.Empty, "Doc Line error null WarehouseItem");
+                        return NotFound(new
+                        {
+                            error = "Could not locate material in Doc Line "
+                        });
+                    }
+
+                    var buyMaterialLine = new RecurringTransDocLine();
+                    decimal unitPrice = dataBuyDocLine.Price;
+                    decimal units = (decimal)dataBuyDocLine.Q1;
+                    decimal fpaRate = (decimal)dataBuyDocLine.FpaRate;
+                    decimal discountRate = (decimal)dataBuyDocLine.DiscountRate;
+                    decimal lineNetAmount = unitPrice * units;
+                    decimal lineDiscountAmount = lineNetAmount * discountRate;
+                    decimal lineFpaAmount = (lineNetAmount - lineDiscountAmount) * fpaRate;
+                    buyMaterialLine.UnitPrice = unitPrice;
+                    buyMaterialLine.AmountFpa = lineFpaAmount;
+                    buyMaterialLine.AmountNet = lineNetAmount;
+                    buyMaterialLine.AmountDiscount = lineDiscountAmount;
+                    buyMaterialLine.DiscountRate = discountRate;
+                    buyMaterialLine.FpaRate = fpaRate;
+                    buyMaterialLine.WarehouseItemId = dataBuyDocLine.WarehouseItemId;
+                    buyMaterialLine.Quontity1 = dataBuyDocLine.Q1;
+                    buyMaterialLine.Quontity2 = dataBuyDocLine.Q2;
+                    buyMaterialLine.PrimaryUnitId = dataBuyDocLine.MainUnitId;
+                    buyMaterialLine.SecondaryUnitId = dataBuyDocLine.SecUnitId;
+                    buyMaterialLine.Factor = dataBuyDocLine.Factor;
+                    buyMaterialLine.RecurringTransDocId = docId;
+                    buyMaterialLine.Etiology = transToAttach.Etiology;
+                    //_context.Entry(transToAttach).Entity
+                    transToAttach.DocLines.Add(buyMaterialLine);
+                    
+                }
+
+                try
+                {
+                    await _context.SaveChangesAsync();
+                    transaction.Commit();
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    transaction.Rollback();
+                    string msg = e.InnerException.Message;
+                    return BadRequest(new
+                    {
+                        error = e.Message + " " + msg
+                    });
+                }
+            }
+
+            return Ok(new { });
+        }
+
 
         [HttpPost("MaterialBuyDoc")]
         public async Task<IActionResult> PostMaterialBuyDoc([FromBody] BuyDocCreateAjaxDto data)

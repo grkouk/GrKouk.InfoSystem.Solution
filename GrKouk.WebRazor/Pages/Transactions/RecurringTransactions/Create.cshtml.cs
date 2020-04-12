@@ -108,8 +108,9 @@ namespace GrKouk.WebRazor.Pages.Transactions.RecurringTransactions
                             ItemVm = new RecurringTransDocCreateAjaxDto
                             {
                                 NextTransDate=DateTime.Now.AddMonths(1),
-                                RecurringFrequency="3M",
-                                RecurringDocType=RecurringDocTypeEnum.BuyType,
+                                RecurringFrequency = "1M",
+                                RecurringDocType = RecurringDocTypeEnum.BuyType,
+                                SectionId = CopyFromItemVm.SectionId,
                                 AmountDiscount = CopyFromItemVm.AmountDiscount,
                                 AmountFpa = CopyFromItemVm.AmountFpa,
                                 AmountNet = CopyFromItemVm.AmountNet,

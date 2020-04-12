@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using GrKouk.InfoSystem.Definitions;
+using GrKouk.InfoSystem.Domain.FinConfig;
 using GrKouk.InfoSystem.Domain.MediaEntities;
 using GrKouk.InfoSystem.Domain.RecurringTransactions;
 using GrKouk.InfoSystem.Domain.Shared;
@@ -484,15 +485,15 @@ namespace GrKouk.WebRazor.Controllers
                 }
             }
 
-            if (!String.IsNullOrEmpty(request.DateRange))
-            {
-                var datePeriodFilter = request.DateRange;
-                DateFilterDates dfDates = DateFilter.GetDateFilterDates(datePeriodFilter);
-                DateTime fromDate = dfDates.FromDate;
-                DateTime toDate = dfDates.ToDate;
+            //if (!String.IsNullOrEmpty(request.DateRange))
+            //{
+            //    var datePeriodFilter = request.DateRange;
+            //    DateFilterDates dfDates = DateFilter.GetDateFilterDates(datePeriodFilter);
+            //    DateTime fromDate = dfDates.FromDate;
+            //    DateTime toDate = dfDates.ToDate;
 
-                fullListIq = fullListIq.Where(p => p.NextTransDate >= fromDate && p.NextTransDate <= toDate);
-            }
+            //    fullListIq = fullListIq.Where(p => p.NextTransDate >= fromDate && p.NextTransDate <= toDate);
+            //}
 
             if (!String.IsNullOrEmpty(request.CompanyFilter))
             {
@@ -512,12 +513,15 @@ namespace GrKouk.WebRazor.Controllers
             var currencyRates = await _context.ExchangeRates.OrderByDescending(p => p.ClosingDate)
                 .Take(10)
                 .ToListAsync();
+            var docBuySeries = await _context.BuyDocSeriesDefs.ToListAsync();
+            var docSellSeries = await _context.SellDocSeriesDefs.ToListAsync();
+
             var t = fullListIq.ProjectTo<RecurringDocListDto>(_mapper.ConfigurationProvider);
-            var t1 = await t.Select(p => new RecurringDocListDto
+            var t1 =  t.Select(p => new RecurringDocListDto
             {
                 Id = p.Id,
                 NextTransDate = p.NextTransDate,
-                RecurringDocTypeName=p.RecurringDocTypeName,
+                RecurringDocTypeName=GetRecurringTypeName( p.RecurringDocType),
                 RecurringFrequency=p.RecurringFrequency,
                 TransRefCode = p.TransRefCode,
                 SectionId = p.SectionId,
@@ -525,23 +529,24 @@ namespace GrKouk.WebRazor.Controllers
                 TransactorId = p.TransactorId,
                 TransactorName = p.TransactorName,
                 DocSeriesId = p.DocSeriesId,
-                DocSeriesCode = GetDocSeriesCode(p.RecurringDocType,p.DocSeriesId),
-                DocSeriesName = GetDocSeriesName(p.RecurringDocType, p.DocSeriesId),
+                DocSeriesCode = GetDocSeriesCode(p.RecurringDocType,p.DocSeriesId,docBuySeries,docSellSeries),
+                DocSeriesName = GetDocSeriesName(p.RecurringDocType, p.DocSeriesId, docBuySeries, docSellSeries),
                 AmountFpa = ConvertAmount(p.CompanyCurrencyId, request.DisplayCurrencyId, currencyRates, p.AmountFpa),
                 AmountNet = ConvertAmount(p.CompanyCurrencyId, request.DisplayCurrencyId, currencyRates, p.AmountNet),
                 AmountDiscount = ConvertAmount(p.CompanyCurrencyId, request.DisplayCurrencyId, currencyRates, p.AmountDiscount),
                 CompanyId = p.CompanyId,
                 CompanyCode = p.CompanyCode,
                 CompanyCurrencyId = p.CompanyCurrencyId
-            }).ToListAsync();
-            var grandSumOfAmount = t1.Sum(p => p.TotalAmount);
-            var gransSumOfNetAmount = t1.Sum(p => p.TotalNetAmount);
+            });
+           
 
             var pageIndex = request.PageIndex;
 
             var pageSize = request.PageSize;
 
-            var listItems = await PagedList<RecurringDocListDto>.CreateAsync(t, pageIndex, pageSize);
+            var listItems = await PagedList<RecurringDocListDto>.CreateAsync(t1, pageIndex, pageSize);
+            var grandSumOfAmount = t1.Sum(p => p.TotalAmount);
+            var gransSumOfNetAmount = t1.Sum(p => p.TotalNetAmount);
             foreach (var listItem in listItems)
             {
                 if (listItem.CompanyCurrencyId != 1)
@@ -2373,7 +2378,7 @@ namespace GrKouk.WebRazor.Controllers
             };
             return Ok(response);
         }
-        private string GetDocSeriesName(RecurringDocTypeEnum docType, int docSeriesId)
+        private string GetDocSeriesName(RecurringDocTypeEnum docType, int docSeriesId, IList<BuyDocSeriesDef> buyDocSeriesList, IList<SellDocSeriesDef> sellDocSeriesList)
         {
             string docName=string.Empty;
             string docCode=string.Empty;
@@ -2381,7 +2386,7 @@ namespace GrKouk.WebRazor.Controllers
             switch (docType)
             {
                 case RecurringDocTypeEnum.BuyType:
-                    var docBuySeries = _context.BuyDocSeriesDefs.FirstOrDefault(p => p.Id == docSeriesId);
+                    var docBuySeries = buyDocSeriesList.FirstOrDefault(p => p.Id == docSeriesId);
                     if (docBuySeries != null)
                     {
                         docName = docBuySeries.Name;
@@ -2389,7 +2394,7 @@ namespace GrKouk.WebRazor.Controllers
                     }
                     break;
                 case RecurringDocTypeEnum.SellType:
-                    var docSellSeries = _context.SellDocSeriesDefs.FirstOrDefault(p => p.Id == docSeriesId);
+                    var docSellSeries = sellDocSeriesList.FirstOrDefault(p => p.Id == docSeriesId);
                     if (docSellSeries != null)
                     {
                         docName = docSellSeries.Name;
@@ -2402,7 +2407,25 @@ namespace GrKouk.WebRazor.Controllers
 
             return docName;
         }
-        private string GetDocSeriesCode(RecurringDocTypeEnum docType, int docSeriesId)
+        private string GetRecurringTypeName(RecurringDocTypeEnum recurringType)
+        {
+            string typeName = string.Empty;
+            switch (recurringType)
+            {
+                case RecurringDocTypeEnum.BuyType:
+                    typeName = "Αγορές/Εξοδα";
+                    break;
+                case RecurringDocTypeEnum.SellType:
+                    typeName = "Πωλήσεις/Εσοδα";
+                    break;
+                default:
+                    typeName = "#Απροσδιόριστο#";
+                    break;
+            }
+
+            return typeName;
+        }
+        private string GetDocSeriesCode(RecurringDocTypeEnum docType, int docSeriesId, IList<BuyDocSeriesDef> buyDocSeriesList,IList<SellDocSeriesDef> sellDocSeriesList)
         {
             string docName = string.Empty;
             string docCode = string.Empty;
@@ -2410,7 +2433,7 @@ namespace GrKouk.WebRazor.Controllers
             switch (docType)
             {
                 case RecurringDocTypeEnum.BuyType:
-                    var docBuySeries = _context.BuyDocSeriesDefs.FirstOrDefault(p => p.Id == docSeriesId);
+                    var docBuySeries = buyDocSeriesList.FirstOrDefault(p => p.Id == docSeriesId);
                     if (docBuySeries != null)
                     {
                         docName = docBuySeries.Name;
@@ -2418,7 +2441,7 @@ namespace GrKouk.WebRazor.Controllers
                     }
                     break;
                 case RecurringDocTypeEnum.SellType:
-                    var docSellSeries = _context.SellDocSeriesDefs.FirstOrDefault(p => p.Id == docSeriesId);
+                    var docSellSeries = sellDocSeriesList.FirstOrDefault(p => p.Id == docSeriesId);
                     if (docSellSeries != null)
                     {
                         docName = docSellSeries.Name;

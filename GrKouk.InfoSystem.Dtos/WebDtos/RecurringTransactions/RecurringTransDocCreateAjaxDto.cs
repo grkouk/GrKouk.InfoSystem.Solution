@@ -24,6 +24,7 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.RecurringTransactions
         [Required]
         [Display(Name = "Transactor")]
         public int TransactorId { get; set; }
+        public int SectionId { get; set; }
         [Required]
         [Display(Name = "Doc Series")]
         public int DocSeriesId { get; set; }
