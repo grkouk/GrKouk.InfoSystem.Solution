@@ -490,6 +490,53 @@ namespace GrKouk.WebRazor.Controllers
             return Ok(new { UsedPrice = usedPrice });
         }
 
+        [HttpGet("RecSeriesData")]
+        public async Task<IActionResult> GetRecSeriesData(int seriesId, RecurringDocTypeEnum docType)
+        {
+            switch (docType)
+            {
+                case RecurringDocTypeEnum.BuyType:
+                    var buySeriesDef = await _context.BuyDocSeriesDefs.SingleOrDefaultAsync(p => p.Id == seriesId);
+                    if (buySeriesDef == null)
+                    {
+                        Debug.Print("Inside GetBuySeriesData No Series found");
+                        return NotFound(new
+                        {
+                            error = "No Series Found"
+                        });
+                    }
+                    //BuySeriesInSession(seriesId.ToString());
+                    await _context.Entry(buySeriesDef)
+                        .Reference(p => p.BuyDocTypeDef)
+                        .LoadAsync();
+                    var buyTypeDef = buySeriesDef.BuyDocTypeDef;
+                    var usedBuyPrice = buyTypeDef.UsedPrice;
+                    Debug.Print("Inside GetBuySeriesData Returning usedPrice " + usedBuyPrice.ToString());
+                    return Ok(new { UsedPrice = usedBuyPrice });
+                    break;
+                case RecurringDocTypeEnum.SellType:
+                    Debug.Print("Inside GetSalesSeriesData " + seriesId.ToString());
+                    var salesSeriesDef = await _context.SellDocSeriesDefs.SingleOrDefaultAsync(p => p.Id == seriesId);
+                    if (salesSeriesDef == null)
+                    {
+                        Debug.Print("Inside GetSalesSeriesData No Series found");
+                        return NotFound(new
+                        {
+                            error = "No Series Found"
+                        });
+                    }
+                    await _context.Entry(salesSeriesDef)
+                        .Reference(p => p.SellDocTypeDef)
+                        .LoadAsync();
+                    var salesTypeDef = salesSeriesDef.SellDocTypeDef;
+                    var usedSellPrice = salesTypeDef.UsedPrice;
+                    Debug.Print("Inside GetSalesSeriesData Returning usedPrice " + usedSellPrice.ToString());
+                    return Ok(new { UsedPrice = usedSellPrice });
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(docType), docType, null);
+            }
+        }
         [HttpGet("BuySeriesData")]
         public async Task<IActionResult> GetBuySeriesData(int seriesId)
         {

@@ -79,39 +79,35 @@ namespace GrKouk.WebRazor.Pages.Transactions.RecurringTransactions
             ViewData["RecurringFrequency"] = FiltersHelper.GetRecurringFrequencyList();
             ViewData["CompanyId"] = new SelectList(_context.Companies.OrderBy(p => p.Code).AsNoTracking(), "Id", "Code");
             ViewData["PaymentMethodId"] = new SelectList(_context.PaymentMethods.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
-            var BuyDocSeriesListJs = _context.BuyDocSeriesDefs.OrderBy(p => p.Name)
+            var buyDocSeriesListJs = _context.BuyDocSeriesDefs.OrderBy(p => p.Name)
                .Select(p => new SelectListItem()
                {
-
                    Text = p.Code,
                    Value = p.Id.ToString()
                }).ToList();
-            var SellDocSeriesListJs = _context.SellDocSeriesDefs.OrderBy(p => p.Name)
+            var sellDocSeriesListJs = _context.SellDocSeriesDefs.OrderBy(p => p.Name)
               .Select(p => new SelectListItem()
               {
-
                   Text = p.Code,
                   Value = p.Id.ToString()
               }).ToList();
-            var SupplierListJs = _context.Transactors.Where(s => s.TransactorType.Code == "SYS.SUPPLIER").OrderBy(s => s.Name)
+            var supplierListJs = _context.Transactors.Where(s => s.TransactorType.Code == "SYS.SUPPLIER").OrderBy(s => s.Name)
               .Select(p => new SelectListItem()
               {
-
                   Text = p.Name,
                   Value = p.Id.ToString()
               }).ToList();
-            var CustomerListJs = _context.Transactors.Where(s => s.TransactorType.Code == "SYS.CUSTOMER" || s.TransactorType.Code == "SYS.DEPARTMENT").OrderBy(s => s.Name)
+            var customerListJs = _context.Transactors.Where(s => s.TransactorType.Code == "SYS.CUSTOMER" || s.TransactorType.Code == "SYS.DEPARTMENT").OrderBy(s => s.Name)
              .Select(p => new SelectListItem()
              {
-
                  Text = p.Name,
                  Value = p.Id.ToString()
              }).ToList();
 
-            ViewData["BuyDocSeriesListJs"] = BuyDocSeriesListJs;
-            ViewData["SellDocSeriesListJs"] = SellDocSeriesListJs;
-            ViewData["SupplierListJs"] = SupplierListJs;
-            ViewData["CustomerListJs"] = CustomerListJs;
+            ViewData["BuyDocSeriesListJs"] = buyDocSeriesListJs;
+            ViewData["SellDocSeriesListJs"] = sellDocSeriesListJs;
+            ViewData["SupplierListJs"] = supplierListJs;
+            ViewData["CustomerListJs"] = customerListJs;
         }
 
         public async Task<IActionResult> OnPostAsync()

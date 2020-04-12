@@ -415,18 +415,17 @@
             var $mainUnitId = $('#MaterialMainUnitId');
             var $secUnitId = $('#MaterialSecondaryUnitId');
             var $seekType = $('#SeekType');
-            var $initialLoad = $('#IsInitialLoad');
             var $priceNetto = $('#MaterialNettoPrice');
             var $priceBrutto = $('#MaterialBruttoPrice');
             var $seriesUsedPrice = $('#SeriesUsedPrice');
             var $priceLabel = $('#priceLabel');
-            var $transDocSeriesId = $('#ItemVm_BuyDocSeriesId');
+            var $transDocSeriesId = $('#ItemVm_DocSeriesId');
             var $companyId = $('#ItemVm_CompanyId');
             var $price = $("#Price");
             var $priceNet = $("#PriceNet");
             var $lookupValueValid = $("#LookupValueValid");
             var $materialFpaId = $('#MaterialFpaId');
-
+            let $recurringType=$('#ItemVm_RecurringDocType');
             var buyDocSeriesListJs = @Html.Raw(Json.Serialize(ViewBag.BuyDocSeriesListJs));
             var sellDocSeriesListJs = @Html.Raw(Json.Serialize(ViewBag.SellDocSeriesListJs));
             var supplierListJs = @Html.Raw(Json.Serialize(ViewBag.SupplierListJs));
@@ -1253,7 +1252,7 @@
 
                     dataType: 'json',
                     type: 'GET',
-                    url: "/api/Materials/SetBuySeriesInSession?seriesId="+$transDocSeriesId.val(),
+                     url: "/api/Materials/SetDocSeriesInSession?seriesId=" + $transDocSeriesId.val(),
 
                     success: function(result) {
 
@@ -1282,11 +1281,13 @@
                 });
             };
             var seriesChanged = () => {
+                //TODO:Move this logic to create page also
                 console.log("Inside Series Changed");
                 setSeriesInSession();
-                var seriesId = $transDocSeriesId.val();
-                var uri = '@Configuration.GetSection("WebApiSettings")["WebApiLocal"]';
-                var finalUri = `${uri}/materials/BuySeriesData?seriesId=${seriesId}`;
+                let recType = $('#ItemVm_RecurringDocType').val();
+                let seriesId = $transDocSeriesId.val();
+                const uri = '@Configuration.GetSection("WebApiSettings")["WebApiLocal"]';
+                let finalUri = `${uri}/materials/RecSeriesData?seriesId=${seriesId}&docType=${recType}`;
                 fetch(finalUri)
                     .then(function(response) {
                         if (response.ok) {
@@ -1299,11 +1300,9 @@
                     .then(function(myJson) {
                         console.log("Inside fetch then with myJson" + JSON.stringify(myJson));
                         if (myJson) {
-
-                            var usedPrice = myJson.usedPrice;
+                            let usedPrice = myJson.usedPrice;
                             console.log("Returned usedPrice=" + usedPrice);
                             $seriesUsedPrice.val(usedPrice);
-
                         }
                         // $spinner.attr('hidden', true);
                     })
@@ -1514,6 +1513,27 @@
                 default:
                 }
             };
+           let recurringTypeChange=()=>{
+               let recType = $recurringType.val();
+               switch (recType) {
+                 case 'BuyType': //Buy
+                     $transDocSeriesId.empty();
+                     $.each(buyDocSeriesListJs, function(index, item) {
+                            $transDocSeriesId.append($('<option></option>').attr('value', item.value).text(item.text));
+                     });
+                     break;
+                 case 'SellType': //Sell
+                        $transDocSeriesId.empty();
+                        $.each(sellDocSeriesListJs, function(index, item) {
+                              $transDocSeriesId.append($('<option></option>').attr('value', item.value).text(item.text));
+                        });
+                     break;
+               }
+               
+           };
+           $recurringType.change(() =>{
+               recurringTypeChange();
+           });
             $seekType.change(() => {
                 setSeekType();
             });
@@ -1820,18 +1840,21 @@
 
                 var data = JSON.stringify({
                     id: $("#ItemVm_Id").val(),
-                    transDate: $("#ItemVm_TransDate").val(),
+                    transDate: $("#ItemVm_NextTransDate").val(),
                     transRefCode: $("#ItemVm_TransRefCode").val(),
                     transactorId: $("#ItemVm_TransactorId").val(),
                     companyId: $("#ItemVm_CompanyId").val(),
                     paymentMethodId: $("#ItemVm_PaymentMethodId").val(),
-                    buyDocSeriesId: $("#ItemVm_BuyDocSeriesId").val(),
+                     sectionId: $("#ItemVm_SectionId").val(),
+                    buyDocSeriesId: $("#ItemVm_DocSeriesId").val(),
                     buyDocTypeId: $("#ItemVm_BuyDocTypeId").val(),
                     Etiology: $("#ItemVm_Etiology").val(),
                     amountFpa: $("#ItemVm_AmountFpa").attr('data-actualValue'),
                     amountNet: $("#ItemVm_AmountNet").attr('data-actualValue'),
                     amountDiscount: $("#ItemVm_AmountDiscount").attr('data-actualValue'),
                     timestamp: $("#ItemVm_Timestamp").val(),
+                    recurringDocType: $("#ItemVm_RecurringDocType").val(),
+                    recurringFrequency: $("#ItemVm_RecurringFrequency").val(),
                     buyDocLines: linesArr
 
                 });
