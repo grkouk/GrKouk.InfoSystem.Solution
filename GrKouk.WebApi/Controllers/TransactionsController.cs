@@ -135,7 +135,7 @@ namespace GrKouk.WebApi.Controllers
             {
                 return BadRequest();
             }
-            var entityToMap = Mapper.Map<FinDiaryTransaction>(transactionModifyDto);
+            var entityToMap = _mapper.Map<FinDiaryTransaction>(transactionModifyDto);
             _context.Entry(entityToMap).State = EntityState.Modified;
 
             try
@@ -164,7 +164,7 @@ namespace GrKouk.WebApi.Controllers
                     _context.Entry(entityToMap).Reference(p => p.RevenueCentre).Load();
                 }
                 #endregion
-                var entityToReturn = Mapper.Map<FinDiaryTransactionModifyDto>(entityToMap);
+                var entityToReturn = _mapper.Map<FinDiaryTransactionModifyDto>(entityToMap);
                 return Ok(entityToReturn);
             }
             catch (DbUpdateConcurrencyException e)
@@ -192,7 +192,7 @@ namespace GrKouk.WebApi.Controllers
 
             try
             {
-                var entityToMap = Mapper.Map<FinDiaryTransaction>(transactionCreateDto);
+                var entityToMap = _mapper.Map<FinDiaryTransaction>(transactionCreateDto);
                 _context.FinDiaryTransactions.Add(entityToMap);
                 await _context.SaveChangesAsync();
 
@@ -216,7 +216,7 @@ namespace GrKouk.WebApi.Controllers
                 {
                     _context.Entry(entityToMap).Reference(p => p.RevenueCentre).Load();
                 }
-                var entityToReturn = Mapper.Map<FinDiaryTransactionDto>(entityToMap);
+                var entityToReturn = _mapper.Map<FinDiaryTransactionDto>(entityToMap);
                 return CreatedAtAction("GetTransaction", new { id = entityToMap.Id }, entityToReturn);
             }
             catch (Exception e)
