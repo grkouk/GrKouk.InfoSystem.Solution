@@ -11,6 +11,9 @@ using GrKouk.InfoSystem.Domain.Shared;
 using GrKouk.InfoSystem.Dtos.WebDtos.BuyDocuments;
 using GrKouk.WebApi.Data;
 using NToastNotify;
+using GrKouk.InfoSystem.Dtos.WebDtos.RecurringTransactions;
+using GrKouk.InfoSystem.Definitions;
+using GrKouk.WebRazor.Helpers;
 
 namespace GrKouk.WebRazor.Pages.Transactions.RecurringTransactions
 {
@@ -30,7 +33,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.RecurringTransactions
         }
 
         [BindProperty]
-        public BuyDocModifyDto ItemVm { get; set; }
+        public RecurringDocModifyDto ItemVm { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -38,19 +41,14 @@ namespace GrKouk.WebRazor.Pages.Transactions.RecurringTransactions
             {
                 return NotFound();
             }
-            var buyMatDoc = await _context.BuyDocuments
+            var buyMatDoc = await _context.RecurringTransDocs
                 .Include(b => b.Company)
-                .Include(b => b.FiscalPeriod)
-                .Include(b => b.BuyDocSeries)
-                .Include(b => b.BuyDocType)
-                .Include(b => b.Section)
-
                 .Include(b => b.Transactor)
-                .Include(b => b.BuyDocLines)
+                .Include(b => b.DocLines)
                 .ThenInclude(m => m.WarehouseItem)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
-            ItemVm = _mapper.Map<BuyDocModifyDto>(buyMatDoc);
+            ItemVm = _mapper.Map<RecurringDocModifyDto>(buyMatDoc);
 
             if (ItemVm == null)
             {
@@ -70,12 +68,50 @@ namespace GrKouk.WebRazor.Pages.Transactions.RecurringTransactions
                 new SelectListItem() {Value = "BARCODE", Text = "Barcode"}
             };
             ViewData["SeekType"] = new SelectList(seekTypes, "Value", "Text");
-
-            var supplierList = _context.Transactors.Where(s => s.TransactorType.Code == "SYS.SUPPLIER").OrderBy(s => s.Name).AsNoTracking();
+            var docTypes = Enum.GetValues(typeof(RecurringDocTypeEnum))
+               .Cast<RecurringDocTypeEnum>()
+               .Select(c => new SelectListItem()
+               {
+                   Value = c.ToString(),
+                   Text = c.GetDescription()
+               }).ToList();
+            ViewData["DocType"] = new SelectList(docTypes, "Value", "Text");
+            ViewData["RecurringFrequency"] = FiltersHelper.GetRecurringFrequencyList();
             ViewData["CompanyId"] = new SelectList(_context.Companies.OrderBy(p => p.Code).AsNoTracking(), "Id", "Code");
-            ViewData["BuyDocSeriesId"] = new SelectList(_context.BuyDocSeriesDefs.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
-            ViewData["TransactorId"] = new SelectList(supplierList, "Id", "Name");
             ViewData["PaymentMethodId"] = new SelectList(_context.PaymentMethods.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
+            var BuyDocSeriesListJs = _context.BuyDocSeriesDefs.OrderBy(p => p.Name)
+               .Select(p => new SelectListItem()
+               {
+
+                   Text = p.Code,
+                   Value = p.Id.ToString()
+               }).ToList();
+            var SellDocSeriesListJs = _context.SellDocSeriesDefs.OrderBy(p => p.Name)
+              .Select(p => new SelectListItem()
+              {
+
+                  Text = p.Code,
+                  Value = p.Id.ToString()
+              }).ToList();
+            var SupplierListJs = _context.Transactors.Where(s => s.TransactorType.Code == "SYS.SUPPLIER").OrderBy(s => s.Name)
+              .Select(p => new SelectListItem()
+              {
+
+                  Text = p.Name,
+                  Value = p.Id.ToString()
+              }).ToList();
+            var CustomerListJs = _context.Transactors.Where(s => s.TransactorType.Code == "SYS.CUSTOMER" || s.TransactorType.Code == "SYS.DEPARTMENT").OrderBy(s => s.Name)
+             .Select(p => new SelectListItem()
+             {
+
+                 Text = p.Name,
+                 Value = p.Id.ToString()
+             }).ToList();
+
+            ViewData["BuyDocSeriesListJs"] = BuyDocSeriesListJs;
+            ViewData["SellDocSeriesListJs"] = SellDocSeriesListJs;
+            ViewData["SupplierListJs"] = SupplierListJs;
+            ViewData["CustomerListJs"] = CustomerListJs;
         }
 
         public async Task<IActionResult> OnPostAsync()

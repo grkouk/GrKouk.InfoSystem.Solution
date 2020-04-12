@@ -1,9 +1,9 @@
 ﻿@page
-@model GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc.EditModel
+@model GrKouk.WebRazor.Pages.Transactions.RecurringTransactions.EditModel
 @using Microsoft.Extensions.Configuration
 @inject IConfiguration Configuration
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Μεταβολή Συνδρομής";
 }
 @section MyCss
 {
@@ -19,7 +19,7 @@
         font-size: 12px;
     }
 </style>
-<h4>Update Buy Document</h4>
+<h4>Μεταβολή Συνδρομής</h4>
 <hr />
 
 <div class="container">
@@ -27,8 +27,9 @@
         <fieldset id="thisForm">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="ItemVm.Id" />
-            <input type="hidden" asp-for="ItemVm.FiscalPeriodId" />
-            <input type="hidden" asp-for="ItemVm.BuyDocTypeId" />
+            
+            <input type="hidden" asp-for="ItemVm.SectionId" />
+            
             <input type="hidden" asp-for="ItemVm.Timestamp" />
             <input type="hidden" asp-for="@Model.InitialLoad" id="IsInitialLoad" />
             <input type="hidden" id="MaterialId" />
@@ -43,15 +44,23 @@
             <input type="hidden" id="LookupValueValid" />
             <div class="form-row">
                 <div class="form-group col-md-2">
-                    <label asp-for="ItemVm.TransDate" class="control-label small "></label>
-                    <input asp-for="ItemVm.TransDate" class="form-control form-control-sm small" autofocus />
-                    <span asp-validation-for="ItemVm.TransDate" class="text-danger small"></span>
+                    <label asp-for="ItemVm.RecurringDocType" class="control-label small"></label>
+                    <select asp-for="ItemVm.RecurringDocType" class="form-control form-control-sm small" asp-items="ViewBag.DocType"></select>
                 </div>
-                <div class="form-group col-md-7">
-                    <label asp-for="ItemVm.BuyDocSeriesId" class="control-label small"></label>
-                    <select asp-for="ItemVm.BuyDocSeriesId" class="form-control form-control-sm small" asp-items="ViewBag.BuyDocSeriesId"></select>
+                <div class="form-group col-md-2">
+                    <label asp-for="ItemVm.RecurringFrequency" class="control-label small"></label>
+                    <select asp-for="ItemVm.RecurringFrequency" class="form-control form-control-sm small" asp-items="ViewBag.RecurringFrequency"></select>
                 </div>
-                <div class="form-group col-md-3">
+                <div class="form-group col-md-2">
+                    <label asp-for="ItemVm.NextTransDate" class="control-label small "></label>
+                    <input asp-for="ItemVm.NextTransDate" class="form-control form-control-sm small" autofocus />
+                    <span asp-validation-for="ItemVm.NextTransDate" class="text-danger small"></span>
+                </div>
+                <div class="form-group col-md-4">
+                    <label asp-for="ItemVm.DocSeriesId" class="control-label small"></label>
+                    <select asp-for="ItemVm.DocSeriesId" class="form-control form-control-sm small" ></select>
+                </div>
+                <div class="form-group col-md-2">
                     <label asp-for="ItemVm.TransRefCode" class="control-label small"></label>
                     <input asp-for="ItemVm.TransRefCode" class="form-control form-control-sm small" />
                     <span asp-validation-for="ItemVm.TransRefCode" class="text-danger small"></span>
@@ -62,7 +71,7 @@
                 <div class="form-group col-md-6">
                     <label asp-for="ItemVm.TransactorId" class="control-label small"></label>
                     <div class="input-group input-group-sm">
-                        <select asp-for="ItemVm.TransactorId" class="form-control form-control-sm small" asp-items="ViewBag.TransactorId"></select>
+                        <select asp-for="ItemVm.TransactorId" class="form-control form-control-sm small" ></select>
                         <div class="input-group-append" id="button-addon4">
                             <button class="btn btn-outline-secondary" data-toggle="modal" data-target="#itemSelector" data-selectorType="SuppliersSelector" type="button">...</button>
                         </div>
@@ -86,7 +95,7 @@
                 <div class="form-group col-sm-3">
                     <label class="small">LookUp</label>
                     <div class="input-group input-group-sm">
-                        <input class="form-control form-control-sm " style="font-size: 0.7rem" id="Lookup" autocomplete="off"/>
+                        <input class="form-control form-control-sm " style="font-size: 0.7rem" id="Lookup" autocomplete="off" />
                         <div class="input-group-append" id="button-addon5">
                             <button class="btn btn-outline-secondary btn-sm " data-toggle="modal" data-target="#itemSelector" data-selectorType="ProductsSelector" style="font-size: 0.7rem" type="button"><i class="fab fa-asymmetrik"></i></button>
                         </div>
@@ -417,6 +426,11 @@
             var $priceNet = $("#PriceNet");
             var $lookupValueValid = $("#LookupValueValid");
             var $materialFpaId = $('#MaterialFpaId');
+
+            var buyDocSeriesListJs = @Html.Raw(Json.Serialize(ViewBag.BuyDocSeriesListJs));
+            var sellDocSeriesListJs = @Html.Raw(Json.Serialize(ViewBag.SellDocSeriesListJs));
+            var supplierListJs = @Html.Raw(Json.Serialize(ViewBag.SupplierListJs));
+            var customerListJs = @Html.Raw(Json.Serialize(ViewBag.CustomerListJs));
             //#endregion
          //#region items selectors modals
             $.fn.selectpicker.Constructor.BootstrapVersion = '4';
