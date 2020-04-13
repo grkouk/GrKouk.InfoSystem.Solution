@@ -151,8 +151,8 @@
     <script>
         $(document).ready(() => {
             var $initialLoad = $('#IsInitialLoad');
-            //#region
-            var $material = $('#ItemVm_MaterialId');
+            //#region variables
+            var $material = $('#ItemVm_WarehouseItemId');
             var $unitPrice = $('#ItemVm_UnitPrice');
             var $Q1 = $('#ItemVm_Quontity1');
             var $Q2 = $('#ItemVm_Quontity2');
@@ -191,7 +191,7 @@
                 console.log("WarehouseItem change event ->" + materialId);
 
                 var uri = '@Configuration.GetSection("WebApiSettings")["WebApiLocal"]';
-                var finalUri = `${uri}/materials/materialdata?materialId=${materialId}`;
+                var finalUri = `${uri}/materials/materialdata?warehouseItemId=${materialId}`;
                 fetch(finalUri)
                     .then(function(response) {
                         if (response.ok) {

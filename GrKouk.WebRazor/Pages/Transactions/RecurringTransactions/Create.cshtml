@@ -431,6 +431,7 @@
             var $priceNet = $("#PriceNet");
             var $lookupValueValid = $("#LookupValueValid");
             var $materialFpaId = $('#MaterialFpaId');
+            let $recurringType=$('#ItemVm_RecurringDocType');
             //#endregion
 
             //#region items selectors modals
@@ -1287,9 +1288,12 @@
             var seriesChanged = () => {
                 console.log("Inside Series Changed");
                 setSeriesInSession();
-                var seriesId = $transDocSeriesId.val();
+                let recType = $('#ItemVm_RecurringDocType').val();
+                let seriesId1=$('#ItemVm_DocSeriesId').val();
+                let seriesId = $transDocSeriesId.val();
+                
                 var uri = '@Configuration.GetSection("WebApiSettings")["WebApiLocal"]';
-                var finalUri = `${uri}/materials/BuySeriesData?seriesId=${seriesId}`;
+                let finalUri = `${uri}/materials/RecSeriesData?seriesId=${seriesId}&docType=${recType}`;
                 fetch(finalUri)
                     .then(function(response) {
                         if (response.ok) {
@@ -1523,6 +1527,36 @@
                 default:
                 }
             };
+            let recurringTypeChange=()=>{
+           let recType = $recurringType.val();
+           let $transactors= $('#ItemVm_TransactorId');
+           switch (recType) {
+             case 'BuyType': //Buy
+                 $transDocSeriesId.empty();
+                 $transactors.empty();
+                 $.each(buyDocSeriesListJs, function(index, item) {
+                        $transDocSeriesId.append($('<option></option>').attr('value', item.value).text(item.text));
+                 });
+                 $.each(supplierListJs, function(index, item) {
+                                             $transactors.append($('<option></option>').attr('value', item.value).text(item.text));
+                                      });
+                 break;
+             case 'SellType': //Sell
+                    $transactors.empty();
+                    $transDocSeriesId.empty();
+                    $.each(sellDocSeriesListJs, function(index, item) {
+                          $transDocSeriesId.append($('<option></option>').attr('value', item.value).text(item.text));
+                    });
+                    $.each(customerListJs, function(index, item) {
+                                                                     $transactors.append($('<option></option>').attr('value', item.value).text(item.text));
+                                                              });
+                 break;
+           }
+           
+       };
+       $recurringType.change(() =>{
+           recurringTypeChange();
+       });
             $seekType.change(() => {
                 setSeekType();
             });

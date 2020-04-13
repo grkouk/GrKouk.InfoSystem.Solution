@@ -766,9 +766,7 @@ namespace GrKouk.WebRazor.Controllers
         [HttpPost("UpdateRecurringDoc")]
         public async Task<IActionResult> UpdateRecurringDoc([FromBody] RecurringTransDocModifyAjaxDto data)
         {
-            const string sectionCode = "SYS-BUY-MATERIALS-SCN";
-            bool noWarehouseTrans;
-
+            
             RecurringTransDocModifyAjaxNoLinesDto transToAttachNoLines;
             RecurringTransDoc transToAttach;
             DateTime dateOfTrans;
@@ -835,11 +833,6 @@ namespace GrKouk.WebRazor.Controllers
                     default:
                         break;
                 }
-               
-
-                transToAttach.SectionId = section.Id;
-                //transToAttach.FiscalPeriodId = fiscalPeriod.Id;
-                //transToAttach.BuyDocTypeId = docSeries.BuyDocTypeDefId;
 
                 _context.Entry(transToAttach).State = EntityState.Modified;
                 var docId = transToAttach.Id;
@@ -861,8 +854,7 @@ namespace GrKouk.WebRazor.Controllers
                     }
 
                     #region MaterialLine
-
-                    var warehouseItemLine = new BuyDocLine();
+                    var buyMaterialLine = new RecurringTransDocLine();
                     decimal unitPrice = dataBuyDocLine.Price;
                     decimal units = (decimal)dataBuyDocLine.Q1;
                     decimal fpaRate = (decimal)dataBuyDocLine.FpaRate;
@@ -870,25 +862,25 @@ namespace GrKouk.WebRazor.Controllers
                     decimal lineNetAmount = unitPrice * units;
                     decimal lineDiscountAmount = lineNetAmount * discountRate;
                     decimal lineFpaAmount = (lineNetAmount - lineDiscountAmount) * fpaRate;
-                    warehouseItemLine.UnitPrice = unitPrice;
-                    warehouseItemLine.AmountFpa = lineFpaAmount;
-                    warehouseItemLine.AmountNet = lineNetAmount;
-                    warehouseItemLine.AmountDiscount = lineDiscountAmount;
-                    warehouseItemLine.DiscountRate = discountRate;
-                    warehouseItemLine.FpaRate = fpaRate;
-                    warehouseItemLine.WarehouseItemId = dataBuyDocLine.WarehouseItemId;
-                    warehouseItemLine.Quontity1 = dataBuyDocLine.Q1;
-                    warehouseItemLine.Quontity2 = dataBuyDocLine.Q2;
-                    warehouseItemLine.PrimaryUnitId = dataBuyDocLine.MainUnitId;
-                    warehouseItemLine.SecondaryUnitId = dataBuyDocLine.SecUnitId;
-                    warehouseItemLine.Factor = dataBuyDocLine.Factor;
-                    warehouseItemLine.BuyDocumentId = docId;
-                    warehouseItemLine.Etiology = transToAttach.Etiology;
+                    buyMaterialLine.UnitPrice = unitPrice;
+                    buyMaterialLine.AmountFpa = lineFpaAmount;
+                    buyMaterialLine.AmountNet = lineNetAmount;
+                    buyMaterialLine.AmountDiscount = lineDiscountAmount;
+                    buyMaterialLine.DiscountRate = discountRate;
+                    buyMaterialLine.FpaRate = fpaRate;
+                    buyMaterialLine.WarehouseItemId = dataBuyDocLine.WarehouseItemId;
+                    buyMaterialLine.Quontity1 = dataBuyDocLine.Q1;
+                    buyMaterialLine.Quontity2 = dataBuyDocLine.Q2;
+                    buyMaterialLine.PrimaryUnitId = dataBuyDocLine.MainUnitId;
+                    buyMaterialLine.SecondaryUnitId = dataBuyDocLine.SecUnitId;
+                    buyMaterialLine.Factor = dataBuyDocLine.Factor;
+                    buyMaterialLine.RecurringTransDocId = docId;
+                    buyMaterialLine.Etiology = transToAttach.Etiology;
                     //_context.Entry(transToAttach).Entity
-
+                    
                     try
                     {
-                        transToAttach.BuyDocLines.Add(warehouseItemLine);
+                        transToAttach.DocLines.Add(buyMaterialLine);
                     }
                     catch (Exception e)
                     {
@@ -901,11 +893,7 @@ namespace GrKouk.WebRazor.Controllers
                     }
 
                     #endregion
-
-                   
                 }
-
-
                 try
                 {
                     await _context.SaveChangesAsync();
