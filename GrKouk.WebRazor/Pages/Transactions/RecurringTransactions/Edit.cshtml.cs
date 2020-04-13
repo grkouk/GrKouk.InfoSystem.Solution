@@ -79,16 +79,37 @@ namespace GrKouk.WebRazor.Pages.Transactions.RecurringTransactions
             ViewData["RecurringFrequency"] = FiltersHelper.GetRecurringFrequencyList();
             ViewData["CompanyId"] = new SelectList(_context.Companies.OrderBy(p => p.Code).AsNoTracking(), "Id", "Code");
             ViewData["PaymentMethodId"] = new SelectList(_context.PaymentMethods.OrderBy(p => p.Name).AsNoTracking(), "Id", "Name");
+            IQueryable transactorList;
+            IQueryable docTypeList;
+            switch (ItemVm.RecurringDocType)
+            {
+                case RecurringDocTypeEnum.BuyType:
+                    transactorList = _context.Transactors.Where(s => s.TransactorType.Code == "SYS.SUPPLIER").OrderBy(s => s.Name).AsNoTracking();
+                    docTypeList = _context.BuyDocSeriesDefs.OrderBy(p => p.Name).AsNoTracking();
+                    ViewData["TransactorId"] = new SelectList(transactorList, "Id", "Name");
+                    ViewData["DocSeriesId"] = new SelectList(docTypeList, "Id", "Name");
+                    break;
+                case RecurringDocTypeEnum.SellType:
+                    transactorList = _context.Transactors.Where(s => s.TransactorType.Code == "SYS.CUSTOMER" || s.TransactorType.Code == "SYS.DEPARTMENT").OrderBy(s => s.Name).AsNoTracking();
+                    docTypeList = _context.SellDocSeriesDefs.OrderBy(p => p.Name).AsNoTracking();
+                    ViewData["TransactorId"] = new SelectList(transactorList, "Id", "Name");
+                    ViewData["DocSeriesId"] = new SelectList(docTypeList, "Id", "Name");
+                    break;
+                default:
+                    break;
+            }
+           
+            
             var buyDocSeriesListJs = _context.BuyDocSeriesDefs.OrderBy(p => p.Name)
                .Select(p => new SelectListItem()
                {
-                   Text = p.Code,
+                   Text = p.Name,
                    Value = p.Id.ToString()
                }).ToList();
             var sellDocSeriesListJs = _context.SellDocSeriesDefs.OrderBy(p => p.Name)
               .Select(p => new SelectListItem()
               {
-                  Text = p.Code,
+                  Text = p.Name,
                   Value = p.Id.ToString()
               }).ToList();
             var supplierListJs = _context.Transactors.Where(s => s.TransactorType.Code == "SYS.SUPPLIER").OrderBy(s => s.Name)

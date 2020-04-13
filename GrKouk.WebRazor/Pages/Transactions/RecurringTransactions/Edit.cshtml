@@ -32,6 +32,7 @@
             
             <input type="hidden" asp-for="ItemVm.Timestamp" />
             <input type="hidden" asp-for="@Model.InitialLoad" id="IsInitialLoad" />
+             <input type="hidden" asp-for="@Model.ItemVm.DocSeriesId" id="docSeriesId" />
             <input type="hidden" id="MaterialId" />
             <input type="hidden" id="MaterialLastPrice" />
             <input type="hidden" id="MaterialFactor" />
@@ -58,7 +59,7 @@
                 </div>
                 <div class="form-group col-md-4">
                     <label asp-for="ItemVm.DocSeriesId" class="control-label small"></label>
-                    <select asp-for="ItemVm.DocSeriesId" class="form-control form-control-sm small" ></select>
+                    <select asp-for="ItemVm.DocSeriesId" class="form-control form-control-sm small" asp-items="ViewBag.DocSeriesId"></select>
                 </div>
                 <div class="form-group col-md-2">
                     <label asp-for="ItemVm.TransRefCode" class="control-label small"></label>
@@ -1283,9 +1284,14 @@
             var seriesChanged = () => {
                 //TODO:Move this logic to create page also
                 console.log("Inside Series Changed");
+                let docSeriesId=$('#docSeriesId').val();
                 setSeriesInSession();
                 let recType = $('#ItemVm_RecurringDocType').val();
+                let seriesId1=$('#ItemVm_DocSeriesId').val();
                 let seriesId = $transDocSeriesId.val();
+                // if ($initialLoad.val()=='True'){
+                //     seriesId=docSeriesId;
+                // }
                 const uri = '@Configuration.GetSection("WebApiSettings")["WebApiLocal"]';
                 let finalUri = `${uri}/materials/RecSeriesData?seriesId=${seriesId}&docType=${recType}`;
                 fetch(finalUri)
