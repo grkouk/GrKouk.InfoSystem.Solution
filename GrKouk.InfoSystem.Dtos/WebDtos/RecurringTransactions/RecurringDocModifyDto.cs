@@ -12,7 +12,6 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.RecurringTransactions
         public int Id { get; set; }
         [MaxLength(2)]
         public string RecurringFrequency { get; set; }
-
         public RecurringDocTypeEnum RecurringDocType { get; set; }
         [Display(Name = "Next Trans Date")]
         [DataType(DataType.Date)]

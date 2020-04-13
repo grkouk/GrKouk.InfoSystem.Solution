@@ -1804,7 +1804,7 @@
 
                     dataType: 'json',
                     type: 'POST',
-                    url: "/api/materials/MaterialBuyDocUpdate",
+                    url: "/api/materials/UpdateRecurringDoc",
                     data: data,
                     headers: {
                         'RequestVerificationToken': securityToken
@@ -1862,7 +1862,7 @@
                     paymentMethodId: $("#ItemVm_PaymentMethodId").val(),
                      sectionId: $("#ItemVm_SectionId").val(),
                     buyDocSeriesId: $("#ItemVm_DocSeriesId").val(),
-                    buyDocTypeId: $("#ItemVm_BuyDocTypeId").val(),
+                    
                     Etiology: $("#ItemVm_Etiology").val(),
                     amountFpa: $("#ItemVm_AmountFpa").attr('data-actualValue'),
                     amountNet: $("#ItemVm_AmountNet").attr('data-actualValue'),
