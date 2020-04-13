@@ -70,9 +70,9 @@
             </div>
             <div class="form-row">
                 <div class="form-group col-md-6">
-                    <label asp-for="ItemVm.TransactorId" class="control-label small"></label>
+                    <label asp-for="ItemVm.TransactorId" class="control-label small" ></label>
                     <div class="input-group input-group-sm">
-                        <select asp-for="ItemVm.TransactorId" class="form-control form-control-sm small" ></select>
+                        <select asp-for="ItemVm.TransactorId" class="form-control form-control-sm small" asp-items="ViewBag.TransactorId"></select>
                         <div class="input-group-append" id="button-addon4">
                             <button class="btn btn-outline-secondary" data-toggle="modal" data-target="#itemSelector" data-selectorType="SuppliersSelector" type="button">...</button>
                         </div>
@@ -1521,18 +1521,27 @@
             };
            let recurringTypeChange=()=>{
                let recType = $recurringType.val();
+               let $transactors= $('#ItemVm_TransactorId');
                switch (recType) {
                  case 'BuyType': //Buy
                      $transDocSeriesId.empty();
+                     $transactors.empty();
                      $.each(buyDocSeriesListJs, function(index, item) {
                             $transDocSeriesId.append($('<option></option>').attr('value', item.value).text(item.text));
                      });
+                     $.each(supplierListJs, function(index, item) {
+                                                 $transactors.append($('<option></option>').attr('value', item.value).text(item.text));
+                                          });
                      break;
                  case 'SellType': //Sell
+                        $transactors.empty();
                         $transDocSeriesId.empty();
                         $.each(sellDocSeriesListJs, function(index, item) {
                               $transDocSeriesId.append($('<option></option>').attr('value', item.value).text(item.text));
                         });
+                        $.each(customerListJs, function(index, item) {
+                                                                         $transactors.append($('<option></option>').attr('value', item.value).text(item.text));
+                                                                  });
                      break;
                }
                
