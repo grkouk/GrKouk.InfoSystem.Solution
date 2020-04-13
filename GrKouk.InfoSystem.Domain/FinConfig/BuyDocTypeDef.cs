@@ -45,5 +45,7 @@ namespace GrKouk.InfoSystem.Domain.FinConfig
         public string AllowedSectionTypes { get; set; }
         public int CompanyId { get; set; }
         public virtual Company Company { get; set; }
+        [Display(Name = "Default Section")]
+        public int SectionId { get; set; }
     }
 }
