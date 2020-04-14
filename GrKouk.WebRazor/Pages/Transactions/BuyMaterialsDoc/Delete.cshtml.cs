@@ -46,7 +46,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.BuyMaterialsDoc
 
         public async Task<IActionResult> OnPostAsync(int? id)
         {
-            const string sectionCode = "SYS-BUY-MATERIALS-SCN";
+           // const string sectionCode = "SYS-BUY-MATERIALS-SCN";
             if (id == null)
             {
                 return NotFound();

@@ -613,10 +613,11 @@ namespace GrKouk.WebRazor.Controllers
         [HttpPost("CreateRecurringDoc")]
         public async Task<IActionResult> CreateRecurringDoc([FromBody] RecurringTransDocCreateAjaxDto data)
         {
-            //const string sectionCode = "SYS-BUY-MATERIALS-SCN";
+            const string defaultBuySectionCode = "SYS-BUY-MATERIALS-SCN";
+            const string defaultSellSectionCode = "SYS-SELL-COMBINED-SCN";
             // bool noSupplierTrans = false;
-            bool noWarehouseTrans = false;
-            //ToDO: Continue from here
+            //bool noWarehouseTrans = false;
+            
 
             RecurringDocCreateAjaxNoLinesDto transToAttachNoLines;
             RecurringTransDoc transToAttach;
@@ -646,13 +647,12 @@ namespace GrKouk.WebRazor.Controllers
 
             using (var transaction = _context.Database.BeginTransaction())
             {
-                int docSeriesId = 0;
-
+                
+                int sectionId = 0;
                 switch (transToAttach.RecurringDocType)
                 {
                     case RecurringDocTypeEnum.BuyType:
                         var buySeries = await _context.BuyDocSeriesDefs.SingleOrDefaultAsync(m => m.Id == data.DocSeriesId);
-
                         if (buySeries is null)
                         {
                             transaction.Rollback();
@@ -662,11 +662,40 @@ namespace GrKouk.WebRazor.Controllers
                                 error = "Buy Doc Series not found"
                             });
                         }
-                        docSeriesId = buySeries.BuyDocTypeDefId;
+                        
+                        await _context.Entry(buySeries).Reference(t => t.BuyDocTypeDef).LoadAsync();
+                        var buyTypeDef = buySeries.BuyDocTypeDef;
+                        if (buyTypeDef == null)
+                        {
+                            transaction.Rollback();
+                            return NotFound(new
+                            {
+                                error = "Doc Series has not doc type definition"
+                            });
+                        }
+                        #region Section Management
+                        if (buyTypeDef.SectionId==0)
+                        {
+                            var section = await _context.Sections.SingleOrDefaultAsync(s => s.SystemName == defaultBuySectionCode);
+                            if (section == null)
+                            {
+                                transaction.Rollback();
+                                ModelState.AddModelError(string.Empty, "Δεν υπάρχει το Section");
+                                return NotFound(new
+                                {
+                                    error = "Could not locate section "
+                                });
+                            }
+                            sectionId = section.Id;
+                        }
+                        else
+                        {
+                            sectionId = buyTypeDef.SectionId;
+                        }
+                        #endregion
                         break;
                     case RecurringDocTypeEnum.SellType:
                         var sellSeries = await _context.SellDocSeriesDefs.SingleOrDefaultAsync(m => m.Id == data.DocSeriesId);
-
                         if (sellSeries is null)
                         {
                             transaction.Rollback();
@@ -676,13 +705,42 @@ namespace GrKouk.WebRazor.Controllers
                                 error = "Sell Doc Series not found"
                             });
                         }
-                        docSeriesId = sellSeries.SellDocTypeDefId;
+                        await _context.Entry(sellSeries).Reference(t => t.SellDocTypeDef).LoadAsync();
+                        var sellTypeDef = sellSeries.SellDocTypeDef;
+                        if (sellTypeDef == null)
+                        {
+                            transaction.Rollback();
+                            return NotFound(new
+                            {
+                                error = "Doc Series has not doc type definition"
+                            });
+                        }
+                        #region Section Management
+                        if (sellTypeDef.SectionId==0)
+                        {
+                            var section = await _context.Sections.SingleOrDefaultAsync(s => s.SystemName == defaultSellSectionCode);
+                            if (section == null)
+                            {
+                                transaction.Rollback();
+                                ModelState.AddModelError(string.Empty, "Δεν υπάρχει το Section");
+                                return NotFound(new
+                                {
+                                    error = "Could not locate section "
+                                });
+                            }
+                            sectionId = section.Id;
+                        }
+                        else
+                        {
+                            sectionId = sellTypeDef.SectionId;
+                        }
+                        #endregion
                         break;
                     default:
                         break;
                 }
-
-                transToAttach.DocTypeId = docSeriesId;
+                transToAttach.SectionId = sectionId;
+                transToAttach.DocTypeId = data.DocSeriesId;
                 _context.RecurringTransDocs.Add(transToAttach);
 
                 try
@@ -717,7 +775,7 @@ namespace GrKouk.WebRazor.Controllers
                         });
                     }
 
-                    var buyMaterialLine = new RecurringTransDocLine();
+                    var docLine = new RecurringTransDocLine();
                     decimal unitPrice = dataBuyDocLine.Price;
                     decimal units = (decimal)dataBuyDocLine.Q1;
                     decimal fpaRate = (decimal)dataBuyDocLine.FpaRate;
@@ -725,22 +783,22 @@ namespace GrKouk.WebRazor.Controllers
                     decimal lineNetAmount = unitPrice * units;
                     decimal lineDiscountAmount = lineNetAmount * discountRate;
                     decimal lineFpaAmount = (lineNetAmount - lineDiscountAmount) * fpaRate;
-                    buyMaterialLine.UnitPrice = unitPrice;
-                    buyMaterialLine.AmountFpa = lineFpaAmount;
-                    buyMaterialLine.AmountNet = lineNetAmount;
-                    buyMaterialLine.AmountDiscount = lineDiscountAmount;
-                    buyMaterialLine.DiscountRate = discountRate;
-                    buyMaterialLine.FpaRate = fpaRate;
-                    buyMaterialLine.WarehouseItemId = dataBuyDocLine.WarehouseItemId;
-                    buyMaterialLine.Quontity1 = dataBuyDocLine.Q1;
-                    buyMaterialLine.Quontity2 = dataBuyDocLine.Q2;
-                    buyMaterialLine.PrimaryUnitId = dataBuyDocLine.MainUnitId;
-                    buyMaterialLine.SecondaryUnitId = dataBuyDocLine.SecUnitId;
-                    buyMaterialLine.Factor = dataBuyDocLine.Factor;
-                    buyMaterialLine.RecurringTransDocId = docId;
-                    buyMaterialLine.Etiology = transToAttach.Etiology;
+                    docLine.UnitPrice = unitPrice;
+                    docLine.AmountFpa = lineFpaAmount;
+                    docLine.AmountNet = lineNetAmount;
+                    docLine.AmountDiscount = lineDiscountAmount;
+                    docLine.DiscountRate = discountRate;
+                    docLine.FpaRate = fpaRate;
+                    docLine.WarehouseItemId = dataBuyDocLine.WarehouseItemId;
+                    docLine.Quontity1 = dataBuyDocLine.Q1;
+                    docLine.Quontity2 = dataBuyDocLine.Q2;
+                    docLine.PrimaryUnitId = dataBuyDocLine.MainUnitId;
+                    docLine.SecondaryUnitId = dataBuyDocLine.SecUnitId;
+                    docLine.Factor = dataBuyDocLine.Factor;
+                    docLine.RecurringTransDocId = docId;
+                    docLine.Etiology = transToAttach.Etiology;
                     //_context.Entry(transToAttach).Entity
-                    transToAttach.DocLines.Add(buyMaterialLine);
+                    transToAttach.DocLines.Add(docLine);
 
                 }
 
@@ -766,7 +824,8 @@ namespace GrKouk.WebRazor.Controllers
         [HttpPost("UpdateRecurringDoc")]
         public async Task<IActionResult> UpdateRecurringDoc([FromBody] RecurringTransDocModifyAjaxDto data)
         {
-            
+            const string defaultBuySectionCode = "SYS-BUY-MATERIALS-SCN";
+            const string defaultSellSectionCode = "SYS-SELL-COMBINED-SCN";
             RecurringTransDocModifyAjaxNoLinesDto transToAttachNoLines;
             RecurringTransDoc transToAttach;
             DateTime dateOfTrans;
@@ -777,7 +836,6 @@ namespace GrKouk.WebRazor.Controllers
                     error = "Empty request data"
                 });
             }
-
             try
             {
                 transToAttachNoLines = _mapper.Map<RecurringTransDocModifyAjaxNoLinesDto>(data);
@@ -796,15 +854,11 @@ namespace GrKouk.WebRazor.Controllers
             {
                
                 _context.RecurringTransDocLines.RemoveRange(_context.RecurringTransDocLines.Where(p => p.RecurringTransDocId == data.Id));
-
-               
-                int docSeriesId = 0;
-
+                int sectionId = 0;
                 switch (transToAttach.RecurringDocType)
                 {
                     case RecurringDocTypeEnum.BuyType:
                         var buySeries = await _context.BuyDocSeriesDefs.SingleOrDefaultAsync(m => m.Id == data.DocSeriesId);
-
                         if (buySeries is null)
                         {
                             transaction.Rollback();
@@ -814,11 +868,40 @@ namespace GrKouk.WebRazor.Controllers
                                 error = "Buy Doc Series not found"
                             });
                         }
-                        docSeriesId = buySeries.BuyDocTypeDefId;
+                        
+                        await _context.Entry(buySeries).Reference(t => t.BuyDocTypeDef).LoadAsync();
+                        var buyTypeDef = buySeries.BuyDocTypeDef;
+                        if (buyTypeDef == null)
+                        {
+                            transaction.Rollback();
+                            return NotFound(new
+                            {
+                                error = "Doc Series has not doc type definition"
+                            });
+                        }
+                        #region Section Management
+                        if (buyTypeDef.SectionId==0)
+                        {
+                            var section = await _context.Sections.SingleOrDefaultAsync(s => s.SystemName == defaultBuySectionCode);
+                            if (section == null)
+                            {
+                                transaction.Rollback();
+                                ModelState.AddModelError(string.Empty, "Δεν υπάρχει το Section");
+                                return NotFound(new
+                                {
+                                    error = "Could not locate section "
+                                });
+                            }
+                            sectionId = section.Id;
+                        }
+                        else
+                        {
+                            sectionId = buyTypeDef.SectionId;
+                        }
+                        #endregion
                         break;
                     case RecurringDocTypeEnum.SellType:
                         var sellSeries = await _context.SellDocSeriesDefs.SingleOrDefaultAsync(m => m.Id == data.DocSeriesId);
-
                         if (sellSeries is null)
                         {
                             transaction.Rollback();
@@ -828,12 +911,43 @@ namespace GrKouk.WebRazor.Controllers
                                 error = "Sell Doc Series not found"
                             });
                         }
-                        docSeriesId = sellSeries.SellDocTypeDefId;
+                        await _context.Entry(sellSeries).Reference(t => t.SellDocTypeDef).LoadAsync();
+                        var sellTypeDef = sellSeries.SellDocTypeDef;
+                        if (sellTypeDef == null)
+                        {
+                            transaction.Rollback();
+                            return NotFound(new
+                            {
+                                error = "Doc Series has not doc type definition"
+                            });
+                        }
+                        #region Section Management
+                        if (sellTypeDef.SectionId==0)
+                        {
+                            var section = await _context.Sections.SingleOrDefaultAsync(s => s.SystemName == defaultSellSectionCode);
+                            if (section == null)
+                            {
+                                transaction.Rollback();
+                                ModelState.AddModelError(string.Empty, "Δεν υπάρχει το Section");
+                                return NotFound(new
+                                {
+                                    error = "Could not locate section "
+                                });
+                            }
+                            sectionId = section.Id;
+                        }
+                        else
+                        {
+                            sectionId = sellTypeDef.SectionId;
+                        }
+                        #endregion
                         break;
                     default:
                         break;
                 }
-
+                transToAttach.SectionId = sectionId;
+                transToAttach.DocTypeId = data.DocSeriesId;
+               
                 _context.Entry(transToAttach).State = EntityState.Modified;
                 var docId = transToAttach.Id;
                 //--------------------------------------
@@ -854,7 +968,7 @@ namespace GrKouk.WebRazor.Controllers
                     }
 
                     #region MaterialLine
-                    var buyMaterialLine = new RecurringTransDocLine();
+                    var docLine = new RecurringTransDocLine();
                     decimal unitPrice = dataBuyDocLine.Price;
                     decimal units = (decimal)dataBuyDocLine.Q1;
                     decimal fpaRate = (decimal)dataBuyDocLine.FpaRate;
@@ -862,25 +976,25 @@ namespace GrKouk.WebRazor.Controllers
                     decimal lineNetAmount = unitPrice * units;
                     decimal lineDiscountAmount = lineNetAmount * discountRate;
                     decimal lineFpaAmount = (lineNetAmount - lineDiscountAmount) * fpaRate;
-                    buyMaterialLine.UnitPrice = unitPrice;
-                    buyMaterialLine.AmountFpa = lineFpaAmount;
-                    buyMaterialLine.AmountNet = lineNetAmount;
-                    buyMaterialLine.AmountDiscount = lineDiscountAmount;
-                    buyMaterialLine.DiscountRate = discountRate;
-                    buyMaterialLine.FpaRate = fpaRate;
-                    buyMaterialLine.WarehouseItemId = dataBuyDocLine.WarehouseItemId;
-                    buyMaterialLine.Quontity1 = dataBuyDocLine.Q1;
-                    buyMaterialLine.Quontity2 = dataBuyDocLine.Q2;
-                    buyMaterialLine.PrimaryUnitId = dataBuyDocLine.MainUnitId;
-                    buyMaterialLine.SecondaryUnitId = dataBuyDocLine.SecUnitId;
-                    buyMaterialLine.Factor = dataBuyDocLine.Factor;
-                    buyMaterialLine.RecurringTransDocId = docId;
-                    buyMaterialLine.Etiology = transToAttach.Etiology;
+                    docLine.UnitPrice = unitPrice;
+                    docLine.AmountFpa = lineFpaAmount;
+                    docLine.AmountNet = lineNetAmount;
+                    docLine.AmountDiscount = lineDiscountAmount;
+                    docLine.DiscountRate = discountRate;
+                    docLine.FpaRate = fpaRate;
+                    docLine.WarehouseItemId = dataBuyDocLine.WarehouseItemId;
+                    docLine.Quontity1 = dataBuyDocLine.Q1;
+                    docLine.Quontity2 = dataBuyDocLine.Q2;
+                    docLine.PrimaryUnitId = dataBuyDocLine.MainUnitId;
+                    docLine.SecondaryUnitId = dataBuyDocLine.SecUnitId;
+                    docLine.Factor = dataBuyDocLine.Factor;
+                    docLine.RecurringTransDocId = docId;
+                    docLine.Etiology = transToAttach.Etiology;
                     //_context.Entry(transToAttach).Entity
                     
                     try
                     {
-                        transToAttach.DocLines.Add(buyMaterialLine);
+                        transToAttach.DocLines.Add(docLine);
                     }
                     catch (Exception e)
                     {
