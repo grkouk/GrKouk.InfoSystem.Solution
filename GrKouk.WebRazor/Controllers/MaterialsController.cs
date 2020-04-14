@@ -18,6 +18,8 @@ using GrKouk.WebApi.Data;
 using GrKouk.WebRazor.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using GrKouk.InfoSystem.Dtos.WebDtos.RecurringTransactions;
+using GrKouk.InfoSystem.Domain.RecurringTransactions;
 
 namespace GrKouk.WebRazor.Controllers
 {
@@ -56,6 +58,12 @@ namespace GrKouk.WebRazor.Controllers
             return Ok(new { });
         }
 
+        [HttpGet("SetDocSeriesInSession")]
+        public IActionResult DocSeriesInSession(string seriesId)
+        {
+            HttpContext.Session.SetString("SeriesId", seriesId);
+            return Ok(new { });
+        }
         [HttpGet("SetSaleSeriesInSession")]
         public IActionResult SaleSeriesInSession(string seriesId)
         {
@@ -289,7 +297,7 @@ namespace GrKouk.WebRazor.Controllers
                     {
                         var natures = Array.ConvertAll(docType.SelectedWarehouseItemNatures.Split(","), int.Parse);
                         //var natures = docType.SelectedWarehouseItemNatures;
-                        fullListIq = fullListIq.Where(p => natures.Contains((int) p.WarehouseItemNature));
+                        fullListIq = fullListIq.Where(p => natures.Contains((int)p.WarehouseItemNature));
                     }
                 }
             }
@@ -298,7 +306,7 @@ namespace GrKouk.WebRazor.Controllers
             fullListIq = fullListIq.Where(p => p.Name.Contains(term) || p.Code.Contains(term));
             var materials = await fullListIq
                 .ProjectTo<WarehouseItemSearchListDto>(_mapper.ConfigurationProvider)
-                .Select(p => new {label = p.Label, value = p.Id}).ToListAsync();
+                .Select(p => new { label = p.Label, value = p.Id }).ToListAsync();
 
             if (materials == null)
             {
@@ -341,7 +349,7 @@ namespace GrKouk.WebRazor.Controllers
                     {
                         var natures = Array.ConvertAll(docType.SelectedWarehouseItemNatures.Split(","), int.Parse);
                         //var natures = docType.SelectedWarehouseItemNatures;
-                        fullListIq = fullListIq.Where(p => natures.Contains((int) p.WarehouseItemNature));
+                        fullListIq = fullListIq.Where(p => natures.Contains((int)p.WarehouseItemNature));
                     }
                 }
             }
@@ -352,7 +360,7 @@ namespace GrKouk.WebRazor.Controllers
             //    .Select(p => new { label = p.Label, value = p.Id }).ToListAsync();
             var materials = await fullListIq
                 .ProjectTo<WarehouseItemSearchListDto>(_mapper.ConfigurationProvider)
-                .Select(p => new {label = p.Label, value = p.Id}).ToListAsync();
+                .Select(p => new { label = p.Label, value = p.Id }).ToListAsync();
             if (materials == null)
             {
                 return NotFound();
@@ -367,7 +375,7 @@ namespace GrKouk.WebRazor.Controllers
             var materials = await _context.WarehouseItems.Where(p =>
                     p.Name.Contains(term) &&
                     p.WarehouseItemNature == WarehouseItemNatureEnum.WarehouseItemNatureService)
-                .Select(p => new {label = p.Name, value = p.Id}).ToListAsync();
+                .Select(p => new { label = p.Name, value = p.Id }).ToListAsync();
 
             if (materials == null)
             {
@@ -383,7 +391,7 @@ namespace GrKouk.WebRazor.Controllers
             var materials = await _context.WarehouseItems.Where(p =>
                     p.Name.Contains(term) &&
                     p.WarehouseItemNature == WarehouseItemNatureEnum.WarehouseItemNatureExpense)
-                .Select(p => new {label = p.Name, value = p.Id}).ToListAsync();
+                .Select(p => new { label = p.Name, value = p.Id }).ToListAsync();
 
             if (materials == null)
             {
@@ -455,7 +463,7 @@ namespace GrKouk.WebRazor.Controllers
             }
 
             Debug.Print("******Inside GetFiscal period Returning period id " + fiscalPeriod.Id);
-            return Ok(new {PeriodId = fiscalPeriod.Id});
+            return Ok(new { PeriodId = fiscalPeriod.Id });
         }
 
         [HttpGet("SalesSeriesData")]
@@ -479,9 +487,56 @@ namespace GrKouk.WebRazor.Controllers
             var usedPrice = salesTypeDef.UsedPrice;
 
             Debug.Print("Inside GetSalesSeriesData Returning usedPrice " + usedPrice.ToString());
-            return Ok(new {UsedPrice = usedPrice});
+            return Ok(new { UsedPrice = usedPrice });
         }
 
+        [HttpGet("RecSeriesData")]
+        public async Task<IActionResult> GetRecSeriesData(int seriesId, RecurringDocTypeEnum docType)
+        {
+            switch (docType)
+            {
+                case RecurringDocTypeEnum.BuyType:
+                    var buySeriesDef = await _context.BuyDocSeriesDefs.SingleOrDefaultAsync(p => p.Id == seriesId);
+                    if (buySeriesDef == null)
+                    {
+                        Debug.Print("Inside GetBuySeriesData No Series found");
+                        return NotFound(new
+                        {
+                            error = "No Series Found"
+                        });
+                    }
+                    //BuySeriesInSession(seriesId.ToString());
+                    await _context.Entry(buySeriesDef)
+                        .Reference(p => p.BuyDocTypeDef)
+                        .LoadAsync();
+                    var buyTypeDef = buySeriesDef.BuyDocTypeDef;
+                    var usedBuyPrice = buyTypeDef.UsedPrice;
+                    Debug.Print("Inside GetBuySeriesData Returning usedPrice " + usedBuyPrice.ToString());
+                    return Ok(new { UsedPrice = usedBuyPrice });
+                    break;
+                case RecurringDocTypeEnum.SellType:
+                    Debug.Print("Inside GetSalesSeriesData " + seriesId.ToString());
+                    var salesSeriesDef = await _context.SellDocSeriesDefs.SingleOrDefaultAsync(p => p.Id == seriesId);
+                    if (salesSeriesDef == null)
+                    {
+                        Debug.Print("Inside GetSalesSeriesData No Series found");
+                        return NotFound(new
+                        {
+                            error = "No Series Found"
+                        });
+                    }
+                    await _context.Entry(salesSeriesDef)
+                        .Reference(p => p.SellDocTypeDef)
+                        .LoadAsync();
+                    var salesTypeDef = salesSeriesDef.SellDocTypeDef;
+                    var usedSellPrice = salesTypeDef.UsedPrice;
+                    Debug.Print("Inside GetSalesSeriesData Returning usedPrice " + usedSellPrice.ToString());
+                    return Ok(new { UsedPrice = usedSellPrice });
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(docType), docType, null);
+            }
+        }
         [HttpGet("BuySeriesData")]
         public async Task<IActionResult> GetBuySeriesData(int seriesId)
         {
@@ -504,7 +559,7 @@ namespace GrKouk.WebRazor.Controllers
             var usedPrice = buyTypeDef.UsedPrice;
 
             Debug.Print("Inside GetBuySeriesData Returning usedPrice " + usedPrice.ToString());
-            return Ok(new {UsedPrice = usedPrice});
+            return Ok(new { UsedPrice = usedPrice });
         }
 
         [HttpGet("WarehouseTransType")]
@@ -552,10 +607,425 @@ namespace GrKouk.WebRazor.Controllers
             }
 
             Debug.Print("******Inside GetWarehouseTransType Returning Action value " + transType);
-            return Ok(new {TransType = transType});
+            return Ok(new { TransType = transType });
         }
 
-        
+        [HttpPost("CreateRecurringDoc")]
+        public async Task<IActionResult> CreateRecurringDoc([FromBody] RecurringTransDocCreateAjaxDto data)
+        {
+            const string defaultBuySectionCode = "SYS-BUY-MATERIALS-SCN";
+            const string defaultSellSectionCode = "SYS-SELL-COMBINED-SCN";
+            // bool noSupplierTrans = false;
+            //bool noWarehouseTrans = false;
+            
+
+            RecurringDocCreateAjaxNoLinesDto transToAttachNoLines;
+            RecurringTransDoc transToAttach;
+            DateTime dateOfTrans;
+
+            if (data == null)
+            {
+                return BadRequest(new
+                {
+                    error = "Empty request data"
+                });
+            }
+
+            try
+            {
+                transToAttachNoLines = _mapper.Map<RecurringDocCreateAjaxNoLinesDto>(data);
+                transToAttach = _mapper.Map<RecurringTransDoc>(transToAttachNoLines);
+                dateOfTrans = data.NextTransDate;
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new
+                {
+                    error = e.Message
+                });
+            }
+
+            using (var transaction = _context.Database.BeginTransaction())
+            {
+                
+                int sectionId = 0;
+                switch (transToAttach.RecurringDocType)
+                {
+                    case RecurringDocTypeEnum.BuyType:
+                        var buySeries = await _context.BuyDocSeriesDefs.SingleOrDefaultAsync(m => m.Id == data.DocSeriesId);
+                        if (buySeries is null)
+                        {
+                            transaction.Rollback();
+                            ModelState.AddModelError(string.Empty, "Δεν βρέθηκε η σειρά παραστατικού");
+                            return NotFound(new
+                            {
+                                error = "Buy Doc Series not found"
+                            });
+                        }
+                        
+                        await _context.Entry(buySeries).Reference(t => t.BuyDocTypeDef).LoadAsync();
+                        var buyTypeDef = buySeries.BuyDocTypeDef;
+                        if (buyTypeDef == null)
+                        {
+                            transaction.Rollback();
+                            return NotFound(new
+                            {
+                                error = "Doc Series has not doc type definition"
+                            });
+                        }
+                        #region Section Management
+                        if (buyTypeDef.SectionId==0)
+                        {
+                            var section = await _context.Sections.SingleOrDefaultAsync(s => s.SystemName == defaultBuySectionCode);
+                            if (section == null)
+                            {
+                                transaction.Rollback();
+                                ModelState.AddModelError(string.Empty, "Δεν υπάρχει το Section");
+                                return NotFound(new
+                                {
+                                    error = "Could not locate section "
+                                });
+                            }
+                            sectionId = section.Id;
+                        }
+                        else
+                        {
+                            sectionId = buyTypeDef.SectionId;
+                        }
+                        #endregion
+                        break;
+                    case RecurringDocTypeEnum.SellType:
+                        var sellSeries = await _context.SellDocSeriesDefs.SingleOrDefaultAsync(m => m.Id == data.DocSeriesId);
+                        if (sellSeries is null)
+                        {
+                            transaction.Rollback();
+                            ModelState.AddModelError(string.Empty, "Δεν βρέθηκε η σειρά παραστατικού");
+                            return NotFound(new
+                            {
+                                error = "Sell Doc Series not found"
+                            });
+                        }
+                        await _context.Entry(sellSeries).Reference(t => t.SellDocTypeDef).LoadAsync();
+                        var sellTypeDef = sellSeries.SellDocTypeDef;
+                        if (sellTypeDef == null)
+                        {
+                            transaction.Rollback();
+                            return NotFound(new
+                            {
+                                error = "Doc Series has not doc type definition"
+                            });
+                        }
+                        #region Section Management
+                        if (sellTypeDef.SectionId==0)
+                        {
+                            var section = await _context.Sections.SingleOrDefaultAsync(s => s.SystemName == defaultSellSectionCode);
+                            if (section == null)
+                            {
+                                transaction.Rollback();
+                                ModelState.AddModelError(string.Empty, "Δεν υπάρχει το Section");
+                                return NotFound(new
+                                {
+                                    error = "Could not locate section "
+                                });
+                            }
+                            sectionId = section.Id;
+                        }
+                        else
+                        {
+                            sectionId = sellTypeDef.SectionId;
+                        }
+                        #endregion
+                        break;
+                    default:
+                        break;
+                }
+                transToAttach.SectionId = sectionId;
+                transToAttach.DocTypeId = data.DocSeriesId;
+                _context.RecurringTransDocs.Add(transToAttach);
+
+                try
+                {
+                    await _context.SaveChangesAsync();
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    transaction.Rollback();
+                    string msg = e.InnerException?.Message;
+                    return BadRequest(new
+                    {
+                        error = e.Message + " " + msg
+                    });
+                }
+
+                var docId = _context.Entry(transToAttach).Entity.Id;
+
+                foreach (var dataBuyDocLine in data.DocLines)
+                {
+                    var warehouseItemId = dataBuyDocLine.WarehouseItemId;
+                    var material = await _context.WarehouseItems.SingleOrDefaultAsync(p => p.Id == warehouseItemId);
+                    if (material is null)
+                    {
+                        //Handle error
+                        transaction.Rollback();
+                        ModelState.AddModelError(string.Empty, "Doc Line error null WarehouseItem");
+                        return NotFound(new
+                        {
+                            error = "Could not locate material in Doc Line "
+                        });
+                    }
+
+                    var docLine = new RecurringTransDocLine();
+                    decimal unitPrice = dataBuyDocLine.Price;
+                    decimal units = (decimal)dataBuyDocLine.Q1;
+                    decimal fpaRate = (decimal)dataBuyDocLine.FpaRate;
+                    decimal discountRate = (decimal)dataBuyDocLine.DiscountRate;
+                    decimal lineNetAmount = unitPrice * units;
+                    decimal lineDiscountAmount = lineNetAmount * discountRate;
+                    decimal lineFpaAmount = (lineNetAmount - lineDiscountAmount) * fpaRate;
+                    docLine.UnitPrice = unitPrice;
+                    docLine.AmountFpa = lineFpaAmount;
+                    docLine.AmountNet = lineNetAmount;
+                    docLine.AmountDiscount = lineDiscountAmount;
+                    docLine.DiscountRate = discountRate;
+                    docLine.FpaRate = fpaRate;
+                    docLine.WarehouseItemId = dataBuyDocLine.WarehouseItemId;
+                    docLine.Quontity1 = dataBuyDocLine.Q1;
+                    docLine.Quontity2 = dataBuyDocLine.Q2;
+                    docLine.PrimaryUnitId = dataBuyDocLine.MainUnitId;
+                    docLine.SecondaryUnitId = dataBuyDocLine.SecUnitId;
+                    docLine.Factor = dataBuyDocLine.Factor;
+                    docLine.RecurringTransDocId = docId;
+                    docLine.Etiology = transToAttach.Etiology;
+                    //_context.Entry(transToAttach).Entity
+                    transToAttach.DocLines.Add(docLine);
+
+                }
+
+                try
+                {
+                    await _context.SaveChangesAsync();
+                    transaction.Commit();
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    transaction.Rollback();
+                    string msg = e.InnerException.Message;
+                    return BadRequest(new
+                    {
+                        error = e.Message + " " + msg
+                    });
+                }
+            }
+
+            return Ok(new { });
+        }
+        [HttpPost("UpdateRecurringDoc")]
+        public async Task<IActionResult> UpdateRecurringDoc([FromBody] RecurringTransDocModifyAjaxDto data)
+        {
+            const string defaultBuySectionCode = "SYS-BUY-MATERIALS-SCN";
+            const string defaultSellSectionCode = "SYS-SELL-COMBINED-SCN";
+            RecurringTransDocModifyAjaxNoLinesDto transToAttachNoLines;
+            RecurringTransDoc transToAttach;
+            DateTime dateOfTrans;
+            if (data == null)
+            {
+                return BadRequest(new
+                {
+                    error = "Empty request data"
+                });
+            }
+            try
+            {
+                transToAttachNoLines = _mapper.Map<RecurringTransDocModifyAjaxNoLinesDto>(data);
+                transToAttach = _mapper.Map<RecurringTransDoc>(transToAttachNoLines);
+                dateOfTrans = data.NextTransDate;
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new
+                {
+                    error = e.Message
+                });
+            }
+
+            using (var transaction = _context.Database.BeginTransaction())
+            {
+               
+                _context.RecurringTransDocLines.RemoveRange(_context.RecurringTransDocLines.Where(p => p.RecurringTransDocId == data.Id));
+                int sectionId = 0;
+                switch (transToAttach.RecurringDocType)
+                {
+                    case RecurringDocTypeEnum.BuyType:
+                        var buySeries = await _context.BuyDocSeriesDefs.SingleOrDefaultAsync(m => m.Id == data.DocSeriesId);
+                        if (buySeries is null)
+                        {
+                            transaction.Rollback();
+                            ModelState.AddModelError(string.Empty, "Δεν βρέθηκε η σειρά παραστατικού");
+                            return NotFound(new
+                            {
+                                error = "Buy Doc Series not found"
+                            });
+                        }
+                        
+                        await _context.Entry(buySeries).Reference(t => t.BuyDocTypeDef).LoadAsync();
+                        var buyTypeDef = buySeries.BuyDocTypeDef;
+                        if (buyTypeDef == null)
+                        {
+                            transaction.Rollback();
+                            return NotFound(new
+                            {
+                                error = "Doc Series has not doc type definition"
+                            });
+                        }
+                        #region Section Management
+                        if (buyTypeDef.SectionId==0)
+                        {
+                            var section = await _context.Sections.SingleOrDefaultAsync(s => s.SystemName == defaultBuySectionCode);
+                            if (section == null)
+                            {
+                                transaction.Rollback();
+                                ModelState.AddModelError(string.Empty, "Δεν υπάρχει το Section");
+                                return NotFound(new
+                                {
+                                    error = "Could not locate section "
+                                });
+                            }
+                            sectionId = section.Id;
+                        }
+                        else
+                        {
+                            sectionId = buyTypeDef.SectionId;
+                        }
+                        #endregion
+                        break;
+                    case RecurringDocTypeEnum.SellType:
+                        var sellSeries = await _context.SellDocSeriesDefs.SingleOrDefaultAsync(m => m.Id == data.DocSeriesId);
+                        if (sellSeries is null)
+                        {
+                            transaction.Rollback();
+                            ModelState.AddModelError(string.Empty, "Δεν βρέθηκε η σειρά παραστατικού");
+                            return NotFound(new
+                            {
+                                error = "Sell Doc Series not found"
+                            });
+                        }
+                        await _context.Entry(sellSeries).Reference(t => t.SellDocTypeDef).LoadAsync();
+                        var sellTypeDef = sellSeries.SellDocTypeDef;
+                        if (sellTypeDef == null)
+                        {
+                            transaction.Rollback();
+                            return NotFound(new
+                            {
+                                error = "Doc Series has not doc type definition"
+                            });
+                        }
+                        #region Section Management
+                        if (sellTypeDef.SectionId==0)
+                        {
+                            var section = await _context.Sections.SingleOrDefaultAsync(s => s.SystemName == defaultSellSectionCode);
+                            if (section == null)
+                            {
+                                transaction.Rollback();
+                                ModelState.AddModelError(string.Empty, "Δεν υπάρχει το Section");
+                                return NotFound(new
+                                {
+                                    error = "Could not locate section "
+                                });
+                            }
+                            sectionId = section.Id;
+                        }
+                        else
+                        {
+                            sectionId = sellTypeDef.SectionId;
+                        }
+                        #endregion
+                        break;
+                    default:
+                        break;
+                }
+                transToAttach.SectionId = sectionId;
+                transToAttach.DocTypeId = data.DocSeriesId;
+               
+                _context.Entry(transToAttach).State = EntityState.Modified;
+                var docId = transToAttach.Id;
+                //--------------------------------------
+
+                foreach (var dataBuyDocLine in data.BuyDocLines)
+                {
+                    var warehouseItemId = dataBuyDocLine.WarehouseItemId;
+                    var material = await _context.WarehouseItems.SingleOrDefaultAsync(p => p.Id == warehouseItemId);
+                    if (material is null)
+                    {
+                        //Handle error
+                        transaction.Rollback();
+                        ModelState.AddModelError(string.Empty, "Doc Line error null WarehouseItem");
+                        return NotFound(new
+                        {
+                            error = "Could not locate material in Doc Line "
+                        });
+                    }
+
+                    #region MaterialLine
+                    var docLine = new RecurringTransDocLine();
+                    decimal unitPrice = dataBuyDocLine.Price;
+                    decimal units = (decimal)dataBuyDocLine.Q1;
+                    decimal fpaRate = (decimal)dataBuyDocLine.FpaRate;
+                    decimal discountRate = (decimal)dataBuyDocLine.DiscountRate;
+                    decimal lineNetAmount = unitPrice * units;
+                    decimal lineDiscountAmount = lineNetAmount * discountRate;
+                    decimal lineFpaAmount = (lineNetAmount - lineDiscountAmount) * fpaRate;
+                    docLine.UnitPrice = unitPrice;
+                    docLine.AmountFpa = lineFpaAmount;
+                    docLine.AmountNet = lineNetAmount;
+                    docLine.AmountDiscount = lineDiscountAmount;
+                    docLine.DiscountRate = discountRate;
+                    docLine.FpaRate = fpaRate;
+                    docLine.WarehouseItemId = dataBuyDocLine.WarehouseItemId;
+                    docLine.Quontity1 = dataBuyDocLine.Q1;
+                    docLine.Quontity2 = dataBuyDocLine.Q2;
+                    docLine.PrimaryUnitId = dataBuyDocLine.MainUnitId;
+                    docLine.SecondaryUnitId = dataBuyDocLine.SecUnitId;
+                    docLine.Factor = dataBuyDocLine.Factor;
+                    docLine.RecurringTransDocId = docId;
+                    docLine.Etiology = transToAttach.Etiology;
+                    //_context.Entry(transToAttach).Entity
+                    
+                    try
+                    {
+                        transToAttach.DocLines.Add(docLine);
+                    }
+                    catch (Exception e)
+                    {
+                        transaction.Rollback();
+                        string msg = e.InnerException.Message;
+                        return BadRequest(new
+                        {
+                            error = e.Message + " " + msg
+                        });
+                    }
+
+                    #endregion
+                }
+                try
+                {
+                    await _context.SaveChangesAsync();
+                    transaction.Commit();
+                }
+                catch (Exception e)
+                {
+                    transaction.Rollback();
+                    string msg = e.InnerException.Message;
+                    return BadRequest(new
+                    {
+                        error = e.Message + " " + msg
+                    });
+                }
+            }
+
+            return Ok(new { });
+        }
 
         [HttpPost("MaterialBuyDoc")]
         public async Task<IActionResult> PostMaterialBuyDoc([FromBody] BuyDocCreateAjaxDto data)
@@ -832,9 +1302,9 @@ namespace GrKouk.WebRazor.Controllers
 
                     var buyMaterialLine = new BuyDocLine();
                     decimal unitPrice = dataBuyDocLine.Price;
-                    decimal units = (decimal) dataBuyDocLine.Q1;
-                    decimal fpaRate = (decimal) dataBuyDocLine.FpaRate;
-                    decimal discountRate = (decimal) dataBuyDocLine.DiscountRate;
+                    decimal units = (decimal)dataBuyDocLine.Q1;
+                    decimal fpaRate = (decimal)dataBuyDocLine.FpaRate;
+                    decimal discountRate = (decimal)dataBuyDocLine.DiscountRate;
                     decimal lineNetAmount = unitPrice * units;
                     decimal lineDiscountAmount = lineNetAmount * discountRate;
                     decimal lineFpaAmount = (lineNetAmount - lineDiscountAmount) * fpaRate;
@@ -879,7 +1349,7 @@ namespace GrKouk.WebRazor.Controllers
                             CreatorId = transToAttach.Id,
                             TransDate = transToAttach.TransDate,
                             TransRefCode = transToAttach.TransRefCode,
-                            UnitFactor = (decimal) dataBuyDocLine.Factor,
+                            UnitFactor = (decimal)dataBuyDocLine.Factor,
                             TransWarehouseDocSeriesId = warehouseSeriesId,
                             TransWarehouseDocTypeId = warehouseTypeId
                         };
@@ -914,7 +1384,7 @@ namespace GrKouk.WebRazor.Controllers
             return Ok(new { });
         }
 
-       
+
         [HttpPost("MaterialBuyDocUpdate")]
         public async Task<IActionResult> PutMaterialBuyDoc([FromBody] BuyDocModifyAjaxDto data)
         {
@@ -1182,9 +1652,9 @@ namespace GrKouk.WebRazor.Controllers
 
                     var warehouseItemLine = new BuyDocLine();
                     decimal unitPrice = dataBuyDocLine.Price;
-                    decimal units = (decimal) dataBuyDocLine.Q1;
-                    decimal fpaRate = (decimal) dataBuyDocLine.FpaRate;
-                    decimal discountRate = (decimal) dataBuyDocLine.DiscountRate;
+                    decimal units = (decimal)dataBuyDocLine.Q1;
+                    decimal fpaRate = (decimal)dataBuyDocLine.FpaRate;
+                    decimal discountRate = (decimal)dataBuyDocLine.DiscountRate;
                     decimal lineNetAmount = unitPrice * units;
                     decimal lineDiscountAmount = lineNetAmount * discountRate;
                     decimal lineFpaAmount = (lineNetAmount - lineDiscountAmount) * fpaRate;
@@ -1242,7 +1712,7 @@ namespace GrKouk.WebRazor.Controllers
                             CreatorId = transToAttach.Id,
                             TransDate = transToAttach.TransDate,
                             TransRefCode = transToAttach.TransRefCode,
-                            UnitFactor = (decimal) dataBuyDocLine.Factor,
+                            UnitFactor = (decimal)dataBuyDocLine.Factor,
                             TransWarehouseDocSeriesId = warehouseSeriesId,
                             TransWarehouseDocTypeId = warehouseTypeId
                         };
@@ -1570,9 +2040,9 @@ namespace GrKouk.WebRazor.Controllers
 
                     var sellDocLine = new SellDocLine();
                     decimal unitPrice = docLine.Price;
-                    decimal units = (decimal) docLine.Q1;
-                    decimal fpaRate = (decimal) docLine.FpaRate;
-                    decimal discountRate = (decimal) docLine.DiscountRate;
+                    decimal units = (decimal)docLine.Q1;
+                    decimal fpaRate = (decimal)docLine.FpaRate;
+                    decimal discountRate = (decimal)docLine.DiscountRate;
                     decimal lineNetAmount = unitPrice * units;
                     decimal lineDiscountAmount = lineNetAmount * discountRate;
                     decimal lineFpaAmount = (lineNetAmount - lineDiscountAmount) * fpaRate;
@@ -1617,7 +2087,7 @@ namespace GrKouk.WebRazor.Controllers
                         warehouseTrans.CreatorId = transToAttach.Id;
                         warehouseTrans.TransDate = transToAttach.TransDate;
                         warehouseTrans.TransRefCode = transToAttach.TransRefCode;
-                        warehouseTrans.UnitFactor = (decimal) docLine.Factor;
+                        warehouseTrans.UnitFactor = (decimal)docLine.Factor;
 
                         warehouseTrans.TransWarehouseDocSeriesId = warehouseSeriesId;
                         warehouseTrans.TransWarehouseDocTypeId = warehouseTypeId;
@@ -1905,9 +2375,9 @@ namespace GrKouk.WebRazor.Controllers
 
                     var sellDocLine = new SellDocLine();
                     decimal unitPrice = docLine.Price;
-                    decimal units = (decimal) docLine.Q1;
-                    decimal fpaRate = (decimal) docLine.FpaRate;
-                    decimal discountRate = (decimal) docLine.DiscountRate;
+                    decimal units = (decimal)docLine.Q1;
+                    decimal fpaRate = (decimal)docLine.FpaRate;
+                    decimal discountRate = (decimal)docLine.DiscountRate;
                     decimal lineNetAmount = unitPrice * units;
                     decimal lineDiscountAmount = lineNetAmount * discountRate;
                     decimal lineFpaAmount = (lineNetAmount - lineDiscountAmount) * fpaRate;
@@ -1952,7 +2422,7 @@ namespace GrKouk.WebRazor.Controllers
                             CreatorId = transToAttach.Id,
                             TransDate = transToAttach.TransDate,
                             TransRefCode = transToAttach.TransRefCode,
-                            UnitFactor = (decimal) docLine.Factor,
+                            UnitFactor = (decimal)docLine.Factor,
                             TransWarehouseDocSeriesId = warehouseSeriesId,
                             TransWarehouseDocTypeId = warehouseTypeId
                         };

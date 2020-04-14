@@ -1,8 +1,17 @@
 ﻿using System;
 using System.ComponentModel;
 
+
 namespace GrKouk.InfoSystem.Definitions
 {
+
+    public enum RecurringDocTypeEnum
+    {
+        [Description("Buy Type")]
+        BuyType =1,
+        [Description("Sell Type")]
+        SellType =2
+    }
     public enum DiaryTransactionsKindEnum
     {
         Expence = 1,
@@ -67,9 +76,12 @@ namespace GrKouk.InfoSystem.Definitions
         WarehouseTransactionTypeImport = 1,
         WarehouseTransactionTypeExport = 2
     }
+
+
     /// <summary>
     /// Warehouse Transaction New Type Enum
     /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Naming", "CA1712:Do not prefix enum values with type name", Justification = "<Pending>")]
     public enum InventoryActionEnum
     {
         [Description("Καμία Μεταβολή")]
@@ -83,6 +95,7 @@ namespace GrKouk.InfoSystem.Definitions
         [Description("Αρνητική Εξαγωγή")]
         InventoryActionEnumNegativeExport = 4
     }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Naming", "CA1712:Do not prefix enum values with type name", Justification = "<Pending>")]
     public enum InventoryValueActionEnum
     {
         [Description("Καμία Μεταβολή")]
@@ -96,6 +109,7 @@ namespace GrKouk.InfoSystem.Definitions
         [Description("Αρνητική Μείωση")]
         InventoryValueActionEnumNegativeDecrease = 4
     }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Naming", "CA1712:Do not prefix enum values with type name", Justification = "<Pending>")]
     public enum FinActionsEnum
     {
         [Description("Καμία Μεταβολή")]
@@ -109,7 +123,7 @@ namespace GrKouk.InfoSystem.Definitions
         [Description("Αρνητική Πίστωση")]
         FinActionsEnumNegativeCredit = 4
     }
-
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Naming", "CA1712:Do not prefix enum values with type name", Justification = "<Pending>")]
     public enum PriceTypeEnum
     {
         [Description("Καθαρή Τιμή")]
@@ -141,7 +155,7 @@ namespace GrKouk.InfoSystem.Definitions
         [Description("Αγορών")]
         CodeUsedUnitEnumBuy = 3
     }
-
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Naming", "CA1712:Do not prefix enum values with type name", Justification = "<Pending>")]
     public enum DiaryTypeEnum
     {
         [Description("Πωλήσεις")]
@@ -157,6 +171,7 @@ namespace GrKouk.InfoSystem.Definitions
         [Description("Κινήσεις Συναλλασσόμενων")]
         DiaryTypeEnumTransactors = 6
     }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Naming", "CA1712:Do not prefix enum values with type name", Justification = "<Pending>")]
     public enum InfoEntityActionEnum
     {
         [Description("No change")]
@@ -166,13 +181,14 @@ namespace GrKouk.InfoSystem.Definitions
         [Description("Decrease")]
         InfoEntityActionEnumDecrease = 3,
     }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Naming", "CA1712:Do not prefix enum values with type name", Justification = "<Pending>")]
     public enum PictureEntityEnum
     {
         [Description("Product")]
         PictureEntityEnumProduct = 1
 
     }
-
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Naming", "CA1712:Do not prefix enum values with type name", Justification = "<Pending>")]
     public enum SeriesAutoPayoffEnum
     {
         [Description("No Payoff")]
@@ -182,7 +198,7 @@ namespace GrKouk.InfoSystem.Definitions
         [Description("Question")]
         SeriesAutoPayoffEnumNoQuestion = 2
     }
-
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Naming", "CA1712:Do not prefix enum values with type name", Justification = "<Pending>")]
     public enum ProdCodeNature
     {
         [Description("Product")]
@@ -198,7 +214,7 @@ namespace GrKouk.InfoSystem.Definitions
         [Description("Raw Material")]
         ProdCodeNatureRaw = 6
     }
-
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Naming", "CA1712:Do not prefix enum values with type name", Justification = "<Pending>")]
     public enum ProdCodeRawShape
     {
         [Description("Bead")]
@@ -208,7 +224,7 @@ namespace GrKouk.InfoSystem.Definitions
         [Description("Figure")]
         ProdCodeRawShapeFigure = 30
     }
-
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Naming", "CA1712:Do not prefix enum values with type name", Justification = "<Pending>")]
     public enum ProdCodeSeason
     {
         [Description("Season 2018")]

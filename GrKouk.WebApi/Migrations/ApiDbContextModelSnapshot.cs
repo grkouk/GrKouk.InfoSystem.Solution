@@ -83,6 +83,8 @@ namespace GrKouk.WebApi.Migrations
                     b.Property<string>("Name")
                         .HasMaxLength(200);
 
+                    b.Property<int>("SectionId");
+
                     b.Property<string>("SelectedWarehouseItemNatures")
                         .HasMaxLength(200);
 
@@ -271,6 +273,8 @@ namespace GrKouk.WebApi.Migrations
 
                     b.Property<string>("Name")
                         .HasMaxLength(200);
+
+                    b.Property<int>("SectionId");
 
                     b.Property<string>("SelectedWarehouseItemNatures")
                         .HasMaxLength(200);
@@ -579,6 +583,113 @@ namespace GrKouk.WebApi.Migrations
                         .IsUnique();
 
                     b.ToTable("ProductMedia");
+                });
+
+            modelBuilder.Entity("GrKouk.InfoSystem.Domain.RecurringTransactions.RecurringTransDoc", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<decimal>("AmountDiscount")
+                        .HasColumnType("decimal(18, 4)");
+
+                    b.Property<decimal>("AmountFpa")
+                        .HasColumnType("decimal(18, 4)");
+
+                    b.Property<decimal>("AmountNet")
+                        .HasColumnType("decimal(18, 4)");
+
+                    b.Property<int>("CompanyId");
+
+                    b.Property<int>("DocSeriesId");
+
+                    b.Property<int>("DocTypeId");
+
+                    b.Property<string>("Etiology")
+                        .HasMaxLength(500);
+
+                    b.Property<DateTime>("NextTransDate");
+
+                    b.Property<int>("PaymentMethodId");
+
+                    b.Property<int>("RecurringDocType");
+
+                    b.Property<string>("RecurringFrequency")
+                        .HasMaxLength(2);
+
+                    b.Property<int>("SectionId");
+
+                    b.Property<byte[]>("Timestamp")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate();
+
+                    b.Property<string>("TransRefCode");
+
+                    b.Property<int>("TransactorId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.HasIndex("NextTransDate");
+
+                    b.HasIndex("PaymentMethodId");
+
+                    b.HasIndex("TransactorId");
+
+                    b.ToTable("RecurringTransDocs");
+                });
+
+            modelBuilder.Entity("GrKouk.InfoSystem.Domain.RecurringTransactions.RecurringTransDocLine", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<decimal>("AmountDiscount")
+                        .HasColumnType("decimal(18, 4)");
+
+                    b.Property<decimal>("AmountFpa")
+                        .HasColumnType("decimal(18, 4)");
+
+                    b.Property<decimal>("AmountNet")
+                        .HasColumnType("decimal(18, 4)");
+
+                    b.Property<decimal>("DiscountRate");
+
+                    b.Property<string>("Etiology")
+                        .HasMaxLength(500);
+
+                    b.Property<float>("Factor");
+
+                    b.Property<decimal>("FpaRate");
+
+                    b.Property<int>("PrimaryUnitId");
+
+                    b.Property<double>("Quontity1");
+
+                    b.Property<double>("Quontity2");
+
+                    b.Property<int>("RecurringTransDocId");
+
+                    b.Property<int>("SecondaryUnitId");
+
+                    b.Property<decimal>("UnitExpenses")
+                        .HasColumnType("decimal(18, 4)");
+
+                    b.Property<decimal>("UnitPrice")
+                        .HasColumnType("decimal(18, 4)");
+
+                    b.Property<int>("WarehouseItemId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RecurringTransDocId");
+
+                    b.HasIndex("WarehouseItemId");
+
+                    b.ToTable("RecurringTransDocLines");
                 });
 
             modelBuilder.Entity("GrKouk.InfoSystem.Domain.Shared.AppSetting", b =>
@@ -1857,6 +1968,37 @@ namespace GrKouk.WebApi.Migrations
                     b.HasOne("GrKouk.InfoSystem.Domain.Shared.WarehouseItem", "Product")
                         .WithMany()
                         .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("GrKouk.InfoSystem.Domain.RecurringTransactions.RecurringTransDoc", b =>
+                {
+                    b.HasOne("GrKouk.InfoSystem.Domain.Shared.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("GrKouk.InfoSystem.Domain.FinConfig.PaymentMethod", "PaymentMethod")
+                        .WithMany()
+                        .HasForeignKey("PaymentMethodId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("GrKouk.InfoSystem.Domain.Shared.Transactor", "Transactor")
+                        .WithMany()
+                        .HasForeignKey("TransactorId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("GrKouk.InfoSystem.Domain.RecurringTransactions.RecurringTransDocLine", b =>
+                {
+                    b.HasOne("GrKouk.InfoSystem.Domain.RecurringTransactions.RecurringTransDoc", "RecurringTransDoc")
+                        .WithMany("DocLines")
+                        .HasForeignKey("RecurringTransDocId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("GrKouk.InfoSystem.Domain.Shared.WarehouseItem", "WarehouseItem")
+                        .WithMany()
+                        .HasForeignKey("WarehouseItemId")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 

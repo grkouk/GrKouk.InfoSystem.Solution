@@ -1,5 +1,6 @@
 ﻿using GrKouk.InfoSystem.Domain.FinConfig;
 using GrKouk.InfoSystem.Domain.MediaEntities;
+using GrKouk.InfoSystem.Domain.RecurringTransactions;
 using GrKouk.InfoSystem.Domain.Shared;
 
 using Microsoft.EntityFrameworkCore;
@@ -67,6 +68,8 @@ namespace GrKouk.WebApi.Data
         public DbSet<SalesChannel> SalesChannels { get; set; }
         public DbSet<WrItemCode> WrItemCodes { get; set; }
         public DbSet<AppSetting> AppSettings { get; set; }
+        public DbSet<RecurringTransDocLine>  RecurringTransDocLines        { get; set; }
+        public DbSet<RecurringTransDoc> RecurringTransDocs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -545,6 +548,32 @@ namespace GrKouk.WebApi.Data
                     .HasForeignKey(p => p.TransactorId);
             });
             modelBuilder.Entity<AppSetting>(entity => { entity.HasKey(p => p.Code); });
+            modelBuilder.Entity<RecurringTransDocLine>(entity =>
+            {
+                entity.HasOne(p => p.WarehouseItem)
+                .WithMany()
+                .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(p => p.RecurringTransDoc)
+                 .WithMany(p => p.DocLines)
+                 .OnDelete(DeleteBehavior.Restrict)
+                 .HasForeignKey(p => p.RecurringTransDocId);
+            });
+
+            modelBuilder.Entity<RecurringTransDoc>(entity =>
+            {
+                entity.HasIndex(p => p.NextTransDate);
+                entity.HasOne(p => p.Transactor)
+                .WithMany()
+                .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(p => p.PaymentMethod)
+                 .WithMany()
+                 .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(p => p.Company)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+
+            });
         }
     }
 }
