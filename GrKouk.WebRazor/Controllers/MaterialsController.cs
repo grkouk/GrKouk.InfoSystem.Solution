@@ -1063,22 +1063,7 @@ namespace GrKouk.WebRazor.Controllers
 
             using (var transaction = _context.Database.BeginTransaction())
             {
-                #region Section Management
-
-                var section = await _context.Sections.SingleOrDefaultAsync(s => s.SystemName == sectionCode);
-                if (section == null)
-                {
-                    transaction.Rollback();
-                    ModelState.AddModelError(string.Empty, "Δεν υπάρχει το Section");
-                    return NotFound(new
-                    {
-                        error = "Could not locate section "
-                    });
-                }
-
-                #endregion
-
-                #region Fiscal Period
+               #region Fiscal Period
 
                 var fiscalPeriod = await _context.FiscalPeriods.FirstOrDefaultAsync(p =>
                     dateOfTrans >= p.StartDate && dateOfTrans <= p.EndDate);
@@ -1118,12 +1103,32 @@ namespace GrKouk.WebRazor.Controllers
 
                 await _context.Entry(docTypeDef).Reference(t => t.TransWarehouseDef)
                     .LoadAsync();
-
+                #region Section Management
+                int sectionId = 0;
+                if (docTypeDef.SectionId==0)
+                {
+                    var sectn = await _context.Sections.SingleOrDefaultAsync(s => s.SystemName == sectionCode);
+                    if (sectn == null)
+                    {
+                        transaction.Rollback();
+                        ModelState.AddModelError(string.Empty, "Δεν υπάρχει το Section");
+                        return NotFound(new
+                        {
+                            error = "Could not locate section "
+                        });
+                    }
+                    sectionId = sectn.Id;
+                }
+                else
+                {
+                    sectionId = docTypeDef.SectionId;
+                }
+                #endregion
                 //var transSupplierDef = docTypeDef.TransSupplierDef;
                 var transTransactorDef = docTypeDef.TransTransactorDef;
                 var transWarehouseDef = docTypeDef.TransWarehouseDef;
 
-                transToAttach.SectionId = section.Id;
+                transToAttach.SectionId = sectionId;
                 transToAttach.FiscalPeriodId = fiscalPeriod.Id;
                 transToAttach.BuyDocTypeId = docSeries.BuyDocTypeDefId;
                 _context.BuyDocuments.Add(transToAttach);
@@ -1163,7 +1168,7 @@ namespace GrKouk.WebRazor.Controllers
 
                     var sTransactorTransaction = _mapper.Map<TransactorTransaction>(data);
                     sTransactorTransaction.TransactorId = data.TransactorId;
-                    sTransactorTransaction.SectionId = section.Id;
+                    sTransactorTransaction.SectionId = sectionId;
                     sTransactorTransaction.TransTransactorDocTypeId =
                         transTransactorDefaultSeries.TransTransactorDocTypeDefId;
                     sTransactorTransaction.TransTransactorDocSeriesId = transTransactorDefaultSeries.Id;
@@ -1221,7 +1226,7 @@ namespace GrKouk.WebRazor.Controllers
 
                         var sTransactorTransaction = _mapper.Map<TransactorTransaction>(data);
                         sTransactorTransaction.TransactorId = data.TransactorId;
-                        sTransactorTransaction.SectionId = section.Id;
+                        sTransactorTransaction.SectionId = sectionId;
                         sTransactorTransaction.TransTransactorDocTypeId =
                             transTransactorPayOffSeries.TransTransactorDocTypeDefId;
                         sTransactorTransaction.TransTransactorDocSeriesId = transTransactorPayOffSeries.Id;
@@ -1345,7 +1350,7 @@ namespace GrKouk.WebRazor.Controllers
                             WarehouseItemId = warehouseItemId,
                             PrimaryUnitId = dataBuyDocLine.MainUnitId,
                             SecondaryUnitId = dataBuyDocLine.SecUnitId,
-                            SectionId = section.Id,
+                            SectionId = sectionId,
                             CreatorId = transToAttach.Id,
                             TransDate = transToAttach.TransDate,
                             TransRefCode = transToAttach.TransRefCode,
@@ -1418,27 +1423,12 @@ namespace GrKouk.WebRazor.Controllers
 
             using (var transaction = _context.Database.BeginTransaction())
             {
-                #region Section Management
-
-                var section = await _context.Sections.SingleOrDefaultAsync(s => s.SystemName == sectionCode);
-                if (section == null)
-                {
-                    transaction.Rollback();
-                    ModelState.AddModelError(string.Empty, "Δεν υπάρχει το Section");
-                    return NotFound(new
-                    {
-                        error = "Could not locate section "
-                    });
-                }
-
-                #endregion
-
                 _context.BuyDocLines.RemoveRange(_context.BuyDocLines.Where(p => p.BuyDocumentId == data.Id));
                 _context.TransactorTransactions.RemoveRange(
-                    _context.TransactorTransactions.Where(p => p.SectionId == section.Id && p.CreatorId == data.Id));
+                    _context.TransactorTransactions.Where(p => p.SectionId == data.SectionId && p.CreatorId == data.Id));
                 //_context.SupplierTransactions.RemoveRange(_context.SupplierTransactions.Where(p=>p.SectionId==section.Id && p.CreatorId==data.Id));
                 _context.WarehouseTransactions.RemoveRange(
-                    _context.WarehouseTransactions.Where(p => p.SectionId == section.Id && p.CreatorId == data.Id));
+                    _context.WarehouseTransactions.Where(p => p.SectionId == data.SectionId && p.CreatorId == data.Id));
 
                 #region Fiscal Period
 
@@ -1476,13 +1466,33 @@ namespace GrKouk.WebRazor.Controllers
                     .LoadAsync();
                 await _context.Entry(docTypeDef).Reference(t => t.TransWarehouseDef)
                     .LoadAsync();
-
+                #region Section Management
+                int sectionId = 0;
+                if (docTypeDef.SectionId==0)
+                {
+                    var sectn = await _context.Sections.SingleOrDefaultAsync(s => s.SystemName == sectionCode);
+                    if (sectn == null)
+                    {
+                        transaction.Rollback();
+                        ModelState.AddModelError(string.Empty, "Δεν υπάρχει το Section");
+                        return NotFound(new
+                        {
+                            error = "Could not locate section "
+                        });
+                    }
+                    sectionId = sectn.Id;
+                }
+                else
+                {
+                    sectionId = docTypeDef.SectionId;
+                }
+                #endregion
 
                 var transTransactorDef = docTypeDef.TransTransactorDef;
                 //var transSupplierDef = docTypeDef.TransSupplierDef;
                 var transWarehouseDef = docTypeDef.TransWarehouseDef;
 
-                transToAttach.SectionId = section.Id;
+                transToAttach.SectionId = sectionId;
                 transToAttach.FiscalPeriodId = fiscalPeriod.Id;
                 transToAttach.BuyDocTypeId = docSeries.BuyDocTypeDefId;
 
@@ -1511,7 +1521,7 @@ namespace GrKouk.WebRazor.Controllers
                         var sTransactorTransaction = _mapper.Map<TransactorTransaction>(spTransactorCreateDto);
 
                         sTransactorTransaction.TransactorId = data.TransactorId;
-                        sTransactorTransaction.SectionId = section.Id;
+                        sTransactorTransaction.SectionId = sectionId;
                         sTransactorTransaction.TransTransactorDocTypeId =
                             transTransactorDefaultSeries.TransTransactorDocTypeDefId;
                         sTransactorTransaction.TransTransactorDocSeriesId = transTransactorDefaultSeries.Id;
@@ -1569,7 +1579,7 @@ namespace GrKouk.WebRazor.Controllers
                         var sTransactorTransaction = _mapper.Map<TransactorTransaction>(spTransactorCreateDto);
 
                         sTransactorTransaction.TransactorId = data.TransactorId;
-                        sTransactorTransaction.SectionId = section.Id;
+                        sTransactorTransaction.SectionId = sectionId;
                         sTransactorTransaction.TransTransactorDocTypeId =
                             transTransactorPayOffSeries.TransTransactorDocTypeDefId;
                         sTransactorTransaction.TransTransactorDocSeriesId = transTransactorPayOffSeries.Id;
@@ -1708,7 +1718,7 @@ namespace GrKouk.WebRazor.Controllers
                             WarehouseItemId = warehouseItemId,
                             PrimaryUnitId = dataBuyDocLine.MainUnitId,
                             SecondaryUnitId = dataBuyDocLine.SecUnitId,
-                            SectionId = section.Id,
+                            SectionId = sectionId,
                             CreatorId = transToAttach.Id,
                             TransDate = transToAttach.TransDate,
                             TransRefCode = transToAttach.TransRefCode,
@@ -1766,7 +1776,7 @@ namespace GrKouk.WebRazor.Controllers
         {
             const string sectionCode = "SYS-SELL-COMBINED-SCN";
 
-            var sessionCompanyId = HttpContext.Session.GetString("CompanyId");
+           // var sessionCompanyId = HttpContext.Session.GetString("CompanyId");
 
             // bool noSupplierTrans = false;
             bool noWarehouseTrans = false;
@@ -1799,20 +1809,7 @@ namespace GrKouk.WebRazor.Controllers
 
             using (var transaction = _context.Database.BeginTransaction())
             {
-                #region Section Management
-
-                var section = await _context.Sections.SingleOrDefaultAsync(s => s.SystemName == sectionCode);
-                if (section == null)
-                {
-                    transaction.Rollback();
-                    ModelState.AddModelError(string.Empty, "Δεν υπάρχει το Section");
-                    return NotFound(new
-                    {
-                        error = "Could not locate section "
-                    });
-                }
-
-                #endregion
+                
 
                 #region Fiscal Period
 
@@ -1852,11 +1849,32 @@ namespace GrKouk.WebRazor.Controllers
 
                 await _context.Entry(docTypeDef).Reference(t => t.TransWarehouseDef)
                     .LoadAsync();
-
+               
+                #region Section Management
+                int sectionId = 0;
+                if (docTypeDef.SectionId==0)
+                {
+                    var sectn = await _context.Sections.SingleOrDefaultAsync(s => s.SystemName == sectionCode);
+                    if (sectn == null)
+                    {
+                        transaction.Rollback();
+                        ModelState.AddModelError(string.Empty, "Δεν υπάρχει το Section");
+                        return NotFound(new
+                        {
+                            error = "Could not locate section "
+                        });
+                    }
+                    sectionId = sectn.Id;
+                }
+                else
+                {
+                    sectionId = docTypeDef.SectionId;
+                }
+                #endregion
                 var transTransactorDef = docTypeDef.TransTransactorDef;
                 var transWarehouseDef = docTypeDef.TransWarehouseDef;
 
-                transToAttach.SectionId = section.Id;
+                transToAttach.SectionId = sectionId;
                 transToAttach.FiscalPeriodId = fiscalPeriod.Id;
                 transToAttach.SellDocTypeId = docSeries.SellDocTypeDefId;
                 _context.SellDocuments.Add(transToAttach);
@@ -1896,7 +1914,7 @@ namespace GrKouk.WebRazor.Controllers
 
                     var sTransactorTransaction = _mapper.Map<TransactorTransaction>(data);
                     sTransactorTransaction.TransactorId = data.TransactorId;
-                    sTransactorTransaction.SectionId = section.Id;
+                    sTransactorTransaction.SectionId = sectionId;
                     sTransactorTransaction.TransTransactorDocTypeId =
                         transTransactorDefaultSeries.TransTransactorDocTypeDefId;
                     sTransactorTransaction.TransTransactorDocSeriesId = transTransactorDefaultSeries.Id;
@@ -1956,7 +1974,7 @@ namespace GrKouk.WebRazor.Controllers
 
                         var sTransactorTransaction = _mapper.Map<TransactorTransaction>(data);
                         sTransactorTransaction.TransactorId = data.TransactorId;
-                        sTransactorTransaction.SectionId = section.Id;
+                        sTransactorTransaction.SectionId = sectionId;
                         sTransactorTransaction.TransTransactorDocTypeId =
                             transTransactorPayOffSeries.TransTransactorDocTypeDefId;
                         sTransactorTransaction.TransTransactorDocSeriesId = transTransactorPayOffSeries.Id;
@@ -2083,7 +2101,7 @@ namespace GrKouk.WebRazor.Controllers
                         warehouseTrans.WarehouseItemId = warehouseItemId;
                         warehouseTrans.PrimaryUnitId = docLine.MainUnitId;
                         warehouseTrans.SecondaryUnitId = docLine.SecUnitId;
-                        warehouseTrans.SectionId = section.Id;
+                        warehouseTrans.SectionId = sectionId;
                         warehouseTrans.CreatorId = transToAttach.Id;
                         warehouseTrans.TransDate = transToAttach.TransDate;
                         warehouseTrans.TransRefCode = transToAttach.TransRefCode;
@@ -2154,26 +2172,11 @@ namespace GrKouk.WebRazor.Controllers
 
             using (var transaction = _context.Database.BeginTransaction())
             {
-                #region Section Management
-
-                var section = await _context.Sections.SingleOrDefaultAsync(s => s.SystemName == sectionCode);
-                if (section == null)
-                {
-                    transaction.Rollback();
-                    ModelState.AddModelError(string.Empty, "Δεν υπάρχει το Section");
-                    return NotFound(new
-                    {
-                        error = "Could not locate section "
-                    });
-                }
-
-                #endregion
-
-                _context.SellDocLines.RemoveRange(_context.SellDocLines.Where(p => p.SellDocumentId == data.Id));
+               _context.SellDocLines.RemoveRange(_context.SellDocLines.Where(p => p.SellDocumentId == data.Id));
                 _context.TransactorTransactions.RemoveRange(
-                    _context.TransactorTransactions.Where(p => p.SectionId == section.Id && p.CreatorId == data.Id));
+                    _context.TransactorTransactions.Where(p => p.SectionId == data.SectionId && p.CreatorId == data.Id));
                 _context.WarehouseTransactions.RemoveRange(
-                    _context.WarehouseTransactions.Where(p => p.SectionId == section.Id && p.CreatorId == data.Id));
+                    _context.WarehouseTransactions.Where(p => p.SectionId == data.SectionId && p.CreatorId == data.Id));
 
                 #region Fiscal Period
 
@@ -2213,13 +2216,33 @@ namespace GrKouk.WebRazor.Controllers
                     .LoadAsync();
                 await _context.Entry(docTypeDef).Reference(t => t.TransWarehouseDef)
                     .LoadAsync();
-
+                #region Section Management
+                int sectionId = 0;
+                if (docTypeDef.SectionId==0)
+                {
+                    var sectn = await _context.Sections.SingleOrDefaultAsync(s => s.SystemName == sectionCode);
+                    if (sectn == null)
+                    {
+                        transaction.Rollback();
+                        ModelState.AddModelError(string.Empty, "Δεν υπάρχει το Section");
+                        return NotFound(new
+                        {
+                            error = "Could not locate section "
+                        });
+                    }
+                    sectionId = sectn.Id;
+                }
+                else
+                {
+                    sectionId = docTypeDef.SectionId;
+                }
+                #endregion
 
                 var transTransactorDef = docTypeDef.TransTransactorDef;
                 // var transSupplierDef = docTypeDef.TransSupplierDef;
                 var transWarehouseDef = docTypeDef.TransWarehouseDef;
 
-                transToAttach.SectionId = section.Id;
+                transToAttach.SectionId = sectionId;
                 transToAttach.FiscalPeriodId = fiscalPeriod.Id;
                 transToAttach.SellDocTypeId = docSeries.SellDocTypeDefId;
 
@@ -2246,7 +2269,7 @@ namespace GrKouk.WebRazor.Controllers
                     var sTransactorTransaction = _mapper.Map<TransactorTransaction>(spTransactorCreateDto);
 
                     sTransactorTransaction.TransactorId = data.TransactorId;
-                    sTransactorTransaction.SectionId = section.Id;
+                    sTransactorTransaction.SectionId = sectionId;
                     sTransactorTransaction.TransTransactorDocTypeId =
                         transTransactorDefaultSeries.TransTransactorDocTypeDefId;
                     sTransactorTransaction.TransTransactorDocSeriesId = transTransactorDefaultSeries.Id;
@@ -2293,7 +2316,7 @@ namespace GrKouk.WebRazor.Controllers
                         //Ετσι δεν μεταφέρει το Id απο το data
                         var sTransactorTransaction = _mapper.Map<TransactorTransaction>(spTransactorCreateDto);
                         sTransactorTransaction.TransactorId = data.TransactorId;
-                        sTransactorTransaction.SectionId = section.Id;
+                        sTransactorTransaction.SectionId = sectionId;
                         sTransactorTransaction.TransTransactorDocTypeId =
                             transTransactorPayOffSeries.TransTransactorDocTypeDefId;
                         sTransactorTransaction.TransTransactorDocSeriesId = transTransactorPayOffSeries.Id;
@@ -2418,7 +2441,7 @@ namespace GrKouk.WebRazor.Controllers
                             WarehouseItemId = warehouseItemId,
                             PrimaryUnitId = docLine.MainUnitId,
                             SecondaryUnitId = docLine.SecUnitId,
-                            SectionId = section.Id,
+                            SectionId = sectionId,
                             CreatorId = transToAttach.Id,
                             TransDate = transToAttach.TransDate,
                             TransRefCode = transToAttach.TransRefCode,
