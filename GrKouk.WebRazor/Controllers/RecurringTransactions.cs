@@ -2,12 +2,14 @@
 using System.Threading.Tasks;
 using AutoMapper;
 using GrKouk.InfoSystem.Definitions;
+using GrKouk.InfoSystem.Dtos.WebDtos.BuyDocuments;
 using GrKouk.InfoSystem.Dtos.WebDtos.SellDocuments;
 using GrKouk.WebApi.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.Web.CodeGeneration.Contracts.Messaging;
+using NToastNotify.Helpers;
 
 namespace GrKouk.WebRazor.Controllers
 {
@@ -45,21 +47,26 @@ namespace GrKouk.WebRazor.Controllers
                     });
             }
 
+            IActionResult actionResult;
             switch (recDef.RecurringDocType)
             {
                 case RecurringDocTypeEnum.BuyType:
-                    
+                    var buyDocDto = _mapper.Map<BuyDocCreateAjaxDto>(recDef);
+                    var buyUpdController = new MaterialsController(_context,_mapper);
+                    actionResult = await buyUpdController.PostMaterialBuyDoc(buyDocDto);
                     break;
                 case RecurringDocTypeEnum.SellType:
                     var sellDocDto = _mapper.Map<SellDocCreateAjaxDto>(recDef);
-                    var updController = new MaterialsController(_context,_mapper);
-                    var r = updController.PostSalesDoc(sellDocDto);
+                    var sellUpdController = new MaterialsController(_context,_mapper);
+                    actionResult = await sellUpdController.PostSalesDoc(sellDocDto);
                     
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-            return Ok();
+
+            var rsJson = actionResult.ToJson();
+            return Ok(actionResult);
         }
         
     }
