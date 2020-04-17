@@ -1061,6 +1061,7 @@ namespace GrKouk.WebRazor.Controllers
                 });
             }
 
+            var tr = _context.Database.CurrentTransaction;
             using (var transaction = _context.Database.BeginTransaction())
             {
                #region Fiscal Period

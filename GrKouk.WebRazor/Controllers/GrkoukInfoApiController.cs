@@ -111,6 +111,7 @@ namespace GrKouk.WebRazor.Controllers
 
             return Ok(new { message = message });
         }
+        
         [HttpPost("DeleteBuyDocumentsList")]
         public async Task<IActionResult> DeleteBuyDocumentList([FromBody] IdList docIds)
         {

@@ -156,6 +156,7 @@ namespace GrKouk.WebRazor.Automapper
             CreateMap<SellDocLine, RecurringDocLineModifyDto>();
             CreateMap<RecurringTransDocLine, RecurringDocLineModifyDto>();
             CreateMap<RecurringTransDoc, BuyDocCreateAjaxDto>()
+                .ForMember(x=>x.Id,opt=>opt.Ignore())
                 .ForMember(dest => dest.TransDate,
                     opt => opt.MapFrom(src => src.NextTransDate))
                 .ForMember(dest => dest.BuyDocSeriesId,
@@ -174,6 +175,7 @@ namespace GrKouk.WebRazor.Automapper
                 .ForMember(d => d.Price,
                     opt => opt.MapFrom(src => src.UnitPrice));
             CreateMap<RecurringTransDoc, SellDocCreateAjaxDto>()
+                .ForMember(x=>x.Id,opt=>opt.Ignore())
                 .ForMember(dest => dest.TransDate,
                     opt => opt.MapFrom(src => src.NextTransDate))
                 .ForMember(dest => dest.SellDocSeriesId,
