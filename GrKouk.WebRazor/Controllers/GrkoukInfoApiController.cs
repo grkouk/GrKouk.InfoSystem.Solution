@@ -485,15 +485,15 @@ namespace GrKouk.WebRazor.Controllers
                 }
             }
 
-            //if (!String.IsNullOrEmpty(request.DateRange))
-            //{
-            //    var datePeriodFilter = request.DateRange;
-            //    DateFilterDates dfDates = DateFilter.GetDateFilterDates(datePeriodFilter);
-            //    DateTime fromDate = dfDates.FromDate;
-            //    DateTime toDate = dfDates.ToDate;
+            if (!String.IsNullOrEmpty(request.DateRange))
+            {
+                var datePeriodFilter = request.DateRange;
+                DateFilterDates dfDates = DateFilter.GetRecTransDateFilterDates(datePeriodFilter);
+                DateTime fromDate = dfDates.FromDate;
+                DateTime toDate = dfDates.ToDate;
 
-            //    fullListIq = fullListIq.Where(p => p.NextTransDate >= fromDate && p.NextTransDate <= toDate);
-            //}
+               fullListIq = fullListIq.Where(p => p.NextTransDate >= fromDate && p.NextTransDate <= toDate);
+            }
 
             if (!String.IsNullOrEmpty(request.CompanyFilter))
             {
