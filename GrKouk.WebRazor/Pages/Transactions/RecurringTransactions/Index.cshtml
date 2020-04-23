@@ -32,7 +32,7 @@
                aria-haspopup="true" aria-expanded="false">Actions</a>
             <div class="dropdown-menu small">
                 <a class="dropdown-item" href="#" id="deleteSelectedRows">Delete Selected</a>
-                <a class="dropdown-item" href="#">*Αντιστοίχιση Παραστατικών</a>
+                <a class="dropdown-item" href="#" id="applySelected">Apply Selected</a>
                 <a class="dropdown-item" href="#">Something else here</a>
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="#">Separated link</a>
@@ -482,14 +482,17 @@
                                    
                                     colDefs[5].text = value.companyCode;
                                     colDefs[6].text = formatterCurrency.format(value.totalAmount);
-
+                                    let today = new Date();
+                                    let trDate = new Date(value.nextTransDate);
+                                    let transactionDelayed = today>trDate;
 
                                     var itemId = value.id;
                                     var urlEdit = `@Url.Page("./Edit")?id=${itemId}`;
                                     var urlInfo = `@Url.Page("./Details")?id=${itemId}`;
                                     var urlDel = `@Url.Page("./Delete")?id=${itemId}`;
                                     var urlNewLikeThis = `@Url.Page("./Create")?copyFromId=${itemId}`;
-                                    var urlKartela = `@Url.Page("./Kartela")?transactorId=${itemId}`;
+                                    let urlb='@Url.Action("CreateDocFromRecTrans","RecurringTransactions")';
+                                    var urlAction1 = `${urlb}?id=${itemId}`;
                                     var actionsCol = '<td class="small text-center d-none d-md-table-cell">';
                                     actionsCol += `<a href="${urlEdit
                                         }"><i class="fas fa-edit fa-lg" style="color:slategray"></i></a> |`;
@@ -497,14 +500,14 @@
                                         }"><i class="fas fa-info-circle fa-lg" style="color:slategray"></i></a> | `;
                                     actionsCol += `<a href="${urlDel
                                         }"><i class="fas fa-trash fa-lg" style="color:slategray"></i></a> | `;
-                                    actionsCol += `<a href="${urlNewLikeThis
-                                        }"><i class="fas fa-clone fa-lg" style="color:slategray"></i>|</a> `;
+                                    actionsCol += `<a href="${urlAction1
+                                        }"><i class="fas fa-check fa-lg" style="color:slategray"></i>|</a> `;
                                     actionsCol += '<a class=" dropdown-toggle" role="button" id="dropdownMenuButton"';
                                     actionsCol += 'data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">';
                                     actionsCol += '<i class="fas fa-bars" style="color:slategray"></i></a>';
                                     actionsCol +=
                                         ' <div class="dropdown-menu small" aria-labelledby="dropdownMenuButton">';
-                                    actionsCol += `<a href="${urlKartela}" class="dropdown-item">Καρτέλα</a>`;
+                                    actionsCol += `<a href="${urlNewLikeThis}" class="dropdown-item">Dublicate</a>`;
                                     actionsCol += ' <a class="dropdown-item" href="#">Something else here</a>';
                                     actionsCol += ' </div>';
                                     actionsCol += '</td>';
@@ -522,8 +525,8 @@
                                         }"><i class="fas fa-info-circle fa-lg" style="color:slategray"></i> Details</a> `;
                                     actionColMobile += `<a class="dropdown-item" href="${urlDel
                                         }"><i class="fas fa-trash fa-lg" style="color:slategray"></i> Delete</a> `;
-                                    actionColMobile += `<a class="dropdown-item" href="${urlNewLikeThis
-                                        }"><i class="fas fa-clone fa-lg" style="color:slategray"></i> Duplicate</a> `;
+                                    actionColMobile += `<a class="dropdown-item" href="${urlAction1
+                                        }"><i class="fas fa-check fa-lg" style="color:slategray"></i> Εφαρμογή</a> `;
                                     actionColMobile += '</div></td>';
 
                                     var $tr = $('<tr>');
@@ -536,6 +539,11 @@
                                     $tr.append($td);
                                     colDefs.forEach(function(item) {
                                         var $tdCol = $('<td>').text(item.text).addClass(item.class);
+                                        if (transactionDelayed){
+                                            $tdCol.css('color', 'red');    
+                                        }
+                                        
+                                       
                                         $tr.append($tdCol);
                                     });
                                     $tr.append(actionsCol);
@@ -762,78 +770,151 @@
 
             };
             var deleteSelectedRows = () => {
-                var $rowSelectors = $('input[name=checkTableRow]');
-                var selectedRows = $rowSelectors.filter(':checked');
-                var idsToDelete = [];
-                $.each(selectedRows,
-                    function(key, value) {
-                        console.log(value);
-                        var id = parseInt(value.dataset.itemid);
-                        idsToDelete.push(id);
-                    });
-                if (idsToDelete.length > 0) {
-                    var idsJs = JSON.stringify({
-                        //ToDo: Change this
-                        section: 'SectionCode',
-                        ids: idsToDelete
-                    });
-                    var timeout;
+                              var $rowSelectors = $('input[name=checkTableRow]');
+                              var selectedRows = $rowSelectors.filter(':checked');
+                              var idsToDelete = [];
+                              $.each(selectedRows,
+                                  function(key, value) {
+                                      console.log(value);
+                                      var id = parseInt(value.dataset.itemid);
+                                      idsToDelete.push(id);
+                                  });
+                              if (idsToDelete.length > 0) {
+                                  var idsJs = JSON.stringify({
+                                      //ToDo: Change this
+                                      section: 'SectionCode',
+                                      ids: idsToDelete
+                                  });
+                                  var timeout;
+              
+                                  $.ajax({
+                                      contentType: 'application/json; charset=utf-8',
+              
+                                      dataType: 'json',
+                                      type: 'POST',
+                                      data: idsJs,
+                                      url: "/api/GrkoukInfoApi/DeletesellDocumentsList",
+                                      beforeSend: function() {
+                                          if (timeout) {
+                                              clearTimeout(timeout);
+                                          }
+                                          timeout = setTimeout(function() {
+              
+                                                  $("#loadMe").modal({
+                                                      backdrop: "static", //remove ability to close modal with click
+                                                      keyboard: false, //remove option to close with keyboard
+                                                      show: true //Display loader!
+                                                  });
+                                              },
+                                              1000);
+              
+                                      },
+                                      success: function(result) {
+                                          console.log(result);
+                                          toastr.success("Delete", result.message);
+                                          refreshTableData();
+              
+                                      },
+                                      complete: function() {
+                                          if (timeout) {
+                                              clearTimeout(timeout);
+                                          }
+                                          $("#loadMe").modal("hide");
+                                          setTimeout(function() {
+                                                  console.log('Checking for open modals');
+                                                  var isOpen = $('#loadMe').hasClass('show');
+                                                  if (isOpen) {
+                                                      console.log('There is an open Modal');
+                                                      $("#loadMe").modal("hide");
+                                                  } else {
+                                                      console.log('No open modal');
+                                                  }
+                                              },
+                                              2000);
+                                      },
+                                      error: function(e) {
+                                          console.log(e);
+                                          toastr.error("Error", e.responseJSON.error);
+              
+                                      }
+                                  });
+              
+                              }
+              
+                          };
+            var applySelectedRows = () => {
+               var $rowSelectors = $('input[name=checkTableRow]');
+               var selectedRows = $rowSelectors.filter(':checked');
+               var idsToHandle = [];
+               $.each(selectedRows,
+                   function(key, value) {
+                       console.log(value);
+                       var id = parseInt(value.dataset.itemid);
+                       idsToHandle.push(id);
+                   });
+               if (idsToHandle.length > 0) {
+                   var idsJs = JSON.stringify({
+                       //ToDo: Change this
+                       //section: 'SectionCode',
+                       ids: idsToHandle
+                   });
+                   var timeout;
 
-                    $.ajax({
-                        contentType: 'application/json; charset=utf-8',
+                   $.ajax({
+                       contentType: 'application/json; charset=utf-8',
 
-                        dataType: 'json',
-                        type: 'POST',
-                        data: idsJs,
-                        url: "/api/GrkoukInfoApi/DeletesellDocumentsList",
-                        beforeSend: function() {
-                            if (timeout) {
-                                clearTimeout(timeout);
-                            }
-                            timeout = setTimeout(function() {
+                       dataType: 'json',
+                       type: 'POST',
+                       data: idsJs,
+                       url: "/RecurringTransactions/ApplyRecTransIdList",
+                       beforeSend: function() {
+                           if (timeout) {
+                               clearTimeout(timeout);
+                           }
+                           timeout = setTimeout(function() {
 
-                                    $("#loadMe").modal({
-                                        backdrop: "static", //remove ability to close modal with click
-                                        keyboard: false, //remove option to close with keyboard
-                                        show: true //Display loader!
-                                    });
-                                },
-                                1000);
+                                   $("#loadMe").modal({
+                                       backdrop: "static", //remove ability to close modal with click
+                                       keyboard: false, //remove option to close with keyboard
+                                       show: true //Display loader!
+                                   });
+                               },
+                               1000);
 
-                        },
-                        success: function(result) {
-                            console.log(result);
-                            toastr.success("Delete", result.message);
-                            refreshTableData();
+                       },
+                       success: function(result) {
+                           console.log(result);
+                           toastr.success("Applyed", result.message);
+                           refreshTableData();
 
-                        },
-                        complete: function() {
-                            if (timeout) {
-                                clearTimeout(timeout);
-                            }
-                            $("#loadMe").modal("hide");
-                            setTimeout(function() {
-                                    console.log('Checking for open modals');
-                                    var isOpen = $('#loadMe').hasClass('show');
-                                    if (isOpen) {
-                                        console.log('There is an open Modal');
-                                        $("#loadMe").modal("hide");
-                                    } else {
-                                        console.log('No open modal');
-                                    }
-                                },
-                                2000);
-                        },
-                        error: function(e) {
-                            console.log(e);
-                            toastr.error("Error", e.responseJSON.error);
+                       },
+                       complete: function() {
+                           if (timeout) {
+                               clearTimeout(timeout);
+                           }
+                           $("#loadMe").modal("hide");
+                           setTimeout(function() {
+                                   console.log('Checking for open modals');
+                                   var isOpen = $('#loadMe').hasClass('show');
+                                   if (isOpen) {
+                                       console.log('There is an open Modal');
+                                       $("#loadMe").modal("hide");
+                                   } else {
+                                       console.log('No open modal');
+                                   }
+                               },
+                               2000);
+                       },
+                       error: function(e) {
+                           console.log(e);
+                           toastr.error("Error", e.responseJSON.error);
 
-                        }
-                    });
+                       }
+                   });
 
-                }
-
-            };
+               }
+           
+           };
             var getSelectedRows = () => {
                 var $rowSelectors = $('input[name=checkTableRow]');
                 var selectedRows = $rowSelectors.filter(':checked');
@@ -855,6 +936,10 @@
             var showFiltersUi = () => {
 
             };
+            $('#applySelected').on('click', () => {
+                                                   applySelectedRows();
+                                               });
+
             $deleteSelectedRowsLink.on('click',
                 () => {
                     deleteSelectedRows();

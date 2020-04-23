@@ -36,9 +36,8 @@ namespace GrKouk.WebRazor.Pages.Transactions.RecurringTransactions
         }
         private void LoadFilters()
         {
-            var datePeriods = DateFilter.GetDateFiltersSelectList();
-            // var datePeriodsJs = DateFilter.GetDateFiltersSelectList();
-
+            var datePeriods = DateFilter.GetRecTransDateFiltersSelectList();
+           
             ViewData["DataFilterValues"] = new SelectList(datePeriods, "Value", "Text");
             var pageFilterSize = PageFilter.GetPageSizeFiltersSelectList();
             ViewData["PageFilterSize"] = new SelectList(pageFilterSize, "Value", "Text");

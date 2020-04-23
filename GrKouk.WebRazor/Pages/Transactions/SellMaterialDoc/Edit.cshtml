@@ -29,6 +29,7 @@
             <input type="hidden" asp-for="ItemVm.Id" />
             <input type="hidden" asp-for="ItemVm.FiscalPeriodId" />
             <input type="hidden" asp-for="ItemVm.SellDocTypeId" />
+            <input type="hidden" asp-for="ItemVm.SectionId" />
             <input type="hidden" asp-for="ItemVm.Timestamp" />
             <input type="hidden" asp-for="@Model.InitialLoad" id="IsInitialLoad" />
             <input type="hidden" id="MaterialId" />
@@ -1810,6 +1811,7 @@
                     transDate: $("#ItemVm_TransDate").val(),
                     transRefCode: $("#ItemVm_TransRefCode").val(),
                     transactorId: $("#ItemVm_TransactorId").val(),
+                    sectionId: $("#ItemVm_SectionId").val(),
                     companyId: $("#ItemVm_CompanyId").val(),
                     paymentMethodId: $("#ItemVm_PaymentMethodId").val(),
                     salesChannelId: $("#ItemVm_SalesChannelId").val(),

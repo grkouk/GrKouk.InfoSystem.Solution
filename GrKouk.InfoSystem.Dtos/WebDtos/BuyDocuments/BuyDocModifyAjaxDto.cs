@@ -16,6 +16,7 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.BuyDocuments
         public string TransRefCode { get; set; }
         [Required]
         public int TransactorId { get; set; }
+        public int SectionId { get; set; }
         [Required]
         public int BuyDocSeriesId { get; set; }
         public int BuyDocTypeId { get; set; }
