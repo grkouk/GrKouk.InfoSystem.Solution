@@ -13,6 +13,7 @@ using GrKouk.WebRazor.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query.Expressions;
 using Microsoft.VisualStudio.Web.CodeGeneration.Contracts.Messaging;
 using NToastNotify.Helpers;
 
@@ -33,13 +34,51 @@ namespace GrKouk.WebRazor.Controllers
         }
 
         [HttpPost("ApplyRecTransIdList")]
-        public async Task<IList<IActionResult>> ApplyRecTransIdList([FromBody] IdList docIds)
+        public async Task<IList<GroupActionResult>> ApplyRecTransIdList([FromBody] IdList docIds)
         {
-            IList<IActionResult> retValList = new List<IActionResult>();
+            IList<GroupActionResult> retValList = new List<GroupActionResult>();
             foreach (var itemId in docIds.Ids)
             {
-                var retVal = await CreateDocFromRecTrans(itemId);
-                retValList.Add(retVal);
+                var actionRetVal = await CreateDocFromRecTrans(itemId);
+                //var statusCodeResult = actionRetVal as StatusCodeResult;
+              
+                if (actionRetVal is OkObjectResult okObjectResult)
+                {
+                    int? r = okObjectResult.StatusCode;
+                   
+                    int statusCode = r ?? default(int);
+                    var retVal = new GroupActionResult
+                    {
+                        StatusCode = statusCode
+                        //StatusText = (actionRetVal as StatusCodeResult).ToString()
+                    };
+                    retValList.Add(retVal);
+                }
+                if (actionRetVal is NotFoundObjectResult notFoundObjectResult)
+                {
+                    int? r = notFoundObjectResult.StatusCode;
+                   
+                    int statusCode = r ?? default(int);
+                    var retVal = new GroupActionResult
+                    {
+                        StatusCode = statusCode
+                        //StatusText = (actionRetVal as StatusCodeResult).ToString()
+                    };
+                    retValList.Add(retVal);
+                }
+                if (actionRetVal is BadRequestObjectResult badRequestObjectResult)
+                {
+                    int? r = badRequestObjectResult.StatusCode;
+                   
+                    int statusCode = r ?? default(int);
+                    var retVal = new GroupActionResult
+                    {
+                        StatusCode = statusCode
+                        //StatusText = (actionRetVal as StatusCodeResult).ToString()
+                    };
+                    retValList.Add(retVal);
+                    Debug.Print("Bad request result");
+                }
             }
 
             return (retValList);
