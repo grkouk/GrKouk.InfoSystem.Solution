@@ -482,7 +482,9 @@
                                    
                                     colDefs[5].text = value.companyCode;
                                     colDefs[6].text = formatterCurrency.format(value.totalAmount);
-
+                                    let today = new Date();
+                                    let trDate = new Date(value.nextTransDate);
+                                    let transactionDelayed = today>trDate;
 
                                     var itemId = value.id;
                                     var urlEdit = `@Url.Page("./Edit")?id=${itemId}`;
@@ -537,6 +539,11 @@
                                     $tr.append($td);
                                     colDefs.forEach(function(item) {
                                         var $tdCol = $('<td>').text(item.text).addClass(item.class);
+                                        if (transactionDelayed){
+                                            $tdCol.css('color', 'red');    
+                                        }
+                                        
+                                       
                                         $tr.append($tdCol);
                                     });
                                     $tr.append(actionsCol);
