@@ -13,8 +13,6 @@ using GrKouk.WebRazor.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query.Expressions;
-using Microsoft.VisualStudio.Web.CodeGeneration.Contracts.Messaging;
 using NToastNotify.Helpers;
 
 namespace GrKouk.WebRazor.Controllers
