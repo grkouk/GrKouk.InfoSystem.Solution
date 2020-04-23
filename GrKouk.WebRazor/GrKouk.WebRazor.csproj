@@ -9,8 +9,9 @@
     <Copyright>George Koukoudis</Copyright>
     <Configurations>Debug;Release;DebugWeb;RlsWeb</Configurations>
     <Version>2.9.0.0</Version>
-    <AssemblyVersion>2.9.0.0</AssemblyVersion>
-    <FileVersion>2.9.0.0</FileVersion>
+    <AssemblyVersion>2.9.0.1</AssemblyVersion>
+    <FileVersion>2.9.0.1</FileVersion>
+    <PackageVersion>2.9.0.1</PackageVersion>
   </PropertyGroup>
 
   <ItemGroup>
