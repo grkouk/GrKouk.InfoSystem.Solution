@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using GrKouk.InfoSystem.Definitions;
+using GrKouk.InfoSystem.Domain.RecurringTransactions;
 using GrKouk.InfoSystem.Dtos.WebDtos.BuyDocuments;
 using GrKouk.InfoSystem.Dtos.WebDtos.RecurringTransactions;
 using GrKouk.WebRazor.Helpers;
@@ -120,9 +121,43 @@ namespace GrKouk.WebRazor.Pages.Transactions.RecurringTransactions
                                 PaymentMethodId = CopyFromItemVm.PaymentMethodId,
                                 TransactorId = CopyFromItemVm.TransactorId
                             };
-                            
+                            //Check if there is another recurring transaction with similar data
+                            var r = await _context.RecurringTransDocs.SingleOrDefaultAsync(p =>
+                                p.TransactorId == CopyFromItemVm.TransactorId
+                                && p.CompanyId==CopyFromItemVm.CompanyId
+                                && p.RecurringDocType == RecurringDocTypeEnum.BuyType
+                                && p.DocSeriesId == CopyFromItemVm.DocSeriesId);
+                            if (r !=null)
+                            {
+                                //There is another similar recurring transaction doc
+                                ThereIsAnotherDoc = true;
+                                ExistingRecTransDoc = new RecurringDocModifyDto
+                                {
+                                    Id = r.Id,
+                                    RecurringFrequency = r.RecurringFrequency,
+                                    RecurringDocType = r.RecurringDocType,
+                                    NextTransDate = r.NextTransDate,
+                                    
+                                    TransactorId = r.TransactorId,
+                                    TransactorName = r.Transactor.Name,
+                                    DocSeriesId = r.DocSeriesId,
+                                    DocSeriesCode = buyMatDoc.BuyDocSeries.Code,
+                                    DocSeriesName = buyMatDoc.BuyDocSeries.Name,
+                                    AmountFpa = r.AmountFpa,
+                                    AmountNet = r.AmountNet,
+                                    AmountDiscount = r.AmountDiscount,
+                                    CompanyId = r.CompanyId,
+                                    CompanyCode = r.Company.Code,
+                                    PaymentMethodId = r.PaymentMethodId
+                                };
+                            }
+                            else
+                            {
+                                ThereIsAnotherDoc = false;
+                                ExistingRecTransDoc = null;
+                            }
                         
-                        break;
+                            break;
                     case RecurringDocTypeEnum.SellType:
                         var sellMatDoc = await _context.SellDocuments
                                .Include(b => b.Company)
@@ -157,6 +192,41 @@ namespace GrKouk.WebRazor.Pages.Transactions.RecurringTransactions
                             PaymentMethodId = CopyFromItemVm.PaymentMethodId,
                             TransactorId = CopyFromItemVm.TransactorId
                         };
+                         //Check if there is another recurring transaction with similar data
+                            var rSell = await _context.RecurringTransDocs.SingleOrDefaultAsync(p =>
+                                p.TransactorId == CopyFromItemVm.TransactorId
+                                && p.CompanyId==CopyFromItemVm.CompanyId
+                                && p.RecurringDocType == RecurringDocTypeEnum.SellType
+                                && p.DocSeriesId == CopyFromItemVm.DocSeriesId);
+                            if (rSell !=null)
+                            {
+                                //There is another similar recurring transaction doc
+                                ThereIsAnotherDoc = true;
+                                ExistingRecTransDoc = new RecurringDocModifyDto
+                                {
+                                    Id = rSell.Id,
+                                    RecurringFrequency = rSell.RecurringFrequency,
+                                    RecurringDocType = rSell.RecurringDocType,
+                                    NextTransDate = rSell.NextTransDate,
+                                    
+                                    TransactorId = rSell.TransactorId,
+                                    TransactorName = rSell.Transactor.Name,
+                                    DocSeriesId = rSell.DocSeriesId,
+                                    DocSeriesCode = sellMatDoc.SellDocSeries.Code,
+                                    DocSeriesName = sellMatDoc.SellDocSeries.Name,
+                                    AmountFpa = rSell.AmountFpa,
+                                    AmountNet = rSell.AmountNet,
+                                    AmountDiscount = rSell.AmountDiscount,
+                                    CompanyId = rSell.CompanyId,
+                                    CompanyCode = rSell.Company.Code,
+                                    PaymentMethodId = rSell.PaymentMethodId
+                                };
+                            }
+                            else
+                            {
+                                ThereIsAnotherDoc = false;
+                                ExistingRecTransDoc = null;
+                            }
                         break;
                     default:
                         break;
@@ -207,6 +277,8 @@ namespace GrKouk.WebRazor.Pages.Transactions.RecurringTransactions
         [BindProperty]
         public RecurringTransDocCreateAjaxDto ItemVm { get; set; }
         public RecurringDocModifyDto CopyFromItemVm { get; set; }
+        public RecurringDocModifyDto ExistingRecTransDoc { get; private set; }
+        public bool ThereIsAnotherDoc { get; set; }
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)

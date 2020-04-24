@@ -2,11 +2,14 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>2.5.0.0</Version>
+    <Version>2.5.0.1</Version>
     <Authors>George Koukoudis</Authors>
     <Copyright>George Koukoudis</Copyright>
     <Configurations>Debug;Release;DebugWeb;RlsWeb</Configurations>
     <Company>GrKouk</Company>
+    <PackageVersion>2.5.0.1</PackageVersion>
+    <AssemblyVersion>2.5.0.1</AssemblyVersion>
+    <FileVersion>2.5.0.1</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>

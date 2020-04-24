@@ -472,7 +472,7 @@
 
                             $.each(result.data,
                                 function (index, value) {
-                                    let i=0
+                                    let i=0;
                                     colDefs[i++].text = moment(value.transDate).format('DD/MM/YYYY');
                                     colDefs[i++].text = value.transactorName;
                                     colDefs[i++].text = value.buyDocSeriesCode;
@@ -481,7 +481,7 @@
                                     colDefs[i++].text = formatterCurrency.format(value.totalNetAmount);
                                     colDefs[i++].text = formatterCurrency.format(value.totalAmount);
 
-
+//new delete
                                     var itemId = value.id;
                                     var urlEdit = `@Url.Page("./Edit")?id=${itemId}`;
                                     var urlInfo = `@Url.Page("./Details")?id=${itemId}`;
