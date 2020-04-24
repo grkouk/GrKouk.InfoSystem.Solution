@@ -29,6 +29,7 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.RecurringTransactions
         public int DocSeriesId { get; set; }
 
         public string DocSeriesCode { get; set; }
+        [Display(Name = "Series Name")]
         public string DocSeriesName { get; set; }
 
         //public int BuyDocTypeId { get; set; }
@@ -49,6 +50,7 @@ namespace GrKouk.InfoSystem.Dtos.WebDtos.RecurringTransactions
         public string Etiology { get; set; }
         [Display(Name = "Company")]
         public int CompanyId { get; set; }
+        [Display(Name = "Company")]
         public string CompanyCode { get; set; }
         [Display(Name = "Payment Method")]
         public int PaymentMethodId { get; set; }
