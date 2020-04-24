@@ -472,7 +472,7 @@
 
                             $.each(result.data,
                                 function (index, value) {
-                                    let i=0
+                                    let i=0;
                                     colDefs[i++].text = moment(value.transDate).format('DD/MM/YYYY');
                                     colDefs[i++].text = value.transactorName;
                                     colDefs[i++].text = value.buyDocSeriesCode;
