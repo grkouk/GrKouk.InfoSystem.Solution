@@ -108,7 +108,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.RecurringTransactions
                             CopyFromItemVm = _mapper.Map<RecurringDocModifyDto>(buyMatDoc);
                             ItemVm = new RecurringTransDocCreateAjaxDto
                             {
-                                NextTransDate=DateTime.Now.AddMonths(1),
+                                NextTransDate=buyMatDoc.TransDate.AddMonths(1),
                                 RecurringFrequency = "1M",
                                 RecurringDocType = RecurringDocTypeEnum.BuyType,
                                 SectionId = CopyFromItemVm.SectionId,
@@ -179,7 +179,7 @@ namespace GrKouk.WebRazor.Pages.Transactions.RecurringTransactions
                         CopyFromItemVm = _mapper.Map<RecurringDocModifyDto>(sellMatDoc);
                         ItemVm = new RecurringTransDocCreateAjaxDto
                         {
-                            NextTransDate = DateTime.Now.AddMonths(1),
+                            NextTransDate = sellMatDoc.TransDate.AddMonths(1),
                             RecurringFrequency = "1M",
                             RecurringDocType = RecurringDocTypeEnum.SellType,
                             SectionId = CopyFromItemVm.SectionId,
