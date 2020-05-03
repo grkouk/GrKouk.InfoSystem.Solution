@@ -532,9 +532,9 @@ namespace GrKouk.WebRazor.Controllers
                 DocSeriesId = p.DocSeriesId,
                 DocSeriesCode = GetDocSeriesCode(p.RecurringDocType,p.DocSeriesId,docBuySeries,docSellSeries),
                 DocSeriesName = GetDocSeriesName(p.RecurringDocType, p.DocSeriesId, docBuySeries, docSellSeries),
-                AmountFpa = ConvertAmount(p.CompanyCurrencyId, request.DisplayCurrencyId, currencyRates, p.AmountFpa),
-                AmountNet = ConvertAmount(p.CompanyCurrencyId, request.DisplayCurrencyId, currencyRates, p.AmountNet),
-                AmountDiscount = ConvertAmount(p.CompanyCurrencyId, request.DisplayCurrencyId, currencyRates, p.AmountDiscount),
+                AmountFpa =  p.AmountFpa,
+                AmountNet =  p.AmountNet,
+                AmountDiscount =  p.AmountDiscount,
                 CompanyId = p.CompanyId,
                 CompanyCode = p.CompanyCode,
                 CompanyCurrencyId = p.CompanyCurrencyId
@@ -542,7 +542,6 @@ namespace GrKouk.WebRazor.Controllers
            
 
             var pageIndex = request.PageIndex;
-
             var pageSize = request.PageSize;
 
             var listItems = await PagedList<RecurringDocListDto>.CreateAsync(t1, pageIndex, pageSize);
