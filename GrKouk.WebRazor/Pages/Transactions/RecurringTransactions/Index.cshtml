@@ -491,7 +491,8 @@
                                     var urlInfo = `@Url.Page("./Details")?id=${itemId}`;
                                     var urlDel = `@Url.Page("./Delete")?id=${itemId}`;
                                     var urlNewLikeThis = `@Url.Page("./Create")?copyFromId=${itemId}`;
-                                    let urlb='@Url.Action("CreateDocFromRecTrans","RecurringTransactions")';
+                                    let urlb = '@Url.Action("CreateDocFromRecTrans","RecurringTransactions")';
+
                                     var urlAction1 = `${urlb}?id=${itemId}`;
                                     var actionsCol = '<td class="small text-center d-none d-md-table-cell">';
                                     actionsCol += `<a href="${urlEdit
@@ -500,8 +501,13 @@
                                         }"><i class="fas fa-info-circle fa-lg" style="color:slategray"></i></a> | `;
                                     actionsCol += `<a href="${urlDel
                                         }"><i class="fas fa-trash fa-lg" style="color:slategray"></i></a> | `;
-                                    actionsCol += `<a href="${urlAction1
-                                        }"><i class="fas fa-check fa-lg" style="color:slategray"></i>|</a> `;
+                                    //Action 1 Link Begin
+                                    //actionsCol += `<a href="${urlAction1}"><i class="fas fa-check fa-lg" style="color:slategray"></i>|</a> `;
+                                    actionsCol += `<a href="#" name="Action1Link"  `;
+                                    actionsCol += `data-itemid="${itemId}" >  `;
+                                    actionsCol += `<i class="fas fa-check fa-lg" style="color:slategray"></i>  `;
+                                    actionsCol += `</a> | `;
+                                    //Action 1 Link end
                                     actionsCol += '<a class=" dropdown-toggle" role="button" id="dropdownMenuButton"';
                                     actionsCol += 'data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">';
                                     actionsCol += '<i class="fas fa-bars" style="color:slategray"></i></a>';
@@ -600,7 +606,19 @@
                                     refreshTableData();
                                 });
                             //console.log();
-                           
+
+                            $('[name=Action1Link]').on('click',
+                                function (event) {
+                                    let button = $(event.delegateTarget);
+                                    const itemId = button.data('itemid');
+                                    var idsToHandle = [];
+                                    idsToHandle.push(itemId);
+                                    var idsJs = JSON.stringify({
+                                        ids: idsToHandle
+                                    });
+                                    applyRecurringTransaction(idsJs);
+                                });
+
                             let pageSummaryCount = 0;
                             let totalSummaryCount = 0;
                             let $pageSummaryRow = $('<tr class="table-info">');
@@ -691,7 +709,7 @@
                     });
                     //#endregion
                 };
-
+            
             var rowSelectorsUi = () => {
                 var $selectSingleSelectors = $('td[name=selectRowColumn]');
                 var $selectAllSelector = $('th[name=selectAllRowsColumn]');
@@ -768,6 +786,60 @@
                 $pageIndex.val(curPageIndex);
                 refreshTableData();
 
+            };
+            var applyRecurringTransaction = (idsJs) => {
+                var timeout;
+                $.ajax({
+                    contentType: 'application/json; charset=utf-8',
+
+                    dataType: 'json',
+                    type: 'POST',
+                    data: idsJs,
+                    url: "/RecurringTransactions/ApplyRecTransIdList",
+                    beforeSend: function () {
+                        if (timeout) {
+                            clearTimeout(timeout);
+                        }
+                        timeout = setTimeout(function () {
+
+                            $("#loadMe").modal({
+                                backdrop: "static", //remove ability to close modal with click
+                                keyboard: false, //remove option to close with keyboard
+                                show: true //Display loader!
+                            });
+                        },
+                            1000);
+
+                    },
+                    success: function (result) {
+                        console.log(result);
+                        toastr.success("Applyed", result.message);
+                        refreshTableData();
+
+                    },
+                    complete: function () {
+                        if (timeout) {
+                            clearTimeout(timeout);
+                        }
+                        $("#loadMe").modal("hide");
+                        setTimeout(function () {
+                            console.log('Checking for open modals');
+                            var isOpen = $('#loadMe').hasClass('show');
+                            if (isOpen) {
+                                console.log('There is an open Modal');
+                                $("#loadMe").modal("hide");
+                            } else {
+                                console.log('No open modal');
+                            }
+                        },
+                            2000);
+                    },
+                    error: function (e) {
+                        console.log(e);
+                        toastr.error("Error", e.responseJSON.error);
+
+                    }
+                });
             };
             var deleteSelectedRows = () => {
               var $rowSelectors = $('input[name=checkTableRow]');
@@ -858,59 +930,10 @@
                        //section: 'SectionCode',
                        ids: idsToHandle
                    });
-                   var timeout;
+                  
+                   applyRecurringTransaction(idsJs);
 
-                   $.ajax({
-                       contentType: 'application/json; charset=utf-8',
-
-                       dataType: 'json',
-                       type: 'POST',
-                       data: idsJs,
-                       url: "/RecurringTransactions/ApplyRecTransIdList",
-                       beforeSend: function() {
-                           if (timeout) {
-                               clearTimeout(timeout);
-                           }
-                           timeout = setTimeout(function() {
-
-                                   $("#loadMe").modal({
-                                       backdrop: "static", //remove ability to close modal with click
-                                       keyboard: false, //remove option to close with keyboard
-                                       show: true //Display loader!
-                                   });
-                               },
-                               1000);
-
-                       },
-                       success: function(result) {
-                           console.log(result);
-                           toastr.success("Applyed", result.message);
-                           refreshTableData();
-
-                       },
-                       complete: function() {
-                           if (timeout) {
-                               clearTimeout(timeout);
-                           }
-                           $("#loadMe").modal("hide");
-                           setTimeout(function() {
-                                   console.log('Checking for open modals');
-                                   var isOpen = $('#loadMe').hasClass('show');
-                                   if (isOpen) {
-                                       console.log('There is an open Modal');
-                                       $("#loadMe").modal("hide");
-                                   } else {
-                                       console.log('No open modal');
-                                   }
-                               },
-                               2000);
-                       },
-                       error: function(e) {
-                           console.log(e);
-                           toastr.error("Error", e.responseJSON.error);
-
-                       }
-                   });
+                   
 
                }
            

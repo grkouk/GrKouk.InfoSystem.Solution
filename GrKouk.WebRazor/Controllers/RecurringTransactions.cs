@@ -20,12 +20,12 @@ namespace GrKouk.WebRazor.Controllers
     [Authorize(Roles = "Admin")]
     [Route("[controller]")]
     [ApiController]
-    public class RecurringTransactions : ControllerBase
+    public class RecurringTransactionsController : ControllerBase
     {
         private readonly ApiDbContext _context;
         private readonly IMapper _mapper;
 
-        public RecurringTransactions(ApiDbContext context, IMapper mapper)
+        public RecurringTransactionsController(ApiDbContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
