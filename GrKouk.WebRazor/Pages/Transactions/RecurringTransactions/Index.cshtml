@@ -770,78 +770,78 @@
 
             };
             var deleteSelectedRows = () => {
-                              var $rowSelectors = $('input[name=checkTableRow]');
-                              var selectedRows = $rowSelectors.filter(':checked');
-                              var idsToDelete = [];
-                              $.each(selectedRows,
-                                  function(key, value) {
-                                      console.log(value);
-                                      var id = parseInt(value.dataset.itemid);
-                                      idsToDelete.push(id);
+              var $rowSelectors = $('input[name=checkTableRow]');
+              var selectedRows = $rowSelectors.filter(':checked');
+              var idsToDelete = [];
+              $.each(selectedRows,
+                  function(key, value) {
+                      console.log(value);
+                      var id = parseInt(value.dataset.itemid);
+                      idsToDelete.push(id);
+                  });
+              if (idsToDelete.length > 0) {
+                  var idsJs = JSON.stringify({
+                      //ToDo: Change this
+                      section: 'SectionCode',
+                      ids: idsToDelete
+                  });
+                  var timeout;
+
+                  $.ajax({
+                      contentType: 'application/json; charset=utf-8',
+
+                      dataType: 'json',
+                      type: 'POST',
+                      data: idsJs,
+                      url: "/api/GrkoukInfoApi/DeletesellDocumentsList",
+                      beforeSend: function() {
+                          if (timeout) {
+                              clearTimeout(timeout);
+                          }
+                          timeout = setTimeout(function() {
+
+                                  $("#loadMe").modal({
+                                      backdrop: "static", //remove ability to close modal with click
+                                      keyboard: false, //remove option to close with keyboard
+                                      show: true //Display loader!
                                   });
-                              if (idsToDelete.length > 0) {
-                                  var idsJs = JSON.stringify({
-                                      //ToDo: Change this
-                                      section: 'SectionCode',
-                                      ids: idsToDelete
-                                  });
-                                  var timeout;
-              
-                                  $.ajax({
-                                      contentType: 'application/json; charset=utf-8',
-              
-                                      dataType: 'json',
-                                      type: 'POST',
-                                      data: idsJs,
-                                      url: "/api/GrkoukInfoApi/DeletesellDocumentsList",
-                                      beforeSend: function() {
-                                          if (timeout) {
-                                              clearTimeout(timeout);
-                                          }
-                                          timeout = setTimeout(function() {
-              
-                                                  $("#loadMe").modal({
-                                                      backdrop: "static", //remove ability to close modal with click
-                                                      keyboard: false, //remove option to close with keyboard
-                                                      show: true //Display loader!
-                                                  });
-                                              },
-                                              1000);
-              
-                                      },
-                                      success: function(result) {
-                                          console.log(result);
-                                          toastr.success("Delete", result.message);
-                                          refreshTableData();
-              
-                                      },
-                                      complete: function() {
-                                          if (timeout) {
-                                              clearTimeout(timeout);
-                                          }
-                                          $("#loadMe").modal("hide");
-                                          setTimeout(function() {
-                                                  console.log('Checking for open modals');
-                                                  var isOpen = $('#loadMe').hasClass('show');
-                                                  if (isOpen) {
-                                                      console.log('There is an open Modal');
-                                                      $("#loadMe").modal("hide");
-                                                  } else {
-                                                      console.log('No open modal');
-                                                  }
-                                              },
-                                              2000);
-                                      },
-                                      error: function(e) {
-                                          console.log(e);
-                                          toastr.error("Error", e.responseJSON.error);
-              
-                                      }
-                                  });
-              
-                              }
-              
-                          };
+                              },
+                              1000);
+
+                      },
+                      success: function(result) {
+                          console.log(result);
+                          toastr.success("Delete", result.message);
+                          refreshTableData();
+
+                      },
+                      complete: function() {
+                          if (timeout) {
+                              clearTimeout(timeout);
+                          }
+                          $("#loadMe").modal("hide");
+                          setTimeout(function() {
+                                  console.log('Checking for open modals');
+                                  var isOpen = $('#loadMe').hasClass('show');
+                                  if (isOpen) {
+                                      console.log('There is an open Modal');
+                                      $("#loadMe").modal("hide");
+                                  } else {
+                                      console.log('No open modal');
+                                  }
+                              },
+                              2000);
+                      },
+                      error: function(e) {
+                          console.log(e);
+                          toastr.error("Error", e.responseJSON.error);
+
+                      }
+                  });
+
+              }
+
+          };
             var applySelectedRows = () => {
                var $rowSelectors = $('input[name=checkTableRow]');
                var selectedRows = $rowSelectors.filter(':checked');
