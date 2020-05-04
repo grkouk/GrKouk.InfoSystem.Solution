@@ -88,16 +88,16 @@
         <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                 <h1 class="h2">@Model.Item.Name Details</h1>
-                <div class="btn-toolbar mb-2 mb-md-0">
-                    <div class="btn-group mr-2">
-                        <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
-                        <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
-                    </div>
-                    <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
-                        <span data-feather="calendar"></span>
-                        This week
-                    </button>
-                </div>
+                @* <div class="btn-toolbar mb-2 mb-md-0"> *@
+                @*     $1$ <div class="btn-group mr-2"> #1# *@
+                @*     $1$     <button type="button" class="btn btn-sm btn-outline-secondary">Share</button> #1# *@
+                @*     $1$     <button type="button" class="btn btn-sm btn-outline-secondary">Export</button> #1# *@
+                @*     $1$ </div> #1# *@
+                @*     $1$ $2$ <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle"> #2# #1# *@
+                @*     $1$     <span data-feather="calendar"></span> #1# *@
+                @*     $1$     This week #1# *@
+                @*     $1$ </button> #1# *@
+                @* </div> *@
             </div>
             <div class="row align-items-center justify-content-between">
                 <div class="card col-5">
@@ -114,10 +114,10 @@
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                 <h3 class="h2">Transactions</h3>
                 <div class="btn-toolbar mb-2 mb-md-0">
-                    @* <div class="btn-group mr-2"> *@
-                    @*     <button type="button" class="btn btn-sm btn-outline-secondary">Share</button> *@
-                    @*     <button type="button" class="btn btn-sm btn-outline-secondary">Export</button> *@
-                    @* </div> *@
+                    <div class="btn-group mr-2">
+                        <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
+                    </div>
                     <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
                         <span data-feather="calendar"></span>
                         This week
