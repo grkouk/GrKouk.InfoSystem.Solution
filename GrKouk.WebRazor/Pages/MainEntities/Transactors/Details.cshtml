@@ -172,24 +172,81 @@
         (function () {
             feather.replace();
              const currencyListJs = @Html.Raw(Json.Serialize(ViewBag.CurrencyListJs));
+             const setCurrency= (currencyCode)=>{
+                  $('.selected-currency-text').text(currencyCode);
+             };
              const loadCurrencySelector = (availableCurrencies) => {
-                var $currenciesMenu = $('[name=CurrencySelector]');
-                $('.currency-item').remove();
+                let $currenciesMenu = $('[name=CurrencySelector]');
+                
+                $('.currency-item') .remove();
                 if (availableCurrencies === undefined || availableCurrencies === null) {
                     return;
                 }
                 var d = availableCurrencies;
-
                 d.forEach(function(item) {
                     var $aLink = $('<button>').addClass('dropdown-item small currency-item');
                     $aLink.text(item.name);
                     // var diaryHRef = '/MainEntities/Transactors/RunDiary';
                     // diaryHRef += `?diaryId=${item.value}`;
                     $aLink.attr('type', 'button');
+                    $aLink.data('currencyid',item.id);
+                    $aLink.data('currencycode',item.code);
                     $currenciesMenu.append($aLink);
                 });
-
+                $('.currency-item').on('click',
+                         function(event) {
+                            let button = $(event.delegateTarget);
+                            let currencyId = button.data('currencyid');
+                            let currencyCode = button.data('currencycode');
+                            console.log(`Currency Id=${currencyId} currency Code=${currencyCode}`);
+                            setCurrency(currencyCode);
+                            //let $btParent = button.parent()
+                });
             };
+           const loadPreviousSession = (sessionKey)=>{
+                let storageItemJs = localStorage.getItem(sessionKey);
+               if (storageItemJs === undefined || storageItemJs === null) {
+                   $('#pageIndex').val(1);
+                   $('#filtersVisible').val(true);
+                   $('#rowSelectorsVisible').val(true);
+                   $('#DatePeriodFilter').val('CURMONTH');
+                   $('#CompanyFilter').val(0);
+                   $('#currentSort').val('transactiondate:desc');
+               } else {
+                   var storageItem = JSON.parse(storageItemJs);
+                   var filtersValue = storageItem.find(x => x.filterKey === 'filtersVisible').filterValue;
+                   if (filtersValue === true) {
+                       $filtersToggle.text('Hide Filters');
+                   } else {
+                       $filtersToggle.text('Show Filters');
+                   }
+                   $('#filtersVisible').val(filtersValue);
+                   filtersValue = storageItem.find(x => x.filterKey === 'rowSelectorsVisible').filterValue;
+                   $('#rowSelectorsVisible').val(filtersValue);
+   
+                   filtersValue = storageItem.find(x => x.filterKey === 'dateRangeFilter').filterValue;
+                   $('#DatePeriodFilter').val(filtersValue);
+                   filtersValue = storageItem.find(x => x.filterKey === 'currentSort').filterValue;
+                   $('#currentSort').val(filtersValue);
+                   filtersValue = storageItem.find(x => x.filterKey === 'companyFilter').filterValue;
+                   $('#CompanyFilter').val(filtersValue);
+                   filtersValue = storageItem.find(x => x.filterKey === 'pageSize').filterValue;
+                   $('#PageSize').val(filtersValue);
+                   filtersValue = storageItem.find(x => x.filterKey === 'pageIndex').filterValue;
+                   $('#pageIndex').val(filtersValue);
+   
+                   try {
+                       filtersValue = storageItem.find(x => x.filterKey === 'currentCurrency').filterValue;
+                       $('#CurrencySelector').val(filtersValue);
+                   } catch (e) {
+   
+                   }
+               }
+           };
+           
+           
+           
+           
             loadCurrencySelector(currencyListJs);
       
         }())
