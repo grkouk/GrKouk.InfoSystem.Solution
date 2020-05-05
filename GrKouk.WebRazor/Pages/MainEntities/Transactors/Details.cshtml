@@ -171,9 +171,14 @@
     <script>
         (function () {
             feather.replace();
+            const sessionKey='TransactorDetailsPage';
              const currencyListJs = @Html.Raw(Json.Serialize(ViewBag.CurrencyListJs));
-             const setCurrency= (currencyCode)=>{
-                  $('.selected-currency-text').text(currencyCode);
+             const setCurrency= (currencyId,currencyCode)=>{
+                 const $selectedCurrency=$('.selected-currency-text');
+                 $selectedCurrency.data('currencyid',currencyId);
+                 $selectedCurrency.data('currencycode',currencyCode);
+                 $selectedCurrency.text(currencyCode);
+                  
              };
              const loadCurrencySelector = (availableCurrencies) => {
                 let $currenciesMenu = $('[name=CurrencySelector]');
@@ -199,56 +204,79 @@
                             let currencyId = button.data('currencyid');
                             let currencyCode = button.data('currencycode');
                             console.log(`Currency Id=${currencyId} currency Code=${currencyCode}`);
-                            setCurrency(currencyCode);
+                            setCurrency(currencyId, currencyCode);
                             //let $btParent = button.parent()
                 });
             };
-           const loadPreviousSession = (sessionKey)=>{
-                let storageItemJs = localStorage.getItem(sessionKey);
+             const getCurrencyId=(currencyCode,currencyList) =>{
+                 if (!(typeof currencyList != "undefined"  
+                      && currencyList != null  
+                      && currencyList.length != null  
+                      && currencyList.length > 0)) {
+                        return 0;
+                      }
+                  
+                   let ret = currencyList.find(x => x.code === currencyCode).id;
+                   const parsed = parseInt(ret);
+                   if (isNaN(parsed)) { 
+                       return  currencyList[0].id; 
+                   } else {
+                       return parsed;
+                   }
+             };
+           const loadPreviousSession = (sessionKey,sessionObject)=>{
+               let storageItemJs = localStorage.getItem(sessionKey);
                if (storageItemJs === undefined || storageItemJs === null) {
-                   $('#pageIndex').val(1);
-                   $('#filtersVisible').val(true);
-                   $('#rowSelectorsVisible').val(true);
-                   $('#DatePeriodFilter').val('CURMONTH');
-                   $('#CompanyFilter').val(0);
-                   $('#currentSort').val('transactiondate:desc');
+                   sessionObject.currencyCode='EUR';
+                   
                } else {
                    var storageItem = JSON.parse(storageItemJs);
-                   var filtersValue = storageItem.find(x => x.filterKey === 'filtersVisible').filterValue;
-                   if (filtersValue === true) {
-                       $filtersToggle.text('Hide Filters');
-                   } else {
-                       $filtersToggle.text('Show Filters');
-                   }
-                   $('#filtersVisible').val(filtersValue);
-                   filtersValue = storageItem.find(x => x.filterKey === 'rowSelectorsVisible').filterValue;
-                   $('#rowSelectorsVisible').val(filtersValue);
-   
-                   filtersValue = storageItem.find(x => x.filterKey === 'dateRangeFilter').filterValue;
-                   $('#DatePeriodFilter').val(filtersValue);
-                   filtersValue = storageItem.find(x => x.filterKey === 'currentSort').filterValue;
-                   $('#currentSort').val(filtersValue);
-                   filtersValue = storageItem.find(x => x.filterKey === 'companyFilter').filterValue;
-                   $('#CompanyFilter').val(filtersValue);
-                   filtersValue = storageItem.find(x => x.filterKey === 'pageSize').filterValue;
-                   $('#PageSize').val(filtersValue);
-                   filtersValue = storageItem.find(x => x.filterKey === 'pageIndex').filterValue;
-                   $('#pageIndex').val(filtersValue);
-   
                    try {
-                       filtersValue = storageItem.find(x => x.filterKey === 'currentCurrency').filterValue;
-                       $('#CurrencySelector').val(filtersValue);
+                       let filtersValue = storageItem.find(x => x.filterKey === 'currentCurrency').filterValue;
+                        
+                        if (filtersValue === undefined || filtersValue === null) { 
+                            sessionObject.currencyCode= 'EUR'; 
+                        } else {
+                            sessionObject.currencyCode= filtersValue;
+                        }
                    } catch (e) {
-   
+                        sessionObject.currencyCode= 'EUR'; 
                    }
                }
            };
-           
-           
-           
+            let sessionObj={
+                'currencyCode' : ''
+            };
            
             loadCurrencySelector(currencyListJs);
-      
+            loadPreviousSession(sessionKey, sessionObj);
+            console.log(sessionObj);
+            setCurrency(getCurrencyId(sessionObj.currencyCode,currencyListJs),sessionObj.currencyCode);
+            
+            
         }())
+   $(window).on('beforeunload',
+      function(e) {
+            // for (const property in sessionObj) {
+            //  console.log(`${property}: ${object[property]}`);
+            // }
+                  //#region CommentOut
+                  //#region Variables
+                  const sessionKey='TransactorDetailsPage';
+                  const $selectedCurrency=$('.selected-currency-text');
+                  var currentCurrency = $selectedCurrency.data('currencycode');
+                  var filtersArr = [];
+                  //#endregion
+                  filtersArr.push({
+                      filterKey: 'currentCurrency',
+                      filterValue: currentCurrency
+                  });
+  
+                  let sessionVal = JSON.stringify(filtersArr);
+  
+                  localStorage.setItem(sessionKey, sessionVal);
+                  //#endregion
+  
+              });
     </script>
 }
