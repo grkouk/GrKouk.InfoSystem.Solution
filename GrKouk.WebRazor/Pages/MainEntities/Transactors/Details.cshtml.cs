@@ -29,6 +29,7 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Transactors
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
+            LoadFilters();
             if (id == null)
             {
                 return NotFound();
@@ -48,6 +49,12 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Transactors
             Item.Companies = String.Join(",", compList); 
             
             return Page();
+        }
+
+        private void LoadFilters()
+        {
+            var currencyListJs = _context.Currencies.OrderBy(p => p.Name).AsNoTracking().ToList();
+            ViewData["CurrencyListJs"] = currencyListJs;
         }
     }
 }
