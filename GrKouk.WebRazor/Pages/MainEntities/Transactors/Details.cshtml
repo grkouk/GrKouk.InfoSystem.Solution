@@ -170,7 +170,7 @@
         </div>
     </div>
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <h3 class="h2">Transactions</h3>
+        <h4>Transactions</h4>
         <div class="btn-toolbar mb-2 mb-md-0">
             <div class="btn-group mr-2">
                 <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
@@ -217,7 +217,6 @@
         </footer>
     
     </main>
-
 </div>
 </div>
 
@@ -229,15 +228,17 @@
         (function () {
             feather.replace();
             const sessionKey='TransactorDetailsPage';
-             const currencyListJs = @Html.Raw(Json.Serialize(ViewBag.CurrencyListJs));
-             const setCurrency= (currencyId,currencyCode)=>{
+            const currencyListJs = @Html.Raw(Json.Serialize(ViewBag.CurrencyListJs));
+            const companyListJs = @Html.Raw(Json.Serialize(ViewBag.CompanyListJs));
+            //-------------------Currency--------------------------------------------------
+            const setCurrency= (currencyId,currencyCode)=>{
                  const $selectedCurrency=$('.selected-currency-text');
                  $selectedCurrency.data('currencyid',currencyId);
                  $selectedCurrency.data('currencycode',currencyCode);
                  $selectedCurrency.text(currencyCode);
                   
              };
-             const loadCurrencySelector = (availableCurrencies) => {
+            const loadCurrencySelector = (availableCurrencies) => {
                 let $currenciesMenu = $('[name=CurrencySelector]');
                 
                 $('.currency-item') .remove();
@@ -265,7 +266,7 @@
                             //let $btParent = button.parent()
                 });
             };
-             const getCurrencyId=(currencyCode,currencyList) =>{
+            const getCurrencyId=(currencyCode,currencyList) =>{
                  if (!(typeof currencyList != "undefined"  
                       && currencyList != null  
                       && currencyList.length != null  
@@ -281,7 +282,35 @@
                        return parsed;
                    }
              };
-           const loadPreviousSession = (sessionKey,sessionObject)=>{
+            //------------------Company------------------------------------------------
+            const loadCompanySelector = (availableCompanies) => {
+                let $companiesMenu  = $('[name=CompanySelector]');
+                
+                $('.company-item') .remove();
+                if (availableCompanies === undefined || availableCompanies === null) {
+                    return;
+                }
+                var d = availableCompanies;
+                d.forEach(function(item) {
+                    var $aLink = $('<button>').addClass('dropdown-item small company-item');
+                    $aLink.text(item.text);
+                    $aLink.attr('type', 'button');
+                    $aLink.data('companyid',item.value);
+                    $aLink.data('companycode',item.text);
+                    $companiesMenu.append($aLink);
+                });
+                $('.company-item').on('click',
+                         function(event) {
+                            let button = $(event.delegateTarget);
+                            let companyId = button.data('companyid');
+                            let companyCode = button.data('companycode');
+                            console.log(`Company Id=${companyId} Company Code=${companyCode}`);
+                            //setCurrency(currencyId, currencyCode);
+                            //let $btParent = button.parent()
+                });
+            };
+ 
+            const loadPreviousSession = (sessionKey,sessionObject)=>{
                let storageItemJs = localStorage.getItem(sessionKey);
                if (storageItemJs === undefined || storageItemJs === null) {
                    sessionObject.currencyCode='EUR';
@@ -306,6 +335,7 @@
             };
            
             loadCurrencySelector(currencyListJs);
+            loadCompanySelector(companyListJs);
             loadPreviousSession(sessionKey, sessionObj);
             console.log(sessionObj);
             setCurrency(getCurrencyId(sessionObj.currencyCode,currencyListJs),sessionObj.currencyCode);

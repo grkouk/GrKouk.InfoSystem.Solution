@@ -59,7 +59,7 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Transactors
             ViewData["CurrencyListJs"] = currencyListJs;
             
             var companiesListJs = FiltersHelper.GetCompaniesFilterList(_context);
-            ViewData["CompanyFilter"] = companiesListJs;
+            ViewData["CompanyListJs"] = companiesListJs;
         }
     }
 }
