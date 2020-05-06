@@ -89,6 +89,18 @@
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
         <h1 class="h2">@Model.Item.Name Details</h1>
         <div class="btn-toolbar mb-2 mb-md-0">
+             <div class="btn-group mr-2">
+                            <button type="button" class="btn  btn-sm btn-outline-secondary selected-company-text">Reference</button>
+                            <button type="button" class="btn  btn-sm btn-outline-secondary dropdown-toggle dropdown-toggle-split" id="companyMenuReference" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-reference="parent">
+                                <span class="sr-only">Toggle Dropdown</span>
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="companyMenuReference" name="CompanySelector">
+                                <button class="dropdown-item company-item" type="button">Action</button>
+                                <button class="dropdown-item company-item" type="button">Another Action</button>
+            
+                                <button class="dropdown-item company-item" type="button">Another Action</button>
+                            </div>
+                        </div>
             <div class="btn-group">
                 <button type="button" class="btn  btn-sm btn-outline-secondary selected-currency-text">Reference</button>
                 <button type="button" class="btn  btn-sm btn-outline-secondary dropdown-toggle dropdown-toggle-split" id="currencyMenuReference" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-reference="parent">
@@ -118,22 +130,7 @@
     <hr/>
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
         <h4>Financial Summary</h4>
-        <div class="btn-toolbar mb-2 mb-md-0">
-            <div class="btn-group">
-                <button type="button" class="btn  btn-sm btn-outline-secondary selected-company-text">Reference</button>
-                <button type="button" class="btn  btn-sm btn-outline-secondary dropdown-toggle dropdown-toggle-split" id="companyMenuReference" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-reference="parent">
-                    <span class="sr-only">Toggle Dropdown</span>
-                </button>
-                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="companyMenuReference" name="CompanySelector">
-                    <button class="dropdown-item company-item" type="button">Action</button>
-                    <button class="dropdown-item company-item" type="button">Another Action</button>
-
-                    <button class="dropdown-item company-item" type="button">Another Action</button>
-                </div>
-            </div>
-
-
-        </div>
+       
     </div>
     <div class="container">
         <div class="row align-items-center justify-content-between">
@@ -305,22 +302,46 @@
                             let companyId = button.data('companyid');
                             let companyCode = button.data('companycode');
                             console.log(`Company Id=${companyId} Company Code=${companyCode}`);
-                            //setCurrency(currencyId, currencyCode);
+                            setCompany(companyId, companyCode);
                             //let $btParent = button.parent()
                 });
             };
- 
+            const setCompany= (companyId,companyCode)=>{
+                  const $selectedCompany=$('.selected-company-text');
+                  $selectedCompany.data('companyid',companyId);
+                  $selectedCompany.data('companycode',companyCode);
+                  $selectedCompany.text(companyCode);
+                   
+              };
+            const getCompanyName=(companyId,companyList) =>{
+                 if (!(typeof companyList != "undefined"  
+                      && companyList != null  
+                      && companyList.length != null  
+                      && companyList.length > 0)) {
+                        return '{AllComp}';
+                      }
+                 
+                 try {
+                     
+                     return companyList.find(x => x.value === companyId).text;
+                  } catch (e) {
+                     return '{AllComp}';
+                  }
+                   
+                   
+             };
+            //--------------------------------------------------------------------------
             const loadPreviousSession = (sessionKey,sessionObject)=>{
                let storageItemJs = localStorage.getItem(sessionKey);
                if (storageItemJs === undefined || storageItemJs === null) {
                    sessionObject.currencyCode='EUR';
+                   sessionObject.companyCode='0';
                    
                } else {
                    var storageItem = JSON.parse(storageItemJs);
                    try {
                        let filtersValue = storageItem.find(x => x.filterKey === 'currentCurrency').filterValue;
-                        
-                        if (filtersValue === undefined || filtersValue === null) { 
+                       if (filtersValue === undefined || filtersValue === null) { 
                             sessionObject.currencyCode= 'EUR'; 
                         } else {
                             sessionObject.currencyCode= filtersValue;
@@ -328,10 +349,21 @@
                    } catch (e) {
                         sessionObject.currencyCode= 'EUR'; 
                    }
+                   try {
+                      let filtersValue = storageItem.find(x => x.filterKey === 'currentCompany').filterValue;
+                      if (filtersValue === undefined || filtersValue === null) { 
+                           sessionObject.companyCode= '0'; 
+                       } else {
+                           sessionObject.companyCode= filtersValue;
+                       }
+                  } catch (e) {
+                       sessionObject.companyCode= '0'; 
+                  }
                }
            };
             let sessionObj={
-                'currencyCode' : ''
+                'currencyCode' : '',
+                'companyCode' :''
             };
            
             loadCurrencySelector(currencyListJs);
@@ -339,7 +371,7 @@
             loadPreviousSession(sessionKey, sessionObj);
             console.log(sessionObj);
             setCurrency(getCurrencyId(sessionObj.currencyCode,currencyListJs),sessionObj.currencyCode);
-            
+            setCompany(sessionObj.companyCode,getCompanyName(sessionObj.companyCode,companyListJs));
             
         }())
    $(window).on('beforeunload',
@@ -351,14 +383,19 @@
                   //#region Variables
                   const sessionKey='TransactorDetailsPage';
                   const $selectedCurrency=$('.selected-currency-text');
+                  const $selectedCompany=$('.selected-company-text');
                   var currentCurrency = $selectedCurrency.data('currencycode');
+                  var currentCompany = $selectedCompany.data('companyid');
                   var filtersArr = [];
                   //#endregion
                   filtersArr.push({
                       filterKey: 'currentCurrency',
                       filterValue: currentCurrency
                   });
-  
+                   filtersArr.push({
+                        filterKey: 'currentCompany',
+                        filterValue: currentCompany
+                    });
                   let sessionVal = JSON.stringify(filtersArr);
   
                   localStorage.setItem(sessionKey, sessionVal);
