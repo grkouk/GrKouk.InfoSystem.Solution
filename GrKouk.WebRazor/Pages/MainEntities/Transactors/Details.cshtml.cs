@@ -4,9 +4,11 @@ using System.Threading.Tasks;
 using AutoMapper;
 using GrKouk.InfoSystem.Domain.Shared;
 using GrKouk.InfoSystem.Dtos.WebDtos.Transactors;
+using GrKouk.WebRazor.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace GrKouk.WebRazor.Pages.MainEntities.Transactors
@@ -55,6 +57,9 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Transactors
         {
             var currencyListJs = _context.Currencies.OrderBy(p => p.Name).AsNoTracking().ToList();
             ViewData["CurrencyListJs"] = currencyListJs;
+            
+            var companiesListJs = FiltersHelper.GetCompaniesFilterList(_context);
+            ViewData["CompanyFilter"] = companiesListJs;
         }
     }
 }
