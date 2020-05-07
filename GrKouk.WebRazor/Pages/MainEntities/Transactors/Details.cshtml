@@ -183,7 +183,10 @@
                 let selCompanyId = $selectedCompany.data('companyid');
                 const $selectedCurrency = $('.selected-currency-text');
                 let selCurrencyId = $selectedCurrency.data('currencyid');
-                getFinancialData(transactorId, '', selCompanyId, selCurrencyId);
+                const $selectedPeriod = $('.selected-period-text');
+                let selPeriodId = $selectedPeriod.data('periodid');
+
+                getFinancialData(transactorId, selPeriodId, selCompanyId, selCurrencyId);
 
             };
             //---------------------Periods----------------------------------
@@ -197,10 +200,10 @@
                 var d = availablePeriods;
                 d.forEach(function(item) {
                     var $aLink = $('<button>').addClass('dropdown-item small period-item');
-                    $aLink.text(item.name);
+                    $aLink.text(item.text);
                     $aLink.attr('type', 'button');
-                    $aLink.data('periodid', item.id);
-                    $aLink.data('periodcode', item.code);
+                    $aLink.data('periodid', item.value);
+                    $aLink.data('periodcode', item.text);
                     $periodMenu.append($aLink);
                 });
                 $('.period-item').on('click',
@@ -209,10 +212,31 @@
                         let itemId = button.data('periodid');
                         let itemCode = button.data('periodcode');
                         console.log(`Period Id=${itemId} Period Code=${itemCode}`);
-                        //setCurrency(itemId, itemCode);
+                        setPeriod(itemId, itemCode);
 
                         refreshView();
                     });
+            };
+            const setPeriod = (itemId, itemCode) => {
+                const $selectedItem = $('.selected-period-text');
+                $selectedItem.data('periodid', itemId);
+                $selectedItem.data('periodcode', itemCode);
+                $selectedItem.text(itemCode);
+
+            };
+            const getPeriodName = (itemId, itemList) => {
+                if (!(typeof itemList != "undefined" && itemList != null && itemList.length != null && itemList.length > 0)) {
+                    return 'Current Month';
+                }
+
+                try {
+
+                    return itemList.find(x => x.value === itemId).text;
+                } catch (e) {
+                    return 'Current Month';
+                }
+
+
             };
             //-------------------Currency--------------------------------------------------
             const setCurrency = (currencyId, currencyCode) => {
@@ -433,13 +457,11 @@
             console.log(sessionObj);
             setCurrency(getCurrencyId(sessionObj.currencyCode, currencyListJs), sessionObj.currencyCode);
             setCompany(sessionObj.companyCode, getCompanyName(sessionObj.companyCode, companyListJs));
+            setPeriod(sessionObj.periodCode, getPeriodName(sessionObj.periodCode, datePeriodListJs));
             refreshView();
         }());
         $(window).on('beforeunload',
             function (e) {
-                // for (const property in sessionObj) {
-                //  console.log(`${property}: ${object[property]}`);
-                // }
                 //#region CommentOut
                 //#region Variables
                 const sessionKey = 'TransactorDetailsPage';
