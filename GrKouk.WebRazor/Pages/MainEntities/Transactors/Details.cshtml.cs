@@ -37,6 +37,7 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Transactors
                 return NotFound();
             }
             _id = (int)id;
+            ViewData["TransactorId"] = id;
             var transactor = await _context.Transactors
                 .Include(t=>t.TransactorCompanyMappings)
                 .ThenInclude(x=>x.Company)

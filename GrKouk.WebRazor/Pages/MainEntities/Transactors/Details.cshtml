@@ -155,6 +155,16 @@
             const sessionKey='TransactorDetailsPage';
             const currencyListJs = @Html.Raw(Json.Serialize(ViewBag.CurrencyListJs));
             const companyListJs = @Html.Raw(Json.Serialize(ViewBag.CompanyListJs));
+            const transactorId= @Model.Item.Id;
+            const refreshView=() =>{
+                 const $selectedCompany=$('.selected-company-text');
+                 let selCompanyId = $selectedCompany.data('companyid');
+                 const $selectedCurrency=$('.selected-currency-text');
+                 let selCurrencyId = $selectedCurrency.data('currencyid');
+                 getFinancialData(transactorId,'',selCompanyId,selCurrencyId);
+                  
+            };
+            
             //-------------------Currency--------------------------------------------------
             const setCurrency= (currencyId,currencyCode)=>{
                  const $selectedCurrency=$('.selected-currency-text');
@@ -188,6 +198,7 @@
                             let currencyCode = button.data('currencycode');
                             console.log(`Currency Id=${currencyId} currency Code=${currencyCode}`);
                             setCurrency(currencyId, currencyCode);
+                            refreshView();
                             //let $btParent = button.parent()
                 });
             };
@@ -231,6 +242,7 @@
                             let companyCode = button.data('companycode');
                             console.log(`Company Id=${companyId} Company Code=${companyCode}`);
                             setCompany(companyId, companyCode);
+                            refreshView();
                             //let $btParent = button.parent()
                 });
             };
@@ -239,7 +251,7 @@
                   $selectedCompany.data('companyid',companyId);
                   $selectedCompany.data('companycode',companyCode);
                   $selectedCompany.text(companyCode);
-                   
+                 
               };
             const getCompanyName=(companyId,companyList) =>{
                  if (!(typeof companyList != "undefined"  
@@ -289,6 +301,58 @@
                   }
                }
            };
+            //------------------------------------------------------------------------
+            const getFinancialData = (transactorId, dateRange,selCompany,selCurrency,selectionCallback) => {
+                            var timeout;
+                            var pageIndex = 1;
+                            var uri = '/api/FinancialData/GetTransactorFinancialSummaryData?';
+                            uri += `&transactorId=${transactorId}`;
+                            uri += `&companyFilter=${selCompany}`;
+                            uri += `&dateRange=${dateRange}`;
+                            uri += `&displayCurrencyId=${selCurrency}`;
+                            $.ajax({
+                                contentType: 'application/json; charset=utf-8',
+                                dataType: 'json',
+                                type: 'GET',
+                                url: uri,
+                                beforeSend: function() {
+                                    if (timeout) {
+                                        clearTimeout(timeout);
+                                    }
+                                    timeout = setTimeout(function() {
+                                            $('#FinancialLoader').show();
+            
+                                        },
+                                        1000);
+                                },
+                                success: function(result) {
+                                    console.log('Result for transaction financial data');
+                                    console.log(result);
+                                    
+                                },
+                                complete: function() {
+                                    if (timeout) {
+                                        clearTimeout(timeout);
+                                    }
+                                    setTimeout(function() {
+                                            var isOpen = $('#FinancialLoader').is(':visible');
+                                            if (isOpen) {
+                                                $('#FinancialLoader').hide();
+                                            } else {
+                                                console.log('No open modal');
+                                            }
+                                        },
+                                        2000);
+                                },
+                                error: function(e) {
+                                    console.log(e);
+            
+                                }
+                            });
+                        };
+            
+            
+            
             let sessionObj={
                 'currencyCode' : '',
                 'companyCode' :''
@@ -300,7 +364,7 @@
             console.log(sessionObj);
             setCurrency(getCurrencyId(sessionObj.currencyCode,currencyListJs),sessionObj.currencyCode);
             setCompany(sessionObj.companyCode,getCompanyName(sessionObj.companyCode,companyListJs));
-            
+            refreshView();
         }())
    $(window).on('beforeunload',
       function(e) {

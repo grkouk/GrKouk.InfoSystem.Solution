@@ -1170,8 +1170,6 @@ namespace GrKouk.WebRazor.Controllers
 
             var dbTransactions = dbTrans.GroupBy(g => new
             {
-
-
                 g.CompanyCode,
                 g.CompanyCurrencyId,
                 g.TransactorId
