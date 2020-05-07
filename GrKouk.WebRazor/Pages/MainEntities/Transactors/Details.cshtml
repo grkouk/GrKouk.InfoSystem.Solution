@@ -68,7 +68,7 @@
                         <h4>Debit</h4>
                     </div>
                     <div class="card-body text-center">
-                        <h5>5000,00</h5>
+                        <h5 id="Debit">5000,00</h5>
                     </div>
                 </div>
             </div>
@@ -78,7 +78,7 @@
                         <h4>Credit</h4>
                     </div>
                     <div class="card-body text-center">
-                        <h5>5000,00</h5>
+                        <h5 id="Credit">5000,00</h5>
                     </div>
                 </div>
             </div>
@@ -88,7 +88,7 @@
                         <h4>Balance</h4>
                     </div>
                     <div class="card-body text-center">
-                        <h5>5000,00</h5>
+                        <h5 id="Balance">5000,00</h5>
                     </div>
                 </div>
             </div>
@@ -153,6 +153,19 @@
         (function () {
             feather.replace();
             const sessionKey='TransactorDetailsPage';
+            let currentCulture = '@System.Globalization.CultureInfo.CurrentCulture';
+            
+            let formatterCurrency = new Intl.NumberFormat(currentCulture,
+                {
+                    style: 'currency',
+                    currency: 'EUR',
+                    minimumFractionDigits: 2
+                });
+            let formatterNumber = new Intl.NumberFormat(currentCulture,
+                {
+                    maximumFractionDigits: 3
+
+                });
             const currencyListJs = @Html.Raw(Json.Serialize(ViewBag.CurrencyListJs));
             const companyListJs = @Html.Raw(Json.Serialize(ViewBag.CompanyListJs));
             const transactorId= @Model.Item.Id;
@@ -171,6 +184,18 @@
                  $selectedCurrency.data('currencyid',currencyId);
                  $selectedCurrency.data('currencycode',currencyCode);
                  $selectedCurrency.text(currencyCode);
+                 try {
+                    formatterCurrency = new Intl.NumberFormat(currentCulture,
+                              {
+                                  style: 'currency',
+                                  currency: currencyCode,
+                                  minimumFractionDigits: 2
+                              });
+                
+                 }
+                 catch (e) {
+                    console.log('Problem setting currency formatter');
+                 }
                   
              };
             const loadCurrencySelector = (availableCurrencies) => {
@@ -198,6 +223,7 @@
                             let currencyCode = button.data('currencycode');
                             console.log(`Currency Id=${currencyId} currency Code=${currencyCode}`);
                             setCurrency(currencyId, currencyCode);
+                            
                             refreshView();
                             //let $btParent = button.parent()
                 });
@@ -303,53 +329,55 @@
            };
             //------------------------------------------------------------------------
             const getFinancialData = (transactorId, dateRange,selCompany,selCurrency,selectionCallback) => {
-                            var timeout;
-                            var pageIndex = 1;
-                            var uri = '/api/FinancialData/GetTransactorFinancialSummaryData?';
-                            uri += `&transactorId=${transactorId}`;
-                            uri += `&companyFilter=${selCompany}`;
-                            uri += `&dateRange=${dateRange}`;
-                            uri += `&displayCurrencyId=${selCurrency}`;
-                            $.ajax({
-                                contentType: 'application/json; charset=utf-8',
-                                dataType: 'json',
-                                type: 'GET',
-                                url: uri,
-                                beforeSend: function() {
-                                    if (timeout) {
-                                        clearTimeout(timeout);
-                                    }
-                                    timeout = setTimeout(function() {
-                                            $('#FinancialLoader').show();
-            
-                                        },
-                                        1000);
-                                },
-                                success: function(result) {
-                                    console.log('Result for transaction financial data');
-                                    console.log(result);
-                                    
-                                },
-                                complete: function() {
-                                    if (timeout) {
-                                        clearTimeout(timeout);
-                                    }
-                                    setTimeout(function() {
-                                            var isOpen = $('#FinancialLoader').is(':visible');
-                                            if (isOpen) {
-                                                $('#FinancialLoader').hide();
-                                            } else {
-                                                console.log('No open modal');
-                                            }
-                                        },
-                                        2000);
-                                },
-                                error: function(e) {
-                                    console.log(e);
-            
+                var timeout;
+                var pageIndex = 1;
+                var uri = '/api/FinancialData/GetTransactorFinancialSummaryData?';
+                uri += `&transactorId=${transactorId}`;
+                uri += `&companyFilter=${selCompany}`;
+                uri += `&dateRange=${dateRange}`;
+                uri += `&displayCurrencyId=${selCurrency}`;
+                $.ajax({
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    type: 'GET',
+                    url: uri,
+                    beforeSend: function() {
+                        if (timeout) {
+                            clearTimeout(timeout);
+                        }
+                        timeout = setTimeout(function() {
+                                $('#FinancialLoader').show();
+
+                            },
+                            1000);
+                    },
+                    success: function(result) {
+                        console.log('Result for transaction financial data');
+                        console.log(result);
+                        $('#Debit').text(formatterCurrency.format(result.sumOfDebit));
+                        $('#Credit').text(formatterCurrency.format(result.sumOfCredit));
+                        $('#Balance').text(formatterCurrency.format(result.sumOfDifference));
+                    },
+                    complete: function() {
+                        if (timeout) {
+                            clearTimeout(timeout);
+                        }
+                        setTimeout(function() {
+                                var isOpen = $('#FinancialLoader').is(':visible');
+                                if (isOpen) {
+                                    $('#FinancialLoader').hide();
+                                } else {
+                                    console.log('No open modal');
                                 }
-                            });
-                        };
+                            },
+                            2000);
+                    },
+                    error: function(e) {
+                        console.log(e);
+
+                    }
+                });
+            };
             
             
             

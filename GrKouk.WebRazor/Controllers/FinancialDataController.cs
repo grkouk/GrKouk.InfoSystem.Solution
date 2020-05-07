@@ -102,10 +102,42 @@ namespace GrKouk.WebRazor.Controllers
             var grandSumOfAmount = t1.Sum(p => p.TotalAmount);
             var grandSumOfDebit = t1.Sum(p => p.DebitAmount);
             var grandSumOfCredit = t1.Sum(p => p.CreditAmount);
+            var transactor = await _context.Transactors.Include(p => p.TransactorType)
+                .FirstOrDefaultAsync(p => p.Id == request.TransactorId);
+            if (transactor==null )
+            {
+                return BadRequest();
+            }
+            await _context.Entry(transactor).Reference(p => p.TransactorType).LoadAsync();
+            var transactorType = transactor.TransactorType;
+            if (transactorType == null)
+            {
+                return BadRequest();
+            }
+
+            decimal difference = 0;
+            switch (transactorType.Code)
+            {
+                case "SYS.CUSTOMER":
+                    difference = grandSumOfDebit - grandSumOfCredit;
+                    break;
+                case "SYS.SUPPLIER":
+                    difference = grandSumOfCredit - grandSumOfDebit;
+                    break;
+                case "SYS.DEPARTMENT":
+                    difference = grandSumOfDebit - grandSumOfCredit;
+                    break;
+                case "SYS.DTRANSACTOR":
+                    difference = grandSumOfCredit - grandSumOfDebit;
+                    break;
+                default:
+                    break;
+            }
             var response = new TransactorFinancialDataResponse()
             {
                 SumOfDebit = grandSumOfDebit,
-                SumOfCredit = grandSumOfCredit
+                SumOfCredit = grandSumOfCredit,
+                SumOfDifference = difference
             };
             return Ok(response);
         }
