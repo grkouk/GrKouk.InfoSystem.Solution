@@ -63,6 +63,10 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Transactors
             
             var companiesListJs = FiltersHelper.GetCompaniesFilterList(_context);
             ViewData["CompanyListJs"] = companiesListJs;
+
+            var datePeriodListJs = DateFilter.GetDateFiltersSelectList();
+            ViewData["DatePeriodListJs"] = datePeriodListJs;
+
         }
     }
 }

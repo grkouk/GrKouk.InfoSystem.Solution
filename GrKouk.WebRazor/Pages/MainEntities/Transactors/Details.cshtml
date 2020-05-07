@@ -8,141 +8,149 @@
 
 
 <div class="container-fluid">
-<div class="row">
-<main role="main" class="col-md-12 ml-sm-auto col-lg-12 px-4">
-    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        @* <h3 class="h3">@Model.Item.TransactorTypeName @Model.Item.Name Details</h3> *@
-        <h3></h3>
-        <div class="btn-toolbar mb-2 mb-md-0">
-            <div class="btn-group mr-2">
-                <button type="button" class="btn  btn-sm btn-outline-secondary selected-company-text">Reference</button>
-                <button type="button" class="btn  btn-sm btn-outline-secondary dropdown-toggle dropdown-toggle-split" id="companyMenuReference" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-reference="parent">
-                    <span class="sr-only">Toggle Dropdown</span>
-                </button>
-                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="companyMenuReference" name="CompanySelector">
-                    <button class="dropdown-item company-item" type="button">Action</button>
-                    <button class="dropdown-item company-item" type="button">Another Action</button>
+    <div class="row">
+        <main role="main" class="col-md-12 ml-sm-auto col-lg-12 px-4">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                @* <h3 class="h3">@Model.Item.TransactorTypeName @Model.Item.Name Details</h3> *@
+                <h3></h3>
+                <div class="btn-toolbar mb-2 mb-md-0">
+                    <div class="btn-group mr-2">
+                        <button type="button" class="btn  btn-sm btn-outline-secondary selected-company-text">Reference</button>
+                        <button type="button" class="btn  btn-sm btn-outline-secondary dropdown-toggle dropdown-toggle-split" id="companyMenuReference" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-reference="parent">
+                            <span class="sr-only">Toggle Dropdown</span>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="companyMenuReference" name="CompanySelector">
+                            <button class="dropdown-item company-item" type="button">Action</button>
+                            <button class="dropdown-item company-item" type="button">Another Action</button>
 
-                    <button class="dropdown-item company-item" type="button">Another Action</button>
-                </div>
-            </div>
-            <div class="btn-group">
-                <button type="button" class="btn  btn-sm btn-outline-secondary selected-currency-text">Reference</button>
-                <button type="button" class="btn  btn-sm btn-outline-secondary dropdown-toggle dropdown-toggle-split" id="currencyMenuReference" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-reference="parent">
-                    <span class="sr-only">Toggle Dropdown</span>
-                </button>
-                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="currencyMenuReference" name="CurrencySelector">
-                    <button class="dropdown-item currency-item" type="button">Action</button>
-                    <button class="dropdown-item currency-item" type="button">Another Action</button>
-
-                    <button class="dropdown-item currency-item" type="button">Another Action</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="container">
-        <div class="card bg-light">
-            <div class="card-body">
-                <h5 class="card-title">@Model.Item.Code</h5>
-                <h6 class="card-subtitle mb-2 text-muted">@Model.Item.Companies</h6>
-                <p class="card-text"></p>
-                <a href="#" class="card-link">Card link</a>
-                <a href="#" class="card-link">Another link</a>
-            </div>
-        </div>
-    </div>
-
-    <hr/>
-    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-2 pb-2 mb-3 border-bottom">
-       <div class="d-flex align-items-center">
-         <h4 class="mr-2">Financial Summary</h4>
-         <div class="spinner-border ml-auto text-primary" role="status" aria-hidden="true" id="FinancialLoader" style="display: none"></div>
-       </div>
-       
-    </div>
-    <div class="container">
-        <div class="row align-items-center justify-content-between">
-            <div class="col-lg-4 col-sm-12">
-                <div class="card">
-                    <div class="card-header text-dark text-center">
-                        <h4>Debit</h4>
+                            <button class="dropdown-item company-item" type="button">Another Action</button>
+                        </div>
                     </div>
-                    <div class="card-body text-center">
-                        <h5 id="Debit">5000,00</h5>
+                    <div class="btn-group">
+                        <button type="button" class="btn  btn-sm btn-outline-secondary selected-currency-text">Reference</button>
+                        <button type="button" class="btn  btn-sm btn-outline-secondary dropdown-toggle dropdown-toggle-split" id="currencyMenuReference" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-reference="parent">
+                            <span class="sr-only">Toggle Dropdown</span>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="currencyMenuReference" name="CurrencySelector">
+                            <button class="dropdown-item currency-item" type="button">Action</button>
+                            <button class="dropdown-item currency-item" type="button">Another Action</button>
+
+                            <button class="dropdown-item currency-item" type="button">Another Action</button>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-4 col-sm-12">
-                <div class="card">
-                    <div class="card-header text-dark text-center">
-                        <h4>Credit</h4>
-                    </div>
-                    <div class="card-body text-center">
-                        <h5 id="Credit">5000,00</h5>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 col-sm-12">
-                <div class="card">
-                    <div class="card-header text-center">
-                        <h4>Balance</h4>
-                    </div>
-                    <div class="card-body text-center">
-                        <h5 id="Balance">5000,00</h5>
+            <div class="container">
+                <div class="card bg-light">
+                    <div class="card-body">
+                        <h5 class="card-title">@Model.Item.Code</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">@Model.Item.Companies</h6>
+                        <p class="card-text"></p>
+                        <a href="#" class="card-link">Card link</a>
+                        <a href="#" class="card-link">Another link</a>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <h4>Transactions</h4>
-        <div class="btn-toolbar mb-2 mb-md-0">
-            <div class="btn-group mr-2">
-                <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
-                <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
+
+            <hr />
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-2 pb-2 mb-3 border-bottom">
+                <div class="d-flex align-items-center">
+                    <h4 class="mr-2">Financial Summary</h4>
+                    <div class="spinner-border ml-auto text-primary" role="status" aria-hidden="true" id="FinancialLoader" style="display: none"></div>
+                </div>
+
             </div>
-            <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
-                <span data-feather="calendar"></span>
-                This week
-            </button>
+            <div class="container">
+                <div class="row align-items-center justify-content-between">
+                    <div class="col-lg-4 col-sm-12">
+                        <div class="card">
+                            <div class="card-header text-dark text-center">
+                                <h4>Debit</h4>
+                            </div>
+                            <div class="card-body text-center">
+                                <h5 id="Debit">5000,00</h5>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-sm-12">
+                        <div class="card">
+                            <div class="card-header text-dark text-center">
+                                <h4>Credit</h4>
+                            </div>
+                            <div class="card-body text-center">
+                                <h5 id="Credit">5000,00</h5>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-sm-12">
+                        <div class="card">
+                            <div class="card-header text-center">
+                                <h4>Balance</h4>
+                            </div>
+                            <div class="card-body text-center">
+                                <h5 id="Balance">5000,00</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h4>Transactions</h4>
+                <div class="btn-toolbar mb-2 mb-md-0">
+                    <div class="btn-group mr-2">
+                        <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
+                    </div>
+                    <div class="btn-group">
+                        <button type="button" class="btn  btn-sm btn-outline-secondary selected-period-text">Reference</button>
+                        <button type="button" class="btn  btn-sm btn-outline-secondary dropdown-toggle dropdown-toggle-split" id="datePeriodMenuReference" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-reference="parent">
+                            <span class="sr-only">Toggle Dropdown</span>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="datePeriodMenuReference" name="PeriodSelector">
+                            <button class="dropdown-item period-item" type="button">Action</button>
+                            <button class="dropdown-item period-item" type="button">Another Action</button>
 
-        </div>
-    </div>
-    <div class="table-responsive">
-        <table class="table table-striped table-sm">
-            <thead>
-            <tr>
-                <th>#</th>
-                <th>Header</th>
-                <th>Header</th>
-                <th>Header</th>
-                <th>Header</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td>1,001</td>
-                <td>Lorem</td>
-                <td>ipsum</td>
-                <td>dolor</td>
-                <td>sit</td>
-            </tr>
-            <tr>
-            <td>1,002</td>
-            <td>amet</td>
-            <td>consectetur</td>
-            <td>adipiscing</td>
-            <td>elit</td>
-            </tbody>
-        </table>
-    </div>
-    <hr/>
-    <footer>
-        <p>&copy; 2018 - George Koukoudis</p>
-    </footer>
+                            <button class="dropdown-item period-item" type="button">Another Action</button>
+                        </div>
+                    </div>
 
-</main>
-</div>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Header</th>
+                            <th>Header</th>
+                            <th>Header</th>
+                            <th>Header</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1,001</td>
+                            <td>Lorem</td>
+                            <td>ipsum</td>
+                            <td>dolor</td>
+                            <td>sit</td>
+                        </tr>
+                        <tr>
+                            <td>1,002</td>
+                            <td>amet</td>
+                            <td>consectetur</td>
+                            <td>adipiscing</td>
+                            <td>elit</td>
+                    </tbody>
+                </table>
+            </div>
+            <hr />
+            <footer>
+                <p>&copy; 2018 - George Koukoudis</p>
+            </footer>
+
+        </main>
+    </div>
 </div>
 
 
@@ -150,11 +158,11 @@
 {
     @* <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.9.0/feather.min.js"></script> *@
     <script>
-        (function () {
+        (function() {
             //feather.replace();
-            const sessionKey='TransactorDetailsPage';
+            const sessionKey = 'TransactorDetailsPage';
             let currentCulture = '@System.Globalization.CultureInfo.CurrentCulture';
-            
+
             let formatterCurrency = new Intl.NumberFormat(currentCulture,
                 {
                     style: 'currency',
@@ -168,40 +176,67 @@
                 });
             const currencyListJs = @Html.Raw(Json.Serialize(ViewBag.CurrencyListJs));
             const companyListJs = @Html.Raw(Json.Serialize(ViewBag.CompanyListJs));
-            const transactorId= @Model.Item.Id;
-            const refreshView=() =>{
-                 const $selectedCompany=$('.selected-company-text');
-                 let selCompanyId = $selectedCompany.data('companyid');
-                 const $selectedCurrency=$('.selected-currency-text');
-                 let selCurrencyId = $selectedCurrency.data('currencyid');
-                 getFinancialData(transactorId,'',selCompanyId,selCurrencyId);
-                  
+            const datePeriodListJs = @Html.Raw(Json.Serialize(ViewBag.DatePeriodListJs));
+            const transactorId = @Model.Item.Id;
+            const refreshView = () => {
+                const $selectedCompany = $('.selected-company-text');
+                let selCompanyId = $selectedCompany.data('companyid');
+                const $selectedCurrency = $('.selected-currency-text');
+                let selCurrencyId = $selectedCurrency.data('currencyid');
+                getFinancialData(transactorId, '', selCompanyId, selCurrencyId);
+
             };
-            
+            //---------------------Periods----------------------------------
+            const loadPeriodSelector = (availablePeriods) => {
+                let $periodMenu = $('[name=PeriodSelector]');
+
+                $('.period-item').remove();
+                if (availablePeriods === undefined || availablePeriods === null) {
+                    return;
+                }
+                var d = availablePeriods;
+                d.forEach(function(item) {
+                    var $aLink = $('<button>').addClass('dropdown-item small period-item');
+                    $aLink.text(item.name);
+                    $aLink.attr('type', 'button');
+                    $aLink.data('periodid', item.id);
+                    $aLink.data('periodcode', item.code);
+                    $periodMenu.append($aLink);
+                });
+                $('.period-item').on('click',
+                    function(event) {
+                        let button = $(event.delegateTarget);
+                        let itemId = button.data('periodid');
+                        let itemCode = button.data('periodcode');
+                        console.log(`Period Id=${itemId} Period Code=${itemCode}`);
+                        //setCurrency(itemId, itemCode);
+
+                        refreshView();
+                    });
+            };
             //-------------------Currency--------------------------------------------------
-            const setCurrency= (currencyId,currencyCode)=>{
-                 const $selectedCurrency=$('.selected-currency-text');
-                 $selectedCurrency.data('currencyid',currencyId);
-                 $selectedCurrency.data('currencycode',currencyCode);
-                 $selectedCurrency.text(currencyCode);
-                 try {
+            const setCurrency = (currencyId, currencyCode) => {
+                const $selectedCurrency = $('.selected-currency-text');
+                $selectedCurrency.data('currencyid', currencyId);
+                $selectedCurrency.data('currencycode', currencyCode);
+                $selectedCurrency.text(currencyCode);
+                try {
                     formatterCurrency = new Intl.NumberFormat(currentCulture,
-                              {
-                                  style: 'currency',
-                                  currency: currencyCode,
-                                  minimumFractionDigits: 2
-                              });
-                
-                 }
-                 catch (e) {
+                        {
+                            style: 'currency',
+                            currency: currencyCode,
+                            minimumFractionDigits: 2
+                        });
+
+                } catch (e) {
                     console.log('Problem setting currency formatter');
-                 }
-                  
-             };
+                }
+
+            };
             const loadCurrencySelector = (availableCurrencies) => {
                 let $currenciesMenu = $('[name=CurrencySelector]');
-                
-                $('.currency-item') .remove();
+
+                $('.currency-item').remove();
                 if (availableCurrencies === undefined || availableCurrencies === null) {
                     return;
                 }
@@ -212,43 +247,40 @@
                     // var diaryHRef = '/MainEntities/Transactors/RunDiary';
                     // diaryHRef += `?diaryId=${item.value}`;
                     $aLink.attr('type', 'button');
-                    $aLink.data('currencyid',item.id);
-                    $aLink.data('currencycode',item.code);
+                    $aLink.data('currencyid', item.id);
+                    $aLink.data('currencycode', item.code);
                     $currenciesMenu.append($aLink);
                 });
                 $('.currency-item').on('click',
-                         function(event) {
-                            let button = $(event.delegateTarget);
-                            let currencyId = button.data('currencyid');
-                            let currencyCode = button.data('currencycode');
-                            console.log(`Currency Id=${currencyId} currency Code=${currencyCode}`);
-                            setCurrency(currencyId, currencyCode);
-                            
-                            refreshView();
-                            //let $btParent = button.parent()
-                });
+                    function(event) {
+                        let button = $(event.delegateTarget);
+                        let currencyId = button.data('currencyid');
+                        let currencyCode = button.data('currencycode');
+                        console.log(`Currency Id=${currencyId} currency Code=${currencyCode}`);
+                        setCurrency(currencyId, currencyCode);
+
+                        refreshView();
+                        //let $btParent = button.parent()
+                    });
             };
-            const getCurrencyId=(currencyCode,currencyList) =>{
-                 if (!(typeof currencyList != "undefined"  
-                      && currencyList != null  
-                      && currencyList.length != null  
-                      && currencyList.length > 0)) {
-                        return 0;
-                      }
-                  
-                   let ret = currencyList.find(x => x.code === currencyCode).id;
-                   const parsed = parseInt(ret);
-                   if (isNaN(parsed)) { 
-                       return  currencyList[0].id; 
-                   } else {
-                       return parsed;
-                   }
-             };
+            const getCurrencyId = (currencyCode, currencyList) => {
+                if (!(typeof currencyList != "undefined" && currencyList != null && currencyList.length != null && currencyList.length > 0)) {
+                    return 0;
+                }
+
+                let ret = currencyList.find(x => x.code === currencyCode).id;
+                const parsed = parseInt(ret);
+                if (isNaN(parsed)) {
+                    return currencyList[0].id;
+                } else {
+                    return parsed;
+                }
+            };
             //------------------Company------------------------------------------------
             const loadCompanySelector = (availableCompanies) => {
-                let $companiesMenu  = $('[name=CompanySelector]');
-                
-                $('.company-item') .remove();
+                let $companiesMenu = $('[name=CompanySelector]');
+
+                $('.company-item').remove();
                 if (availableCompanies === undefined || availableCompanies === null) {
                     return;
                 }
@@ -257,78 +289,86 @@
                     var $aLink = $('<button>').addClass('dropdown-item small company-item');
                     $aLink.text(item.text);
                     $aLink.attr('type', 'button');
-                    $aLink.data('companyid',item.value);
-                    $aLink.data('companycode',item.text);
+                    $aLink.data('companyid', item.value);
+                    $aLink.data('companycode', item.text);
                     $companiesMenu.append($aLink);
                 });
                 $('.company-item').on('click',
-                         function(event) {
-                            let button = $(event.delegateTarget);
-                            let companyId = button.data('companyid');
-                            let companyCode = button.data('companycode');
-                            console.log(`Company Id=${companyId} Company Code=${companyCode}`);
-                            setCompany(companyId, companyCode);
-                            refreshView();
-                            //let $btParent = button.parent()
-                });
+                    function(event) {
+                        let button = $(event.delegateTarget);
+                        let companyId = button.data('companyid');
+                        let companyCode = button.data('companycode');
+                        console.log(`Company Id=${companyId} Company Code=${companyCode}`);
+                        setCompany(companyId, companyCode);
+                        refreshView();
+                        //let $btParent = button.parent()
+                    });
             };
-            const setCompany= (companyId,companyCode)=>{
-                  const $selectedCompany=$('.selected-company-text');
-                  $selectedCompany.data('companyid',companyId);
-                  $selectedCompany.data('companycode',companyCode);
-                  $selectedCompany.text(companyCode);
-                 
-              };
-            const getCompanyName=(companyId,companyList) =>{
-                 if (!(typeof companyList != "undefined"  
-                      && companyList != null  
-                      && companyList.length != null  
-                      && companyList.length > 0)) {
-                        return '{AllComp}';
-                      }
-                 
-                 try {
-                     
-                     return companyList.find(x => x.value === companyId).text;
-                  } catch (e) {
-                     return '{AllComp}';
-                  }
-                   
-                   
-             };
+            const setCompany = (companyId, companyCode) => {
+                const $selectedCompany = $('.selected-company-text');
+                $selectedCompany.data('companyid', companyId);
+                $selectedCompany.data('companycode', companyCode);
+                $selectedCompany.text(companyCode);
+
+            };
+            const getCompanyName = (companyId, companyList) => {
+                if (!(typeof companyList != "undefined" && companyList != null && companyList.length != null && companyList.length > 0)) {
+                    return '{AllComp}';
+                }
+
+                try {
+
+                    return companyList.find(x => x.value === companyId).text;
+                } catch (e) {
+                    return '{AllComp}';
+                }
+
+
+            };
             //--------------------------------------------------------------------------
-            const loadPreviousSession = (sessionKey,sessionObject)=>{
-               let storageItemJs = localStorage.getItem(sessionKey);
-               if (storageItemJs === undefined || storageItemJs === null) {
-                   sessionObject.currencyCode='EUR';
-                   sessionObject.companyCode='0';
-                   
-               } else {
-                   var storageItem = JSON.parse(storageItemJs);
-                   try {
-                       let filtersValue = storageItem.find(x => x.filterKey === 'currentCurrency').filterValue;
-                       if (filtersValue === undefined || filtersValue === null) { 
-                            sessionObject.currencyCode= 'EUR'; 
+            const loadPreviousSession = (sessionKey, sessionObject) => {
+                let storageItemJs = localStorage.getItem(sessionKey);
+                if (storageItemJs === undefined || storageItemJs === null) {
+                    sessionObject.currencyCode = 'EUR';
+                    sessionObject.companyCode = '0';
+                    sessionObject.periodCode = "CURMONTH";
+
+                } else {
+                    var storageItem = JSON.parse(storageItemJs);
+                    try {
+                        let filtersValue = storageItem.find(x => x.filterKey === 'currentCurrency').filterValue;
+                        if (filtersValue === undefined || filtersValue === null) {
+                            sessionObject.currencyCode = 'EUR';
                         } else {
-                            sessionObject.currencyCode= filtersValue;
+                            sessionObject.currencyCode = filtersValue;
                         }
-                   } catch (e) {
-                        sessionObject.currencyCode= 'EUR'; 
-                   }
-                   try {
-                      let filtersValue = storageItem.find(x => x.filterKey === 'currentCompany').filterValue;
-                      if (filtersValue === undefined || filtersValue === null) { 
-                           sessionObject.companyCode= '0'; 
-                       } else {
-                           sessionObject.companyCode= filtersValue;
-                       }
-                  } catch (e) {
-                       sessionObject.companyCode= '0'; 
-                  }
-               }
-           };
+                    } catch (e) {
+                        sessionObject.currencyCode = 'EUR';
+                    }
+                    try {
+                        let filtersValue = storageItem.find(x => x.filterKey === 'currentCompany').filterValue;
+                        if (filtersValue === undefined || filtersValue === null) {
+                            sessionObject.companyCode = '0';
+                        } else {
+                            sessionObject.companyCode = filtersValue;
+                        }
+                    } catch (e) {
+                        sessionObject.companyCode = '0';
+                    }
+                    try {
+                        let filtersValue = storageItem.find(x => x.filterKey === 'currentPeriod').filterValue;
+                        if (filtersValue === undefined || filtersValue === null) {
+                            sessionObject.periodCode = 'CURMONTH';
+                        } else {
+                            sessionObject.periodCode = filtersValue;
+                        }
+                    } catch (e) {
+                        sessionObject.periodCode = 'CURMONTH';
+                    }
+                }
+            };
             //------------------------------------------------------------------------
-            const getFinancialData = (transactorId, dateRange,selCompany,selCurrency,selectionCallback) => {
+            const getFinancialData = (transactorId, dateRange, selCompany, selCurrency, selectionCallback) => {
                 var timeout;
                 var pageIndex = 1;
                 var uri = '/api/FinancialData/GetTransactorFinancialSummaryData?';
@@ -378,49 +418,56 @@
                     }
                 });
             };
-            
-            
-            
-            let sessionObj={
-                'currencyCode' : '',
-                'companyCode' :''
+
+
+            let sessionObj = {
+                'currencyCode': '',
+                'periodCode': '',
+                'companyCode': ''
             };
-           
+
             loadCurrencySelector(currencyListJs);
             loadCompanySelector(companyListJs);
+            loadPeriodSelector(datePeriodListJs);
             loadPreviousSession(sessionKey, sessionObj);
             console.log(sessionObj);
-            setCurrency(getCurrencyId(sessionObj.currencyCode,currencyListJs),sessionObj.currencyCode);
-            setCompany(sessionObj.companyCode,getCompanyName(sessionObj.companyCode,companyListJs));
+            setCurrency(getCurrencyId(sessionObj.currencyCode, currencyListJs), sessionObj.currencyCode);
+            setCompany(sessionObj.companyCode, getCompanyName(sessionObj.companyCode, companyListJs));
             refreshView();
-        }())
-   $(window).on('beforeunload',
-      function(e) {
-            // for (const property in sessionObj) {
-            //  console.log(`${property}: ${object[property]}`);
-            // }
-                  //#region CommentOut
-                  //#region Variables
-                  const sessionKey='TransactorDetailsPage';
-                  const $selectedCurrency=$('.selected-currency-text');
-                  const $selectedCompany=$('.selected-company-text');
-                  var currentCurrency = $selectedCurrency.data('currencycode');
-                  var currentCompany = $selectedCompany.data('companyid');
-                  var filtersArr = [];
-                  //#endregion
-                  filtersArr.push({
-                      filterKey: 'currentCurrency',
-                      filterValue: currentCurrency
-                  });
-                   filtersArr.push({
-                        filterKey: 'currentCompany',
-                        filterValue: currentCompany
-                    });
-                  let sessionVal = JSON.stringify(filtersArr);
-  
-                  localStorage.setItem(sessionKey, sessionVal);
-                  //#endregion
-  
-              });
+        }());
+        $(window).on('beforeunload',
+            function (e) {
+                // for (const property in sessionObj) {
+                //  console.log(`${property}: ${object[property]}`);
+                // }
+                //#region CommentOut
+                //#region Variables
+                const sessionKey = 'TransactorDetailsPage';
+                const $selectedCurrency = $('.selected-currency-text');
+                const $selectedCompany = $('.selected-company-text');
+                const $selectedPeriod = $('.selected-period-text');
+                let currentCurrency = $selectedCurrency.data('currencycode');
+                let currentCompany = $selectedCompany.data('companyid');
+                let currentPeriod = $selectedPeriod.data('periodid');
+                var filtersArr = [];
+                //#endregion
+                filtersArr.push({
+                    filterKey: 'currentCurrency',
+                    filterValue: currentCurrency
+                });
+                filtersArr.push({
+                    filterKey: 'currentCompany',
+                    filterValue: currentCompany
+                });
+                filtersArr.push({
+                    filterKey: 'currentPeriod',
+                    filterValue: currentPeriod
+                });
+                let sessionVal = JSON.stringify(filtersArr);
+
+                localStorage.setItem(sessionKey, sessionVal);
+                //#endregion
+
+            });
     </script>
 }
