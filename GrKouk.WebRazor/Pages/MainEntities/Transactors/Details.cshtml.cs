@@ -49,7 +49,9 @@ namespace GrKouk.WebRazor.Pages.MainEntities.Transactors
             Item=_mapper.Map<TransactorDetailDto>(transactor);
             var compList = transactor.TransactorCompanyMappings.Select(x => x.Company.Code).ToList();
             Item.Companies = String.Join(",", compList);
-            ViewData["ItemTitle"] = Item.TransactorTypeName + " " + Item.Name;
+            var transactorTitle = $"{Item.TransactorTypeName} {Item.Name}";
+            ViewData["ItemTitle"] = transactorTitle;
+            ViewData["Title"] = $"{transactorTitle}-Details";
             return Page();
         }
 
