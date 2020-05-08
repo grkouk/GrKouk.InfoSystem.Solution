@@ -123,9 +123,9 @@
                     <e-grid-column field="docSeriesCode" headerText="DocSeriesCode"  width="60"></e-grid-column> 
                     <e-grid-column field="refCode" headerText="RefCode" width="60" textAlign="Right" ></e-grid-column>      
                     <e-grid-column field="companyCode" headerText="CompanyCode" width="60"></e-grid-column>
-                    <e-grid-column field="debit" headerText="Debit" width="50" textAlign="Right" format="C2"></e-grid-column>
-                    <e-grid-column field="credit" headerText="Credit" width="50" textAlign="Right" format="C2" ></e-grid-column>
-                    <e-grid-column field="runningTotal" headerText="RunningTotal" width="50" textAlign="Right" format="C2"></e-grid-column>
+                    <e-grid-column field="debit" headerText="Debit" width="50" type="number" textAlign="Right" format="C2"></e-grid-column>
+                    <e-grid-column field="credit" headerText="Credit" width="50" type="number" textAlign="Right" format="C2" ></e-grid-column>
+                    <e-grid-column field="runningTotal" headerText="RunningTotal" type="number" width="50" textAlign="Right" format="C2"></e-grid-column>
                 </e-grid-columns>
             </ejs-grid>
            
@@ -232,6 +232,8 @@
                 $selectedCurrency.data('currencycode', currencyCode);
                 $selectedCurrency.text(currencyCode);
                 try {
+                     ej.base.setCulture(currentCulture);
+                     ej.base.setCurrencyCode(currencyCode);
                     formatterCurrency = new Intl.NumberFormat(currentCulture,
                         {
                             style: 'currency',
