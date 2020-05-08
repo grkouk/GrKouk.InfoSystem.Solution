@@ -111,6 +111,7 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.4" PrivateAssets="All" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
     <PackageReference Include="NToastNotify" Version="5.0.8" />
+    <PackageReference Include="Syncfusion.EJ2.AspNet.Core" Version="18.1.0.48" />
     </ItemGroup>
 
   <ItemGroup>
