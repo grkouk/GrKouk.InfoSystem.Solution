@@ -3,125 +3,120 @@
 
 @{
     Layout = "_LayoutDashboard";
-    ViewData["Title"] = "Transactor Details";
+    // ViewData["Title"] = "Transactor Details";
 }
 
 
 <div class="container-fluid">
     <div class="row">
-        <nav class="col-md-2 d-none d-md-block bg-light sidebar">
-            <div class="sidebar-sticky">
-                <ul class="nav flex-column">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="#">
-                            <span data-feather="home"></span>
-                            Dashboard <span class="sr-only">(current)</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <span data-feather="file"></span>
-                            Orders
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <span data-feather="shopping-cart"></span>
-                            Products
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <span data-feather="users"></span>
-                            Customers
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <span data-feather="bar-chart-2"></span>
-                            Reports
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <span data-feather="layers"></span>
-                            Integrations
-                        </a>
-                    </li>
-                </ul>
-
-                <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-                    <span>Saved reports</span>
-                    <a class="d-flex align-items-center text-muted" href="#">
-                        <span data-feather="plus-circle"></span>
-                    </a>
-                </h6>
-                <ul class="nav flex-column mb-2">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <span data-feather="file-text"></span>
-                            Current month
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <span data-feather="file-text"></span>
-                            Last quarter
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <span data-feather="file-text"></span>
-                            Social engagement
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <span data-feather="file-text"></span>
-                            Year-end sale
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-
-        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+        <main role="main" class="col-md-12 ml-sm-auto col-lg-12 px-4">
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                <h1 class="h2">Dashboard</h1>
+                @* <h3 class="h3">@Model.Item.TransactorTypeName @Model.Item.Name Details</h3> *@
+                <h3></h3>
+                <div class="btn-toolbar mb-2 mb-md-0">
+                    <div class="btn-group mr-2">
+                        <button type="button" class="btn  btn-sm btn-outline-secondary selected-company-text">Reference</button>
+                        <button type="button" class="btn  btn-sm btn-outline-secondary dropdown-toggle dropdown-toggle-split" id="companyMenuReference" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-reference="parent">
+                            <span class="sr-only">Toggle Dropdown</span>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="companyMenuReference" name="CompanySelector">
+                            <button class="dropdown-item company-item" type="button">Action</button>
+                            <button class="dropdown-item company-item" type="button">Another Action</button>
+
+                            <button class="dropdown-item company-item" type="button">Another Action</button>
+                        </div>
+                    </div>
+                    <div class="btn-group">
+                        <button type="button" class="btn  btn-sm btn-outline-secondary selected-currency-text">Reference</button>
+                        <button type="button" class="btn  btn-sm btn-outline-secondary dropdown-toggle dropdown-toggle-split" id="currencyMenuReference" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-reference="parent">
+                            <span class="sr-only">Toggle Dropdown</span>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="currencyMenuReference" name="CurrencySelector">
+                            <button class="dropdown-item currency-item" type="button">Action</button>
+                            <button class="dropdown-item currency-item" type="button">Another Action</button>
+
+                            <button class="dropdown-item currency-item" type="button">Another Action</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="card bg-light">
+                    <div class="card-body">
+                        <h5 class="card-title">@Model.Item.Code</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">@Model.Item.Companies</h6>
+                        <p class="card-text"></p>
+                        <a href="#" class="card-link">Card link</a>
+                        <a href="#" class="card-link">Another link</a>
+                    </div>
+                </div>
+            </div>
+
+            <hr />
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-2 pb-2 mb-3 border-bottom">
+                <div class="d-flex align-items-center">
+                    <h4 class="mr-2">Financial Summary</h4>
+                    <div class="spinner-border ml-auto text-primary" role="status" aria-hidden="true" id="FinancialLoader" style="display: none"></div>
+                </div>
+
+            </div>
+            <div class="container">
+                <div class="row align-items-center justify-content-between">
+                    <div class="col-lg-4 col-sm-12">
+                        <div class="card">
+                            <div class="card-header text-dark text-center">
+                                <h4>Debit</h4>
+                            </div>
+                            <div class="card-body text-center">
+                                <h5 id="Debit">5000,00</h5>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-sm-12">
+                        <div class="card">
+                            <div class="card-header text-dark text-center">
+                                <h4>Credit</h4>
+                            </div>
+                            <div class="card-body text-center">
+                                <h5 id="Credit">5000,00</h5>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-sm-12">
+                        <div class="card">
+                            <div class="card-header text-center">
+                                <h4>Balance</h4>
+                            </div>
+                            <div class="card-body text-center">
+                                <h5 id="Balance">5000,00</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h4>Transactions</h4>
                 <div class="btn-toolbar mb-2 mb-md-0">
                     <div class="btn-group mr-2">
                         <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
                         <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
                     </div>
-                    <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
-                        <span data-feather="calendar"></span>
-                        This week
-                    </button>
-                </div>
-            </div>
-            <div class="row align-items-center justify-content-between">
-                <div class="card col-5">
-                    <div class="card-body">
-                        <h5 class="card-title">Card title 1</h5>
-                        <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
-                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                        <a href="#" class="card-link">Card link</a>
-                        <a href="#" class="card-link">Another link</a>
-                    </div>
-                </div>
-                <div class="card col-5">
-                    <div class="card-body">
-                        <h5 class="card-title">Card title 2</h5>
-                        <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
-                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                        <a href="#" class="card-link">Card link</a>
-                        <a href="#" class="card-link">Another link</a>
-                    </div>
-                </div>
-            </div>
-            @* <canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas> *@
+                    <div class="btn-group">
+                        <button type="button" class="btn  btn-sm btn-outline-secondary selected-period-text">Reference</button>
+                        <button type="button" class="btn  btn-sm btn-outline-secondary dropdown-toggle dropdown-toggle-split" id="datePeriodMenuReference" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-reference="parent">
+                            <span class="sr-only">Toggle Dropdown</span>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="datePeriodMenuReference" name="PeriodSelector">
+                            <button class="dropdown-item period-item" type="button">Action</button>
+                            <button class="dropdown-item period-item" type="button">Another Action</button>
 
-            <h2>Section title</h2>
+                            <button class="dropdown-item period-item" type="button">Another Action</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
             <div class="table-responsive">
                 <table class="table table-striped table-sm">
                     <thead>
@@ -150,18 +145,388 @@
                     </tbody>
                 </table>
             </div>
+            <div class="row">
+                <div class="col-3">
+                    <label class="small" name="PagingInfo"> </label>
+                </div>
+                <div class="col-9">
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination pagination-sm justify-content-end">
+                            <li class="page-item ">
+                                <a href="#" id="GoToFirst"
+                                   class="page-link" aria-label="First">
+                                    First
+                                </a>
+                            </li>
+                            <li class="page-item ">
+                                <a href="#" id="GoToPrevious"
+                                   class="page-link" aria-label="Previous">
+                                    Previous
+                                </a>
+                            </li>
+            
+                            <li class="page-item ">
+                                <a href="#" id="GoToNext"
+                                   class="page-link" aria-label="Next">
+                                    Next
+                                </a>
+                            </li>
+                            <li class="page-item  ">
+                                <a href="#" id="GoToLast"
+                                   class="page-link" aria-label="Last">
+                                    Last
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+            <hr />
+            <footer>
+                <p>&copy; 2018 - George Koukoudis</p>
+            </footer>
+
         </main>
     </div>
 </div>
 
+
 @section Scripts
 {
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.9.0/feather.min.js"></script>
+    @* <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.9.0/feather.min.js"></script> *@
     <script>
-        (function () {
+        (function() {
+            //feather.replace();
+            const sessionKey = 'TransactorDetailsPage';
+            let currentCulture = '@System.Globalization.CultureInfo.CurrentCulture';
 
-            feather.replace();
+            let formatterCurrency = new Intl.NumberFormat(currentCulture,
+                {
+                    style: 'currency',
+                    currency: 'EUR',
+                    minimumFractionDigits: 2
+                });
+            let formatterNumber = new Intl.NumberFormat(currentCulture,
+                {
+                    maximumFractionDigits: 3
 
-        }())
+                });
+            const currencyListJs = @Html.Raw(Json.Serialize(ViewBag.CurrencyListJs));
+            const companyListJs = @Html.Raw(Json.Serialize(ViewBag.CompanyListJs));
+            const datePeriodListJs = @Html.Raw(Json.Serialize(ViewBag.DatePeriodListJs));
+            const transactorId = @Model.Item.Id;
+            const refreshView = () => {
+                const $selectedCompany = $('.selected-company-text');
+                let selCompanyId = $selectedCompany.data('companyid');
+                const $selectedCurrency = $('.selected-currency-text');
+                let selCurrencyId = $selectedCurrency.data('currencyid');
+                const $selectedPeriod = $('.selected-period-text');
+                let selPeriodId = $selectedPeriod.data('periodid');
+
+                getFinancialData(transactorId, selPeriodId, selCompanyId, selCurrencyId);
+
+            };
+            //---------------------Periods----------------------------------
+            const loadPeriodSelector = (availablePeriods) => {
+                let $periodMenu = $('[name=PeriodSelector]');
+
+                $('.period-item').remove();
+                if (availablePeriods === undefined || availablePeriods === null) {
+                    return;
+                }
+                var d = availablePeriods;
+                d.forEach(function(item) {
+                    var $aLink = $('<button>').addClass('dropdown-item small period-item');
+                    $aLink.text(item.text);
+                    $aLink.attr('type', 'button');
+                    $aLink.data('periodid', item.value);
+                    $aLink.data('periodcode', item.text);
+                    $periodMenu.append($aLink);
+                });
+                $('.period-item').on('click',
+                    function(event) {
+                        let button = $(event.delegateTarget);
+                        let itemId = button.data('periodid');
+                        let itemCode = button.data('periodcode');
+                        console.log(`Period Id=${itemId} Period Code=${itemCode}`);
+                        setPeriod(itemId, itemCode);
+
+                        refreshView();
+                    });
+            };
+            const setPeriod = (itemId, itemCode) => {
+                const $selectedItem = $('.selected-period-text');
+                $selectedItem.data('periodid', itemId);
+                $selectedItem.data('periodcode', itemCode);
+                $selectedItem.text(itemCode);
+
+            };
+            const getPeriodName = (itemId, itemList) => {
+                if (!(typeof itemList != "undefined" && itemList != null && itemList.length != null && itemList.length > 0)) {
+                    return 'Current Month';
+                }
+
+                try {
+
+                    return itemList.find(x => x.value === itemId).text;
+                } catch (e) {
+                    return 'Current Month';
+                }
+
+
+            };
+            //-------------------Currency--------------------------------------------------
+            const setCurrency = (currencyId, currencyCode) => {
+                const $selectedCurrency = $('.selected-currency-text');
+                $selectedCurrency.data('currencyid', currencyId);
+                $selectedCurrency.data('currencycode', currencyCode);
+                $selectedCurrency.text(currencyCode);
+                try {
+                    formatterCurrency = new Intl.NumberFormat(currentCulture,
+                        {
+                            style: 'currency',
+                            currency: currencyCode,
+                            minimumFractionDigits: 2
+                        });
+
+                } catch (e) {
+                    console.log('Problem setting currency formatter');
+                }
+
+            };
+            const loadCurrencySelector = (availableCurrencies) => {
+                let $currenciesMenu = $('[name=CurrencySelector]');
+
+                $('.currency-item').remove();
+                if (availableCurrencies === undefined || availableCurrencies === null) {
+                    return;
+                }
+                var d = availableCurrencies;
+                d.forEach(function(item) {
+                    var $aLink = $('<button>').addClass('dropdown-item small currency-item');
+                    $aLink.text(item.name);
+                    // var diaryHRef = '/MainEntities/Transactors/RunDiary';
+                    // diaryHRef += `?diaryId=${item.value}`;
+                    $aLink.attr('type', 'button');
+                    $aLink.data('currencyid', item.id);
+                    $aLink.data('currencycode', item.code);
+                    $currenciesMenu.append($aLink);
+                });
+                $('.currency-item').on('click',
+                    function(event) {
+                        let button = $(event.delegateTarget);
+                        let currencyId = button.data('currencyid');
+                        let currencyCode = button.data('currencycode');
+                        console.log(`Currency Id=${currencyId} currency Code=${currencyCode}`);
+                        setCurrency(currencyId, currencyCode);
+
+                        refreshView();
+                        //let $btParent = button.parent()
+                    });
+            };
+            const getCurrencyId = (currencyCode, currencyList) => {
+                if (!(typeof currencyList != "undefined" && currencyList != null && currencyList.length != null && currencyList.length > 0)) {
+                    return 0;
+                }
+
+                let ret = currencyList.find(x => x.code === currencyCode).id;
+                const parsed = parseInt(ret);
+                if (isNaN(parsed)) {
+                    return currencyList[0].id;
+                } else {
+                    return parsed;
+                }
+            };
+            //------------------Company------------------------------------------------
+            const loadCompanySelector = (availableCompanies) => {
+                let $companiesMenu = $('[name=CompanySelector]');
+
+                $('.company-item').remove();
+                if (availableCompanies === undefined || availableCompanies === null) {
+                    return;
+                }
+                var d = availableCompanies;
+                d.forEach(function(item) {
+                    var $aLink = $('<button>').addClass('dropdown-item small company-item');
+                    $aLink.text(item.text);
+                    $aLink.attr('type', 'button');
+                    $aLink.data('companyid', item.value);
+                    $aLink.data('companycode', item.text);
+                    $companiesMenu.append($aLink);
+                });
+                $('.company-item').on('click',
+                    function(event) {
+                        let button = $(event.delegateTarget);
+                        let companyId = button.data('companyid');
+                        let companyCode = button.data('companycode');
+                        console.log(`Company Id=${companyId} Company Code=${companyCode}`);
+                        setCompany(companyId, companyCode);
+                        refreshView();
+                        //let $btParent = button.parent()
+                    });
+            };
+            const setCompany = (companyId, companyCode) => {
+                const $selectedCompany = $('.selected-company-text');
+                $selectedCompany.data('companyid', companyId);
+                $selectedCompany.data('companycode', companyCode);
+                $selectedCompany.text(companyCode);
+
+            };
+            const getCompanyName = (companyId, companyList) => {
+                if (!(typeof companyList != "undefined" && companyList != null && companyList.length != null && companyList.length > 0)) {
+                    return '{AllComp}';
+                }
+
+                try {
+
+                    return companyList.find(x => x.value === companyId).text;
+                } catch (e) {
+                    return '{AllComp}';
+                }
+
+
+            };
+            //--------------------------------------------------------------------------
+            const loadPreviousSession = (sessionKey, sessionObject) => {
+                let storageItemJs = localStorage.getItem(sessionKey);
+                if (storageItemJs === undefined || storageItemJs === null) {
+                    sessionObject.currencyCode = 'EUR';
+                    sessionObject.companyCode = '0';
+                    sessionObject.periodCode = "CURMONTH";
+
+                } else {
+                    var storageItem = JSON.parse(storageItemJs);
+                    try {
+                        let filtersValue = storageItem.find(x => x.filterKey === 'currentCurrency').filterValue;
+                        if (filtersValue === undefined || filtersValue === null) {
+                            sessionObject.currencyCode = 'EUR';
+                        } else {
+                            sessionObject.currencyCode = filtersValue;
+                        }
+                    } catch (e) {
+                        sessionObject.currencyCode = 'EUR';
+                    }
+                    try {
+                        let filtersValue = storageItem.find(x => x.filterKey === 'currentCompany').filterValue;
+                        if (filtersValue === undefined || filtersValue === null) {
+                            sessionObject.companyCode = '0';
+                        } else {
+                            sessionObject.companyCode = filtersValue;
+                        }
+                    } catch (e) {
+                        sessionObject.companyCode = '0';
+                    }
+                    try {
+                        let filtersValue = storageItem.find(x => x.filterKey === 'currentPeriod').filterValue;
+                        if (filtersValue === undefined || filtersValue === null) {
+                            sessionObject.periodCode = 'CURMONTH';
+                        } else {
+                            sessionObject.periodCode = filtersValue;
+                        }
+                    } catch (e) {
+                        sessionObject.periodCode = 'CURMONTH';
+                    }
+                }
+            };
+            //------------------------------------------------------------------------
+            const getFinancialData = (transactorId, dateRange, selCompany, selCurrency, selectionCallback) => {
+                var timeout;
+                var pageIndex = 1;
+                var uri = '/api/FinancialData/GetTransactorFinancialSummaryData?';
+                uri += `&transactorId=${transactorId}`;
+                uri += `&companyFilter=${selCompany}`;
+                uri += `&dateRange=${dateRange}`;
+                uri += `&displayCurrencyId=${selCurrency}`;
+                $.ajax({
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    type: 'GET',
+                    url: uri,
+                    beforeSend: function() {
+                        if (timeout) {
+                            clearTimeout(timeout);
+                        }
+                        timeout = setTimeout(function() {
+                                $('#FinancialLoader').show();
+
+                            },
+                            1000);
+                    },
+                    success: function(result) {
+                        console.log('Result for transaction financial data');
+                        console.log(result);
+                        $('#Debit').text(formatterCurrency.format(result.sumOfDebit));
+                        $('#Credit').text(formatterCurrency.format(result.sumOfCredit));
+                        $('#Balance').text(formatterCurrency.format(result.sumOfDifference));
+                    },
+                    complete: function() {
+                        if (timeout) {
+                            clearTimeout(timeout);
+                        }
+                        setTimeout(function() {
+                                var isOpen = $('#FinancialLoader').is(':visible');
+                                if (isOpen) {
+                                    $('#FinancialLoader').hide();
+                                } else {
+                                    console.log('No open modal');
+                                }
+                            },
+                            2000);
+                    },
+                    error: function(e) {
+                        console.log(e);
+
+                    }
+                });
+            };
+
+
+            let sessionObj = {
+                'currencyCode': '',
+                'periodCode': '',
+                'companyCode': ''
+            };
+
+            loadCurrencySelector(currencyListJs);
+            loadCompanySelector(companyListJs);
+            loadPeriodSelector(datePeriodListJs);
+            loadPreviousSession(sessionKey, sessionObj);
+            console.log(sessionObj);
+            setCurrency(getCurrencyId(sessionObj.currencyCode, currencyListJs), sessionObj.currencyCode);
+            setCompany(sessionObj.companyCode, getCompanyName(sessionObj.companyCode, companyListJs));
+            setPeriod(sessionObj.periodCode, getPeriodName(sessionObj.periodCode, datePeriodListJs));
+            refreshView();
+        }());
+        $(window).on('beforeunload',
+            function (e) {
+                //#region CommentOut
+                //#region Variables
+                const sessionKey = 'TransactorDetailsPage';
+                const $selectedCurrency = $('.selected-currency-text');
+                const $selectedCompany = $('.selected-company-text');
+                const $selectedPeriod = $('.selected-period-text');
+                let currentCurrency = $selectedCurrency.data('currencycode');
+                let currentCompany = $selectedCompany.data('companyid');
+                let currentPeriod = $selectedPeriod.data('periodid');
+                var filtersArr = [];
+                //#endregion
+                filtersArr.push({
+                    filterKey: 'currentCurrency',
+                    filterValue: currentCurrency
+                });
+                filtersArr.push({
+                    filterKey: 'currentCompany',
+                    filterValue: currentCompany
+                });
+                filtersArr.push({
+                    filterKey: 'currentPeriod',
+                    filterValue: currentPeriod
+                });
+                let sessionVal = JSON.stringify(filtersArr);
+
+                localStorage.setItem(sessionKey, sessionVal);
+                //#endregion
+
+            });
     </script>
 }

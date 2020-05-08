@@ -193,7 +193,8 @@ namespace GrKouk.WebRazor.Automapper
                     opt => opt.MapFrom(src => src.SecondaryUnitId))
                 .ForMember(d => d.Price,
                     opt => opt.MapFrom(src => src.UnitPrice));
-
+            CreateMap<Transactor, TransactorDetailDto>()
+                .ForMember(x => x.Companies, opt => opt.Ignore());
 
 
         }
