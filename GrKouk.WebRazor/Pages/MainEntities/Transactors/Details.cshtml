@@ -250,6 +250,7 @@
                     if (cCulture.length>2){
                         cBaseCulture=cCulture.substr(0,2);
                     }
+                    loadCultureFiles(cBaseCulture);
                     ej.base.setCulture(cBaseCulture);
                     ej.base.setCurrencyCode(currencyCode);
                     formatterCurrency = new Intl.NumberFormat(cCulture,
@@ -539,8 +540,8 @@
                 'periodCode': '',
                 'companyCode': ''
             };
-            let cCulture = 'bg';
-            loadCultureFiles(cCulture);
+            //let cCulture = 'bg';
+            
             loadCurrencySelector(currencyListJs);
             loadCompanySelector(companyListJs);
             loadPeriodSelector(datePeriodListJs);
