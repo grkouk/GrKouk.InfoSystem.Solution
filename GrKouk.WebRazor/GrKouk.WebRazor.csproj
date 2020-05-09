@@ -122,6 +122,7 @@
 
   <ItemGroup>
     <Folder Include="Areas\Identity\Services\" />
+    <Folder Include="wwwroot\lib\ej2translations" />
     <Folder Include="wwwroot\lib\multiselectListbox\" />
     <Folder Include="wwwroot\lib\iziModal\" />
     <Folder Include="wwwroot\productImages\" />

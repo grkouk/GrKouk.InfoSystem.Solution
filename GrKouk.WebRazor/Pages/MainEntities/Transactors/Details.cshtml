@@ -236,6 +236,17 @@
 
             };
             //-------------------Currency--------------------------------------------------
+            const loadEj2Translation=(name)=>{
+                let path = `/lib/ej2translations/${name}.json`;
+                let ajax = new ej.base.Ajax(path, 'GET', false);   //load the name json culture file 
+                ajax.send().then((e) => { 
+                    var culture = JSON.parse(e); 
+                    ej.base.L10n.load( 
+                        culture                                  
+                    ); 
+                                  
+                }); 
+            };
             const setCurrency = (currencyId, currencyCode,currencyLocale) => {
                 const $selectedCurrency = $('.selected-currency-text');
                 $selectedCurrency.data('currencyid', currencyId);
@@ -251,6 +262,7 @@
                         cBaseCulture=cCulture.substr(0,2);
                     }
                     loadCultureFiles(cBaseCulture);
+                    loadEj2Translation(cBaseCulture);
                     ej.base.setCulture(cBaseCulture);
                     ej.base.setCurrencyCode(currencyCode);
                     formatterCurrency = new Intl.NumberFormat(cCulture,
