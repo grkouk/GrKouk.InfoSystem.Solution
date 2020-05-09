@@ -52,7 +52,7 @@
                 </div>
             </div>
 
-            <hr />
+            <hr/>
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-2 pb-2 mb-3 border-bottom">
                 <div class="d-flex align-items-center">
                     <h4 class="mr-2">Financial Summary</h4>
@@ -116,21 +116,31 @@
 
                 </div>
             </div>
-            <ejs-grid id="Grid"  allowPaging="true" allowResizing="true" >
-              <e-grid-pagesettings pageSizes="true"></e-grid-pagesettings>
+            <ejs-grid id="Grid" allowPaging="true" allowResizing="true" enablePersistence="true">
+                <e-grid-aggregates>
+                    <e-grid-aggregate>
+                        <e-aggregate-columns>
+                            <e-aggregate-column field="debit" type="Sum" format="C2"></e-aggregate-column>
+                            <e-aggregate-column field="credit" type="Sum" format="C2"></e-aggregate-column>
+                           
+                        </e-aggregate-columns>
+                        
+                   </e-grid-aggregate>
+                </e-grid-aggregates>
+                <e-grid-pagesettings pageSizes="true"></e-grid-pagesettings>
                 <e-grid-columns>
-                    <e-grid-column field="transDate" headerText="TransDate" textAlign="Right" width="50" type="date" format="dd/MM/yyyy" ></e-grid-column>
-                    <e-grid-column field="docSeriesCode" headerText="DocSeriesCode"  width="60"></e-grid-column> 
-                    <e-grid-column field="refCode" headerText="RefCode" width="60" textAlign="Right" ></e-grid-column>      
+                    <e-grid-column field="transDate" headerText="TransDate" textAlign="Right" width="50" type="date" format="dd/MM/yyyy"></e-grid-column>
+                    <e-grid-column field="docSeriesCode" headerText="DocSeriesCode" width="60"></e-grid-column>
+                    <e-grid-column field="refCode" headerText="RefCode" width="60" textAlign="Right"></e-grid-column>
                     <e-grid-column field="companyCode" headerText="CompanyCode" width="60"></e-grid-column>
                     <e-grid-column field="debit" headerText="Debit" width="50" type="number" textAlign="Right" format="C2"></e-grid-column>
-                    <e-grid-column field="credit" headerText="Credit" width="50" type="number" textAlign="Right" format="C2" ></e-grid-column>
+                    <e-grid-column field="credit" headerText="Credit" width="50" type="number" textAlign="Right" format="C2"></e-grid-column>
                     <e-grid-column field="runningTotal" headerText="RunningTotal" type="number" width="50" textAlign="Right" format="C2"></e-grid-column>
                 </e-grid-columns>
             </ejs-grid>
-           
-          
-            <hr />
+
+
+            <hr/>
             <footer>
                 <p>&copy; 2018 - George Koukoudis</p>
             </footer>
@@ -501,29 +511,29 @@
                 });
             };
             const loadCultureFiles=(name) =>{
-                    let files = ['ca-gregorian.json', 'numbers.json', 'timeZoneNames.json', 'currencies.json'];
-                    if (name === 'ar') {
-                        files.push('numberingSystems.json');
+                let files = ['ca-gregorian.json', 'numbers.json', 'timeZoneNames.json', 'currencies.json'];
+                if (name === 'ar') {
+                    files.push('numberingSystems.json');
+                }
+                let loader = ej.base.loadCldr;
+                let loadCulture = function (prop) {
+                    let val
+                    let ajax;
+                    if (name === 'ar' && prop === files.length - 1) {
+                        ajax = new ej.base.Ajax(location.origin + location.pathname + '/../../../lib/cldr-data/supplemental/' + files[prop], 'GET', false);
+                    } else {
+                        ajax = new ej.base.Ajax(location.origin + location.pathname + '/../../../lib/cldr-data/main/' + name + '/' + files[prop], 'GET', false);
                     }
-                    let loader = ej.base.loadCldr;
-                    let loadCulture = function (prop) {
-                        let val
-                        let ajax;
-                        if (name === 'ar' && prop === files.length - 1) {
-                            ajax = new ej.base.Ajax(location.origin + location.pathname + '/../../../lib/cldr-data/supplemental/' + files[prop], 'GET', false);
-                        } else {
-                            ajax = new ej.base.Ajax(location.origin + location.pathname + '/../../../lib/cldr-data/main/' + name + '/' + files[prop], 'GET', false);
-                        }
-                        ajax.onSuccess = function (value) {
-                            val = value;
-                        };
-                        ajax.send();
-                        loader(JSON.parse(val));
+                    ajax.onSuccess = function (value) {
+                        val = value;
                     };
-                    for (var prop = 0; prop < files.length; prop++) {
-                        loadCulture(prop);
-                    }
+                    ajax.send();
+                    loader(JSON.parse(val));
                 };
+                for (var prop = 0; prop < files.length; prop++) {
+                    loadCulture(prop);
+                }
+            };
             let sessionObj = {
                 'currencyCode': '',
                 'periodCode': '',
