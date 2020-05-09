@@ -510,7 +510,7 @@
                         let val
                         let ajax;
                         if (name === 'ar' && prop === files.length - 1) {
-                            ajax = new ej.base.Ajax(location.origin + location.pathname + '/../../lib/cldr-data/supplemental/' + files[prop], 'GET', false);
+                            ajax = new ej.base.Ajax(location.origin + location.pathname + '/../../../lib/cldr-data/supplemental/' + files[prop], 'GET', false);
                         } else {
                             ajax = new ej.base.Ajax(location.origin + location.pathname + '/../../../lib/cldr-data/main/' + name + '/' + files[prop], 'GET', false);
                         }
