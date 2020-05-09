@@ -226,15 +226,23 @@
 
             };
             //-------------------Currency--------------------------------------------------
-            const setCurrency = (currencyId, currencyCode) => {
+            const setCurrency = (currencyId, currencyCode,currencyLocale) => {
                 const $selectedCurrency = $('.selected-currency-text');
                 $selectedCurrency.data('currencyid', currencyId);
                 $selectedCurrency.data('currencycode', currencyCode);
+                $selectedCurrency.data('currencylocale', currencyLocale);
                 $selectedCurrency.text(currencyCode);
                 try {
-                     ej.base.setCulture(currentCulture);
-                     ej.base.setCurrencyCode(currencyCode);
-                    formatterCurrency = new Intl.NumberFormat(currentCulture,
+                    console.log(currencyCode);
+                    console.log(currentCulture);
+                    let cCulture = currencyLocale;
+                    let cBaseCulture=cCulture;
+                    if (cCulture.length>2){
+                        cBaseCulture=cCulture.substr(0,2);
+                    }
+                    ej.base.setCulture(cBaseCulture);
+                    ej.base.setCurrencyCode(currencyCode);
+                    formatterCurrency = new Intl.NumberFormat(cCulture,
                         {
                             style: 'currency',
                             currency: currencyCode,
@@ -262,6 +270,7 @@
                     $aLink.attr('type', 'button');
                     $aLink.data('currencyid', item.id);
                     $aLink.data('currencycode', item.code);
+                    $aLink.data('currencylocale', item.displayLocale);
                     $currenciesMenu.append($aLink);
                 });
                 $('.currency-item').on('click',
@@ -269,8 +278,9 @@
                         let button = $(event.delegateTarget);
                         let currencyId = button.data('currencyid');
                         let currencyCode = button.data('currencycode');
+                        let currencyLocale = button.data('currencylocale');
                         console.log(`Currency Id=${currencyId} currency Code=${currencyCode}`);
-                        setCurrency(currencyId, currencyCode);
+                        setCurrency(currencyId, currencyCode,currencyLocale);
 
                         refreshView();
                         //let $btParent = button.parent()
@@ -287,6 +297,19 @@
                     return currencyList[0].id;
                 } else {
                     return parsed;
+                }
+             };
+             const getCurrency = (currencyCode, currencyList) => {
+                if (!(typeof currencyList != "undefined" && currencyList != null && currencyList.length != null && currencyList.length > 0)) {
+                    return null;
+                }
+
+                let ret = currencyList.find(x => x.code === currencyCode);
+                
+                if (ret) {
+                    return ret;
+                } else {
+                    return currencyList[0];
                 }
             };
             //------------------Company------------------------------------------------
@@ -477,19 +500,44 @@
                     }
                 });
             };
-
+            const loadCultureFiles=(name) =>{
+                    let files = ['ca-gregorian.json', 'numbers.json', 'timeZoneNames.json', 'currencies.json'];
+                    if (name === 'ar') {
+                        files.push('numberingSystems.json');
+                    }
+                    let loader = ej.base.loadCldr;
+                    let loadCulture = function (prop) {
+                        let val
+                        let ajax;
+                        if (name === 'ar' && prop === files.length - 1) {
+                            ajax = new ej.base.Ajax(location.origin + location.pathname + '/../../lib/cldr-data/supplemental/' + files[prop], 'GET', false);
+                        } else {
+                            ajax = new ej.base.Ajax(location.origin + location.pathname + '/../../../lib/cldr-data/main/' + name + '/' + files[prop], 'GET', false);
+                        }
+                        ajax.onSuccess = function (value) {
+                            val = value;
+                        };
+                        ajax.send();
+                        loader(JSON.parse(val));
+                    };
+                    for (var prop = 0; prop < files.length; prop++) {
+                        loadCulture(prop);
+                    }
+                };
             let sessionObj = {
                 'currencyCode': '',
                 'periodCode': '',
                 'companyCode': ''
             };
-
+            let cCulture = 'bg';
+            loadCultureFiles(cCulture);
             loadCurrencySelector(currencyListJs);
             loadCompanySelector(companyListJs);
             loadPeriodSelector(datePeriodListJs);
             loadPreviousSession(sessionKey, sessionObj);
             console.log(sessionObj);
-            setCurrency(getCurrencyId(sessionObj.currencyCode, currencyListJs), sessionObj.currencyCode);
+            let selCurrency = getCurrency(sessionObj.currencyCode,currencyListJs);
+            setCurrency(selCurrency.id,selCurrency.code,selCurrency.displayLocale);
             setCompany(sessionObj.companyCode, getCompanyName(sessionObj.companyCode, companyListJs));
             setPeriod(sessionObj.periodCode, getPeriodName(sessionObj.periodCode, datePeriodListJs));
             refreshView();
