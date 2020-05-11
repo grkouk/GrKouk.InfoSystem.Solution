@@ -265,6 +265,8 @@
                     loadEj2Translation(cBaseCulture);
                     ej.base.setCulture(cBaseCulture);
                     ej.base.setCurrencyCode(currencyCode);
+                    //var grid = document.getElementById("Grid").ej2_instances[0];
+                    //grid.locale = currencyLocale;
                     formatterCurrency = new Intl.NumberFormat(cCulture,
                         {
                             style: 'currency',
