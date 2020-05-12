@@ -116,7 +116,8 @@
 
                 </div>
             </div>
-            <ejs-grid id="Grid" allowPaging="true" allowResizing="true" enablePersistence="true">
+            <div id="transGrid"></div>
+            <ejs-grid id="Grid"  allowPaging="true" allowResizing="true" enablePersistence="true">
                 <e-grid-aggregates>
                     <e-grid-aggregate> 
                         <e-aggregate-columns>
@@ -153,6 +154,7 @@
 @section Scripts
 {
     @* <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.9.0/feather.min.js"></script> *@
+
     <script>
         (function() {
             //feather.replace();
@@ -185,6 +187,103 @@
                 getFinancialData(transactorId, selPeriodId, selCompanyId, selCurrencyId);
                 getTransactionsData(transactorId, selPeriodId, selCompanyId, selCurrencyId);
 
+            };
+            //---------------------Grid-------------------
+            const iam = function() {
+                //this.aggregates[0].columns[0].setPropertiesSilent({ customAggregate: customAggregateFn, type: ['Sum', 'Custom'] });
+                console.log('Grid Load function called');
+                console.log(this.aggregates[0].columns[0]);
+            };
+            let grd = document.getElementById("Grid").ej2_instances[0];
+            grd.addEventListener("actionBegin",
+                function(args) {
+                    console.log('actionBegin event called');
+                    console.log(args);
+                });
+            const secondGrid = (appendToElement,data) => {
+                var grd = new ejs.grids.Grid({
+                    "dataSource": data,
+                    "aggregates": [
+                        {
+                            "columns": [
+                                {
+                                    "field": "debit",
+                                    "footerTemplate": "Sum:${Sum}",
+                                    "format": "C2",
+                                    "type": "Sum"
+                                },
+                                {
+                                    "field": "credit",
+                                    "footerTemplate": "${Sum}",
+                                    "format": "C2",
+                                    "type": "Sum"
+                                }
+                            ]
+                        }
+                    ],
+                    "allowPaging": true,
+                    "allowResizing": true,
+                    "columns": [
+                        {
+                            "field": "transDate",
+                            "format": "dd/MM/yyyy",
+                            "headerText": "TransDate",
+                            "textAlign": "Right",
+                            "type": "date",
+                            "width": "50"
+                        },
+                        {
+                            "field": "docSeriesCode",
+                            "headerText": "DocSeriesCode",
+                            "width": "60"
+                        },
+                        {
+                            "field": "refCode",
+                            "headerText": "RefCode",
+                            "textAlign": "Right",
+                            "width": "60"
+                        },
+                        {
+                            "field": "companyCode",
+                            "headerText": "CompanyCode",
+                            "width": "60"
+                        },
+                        {
+                            "field": "debit",
+                            "format": "C2",
+                            "headerText": "Debit",
+                            "textAlign": "Right",
+                            "type": "number",
+                            "width": "50"
+                        },
+                        {
+                            "field": "credit",
+                            "format": "C2",
+                            "headerText": "Credit",
+                            "textAlign": "Right",
+                            "type": "number",
+                            "width": "50"
+                        },
+                        {
+                            "field": "runningTotal",
+                            "format": "C2",
+                            "headerText": "RunningTotal",
+                            "textAlign": "Right",
+                            "type": "number",
+                            "width": "50"
+                        }
+                    ],
+                    "enablePersistence": true,
+                    "frozenColumns": 0.0,
+                    "frozenRows": 0.0,
+                    "pageSettings": {
+                        "currentPage": 1.0,
+                        "pageCount": 8.0,
+                        "pageSize": 12.0,
+                        "pageSizes": true
+                    },
+                    "selectedRowIndex": -1.0
+                }).appendTo(appendToElement); 
             };
             //---------------------Periods----------------------------------
             const loadPeriodSelector = (availablePeriods) => {
@@ -236,18 +335,18 @@
 
             };
             //-------------------Currency--------------------------------------------------
-            const loadEj2Translation=(name)=>{
+            const loadEj2Translation = (name) => {
                 let path = `/lib/ej2translations/${name}.json`;
-                let ajax = new ej.base.Ajax(path, 'GET', false);   //load the name json culture file 
-                ajax.send().then((e) => { 
-                    var culture = JSON.parse(e); 
-                    ej.base.L10n.load( 
-                        culture                                  
-                    ); 
-                                  
-                }); 
+                let ajax = new ej.base.Ajax(path, 'GET', false); //load the name json culture file 
+                ajax.send().then((e) => {
+                    var culture = JSON.parse(e);
+                    ej.base.L10n.load(
+                        culture
+                    );
+
+                });
             };
-            const setCurrency = (currencyId, currencyCode,currencyLocale) => {
+            const setCurrency = (currencyId, currencyCode, currencyLocale) => {
                 const $selectedCurrency = $('.selected-currency-text');
                 $selectedCurrency.data('currencyid', currencyId);
                 $selectedCurrency.data('currencycode', currencyCode);
@@ -257,27 +356,18 @@
                     console.log(currencyCode);
                     console.log(currentCulture);
                     let cCulture = currencyLocale;
-                    let cBaseCulture=cCulture;
-                    if (cCulture.length>2){
-                        cBaseCulture=cCulture.substr(0,2);
+                    let cBaseCulture = cCulture;
+                    if (cCulture.length > 2) {
+                        cBaseCulture = cCulture.substr(0, 2);
                     }
                     loadCultureFiles(cBaseCulture);
                     ej.base.setCulture(cBaseCulture);
                     ej.base.setCurrencyCode(currencyCode);
-                    loadEj2Translation(cBaseCulture);
-                   
+                    //loadEj2Translation(cBaseCulture);
+
                     var grid = document.getElementById("Grid").ej2_instances[0];
                     grid.locale = cBaseCulture;
-                    //let aggr = '[';
-                    //aggr += '{';
-                    //aggr += '"columns": [';
-                    //aggr += ' {"field": "debit", "footerTemplate": "Sum:${Sum}","format": "C2","type": "Sum"},';
-                    //aggr += '{"field": "credit","footerTemplate": "${Sum}","format": "C2","type": "Sum"}';
-                    //aggr += ']';
-                    //aggr += ' }';
-                    //aggr += ']';
-                    //grid.aggregates = aggr;
-                   // grid.aggregateModule.refresh();
+
                     formatterCurrency = new Intl.NumberFormat(cCulture,
                         {
                             style: 'currency',
@@ -317,10 +407,10 @@
                         let currencyCode = button.data('currencycode');
                         let currencyLocale = button.data('currencylocale');
                         console.log(`Currency Id=${currencyId} currency Code=${currencyCode}`);
-                        refreshView();
-                        setCurrency(currencyId, currencyCode,currencyLocale);
-
                        
+                        setCurrency(currencyId, currencyCode, currencyLocale);
+                        refreshView();
+
                         //let $btParent = button.parent()
                     });
             };
@@ -336,14 +426,14 @@
                 } else {
                     return parsed;
                 }
-             };
-             const getCurrency = (currencyCode, currencyList) => {
+            };
+            const getCurrency = (currencyCode, currencyList) => {
                 if (!(typeof currencyList != "undefined" && currencyList != null && currencyList.length != null && currencyList.length > 0)) {
                     return null;
                 }
 
                 let ret = currencyList.find(x => x.code === currencyCode);
-                
+
                 if (ret) {
                     return ret;
                 } else {
@@ -514,10 +604,14 @@
                         //     1000);
                     },
                     success: function(result) {
-                         var grid = document.getElementById("Grid").ej2_instances[0];
-                         //var data = result.data;
-                         grid.dataSource =result.value;
-                         grid.aggregateModule.refresh();
+                        var grid = document.getElementById("Grid").ej2_instances[0];
+                        var grid2 = document.getElementById("transGrid").ej2_instances[0];
+                        grid2.destroy();
+                        //var data = result.data;
+                        grid.dataSource = result.value;
+                        document.getElementById("transGrid").innerHTML = "";
+                        secondGrid("#transGrid", result.value);
+                        //grid.aggregateModule.refresh();
                     },
                     complete: function() {
                         // if (timeout) {
@@ -539,13 +633,13 @@
                     }
                 });
             };
-            const loadCultureFiles=(name) =>{
+            const loadCultureFiles = (name) => {
                 let files = ['ca-gregorian.json', 'numbers.json', 'timeZoneNames.json', 'currencies.json'];
                 if (name === 'ar') {
                     files.push('numberingSystems.json');
                 }
                 let loader = ej.base.loadCldr;
-                let loadCulture = function (prop) {
+                let loadCulture = function(prop) {
                     let val
                     let ajax;
                     if (name === 'ar' && prop === files.length - 1) {
@@ -553,7 +647,7 @@
                     } else {
                         ajax = new ej.base.Ajax(location.origin + location.pathname + '/../../../lib/cldr-data/main/' + name + '/' + files[prop], 'GET', false);
                     }
-                    ajax.onSuccess = function (value) {
+                    ajax.onSuccess = function(value) {
                         val = value;
                     };
                     ajax.send();
@@ -569,20 +663,24 @@
                 'companyCode': ''
             };
             //let cCulture = 'bg';
-            
+
             loadCurrencySelector(currencyListJs);
             loadCompanySelector(companyListJs);
             loadPeriodSelector(datePeriodListJs);
             loadPreviousSession(sessionKey, sessionObj);
             console.log(sessionObj);
-            let selCurrency = getCurrency(sessionObj.currencyCode,currencyListJs);
-            setCurrency(selCurrency.id,selCurrency.code,selCurrency.displayLocale);
+            let selCurrency = getCurrency(sessionObj.currencyCode, currencyListJs);
+            setCurrency(selCurrency.id, selCurrency.code, selCurrency.displayLocale);
             setCompany(sessionObj.companyCode, getCompanyName(sessionObj.companyCode, companyListJs));
             setPeriod(sessionObj.periodCode, getPeriodName(sessionObj.periodCode, datePeriodListJs));
             refreshView();
         }());
+        //function actionBegin(args) { 
+        //    console.log('Action begins');
+        //    console.log(args);
+        //} 
         $(window).on('beforeunload',
-            function (e) {
+            function(e) {
                 //#region CommentOut
                 //#region Variables
                 const sessionKey = 'TransactorDetailsPage';
