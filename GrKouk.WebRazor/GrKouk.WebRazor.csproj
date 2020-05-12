@@ -110,7 +110,7 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="2.2.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.4" PrivateAssets="All" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
-    <PackageReference Include="NToastNotify" Version="5.0.8" />
+    <PackageReference Include="NToastNotify" Version="5.0.12" />
     <PackageReference Include="Syncfusion.EJ2.AspNet.Core" Version="18.1.0.48" />
     </ItemGroup>
 

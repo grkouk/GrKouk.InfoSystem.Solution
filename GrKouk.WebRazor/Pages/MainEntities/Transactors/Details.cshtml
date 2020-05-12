@@ -120,8 +120,8 @@
                 <e-grid-aggregates>
                     <e-grid-aggregate> 
                         <e-aggregate-columns>
-                            <e-aggregate-column field="debit" type="Sum" format="C2"></e-aggregate-column>
-                            <e-aggregate-column field="credit" type="Sum" format="C2"></e-aggregate-column>
+                            <e-aggregate-column field="debit" type="Sum" format="C2" footerTemplate="Sum:${Sum}"></e-aggregate-column>
+                            <e-aggregate-column field="credit" type="Sum" format="C2" footerTemplate="${Sum}"></e-aggregate-column>
                            
                         </e-aggregate-columns>
                         
@@ -262,11 +262,22 @@
                         cBaseCulture=cCulture.substr(0,2);
                     }
                     loadCultureFiles(cBaseCulture);
-                    loadEj2Translation(cBaseCulture);
                     ej.base.setCulture(cBaseCulture);
                     ej.base.setCurrencyCode(currencyCode);
-                    //var grid = document.getElementById("Grid").ej2_instances[0];
-                    //grid.locale = currencyLocale;
+                    loadEj2Translation(cBaseCulture);
+                   
+                    var grid = document.getElementById("Grid").ej2_instances[0];
+                    grid.locale = cBaseCulture;
+                    //let aggr = '[';
+                    //aggr += '{';
+                    //aggr += '"columns": [';
+                    //aggr += ' {"field": "debit", "footerTemplate": "Sum:${Sum}","format": "C2","type": "Sum"},';
+                    //aggr += '{"field": "credit","footerTemplate": "${Sum}","format": "C2","type": "Sum"}';
+                    //aggr += ']';
+                    //aggr += ' }';
+                    //aggr += ']';
+                    //grid.aggregates = aggr;
+                   // grid.aggregateModule.refresh();
                     formatterCurrency = new Intl.NumberFormat(cCulture,
                         {
                             style: 'currency',
@@ -275,6 +286,7 @@
                         });
 
                 } catch (e) {
+                    console.log(e);
                     console.log('Problem setting currency formatter');
                 }
 
@@ -305,9 +317,10 @@
                         let currencyCode = button.data('currencycode');
                         let currencyLocale = button.data('currencylocale');
                         console.log(`Currency Id=${currencyId} currency Code=${currencyCode}`);
+                        refreshView();
                         setCurrency(currencyId, currencyCode,currencyLocale);
 
-                        refreshView();
+                       
                         //let $btParent = button.parent()
                     });
             };
@@ -504,6 +517,7 @@
                          var grid = document.getElementById("Grid").ej2_instances[0];
                          //var data = result.data;
                          grid.dataSource =result.value;
+                         grid.aggregateModule.refresh();
                     },
                     complete: function() {
                         // if (timeout) {
