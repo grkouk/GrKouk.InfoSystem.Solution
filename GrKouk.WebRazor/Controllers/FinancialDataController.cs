@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -12,6 +13,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using NToastNotify.Helpers;
+using Syncfusion.EJ2.Base;
 
 namespace GrKouk.WebRazor.Controllers
 {
@@ -141,6 +144,13 @@ namespace GrKouk.WebRazor.Controllers
                 SumOfDifference = difference
             };
             return Ok(response);
+        }
+
+        [HttpPost("GetTransactions")]
+        public async Task<IActionResult> GetTransactions2([FromBody]DataManagerRequest request)
+        {
+            Debug.Print(request.ToJson());
+            return new JsonResult(new { result = "", count = 0 });
         }
         [HttpGet("GetTransactorTransactions")]
         public async Task<IActionResult> GetTransactorTransactions([FromQuery] IndexDataTableRequest request)
