@@ -221,6 +221,7 @@
     <script>
         $(document).ready(function() {
             var currentCulture = '@System.Globalization.CultureInfo.CurrentCulture';
+            let baseCulture = '@System.Globalization.CultureInfo.CurrentCulture.';
             currentCulture = 'el-GR';
             var formatterCurrency = new Intl.NumberFormat(currentCulture,
                 {
