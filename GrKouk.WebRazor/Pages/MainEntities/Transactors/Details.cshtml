@@ -68,7 +68,7 @@
                                 <h4>Debit</h4>
                             </div>
                             <div class="card-body text-center">
-                                <h5 id="Debit">5000,00</h5>
+                                <h5 id="Debit"></h5>
                             </div>
                         </div>
                     </div>
@@ -78,7 +78,7 @@
                                 <h4>Credit</h4>
                             </div>
                             <div class="card-body text-center">
-                                <h5 id="Credit">5000,00</h5>
+                                <h5 id="Credit"></h5>
                             </div>
                         </div>
                     </div>
@@ -88,7 +88,7 @@
                                 <h4>Balance</h4>
                             </div>
                             <div class="card-body text-center">
-                                <h5 id="Balance">5000,00</h5>
+                                <h5 id="Balance"></h5>
                             </div>
                         </div>
                     </div>
@@ -117,26 +117,27 @@
                 </div>
             </div>
             <div id="transGrid"></div>
-            <ejs-grid id="Grid"  allowPaging="true" allowResizing="true" enablePersistence="true">
+            <ejs-grid id="Grid" allowPaging="true" allowResizing="true" enablePersistence="true">
+                 @* <e-data-manager url="@Url.Action("GetTransactions2", "FinancialData")" adaptor="UrlAdaptor"></e-data-manager> *@
                 <e-grid-aggregates>
-                    <e-grid-aggregate> 
+                    <e-grid-aggregate>
                         <e-aggregate-columns>
                             <e-aggregate-column field="debit" type="Sum" format="C2" footerTemplate="Sum:${Sum}"></e-aggregate-column>
                             <e-aggregate-column field="credit" type="Sum" format="C2" footerTemplate="${Sum}"></e-aggregate-column>
-                           
+
                         </e-aggregate-columns>
-                        
-                   </e-grid-aggregate>
+
+                    </e-grid-aggregate>
                 </e-grid-aggregates>
                 <e-grid-pagesettings pageSizes="true"></e-grid-pagesettings>
                 <e-grid-columns>
-                    <e-grid-column field="transDate" headerText="TransDate" textAlign="Right" width="50" type="date" format="dd/MM/yyyy"></e-grid-column>
-                    <e-grid-column field="docSeriesCode" headerText="DocSeriesCode" width="60"></e-grid-column>
-                    <e-grid-column field="refCode" headerText="RefCode" width="60" textAlign="Right"></e-grid-column>
-                    <e-grid-column field="companyCode" headerText="CompanyCode" width="60"></e-grid-column>
+                    <e-grid-column field="transDate" headerText="Trans Date" textAlign="Right" width="50" type="date" format="dd/MM/yyyy"></e-grid-column>
+                    <e-grid-column field="docSeriesCode" headerText="Series Code" width="60"></e-grid-column>
+                    <e-grid-column field="refCode" headerText="Ref Code" width="60" textAlign="Right"></e-grid-column>
+                    <e-grid-column field="companyCode" headerText="Company Code" width="60"></e-grid-column>
                     <e-grid-column field="debit" headerText="Debit" width="50" type="number" textAlign="Right" format="C2"></e-grid-column>
                     <e-grid-column field="credit" headerText="Credit" width="50" type="number" textAlign="Right" format="C2"></e-grid-column>
-                    <e-grid-column field="runningTotal" headerText="RunningTotal" type="number" width="50" textAlign="Right" format="C2"></e-grid-column>
+                    <e-grid-column field="runningTotal" headerText="Running Total" type="number" width="50" textAlign="Right" format="C2"></e-grid-column>
                 </e-grid-columns>
             </ejs-grid>
 
@@ -200,6 +201,22 @@
                     console.log('actionBegin event called');
                     console.log(args);
                 });
+            grd.addEventListener("dataBound",
+            function(args){
+                console.log('dataBound')
+                console.log(args);
+            });
+             grd.addEventListener("dataSourceChanged",
+                        function(args){
+                            console.log('dataSourceChanged')
+                            console.log(args);
+                        });
+            grd.addEventListener("dataStateChange",
+                        function(args){
+                            console.log('dataStateChange')
+                            console.log(args);
+                        });
+                        
             const secondGrid = (appendToElement,data) => {
                 var grd = new ejs.grids.Grid({
                     "dataSource": data,
@@ -605,12 +622,12 @@
                     },
                     success: function(result) {
                         var grid = document.getElementById("Grid").ej2_instances[0];
-                        var grid2 = document.getElementById("transGrid").ej2_instances[0];
-                        grid2.destroy();
+                        //var grid2 = document.getElementById("transGrid").ej2_instances[0];
+                        //grid2.destroy();
                         //var data = result.data;
                         grid.dataSource = result.value;
-                        document.getElementById("transGrid").innerHTML = "";
-                        secondGrid("#transGrid", result.value);
+                        //document.getElementById("transGrid").innerHTML = "";
+                        //secondGrid("#transGrid", result.value);
                         //grid.aggregateModule.refresh();
                     },
                     complete: function() {
