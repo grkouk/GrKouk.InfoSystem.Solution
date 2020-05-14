@@ -118,7 +118,7 @@
             </div>
             <div id="transGrid"></div>
             <ejs-grid id="Grid" allowPaging="true" allowResizing="true" enablePersistence="true">
-                 <e-data-manager url="@Url.Action("GetTransactions2", "FinancialData")" adaptor="UrlAdaptor"></e-data-manager>
+                 @* <e-data-manager url="@Url.Action("GetTransactions2", "FinancialData")" adaptor="UrlAdaptor"></e-data-manager> *@
                 <e-grid-aggregates>
                     <e-grid-aggregate>
                         <e-aggregate-columns>
@@ -131,13 +131,13 @@
                 </e-grid-aggregates>
                 <e-grid-pagesettings pageSizes="true"></e-grid-pagesettings>
                 <e-grid-columns>
-                    <e-grid-column field="transDate" headerText="TransDate" textAlign="Right" width="50" type="date" format="dd/MM/yyyy"></e-grid-column>
-                    <e-grid-column field="docSeriesCode" headerText="DocSeriesCode" width="60"></e-grid-column>
-                    <e-grid-column field="refCode" headerText="RefCode" width="60" textAlign="Right"></e-grid-column>
-                    <e-grid-column field="companyCode" headerText="CompanyCode" width="60"></e-grid-column>
+                    <e-grid-column field="transDate" headerText="Trans Date" textAlign="Right" width="50" type="date" format="dd/MM/yyyy"></e-grid-column>
+                    <e-grid-column field="docSeriesCode" headerText="Series Code" width="60"></e-grid-column>
+                    <e-grid-column field="refCode" headerText="Ref Code" width="60" textAlign="Right"></e-grid-column>
+                    <e-grid-column field="companyCode" headerText="Company Code" width="60"></e-grid-column>
                     <e-grid-column field="debit" headerText="Debit" width="50" type="number" textAlign="Right" format="C2"></e-grid-column>
                     <e-grid-column field="credit" headerText="Credit" width="50" type="number" textAlign="Right" format="C2"></e-grid-column>
-                    <e-grid-column field="runningTotal" headerText="RunningTotal" type="number" width="50" textAlign="Right" format="C2"></e-grid-column>
+                    <e-grid-column field="runningTotal" headerText="Running Total" type="number" width="50" textAlign="Right" format="C2"></e-grid-column>
                 </e-grid-columns>
             </ejs-grid>
 
@@ -186,7 +186,7 @@
                 let selPeriodId = $selectedPeriod.data('periodid');
 
                 getFinancialData(transactorId, selPeriodId, selCompanyId, selCurrencyId);
-                //getTransactionsData(transactorId, selPeriodId, selCompanyId, selCurrencyId);
+                getTransactionsData(transactorId, selPeriodId, selCompanyId, selCurrencyId);
 
             };
             //---------------------Grid-------------------

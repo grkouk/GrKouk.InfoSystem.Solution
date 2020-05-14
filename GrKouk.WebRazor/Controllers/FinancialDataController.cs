@@ -31,13 +31,16 @@ namespace GrKouk.WebRazor.Controllers
             _context = context;
             _mapper = mapper;
         }
-        private decimal ConvertAmount(int companyCurrencyId,int displayCurrencyId,IList<ExchangeRate> rates,decimal amount)
+
+        private decimal ConvertAmount(int companyCurrencyId, int displayCurrencyId, IList<ExchangeRate> rates,
+            decimal amount)
         {
-            decimal retAmount=amount;
-            if (displayCurrencyId==companyCurrencyId)
+            decimal retAmount = amount;
+            if (displayCurrencyId == companyCurrencyId)
             {
                 return retAmount;
             }
+
             if (companyCurrencyId != 1)
             {
                 var r = rates.Where(p => p.CurrencyId == companyCurrencyId)
@@ -47,6 +50,7 @@ namespace GrKouk.WebRazor.Controllers
                     retAmount = amount / r.Rate;
                 }
             }
+
             if (displayCurrencyId != 1)
             {
                 var r = rates.Where(p => p.CurrencyId == displayCurrencyId)
@@ -54,20 +58,22 @@ namespace GrKouk.WebRazor.Controllers
                 if (r != null)
                 {
                     retAmount *= r.Rate;
-
                 }
             }
+
             return retAmount;
         }
+
         [HttpGet("GetTransactorFinancialSummaryData")]
         public async Task<IActionResult> GetTransactorFinancialSummaryData([FromQuery] IndexDataTableRequest request)
         {
-           
-            if (request.TransactorId<=0)
+            if (request.TransactorId <= 0)
             {
                 return BadRequest();
             }
-            IQueryable<TransactorTransaction> fullListIq = _context.TransactorTransactions.Where(p => p.TransactorId == request.TransactorId);
+
+            IQueryable<TransactorTransaction> fullListIq =
+                _context.TransactorTransactions.Where(p => p.TransactorId == request.TransactorId);
             if (!String.IsNullOrEmpty(request.CompanyFilter))
             {
                 if (Int32.TryParse(request.CompanyFilter, out var companyId))
@@ -78,12 +84,12 @@ namespace GrKouk.WebRazor.Controllers
                     }
                 }
             }
-            
+
             var currencyRates = await _context.ExchangeRates.OrderByDescending(p => p.ClosingDate)
                 .Take(10)
                 .ToListAsync();
             var t = fullListIq.ProjectTo<TransactorTransListDto>(_mapper.ConfigurationProvider);
-            var t1 =await t.Select(p => new TransactorTransListDto
+            var t1 = await t.Select(p => new TransactorTransListDto
             {
                 TransTransactorDocSeriesId = p.TransTransactorDocSeriesId,
                 TransTransactorDocSeriesName = p.TransTransactorDocSeriesName,
@@ -108,10 +114,11 @@ namespace GrKouk.WebRazor.Controllers
             var grandSumOfCredit = t1.Sum(p => p.CreditAmount);
             var transactor = await _context.Transactors.Include(p => p.TransactorType)
                 .FirstOrDefaultAsync(p => p.Id == request.TransactorId);
-            if (transactor==null )
+            if (transactor == null)
             {
                 return BadRequest();
             }
+
             await _context.Entry(transactor).Reference(p => p.TransactorType).LoadAsync();
             var transactorType = transactor.TransactorType;
             if (transactorType == null)
@@ -137,6 +144,7 @@ namespace GrKouk.WebRazor.Controllers
                 default:
                     break;
             }
+
             var response = new TransactorFinancialDataResponse()
             {
                 SumOfDebit = grandSumOfDebit,
@@ -146,12 +154,18 @@ namespace GrKouk.WebRazor.Controllers
             return Ok(response);
         }
 
-        [HttpPost("GetTransactions")]
-        public async Task<IActionResult> GetTransactions2([FromBody]DataManagerRequest request)
+        /// <summary>
+        /// Only for testing purposes
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [HttpPost("GetTransactions2")]
+        public async Task<IActionResult> GetTransactions2([FromBody] DataManagerRequest request)
         {
             Debug.Print(request.ToJson());
-            return new JsonResult(new { result = "", count = 0 });
+            return new JsonResult(new {result = "", count = 0});
         }
+
         [HttpGet("GetTransactorTransactions")]
         public async Task<IActionResult> GetTransactorTransactions([FromQuery] IndexDataTableRequest request)
         {
@@ -171,7 +185,9 @@ namespace GrKouk.WebRazor.Controllers
                     Error = "Transactor not found"
                 });
             }
-            var transactorType = await _context.TransactorTypes.Where(c => c.Id == transactor.TransactorTypeId).FirstOrDefaultAsync();
+
+            var transactorType = await _context.TransactorTypes.Where(c => c.Id == transactor.TransactorTypeId)
+                .FirstOrDefaultAsync();
 
             IQueryable<TransactorTransaction> transactionsList = _context.TransactorTransactions
                 .Where(p => p.TransactorId == request.TransactorId);
@@ -179,6 +195,8 @@ namespace GrKouk.WebRazor.Controllers
                 .Where(p => p.TransactorId == request.TransactorId);
             IQueryable<TransactorTransaction> transListAll = _context.TransactorTransactions
                 .Where(p => p.TransactorId == request.TransactorId);
+            //default order 
+            transactionsList = transactionsList.OrderByDescending(p => p.TransDate);
             if (!String.IsNullOrEmpty(request.SortData))
             {
                 switch (request.SortData.ToLower())
@@ -221,8 +239,8 @@ namespace GrKouk.WebRazor.Controllers
 
                 transactionsList = transactionsList.Where(p => p.TransDate >= fromDate && p.TransDate <= toDate);
                 transListBeforePeriod = transListBeforePeriod.Where(p => p.TransDate < fromDate);
-
             }
+
             if (!String.IsNullOrEmpty(request.CompanyFilter))
             {
                 if (Int32.TryParse(request.CompanyFilter, out var companyId))
@@ -235,25 +253,27 @@ namespace GrKouk.WebRazor.Controllers
                     }
                 }
             }
+
             if (!String.IsNullOrEmpty(request.SearchFilter))
             {
-                transactionsList = transactionsList.Where(p => p.TransTransactorDocSeries.Name.Contains(request.SearchFilter)
-                || p.TransTransactorDocSeries.Code.Contains(request.SearchFilter)
-                || p.TransRefCode.Contains(request.SearchFilter)
+                transactionsList = transactionsList.Where(p =>
+                    p.TransTransactorDocSeries.Name.Contains(request.SearchFilter)
+                    || p.TransTransactorDocSeries.Code.Contains(request.SearchFilter)
+                    || p.TransRefCode.Contains(request.SearchFilter)
                 );
-                transListBeforePeriod = transListBeforePeriod.Where(p => p.TransTransactorDocSeries.Name.Contains(request.SearchFilter)
-                                                                         || p.TransTransactorDocSeries.Code.Contains(request.SearchFilter)
-                                                                         || p.TransRefCode.Contains(request.SearchFilter)
-
+                transListBeforePeriod = transListBeforePeriod.Where(p =>
+                    p.TransTransactorDocSeries.Name.Contains(request.SearchFilter)
+                    || p.TransTransactorDocSeries.Code.Contains(request.SearchFilter)
+                    || p.TransRefCode.Contains(request.SearchFilter)
                 );
                 transListAll = transListAll.Where(p => p.TransTransactorDocSeries.Name.Contains(request.SearchFilter)
                                                        || p.TransTransactorDocSeries.Code.Contains(request.SearchFilter)
                                                        || p.TransRefCode.Contains(request.SearchFilter)
-
                 );
             }
+
             var dbTrans = transactionsList.ProjectTo<TransactorTransListDto>(_mapper.ConfigurationProvider);
-           
+
             var currencyRates = await _context.ExchangeRates.OrderByDescending(p => p.ClosingDate)
                 .Take(10)
                 .ToListAsync();
@@ -279,10 +299,13 @@ namespace GrKouk.WebRazor.Controllers
                 AmountFpa = ConvertAmount(p.CompanyCurrencyId, request.DisplayCurrencyId, currencyRates, p.AmountFpa),
                 AmountNet = ConvertAmount(p.CompanyCurrencyId, request.DisplayCurrencyId, currencyRates, p.AmountNet),
                 AmountDiscount = ConvertAmount(p.CompanyCurrencyId, request.DisplayCurrencyId, currencyRates,
-                   p.AmountDiscount),
-                TransFpaAmount = ConvertAmount(p.CompanyCurrencyId, request.DisplayCurrencyId, currencyRates, p.TransFpaAmount),
-                TransNetAmount = ConvertAmount(p.CompanyCurrencyId, request.DisplayCurrencyId, currencyRates, p.TransNetAmount),
-                TransDiscountAmount = ConvertAmount(p.CompanyCurrencyId, request.DisplayCurrencyId, currencyRates, p.TransDiscountAmount),
+                    p.AmountDiscount),
+                TransFpaAmount = ConvertAmount(p.CompanyCurrencyId, request.DisplayCurrencyId, currencyRates,
+                    p.TransFpaAmount),
+                TransNetAmount = ConvertAmount(p.CompanyCurrencyId, request.DisplayCurrencyId, currencyRates,
+                    p.TransNetAmount),
+                TransDiscountAmount = ConvertAmount(p.CompanyCurrencyId, request.DisplayCurrencyId, currencyRates,
+                    p.TransDiscountAmount),
                 CompanyCode = p.CompanyCode,
                 CompanyCurrencyId = p.CompanyCurrencyId
             }).ToListAsync();
@@ -306,6 +329,7 @@ namespace GrKouk.WebRazor.Controllers
                         listItem.TransDiscountAmount = listItem.TransDiscountAmount / r.Rate;
                     }
                 }
+
                 if (request.DisplayCurrencyId != 1)
                 {
                     var r = currencyRates.Where(p => p.CurrencyId == request.DisplayCurrencyId)
@@ -320,10 +344,11 @@ namespace GrKouk.WebRazor.Controllers
                         listItem.TransDiscountAmount = listItem.TransDiscountAmount * r.Rate;
                     }
                 }
-
             }
+
             //-----------------------------------------------
-            var dbTransBeforePeriod = transListBeforePeriod.ProjectTo<TransactorTransListDto>(_mapper.ConfigurationProvider);
+            var dbTransBeforePeriod =
+                transListBeforePeriod.ProjectTo<TransactorTransListDto>(_mapper.ConfigurationProvider);
             var transBeforePeriodList = await dbTransBeforePeriod.ToListAsync();
             foreach (var item in transBeforePeriodList)
             {
@@ -341,6 +366,7 @@ namespace GrKouk.WebRazor.Controllers
                         item.TransDiscountAmount = item.TransDiscountAmount / r.Rate;
                     }
                 }
+
                 if (request.DisplayCurrencyId != 1)
                 {
                     var r = currencyRates.Where(p => p.CurrencyId == request.DisplayCurrencyId)
@@ -355,16 +381,15 @@ namespace GrKouk.WebRazor.Controllers
                         item.TransDiscountAmount = item.TransDiscountAmount * r.Rate;
                     }
                 }
-
             }
+
             //Create before period line
             var bl1 = new
             {
-
                 Debit = transBeforePeriodList.Sum(x => x.DebitAmount),
                 Credit = transBeforePeriodList.Sum(x => x.CreditAmount),
             };
-           
+
             var beforePeriod = new KartelaLine();
 
             beforePeriod.Credit = bl1.Credit;
@@ -384,6 +409,7 @@ namespace GrKouk.WebRazor.Controllers
                     beforePeriod.RunningTotal = bl1.Credit - bl1.Debit;
                     break;
             }
+
             beforePeriod.TransDate = beforePeriodDate;
             beforePeriod.DocSeriesCode = "Εκ.Μεταφ.";
             beforePeriod.CreatorId = -1;
@@ -422,7 +448,9 @@ namespace GrKouk.WebRazor.Controllers
                     RefCode = dbTransaction.TransRefCode,
                     CompanyCode = dbTransaction.CompanyCode,
                     SectionCode = dbTransaction.SectionCode,
-                    CreatorId = dbTransaction.SectionCode== "SCNTRANSACTORTRANS" ? dbTransaction.Id:dbTransaction.CreatorId,
+                    CreatorId = dbTransaction.SectionCode == "SCNTRANSACTORTRANS"
+                        ? dbTransaction.Id
+                        : dbTransaction.CreatorId,
                     RunningTotal = runningTotal,
                     TransactorName = dbTransaction.TransactorName,
                     Debit = dbTransaction.DebitAmount,
@@ -447,6 +475,7 @@ namespace GrKouk.WebRazor.Controllers
                 sumCredit += item.Credit;
                 sumDebit += item.Debit;
             }
+
             switch (transactorType.Code)
             {
                 case "SYS.DTRANSACTOR":
@@ -463,8 +492,8 @@ namespace GrKouk.WebRazor.Controllers
                     break;
             }
 
-            var  response = new JsonResult(listItems); 
-            
+            var response = new JsonResult(listItems);
+
             return Ok(response);
         }
     }
