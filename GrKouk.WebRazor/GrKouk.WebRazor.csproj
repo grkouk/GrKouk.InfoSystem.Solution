@@ -8,9 +8,9 @@
     <Description>GrKouk Information System</Description>
     <Copyright>George Koukoudis</Copyright>
     <Configurations>Debug;Release;DebugWeb;RlsWeb</Configurations>
-    <Version>2.9.5.0</Version>
-    <AssemblyVersion>2.9.5.0</AssemblyVersion>
-    <FileVersion>2.9.5.0</FileVersion>
+    <Version>2.9.5.3</Version>
+    <AssemblyVersion>2.9.5.3</AssemblyVersion>
+    <FileVersion>2.9.5.3</FileVersion>
     <PackageVersion>2.9.0.3</PackageVersion>
   </PropertyGroup>
 
@@ -110,7 +110,8 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="2.2.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.4" PrivateAssets="All" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
-    <PackageReference Include="NToastNotify" Version="5.0.8" />
+    <PackageReference Include="NToastNotify" Version="5.0.12" />
+    <PackageReference Include="Syncfusion.EJ2.AspNet.Core" Version="18.1.0.48" />
     </ItemGroup>
 
   <ItemGroup>
@@ -121,6 +122,7 @@
 
   <ItemGroup>
     <Folder Include="Areas\Identity\Services\" />
+    <Folder Include="wwwroot\lib\ej2translations" />
     <Folder Include="wwwroot\lib\multiselectListbox\" />
     <Folder Include="wwwroot\lib\iziModal\" />
     <Folder Include="wwwroot\productImages\" />

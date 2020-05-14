@@ -900,11 +900,12 @@
            
             var currencyChanged = () => {
                 let curCurrencySelected = parseInt($('#CurrencySelector').val());
-
                 var currencyCode;
                 try {
-                    currencyCode = currencyListJs.find(x => x.id === curCurrencySelected).code;    
-                    formatterCurrency = new Intl.NumberFormat(currentCulture,
+                    let currentCurrency = currencyListJs.find(x => x.id === curCurrencySelected);
+                    currencyCode = currentCurrency.code;
+                    let locale = currentCurrency.displayLocale;
+                    formatterCurrency = new Intl.NumberFormat(locale,
                         {
                             style: 'currency',
                             currency: currencyCode,
@@ -913,7 +914,7 @@
                 } catch (e) {
                     //not found keep old formater or maybe create a default one
                     console.log('Not found currency code for this id');
-                } 
+                }
             };
             $('#CurrencySelector').on('change',
                 function() {
