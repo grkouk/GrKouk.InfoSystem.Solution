@@ -26,7 +26,31 @@ namespace GrKouk.WebRazor.Helpers
                 new SelectListItem() {Value = "360DAYS", Text = "360 Ημέρες"},
                 new SelectListItem() {Value = "PREMONTH", Text = "Προηγ.Μήνας"},
                 new SelectListItem() {Value = "CURYEAR", Text = "Τρέχων Ετος"},
+                new SelectListItem() {Value = "JANCURYEAR", Text = "Ιανουάριος"},
+                new SelectListItem() {Value = "FEBCURYEAR", Text = "Φεβρουάριος"},
+                new SelectListItem() {Value = "MARCURYEAR", Text = "Μάρτιος"},
+                new SelectListItem() {Value = "APRCURYEAR", Text = "Απρίλιος"},
+                new SelectListItem() {Value = "MAICURYEAR", Text = "Μάιος"},
+                new SelectListItem() {Value = "JUNCURYEAR", Text = "Ιούνιος"},
+                new SelectListItem() {Value = "JULCURYEAR", Text = "Ιούλιος"},
+                new SelectListItem() {Value = "AUGCURYEAR", Text = "Αύγουστος"},
+                new SelectListItem() {Value = "SEPCURYEAR", Text = "Σεπτέμβριος"},
+                new SelectListItem() {Value = "OKTCURYEAR", Text = "Οκτώβριος"},
+                new SelectListItem() {Value = "NOVCURYEAR", Text = "Νοέβριος"},
+                new SelectListItem() {Value = "DECCURYEAR", Text = "Δεκέμβριος"},
                 new SelectListItem() {Value = "LASTYEAR", Text = "Προηγ. Ετος"},
+                new SelectListItem() {Value = "JANLASTYEAR", Text = "Ιαν.Προηγ. Ετος"},
+                new SelectListItem() {Value = "FEBLASTYEAR", Text = "Φεβ.Προηγ. Ετος"},
+                new SelectListItem() {Value = "MARLASTYEAR", Text = "Μαρ.Προηγ. Ετος"},
+                new SelectListItem() {Value = "APRLASTYEAR", Text = "Απρ.Προηγ. Ετος"},
+                new SelectListItem() {Value = "MAILASTYEAR", Text = "Μαι.Προηγ. Ετος"},
+                new SelectListItem() {Value = "JUNLASTYEAR", Text = "Ιουν.Προηγ. Ετος"},
+                new SelectListItem() {Value = "JULLASTYEAR", Text = "Ιουλ.Προηγ. Ετος"},
+                new SelectListItem() {Value = "AUGLASTYEAR", Text = "Αυγ.Προηγ. Ετος"},
+                new SelectListItem() {Value = "SEPLASTYEAR", Text = "Σεπ.Προηγ. Ετος"},
+                new SelectListItem() {Value = "OKTLASTYEAR", Text = "Οκτ.Προηγ. Ετος"},
+                new SelectListItem() {Value = "NOVLASTYEAR", Text = "Νοε.Προηγ. Ετος"},
+                new SelectListItem() {Value = "DECLASTYEAR", Text = "Δεκ.Προηγ. Ετος"},
                 new SelectListItem() {Value = "ALL", Text = "{All}"}
             };
             return datePeriods;
@@ -42,7 +66,31 @@ namespace GrKouk.WebRazor.Helpers
                 new SelectListItem() {Value = "360DAYS", Text = "Επόμενες 360 Ημέρες"},
                 new SelectListItem() {Value = "PREMONTH", Text = "Προηγ.Μήνας"},
                 new SelectListItem() {Value = "CURYEAR", Text = "Τρέχων Ετος"},
+                new SelectListItem() {Value = "JANCURYEAR", Text = "Ιανουάριος"},
+                new SelectListItem() {Value = "FEBCURYEAR", Text = "Φεβρουάριος"},
+                new SelectListItem() {Value = "MARCURYEAR", Text = "Μάρτιος"},
+                new SelectListItem() {Value = "APRCURYEAR", Text = "Απρίλιος"},
+                new SelectListItem() {Value = "MAICURYEAR", Text = "Μάιος"},
+                new SelectListItem() {Value = "JUNCURYEAR", Text = "Ιούνιος"},
+                new SelectListItem() {Value = "JULCURYEAR", Text = "Ιούλιος"},
+                new SelectListItem() {Value = "AUGCURYEAR", Text = "Αύγουστος"},
+                new SelectListItem() {Value = "SEPCURYEAR", Text = "Σεπτέμβριος"},
+                new SelectListItem() {Value = "OKTCURYEAR", Text = "Οκτώβριος"},
+                new SelectListItem() {Value = "NOVCURYEAR", Text = "Νοέβριος"},
+                new SelectListItem() {Value = "DECCURYEAR", Text = "Δεκέμβριος"},
                 new SelectListItem() {Value = "LASTYEAR", Text = "Προηγ. Ετος"},
+                new SelectListItem() {Value = "JANLASTYEAR", Text = "Ιαν.Προηγ. Ετος"},
+                new SelectListItem() {Value = "FEBLASTYEAR", Text = "Φεβ.Προηγ. Ετος"},
+                new SelectListItem() {Value = "MARLASTYEAR", Text = "Μαρ.Προηγ. Ετος"},
+                new SelectListItem() {Value = "APRLASTYEAR", Text = "Απρ.Προηγ. Ετος"},
+                new SelectListItem() {Value = "MAILASTYEAR", Text = "Μαι.Προηγ. Ετος"},
+                new SelectListItem() {Value = "JUNLASTYEAR", Text = "Ιουν.Προηγ. Ετος"},
+                new SelectListItem() {Value = "JULLASTYEAR", Text = "Ιουλ.Προηγ. Ετος"},
+                new SelectListItem() {Value = "AUGLASTYEAR", Text = "Αυγ.Προηγ. Ετος"},
+                new SelectListItem() {Value = "SEPLASTYEAR", Text = "Σεπ.Προηγ. Ετος"},
+                new SelectListItem() {Value = "OKTLASTYEAR", Text = "Οκτ.Προηγ. Ετος"},
+                new SelectListItem() {Value = "NOVLASTYEAR", Text = "Νοε.Προηγ. Ετος"},
+                new SelectListItem() {Value = "DECLASTYEAR", Text = "Δεκ.Προηγ. Ετος"},
                 new SelectListItem() {Value = "ALL", Text = "{All}"}
             };
             return datePeriods;
@@ -95,11 +143,106 @@ namespace GrKouk.WebRazor.Helpers
                     dateFilter.FromDate = new DateTime(DateTime.Now.Year, 1, 1);
                     dateFilter.ToDate = DateTime.Now;
                     break;
+                case "JANCURYEAR":
+                    dateFilter.FromDate = new DateTime(DateTime.Now.Year, 1, 1);
+                    dateFilter.ToDate = new DateTime(DateTime.Now.Year, 1, DateTime.DaysInMonth(DateTime.Now.Year, 1));
+                    break;
+                case "FEBCURYEAR":
+                    dateFilter.FromDate = new DateTime(DateTime.Now.Year, 2, 1);
+                    dateFilter.ToDate = new DateTime(DateTime.Now.Year, 2, DateTime.DaysInMonth(DateTime.Now.Year, 2));
+                    break;
+                case "MARCURYEAR":
+                    dateFilter.FromDate = new DateTime(DateTime.Now.Year, 3, 1);
+                    dateFilter.ToDate = new DateTime(DateTime.Now.Year, 3, DateTime.DaysInMonth(DateTime.Now.Year, 3));
+                    break;
+                case "APRCURYEAR":
+                    dateFilter.FromDate = new DateTime(DateTime.Now.Year, 4, 1);
+                    dateFilter.ToDate = new DateTime(DateTime.Now.Year, 4, DateTime.DaysInMonth(DateTime.Now.Year, 4));
+                    break;
+                case "MAICURYEAR":
+                    dateFilter.FromDate = new DateTime(DateTime.Now.Year, 5, 1);
+                    dateFilter.ToDate = new DateTime(DateTime.Now.Year, 5, DateTime.DaysInMonth(DateTime.Now.Year, 5));
+                    break;
+                case "JUNCURYEAR":
+                    dateFilter.FromDate = new DateTime(DateTime.Now.Year, 6, 1);
+                    dateFilter.ToDate = new DateTime(DateTime.Now.Year, 6, DateTime.DaysInMonth(DateTime.Now.Year, 6));
+                    break;
+                case "JULCURYEAR":
+                    dateFilter.FromDate = new DateTime(DateTime.Now.Year, 7, 1);
+                    dateFilter.ToDate = new DateTime(DateTime.Now.Year, 7, DateTime.DaysInMonth(DateTime.Now.Year, 7));
+                    break;
+                case "AUGCURYEAR":
+                    dateFilter.FromDate = new DateTime(DateTime.Now.Year, 8, 1);
+                    dateFilter.ToDate = new DateTime(DateTime.Now.Year, 8, DateTime.DaysInMonth(DateTime.Now.Year, 8));
+                    break;
+                case "SEPCURYEAR":
+                    dateFilter.FromDate = new DateTime(DateTime.Now.Year, 9, 1);
+                    dateFilter.ToDate = new DateTime(DateTime.Now.Year, 9, DateTime.DaysInMonth(DateTime.Now.Year, 9));
+                    break;
+                case "OKTCURYEAR":
+                    dateFilter.FromDate = new DateTime(DateTime.Now.Year, 10, 1);
+                    dateFilter.ToDate = new DateTime(DateTime.Now.Year, 10, DateTime.DaysInMonth(DateTime.Now.Year, 10));
+                    break;
+                case "NOVCURYEAR":
+                    dateFilter.FromDate = new DateTime(DateTime.Now.Year, 11, 1);
+                    dateFilter.ToDate = new DateTime(DateTime.Now.Year, 11, DateTime.DaysInMonth(DateTime.Now.Year, 11));
+                    break;
+                case "DECCURYEAR":
+                    dateFilter.FromDate = new DateTime(DateTime.Now.Year, 12, 1);
+                    dateFilter.ToDate = new DateTime(DateTime.Now.Year, 12, DateTime.DaysInMonth(DateTime.Now.Year, 12));
+                    break;
                 case "LASTYEAR":
-                    var ty = DateTime.Now.Year;
-                    ty = ty - 1;
-                    dateFilter.FromDate = new DateTime(ty, 1, 1);
-                    dateFilter.ToDate = new DateTime(ty, 12, DateTime.DaysInMonth(ty, 12));
+                    
+                    dateFilter.FromDate = new DateTime(DateTime.Now.Year-1, 1, 1);
+                    dateFilter.ToDate = new DateTime(DateTime.Now.Year-1, 12, DateTime.DaysInMonth(DateTime.Now.Year-1, 12));
+                    break;
+                case "JANLASTYEAR":
+                    dateFilter.FromDate = new DateTime(DateTime.Now.Year-1, 1, 1);
+                    dateFilter.ToDate = new DateTime(DateTime.Now.Year-1, 1, DateTime.DaysInMonth(DateTime.Now.Year-1, 1));
+                    break;
+                case "FEBLASTYEAR":
+                    dateFilter.FromDate = new DateTime(DateTime.Now.Year-1, 2, 1);
+                    dateFilter.ToDate = new DateTime(DateTime.Now.Year-1, 2, DateTime.DaysInMonth(DateTime.Now.Year-1, 2));
+                    break;
+                case "MARLASTYEAR":
+                    dateFilter.FromDate = new DateTime(DateTime.Now.Year-1, 3, 1);
+                    dateFilter.ToDate = new DateTime(DateTime.Now.Year-1, 3, DateTime.DaysInMonth(DateTime.Now.Year-1, 3));
+                    break;
+                case "APRLASTYEAR":
+                    dateFilter.FromDate = new DateTime(DateTime.Now.Year-1, 4, 1);
+                    dateFilter.ToDate = new DateTime(DateTime.Now.Year-1, 4, DateTime.DaysInMonth(DateTime.Now.Year-1, 4));
+                    break;
+                case "MAILASTYEAR":
+                    dateFilter.FromDate = new DateTime(DateTime.Now.Year-1, 5, 1);
+                    dateFilter.ToDate = new DateTime(DateTime.Now.Year-1, 5, DateTime.DaysInMonth(DateTime.Now.Year-1, 5));
+                    break;
+                case "JUNLASTYEAR":
+                    dateFilter.FromDate = new DateTime(DateTime.Now.Year-1, 6, 1);
+                    dateFilter.ToDate = new DateTime(DateTime.Now.Year-1, 6, DateTime.DaysInMonth(DateTime.Now.Year-1, 6));
+                    break;
+                case "JULLASTYEAR":
+                    dateFilter.FromDate = new DateTime(DateTime.Now.Year-1, 7, 1);
+                    dateFilter.ToDate = new DateTime(DateTime.Now.Year-1, 7, DateTime.DaysInMonth(DateTime.Now.Year-1, 7));
+                    break;
+                case "AUGLASTYEAR":
+                    dateFilter.FromDate = new DateTime(DateTime.Now.Year-1, 8, 1);
+                    dateFilter.ToDate = new DateTime(DateTime.Now.Year-1, 8, DateTime.DaysInMonth(DateTime.Now.Year-1, 8));
+                    break;
+                case "SEPLASTYEAR":
+                    dateFilter.FromDate = new DateTime(DateTime.Now.Year-1, 9, 1);
+                    dateFilter.ToDate = new DateTime(DateTime.Now.Year-1, 9, DateTime.DaysInMonth(DateTime.Now.Year-1, 9));
+                    break;
+                case "OKTLASTYEAR":
+                    dateFilter.FromDate = new DateTime(DateTime.Now.Year-1, 10, 1);
+                    dateFilter.ToDate = new DateTime(DateTime.Now.Year-1, 10, DateTime.DaysInMonth(DateTime.Now.Year-1, 10));
+                    break;
+                case "NOVLASTYEAR":
+                    dateFilter.FromDate = new DateTime(DateTime.Now.Year-1, 11, 1);
+                    dateFilter.ToDate = new DateTime(DateTime.Now.Year-1, 11, DateTime.DaysInMonth(DateTime.Now.Year-1, 11));
+                    break;
+                case "DECLASTYEAR":
+                    dateFilter.FromDate = new DateTime(DateTime.Now.Year-1, 12, 1);
+                    dateFilter.ToDate = new DateTime(DateTime.Now.Year-1, 12, DateTime.DaysInMonth(DateTime.Now.Year-1, 12));
                     break;
                 case "ALL":
                     dateFilter.FromDate = new DateTime(1966, 8, 1);
